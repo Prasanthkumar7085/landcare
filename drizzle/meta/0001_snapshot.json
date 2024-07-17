@@ -1,6 +1,6 @@
 {
-  "id": "7995765f-24f1-4020-aa6d-ca50c8cd3266",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "5660a8c4-12a4-4714-b7f3-291ee844c190",
+  "prevId": "7995765f-24f1-4020-aa6d-ca50c8cd3266",
   "version": "6",
   "dialect": "postgresql",
   "tables": {
@@ -48,11 +48,10 @@
         },
         "status": {
           "name": "status",
-          "type": "status",
-          "typeSchema": "public",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": false,
-          "default": "'ACTIVE'"
+          "default": true
         },
         "created_at": {
           "name": "created_at",
