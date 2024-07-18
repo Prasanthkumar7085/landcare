@@ -9,7 +9,7 @@ export const users = pgTable("users", {
     name: varchar('name').notNull(),
     email: varchar('email').notNull(),
     password: varchar('password').notNull(),
-    phone: varchar('phone').default(null),
+    phone: varchar('phone'),
     userType: integer('user_type').default(1),
     status: boolean('status').default(true),
     createdAt: timestamp('created_at').notNull().defaultNow(),

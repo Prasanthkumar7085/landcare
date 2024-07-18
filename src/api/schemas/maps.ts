@@ -11,10 +11,10 @@ export const maps = pgTable("maps", {
 
     title: varchar('title').notNull(),
     slug: varchar('slug').unique().notNull(),
-    description: text('description').default(null),
+    description: text('description'),
 
     status: statusEnum('status').default('draft'),
-    puplishedOn: timestamp('puplished_on').default(null),
+    puplishedOn: timestamp('puplished_on'),
     puplishedBy: integer('puplished_by').references(() => users.id),
 
     geoType: varchar('geo_type'),
