@@ -12,6 +12,7 @@
     "drop": "drizzle-kit drop"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "drizzle-orm": "^0.29.5",
     "next": "14.2.5",
     "postgres": "^3.4.4",
