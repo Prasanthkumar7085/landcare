@@ -1,0 +1,24 @@
+Auth
+
+1)POST /login
+
+Maps
+
+1) POST /maps
+2) GET /maps
+3) GET /maps/:id
+4) PUT /maps/:id
+5) PATCH /maps/:id/:status
+6) DELETE /maps/:id
+
+
+Markers
+
+1) POST /maps/:id/markers/import
+
+1) POST /maps/:id/markers
+2) GET /maps/:id/markers
+3) GET /maps/:id/markers/:id
+4) PATCH /maps/:id/markers/:id
+5) PATCH /maps/:id/markers/:id/status
+6) DELETE /maps/:id/markers/:id
