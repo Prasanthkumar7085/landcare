@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
-import { MAP_CREATED, MAP_FETCHED, MAP_TITLE_EXISTS, MAP_UPDATED, MAPS_FETCHED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
+import { MAP_CREATED, MAP_DELETED, MAP_FETCHED, MAP_NOT_FOUND, MAP_TITLE_EXISTS, MAP_UPDATED, MAPS_FETCHED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
 import { makeSlug } from "../utils/app.utils";
 import { ResourceAlreadyExistsError } from "../helpers/exceptions";
 import paginationHelper from "../helpers/paginationHelper";
@@ -39,9 +39,12 @@ export class MapsController {
     async getOne(req: NextRequest, params: any) {
         try {
 
-            const responseData: any = await mapsDataServiceProvider.findById(params.id);
+            const mapData: any = await mapsDataServiceProvider.findById(params.id);
+            if (!mapData) {
+                return ResponseHelper.sendErrorResponse(404, MAP_NOT_FOUND);
+            }
 
-            return ResponseHelper.sendSuccessResponse(200, MAP_FETCHED, responseData);
+            return ResponseHelper.sendSuccessResponse(200, MAP_FETCHED, mapData);
 
         } catch (error: any) {
             console.log(error);
@@ -57,7 +60,7 @@ export class MapsController {
             const filteredQuery = await filterHelper.maps(filters);
 
             const [mapsData, mapsCount]: any = await Promise.all([
-                mapsDataServiceProvider.findAll(page, limit,filteredQuery),
+                mapsDataServiceProvider.findAll(page, limit, filteredQuery),
                 mapsDataServiceProvider.findMapsCount(filteredQuery)
             ]);
 
@@ -85,12 +88,17 @@ export class MapsController {
             const reqData = await req.json();
             let slug = makeSlug(reqData.title);
 
-            const existedMap:any = await mapsDataServiceProvider.findMapByTitleAndId(reqData.title,params.id);
+            const mapData: any = await mapsDataServiceProvider.findById(params.id);
+            if (!mapData) {
+                return ResponseHelper.sendErrorResponse(404, MAP_NOT_FOUND);
+            }
+
+            const existedMap: any = await mapsDataServiceProvider.findMapByTitleAndId(reqData.title, params.id);
             if (existedMap) {
                 throw new ResourceAlreadyExistsError('title', MAP_TITLE_EXISTS);
             }
 
-            const existedSlug = await mapsDataServiceProvider.findMapBySlugAndId(slug,params.id);
+            const existedSlug = await mapsDataServiceProvider.findMapBySlugAndId(slug, params.id);
             if (existedSlug) {
                 reqData.slug = slug + '' + Date.now();
             } else {
@@ -106,6 +114,24 @@ export class MapsController {
             if (error.validation_error) {
                 return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
             }
+            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+        }
+    }
+
+    async deleteOne(req: NextRequest, params: any) {
+        try {
+
+            const mapData: any = await mapsDataServiceProvider.findById(params.id);
+            if (!mapData) {
+                return ResponseHelper.sendErrorResponse(404, MAP_NOT_FOUND);
+            }
+
+            await mapsDataServiceProvider.delete(params.id);
+
+            return ResponseHelper.sendSuccessResponse(200, MAP_DELETED);
+
+        } catch (error: any) {
+            console.log(error);
             return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
         }
     }

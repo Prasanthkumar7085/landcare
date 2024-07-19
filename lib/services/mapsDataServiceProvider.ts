@@ -10,7 +10,12 @@ export class MapsDataServiceProvider {
     }
 
     async findMapByTitle(title: string) {
-        const mapData = await db.select().from(maps).where(ilike(maps.title, `%${title}%`));
+        const mapData = await db.select()
+            .from(maps)
+            .where(and(
+                ilike(maps.title, `%${title}%`),
+                ne(maps.status, 'archived')
+            ));
         return mapData[0];
     }
 
@@ -58,7 +63,8 @@ export class MapsDataServiceProvider {
             .from(maps)
             .where(and(
                 ilike(maps.title, `%${title}%`),
-                ne(maps.id, id)
+                ne(maps.id, id),
+                ne(maps.status, 'archived')
             ))
         return mapData[0];
     }
@@ -68,7 +74,8 @@ export class MapsDataServiceProvider {
             .from(maps)
             .where(and(
                 ilike(maps.slug, `%${slug}%`),
-                ne(maps.id, id)
+                ne(maps.id, id),
+                ne(maps.status, 'archived')
             ))
         return mapData[0];
     }
@@ -77,6 +84,13 @@ export class MapsDataServiceProvider {
         return await db
             .update(maps)
             .set(data)
+            .where(eq(maps.id, id))
+    }
+
+    async delete(id: number) {
+        return await db
+            .update(maps)
+            .set({ status: 'archived' })
             .where(eq(maps.id, id))
     }
 }

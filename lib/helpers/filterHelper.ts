@@ -11,6 +11,8 @@ class FilterHelper {
 
         if (query && query.status) {
             conditions.push(`maps.status = '${query.status}'`);
+        } else {
+            conditions.push(`maps.status != 'archived'`);
         }
 
         if (conditions.length > 0) {
