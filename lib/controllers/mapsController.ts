@@ -52,10 +52,9 @@ export class MapsController {
     async listAll(query: any) {
         try {
 
-            const page = query.page || 1;
-            const limit = query.limit || 10;
+            const { page = 1, limit = 10, ...filters } = query;
 
-            const filteredQuery = await filterHelper.maps(query);
+            const filteredQuery = await filterHelper.maps(filters);
 
             const [mapsData, mapsCount]: any = await Promise.all([
                 mapsDataServiceProvider.findAll(page, limit,filteredQuery),
