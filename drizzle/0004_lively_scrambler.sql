@@ -1,1 +1,0 @@
-ALTER TABLE "mapMarkers" RENAME TO "map_markers";

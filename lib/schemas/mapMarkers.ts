@@ -3,7 +3,6 @@ import { index, integer, pgTable, pgEnum, serial, timestamp, varchar, text, json
 
 import { sql } from 'drizzle-orm';
 import { maps } from './maps';
-export const statusEnum = pgEnum('status', ['draft', 'active', 'publish', 'inactive', 'archived']);
 
 export const mapMarkers = pgTable("map_markers", {
     id: serial('id').primaryKey(),

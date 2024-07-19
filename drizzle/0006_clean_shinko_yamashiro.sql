@@ -1,1 +1,0 @@
-CREATE INDEX IF NOT EXISTS "map_id_idx" ON "map_markers" ("map_id");
