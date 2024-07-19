@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
-import { MAP_CREATED, MAP_DELETED, MAP_FETCHED, MAP_NOT_FOUND, MAP_TITLE_EXISTS, MAP_UPDATED, MAPS_FETCHED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
+import { MAP_CREATED, MAP_DELETED, MAP_FETCHED, MAP_NOT_FOUND, MAP_STATUS_UPDATED, MAP_TITLE_EXISTS, MAP_UPDATED, MAPS_FETCHED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
 import { makeSlug } from "../utils/app.utils";
 import { ResourceAlreadyExistsError } from "../helpers/exceptions";
 import paginationHelper from "../helpers/paginationHelper";
@@ -129,6 +129,30 @@ export class MapsController {
             await mapsDataServiceProvider.delete(params.id);
 
             return ResponseHelper.sendSuccessResponse(200, MAP_DELETED);
+
+        } catch (error: any) {
+            console.log(error);
+            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+        }
+    }
+
+    async updateStatus(req: NextRequest, params: any) {
+        try {
+
+            const reqData = await req.json();
+
+            const mapData: any = await mapsDataServiceProvider.findById(params.id);
+            if (!mapData) {
+                return ResponseHelper.sendErrorResponse(404, MAP_NOT_FOUND);
+            }
+            
+            if (reqData.status === 'publish') {
+                reqData.published_on = new Date();
+            }
+            
+            await mapsDataServiceProvider.updateStatus(params.id, reqData); 
+
+            return ResponseHelper.sendSuccessResponse(200, MAP_STATUS_UPDATED);
 
         } catch (error: any) {
             console.log(error);

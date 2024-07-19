@@ -93,4 +93,11 @@ export class MapsDataServiceProvider {
             .set({ status: 'archived' })
             .where(eq(maps.id, id))
     }
+
+    async updateStatus(id: number, data: any) {
+        return await db
+            .update(maps)
+            .set(data)
+            .where(eq(maps.id, id))
+    }
 }
