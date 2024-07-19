@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 
 
 export class ResponseHelper {
@@ -11,21 +12,20 @@ export class ResponseHelper {
             data
         }
 
-        return Response.json(responseBody);
+       return NextResponse.json(responseBody, { status: status });
 
     }
 
-    static sendErrorResponse(status: number, message: string = "", data: any = [], errors = {}) {
+    static sendErrorResponse(status: number, message: string = "",errors = {}) {
 
         let responseBody: any = {
             success: false,
             message,
-            errors,
             status: status,
-            data
+            errors,
         };
 
-        return Response.json(responseBody);
+        return NextResponse.json(responseBody, { status: status });
 
     }
 
