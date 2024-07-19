@@ -1,0 +1,39 @@
+$baseLayoutBackground: $whiteColor;
+$backBtnCOlor: #e47078;
+
+.mainBodyContainer {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  overflow: auto;
+  margin-left: 12rem;
+
+  .mainContainer {
+    width: 100%;
+    height: 100vh;
+    overflow-x: hidden;
+
+    .mainChlidren {
+      width: 100%;
+      position: relative;
+      box-sizing: border-box;
+      padding: 1.5rem;
+    }
+  }
+}
+
+.backBtn {
+  border-radius: 4px !important;
+  border: 1px solid $backBtnCOlor !important;
+  color: $backBtnCOlor !important;
+  font-family: $fontPrimary !important;
+  font-size: clamp(12px, 0.72vw, 15px) !important;
+  font-weight: 500 !important;
+  text-transform: capitalize !important;
+  padding: 1px 2px 1px 6px !important;
+
+  &:hover {
+    border: 1px solid $backBtnCOlor !important;
+    color: $backBtnCOlor !important;
+  }
+}

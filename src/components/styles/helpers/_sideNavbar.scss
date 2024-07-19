@@ -1,0 +1,61 @@
+@mixin align-center {
+  display: flex;
+  align-items: center;
+}
+@mixin align-start {
+  display: flex;
+  align-items: flex-start;
+  align-self: stretch;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #05a1551a;
+  box-sizing: border-box;
+  width: 12rem;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 0.8rem 1rem;
+  @include align-center;
+
+  .headerMenu {
+    gap: 3rem;
+    @include align-start;
+    .navgroup {
+      gap: 13px;
+      @include align-start;
+    }
+  }
+  .menuBtn {
+    border: 1px solid #00000033;
+    background: $whiteColor;
+    border-radius: 8px;
+    padding: 9px 10px;
+    gap: var(--gap-5xs);
+    cursor: pointer;
+    align-items: center;
+    display: flex;
+    align-self: stretch;
+    justify-content: flex-start;
+    .menuTxt {
+      margin: 0;
+      color: $blackColor;
+      font-family: $fontPrimary;
+      font-size: clamp(11px, 0.625vw, 16px);
+      font-weight: 400;
+      line-height: 100%;
+    }
+    &.Active {
+      background: $primaryColor;
+      border: 1px solid $primaryColor;
+      .menuTxt {
+        color: $whiteColor !important;
+      }
+    }
+  }
+}
