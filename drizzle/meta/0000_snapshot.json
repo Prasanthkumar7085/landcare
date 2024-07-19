@@ -1,5 +1,5 @@
 {
-  "id": "8286299e-f6c8-4cce-b7b2-c6b25a11f2bb",
+  "id": "8cf10eed-a12c-4524-b458-b065845464d0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -221,6 +221,13 @@
           "name": "slug_idx",
           "columns": [
             "slug"
+          ],
+          "isUnique": false
+        },
+        "title_idx": {
+          "name": "title_idx",
+          "columns": [
+            "title"
           ],
           "isUnique": false
         }

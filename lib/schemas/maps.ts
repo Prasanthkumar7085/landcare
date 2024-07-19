@@ -14,20 +14,21 @@ export const maps = pgTable("maps", {
     description: text('description'),
 
     status: statusEnum('status').default('draft'),
-    puplishedOn: timestamp('puplished_on'),
-    puplishedBy: integer('puplished_by').references(() => users.id),
+    puplished_on: timestamp('puplished_on'),
+    puplished_by: integer('puplished_by').references(() => users.id),
 
-    geoType: varchar('geo_type'),
-    geoCoordinates: jsonb('geo_coordinates').$type<number[]>(),
-    geoZoom: integer('geo_zoom'),
+    geo_type: varchar('geo_type'),
+    geo_coordinates: jsonb('geo_coordinates').$type<number[]>(),
+    geo_zoom: integer('geo_zoom'),
 
-    createdAt: timestamp('created_at').notNull().defaultNow(),
-    updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`)
+    created_at: timestamp('created_at').notNull().defaultNow(),
+    updated_at: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`)
 
 },
     (table: any) => {
         return {
-            slugIdx: index("slug_idx").on(table.slug)
+            slugIdx: index("slug_idx").on(table.slug),
+            titleIdx: index("title_idx").on(table.title)
         };
     });
 

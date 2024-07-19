@@ -71,4 +71,5 @@ END $$;
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "map_id_idx" ON "map_markers" ("map_id");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "slug_idx" ON "maps" ("slug");--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "title_idx" ON "maps" ("title");--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "email_idx" ON "users" ("email");

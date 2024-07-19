@@ -14,8 +14,8 @@ export const users = pgTable("users", {
     phone: varchar('phone'),
     user_type: userTypeEnum('user_type').default('user'),
     status: boolean('status').default(true),
-    createdAt: timestamp('created_at').notNull().defaultNow(),
-    updatedAt: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+    created_at: timestamp('created_at').notNull().defaultNow(),
+    updated_at: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 },
     (table: any) => {
         return {
