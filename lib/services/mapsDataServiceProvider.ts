@@ -1,7 +1,6 @@
-import { eq, ilike, sql } from "drizzle-orm";
+import { eq, ilike, sql,and, ne } from "drizzle-orm";
 import { db } from "../database";
 import { maps } from "../schemas/maps";
-import filterHelper from "../helpers/filterHelper";
 
 
 export class MapsDataServiceProvider {
@@ -11,12 +10,12 @@ export class MapsDataServiceProvider {
     }
 
     async findMapByTitle(title: string) {
-        const mapData = await db.select().from(maps).where(ilike(maps.title, `%${title}%`)).limit(1);
+        const mapData = await db.select().from(maps).where(ilike(maps.title, `%${title}%`));
         return mapData[0];
     }
 
     async findById(id: number) {
-        const mapData = await db.select().from(maps).where(eq(maps.id, id)).limit(1);
+        const mapData = await db.select().from(maps).where(eq(maps.id, id));
         return mapData[0];
     }
 
@@ -52,5 +51,32 @@ export class MapsDataServiceProvider {
                
         return await db.execute(statement)
 
+    }
+
+    async findMapByTitleAndId(title: string, id: number) {
+        const mapData = await db.select()
+            .from(maps)
+            .where(and(
+                ilike(maps.title, `%${title}%`),
+                ne(maps.id, id)
+            ))
+        return mapData[0];
+    }
+
+    async findMapBySlugAndId(slug: string, id: number) {
+        const mapData = await db.select()
+            .from(maps)
+            .where(and(
+                ilike(maps.slug, `%${slug}%`),
+                ne(maps.id, id)
+            ))
+        return mapData[0];
+    }
+
+    async update(id: number, data: any) {
+        return await db
+            .update(maps)
+            .set(data)
+            .where(eq(maps.id, id))
     }
 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
-import { MAP_CREATED, MAP_FETCHED, MAP_TITLE_EXISTS, MAPS_FETCHED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
+import { MAP_CREATED, MAP_FETCHED, MAP_TITLE_EXISTS, MAP_UPDATED, MAPS_FETCHED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
 import { makeSlug } from "../utils/app.utils";
 import { ResourceAlreadyExistsError } from "../helpers/exceptions";
 import paginationHelper from "../helpers/paginationHelper";
@@ -19,8 +19,8 @@ export class MapsController {
             const reqData = await req.json();
             reqData.slug = makeSlug(reqData.title);
 
-            const existedMapTitle = await mapsDataServiceProvider.findMapByTitle(reqData.title);
-            if (existedMapTitle) {
+            const existedMap = await mapsDataServiceProvider.findMapByTitle(reqData.title);
+            if (existedMap) {
                 throw new ResourceAlreadyExistsError('title', MAP_TITLE_EXISTS);
             }
 
@@ -75,6 +75,37 @@ export class MapsController {
 
         } catch (error: any) {
             console.log(error);
+            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+        }
+    }
+
+    async updateOne(req: NextRequest, params: any) {
+        try {
+
+            const reqData = await req.json();
+            let slug = makeSlug(reqData.title);
+
+            const existedMap:any = await mapsDataServiceProvider.findMapByTitleAndId(reqData.title,params.id);
+            if (existedMap) {
+                throw new ResourceAlreadyExistsError('title', MAP_TITLE_EXISTS);
+            }
+
+            const existedSlug = await mapsDataServiceProvider.findMapBySlugAndId(slug,params.id);
+            if (existedSlug) {
+                reqData.slug = slug + '' + Date.now();
+            } else {
+                reqData.slug = slug;
+            }
+
+            await mapsDataServiceProvider.update(params.id, reqData);
+
+            return ResponseHelper.sendSuccessResponse(200, MAP_UPDATED);
+
+        } catch (error: any) {
+            console.log(error);
+            if (error.validation_error) {
+                return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
+            }
             return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
         }
     }
