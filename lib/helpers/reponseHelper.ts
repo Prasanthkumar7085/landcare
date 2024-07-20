@@ -29,4 +29,16 @@ export class ResponseHelper {
 
     }
 
+    static sendValidationErrorResponse(status: number, message: string, errors: any) {
+        
+        let responseBody: any = {
+            success: false,
+            status,
+            errors,
+            message,
+            data: null
+        }
+        return NextResponse.json(responseBody, {status: status});
+    }
+
 }

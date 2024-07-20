@@ -4,6 +4,8 @@ import { getUserAuthTokens } from "../helpers/authHelper";
 import { HashHelper } from "../helpers/hashHelper";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { UserDataServiceProvider } from "../services/userDataServiceProvider";
+import { validate } from "../middlewares/validationMiddlware";
+import { SignInSchema } from "../validations/users/signin";
 
 const hashHelper = new HashHelper();
 const userDataServiceProvider = new UserDataServiceProvider();
@@ -31,9 +33,8 @@ export class UserController {
         }
     }
 
-    async signIn(req:NextRequest,res:NextResponse) {
+    async signIn(reqData:any,res:NextResponse) {
         try {
-            const reqData = await req.json();
             
             const userData: any = await userDataServiceProvider.findUserByEmail(reqData.email);
             if (!userData) {
