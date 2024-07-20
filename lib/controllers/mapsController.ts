@@ -13,10 +13,9 @@ const mapsDataServiceProvider = new MapsDataServiceProvider();
 
 export class MapsController {
 
-    async addMap(req: NextRequest, res: NextResponse) {
+    async addMap(reqData: any, res: NextResponse) {
         try {
 
-            const reqData = await req.json();
             reqData.slug = makeSlug(reqData.title);
 
             const existedMap = await mapsDataServiceProvider.findMapByTitle(reqData.title);
@@ -41,7 +40,7 @@ export class MapsController {
 
             const mapData: any = await mapsDataServiceProvider.findById(params.id);
             if (!mapData) {
-                return ResponseHelper.sendErrorResponse(404, MAP_NOT_FOUND);
+                return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
 
             return ResponseHelper.sendSuccessResponse(200, MAP_FETCHED, mapData);
@@ -82,15 +81,14 @@ export class MapsController {
         }
     }
 
-    async updateOne(req: NextRequest, params: any) {
+    async updateOne(reqData: any, params: any) {
         try {
 
-            const reqData = await req.json();
             let slug = makeSlug(reqData.title);
 
             const mapData: any = await mapsDataServiceProvider.findById(params.id);
             if (!mapData) {
-                return ResponseHelper.sendErrorResponse(404, MAP_NOT_FOUND);
+                return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
 
             const existedMap: any = await mapsDataServiceProvider.findMapByTitleAndId(reqData.title, params.id);
@@ -123,7 +121,7 @@ export class MapsController {
 
             const mapData: any = await mapsDataServiceProvider.findById(params.id);
             if (!mapData) {
-                return ResponseHelper.sendErrorResponse(404, MAP_NOT_FOUND);
+                return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
 
             await mapsDataServiceProvider.delete(params.id);
@@ -136,14 +134,12 @@ export class MapsController {
         }
     }
 
-    async updateStatus(req: NextRequest, params: any) {
+    async updateStatus(reqData: any, params: any) {
         try {
-
-            const reqData = await req.json();
 
             const mapData: any = await mapsDataServiceProvider.findById(params.id);
             if (!mapData) {
-                return ResponseHelper.sendErrorResponse(404, MAP_NOT_FOUND);
+                return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
             
             if (reqData.status === 'publish') {

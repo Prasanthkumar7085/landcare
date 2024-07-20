@@ -42,6 +42,9 @@ function getCustomErrorMessage(issue: any) {
         case 'non_nullable' :
             return `${key} is Required`
         
+        case 'array':
+            return `Invalid ${key}`
+        
         default:
             break
     }

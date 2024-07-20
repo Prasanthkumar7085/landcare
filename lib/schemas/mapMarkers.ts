@@ -11,6 +11,7 @@ export const mapMarkers = pgTable("map_markers", {
     title: varchar('title').notNull(),
     description: text('description'),
     type: varchar('type'),
+    coordinates: jsonb('coordinates').$type<number[]>(),
 
     full_address: varchar('full_address').notNull(),
     state: varchar('state'),

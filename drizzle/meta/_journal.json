@@ -15,6 +15,13 @@
       "when": 1721398506315,
       "tag": "0001_stormy_stellaris",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1721481338159,
+      "tag": "0002_glamorous_captain_marvel",
+      "breakpoints": true
     }
   ]
 }

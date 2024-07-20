@@ -21,8 +21,8 @@ export class ResponseHelper {
         let responseBody: any = {
             success: false,
             message,
-            status: status,
             errors,
+            status: status
         };
 
         return NextResponse.json(responseBody, { status: status });
@@ -33,10 +33,9 @@ export class ResponseHelper {
         
         let responseBody: any = {
             success: false,
-            status,
-            errors,
             message,
-            data: null
+            errors,
+            status
         }
         return NextResponse.json(responseBody, {status: status});
     }
