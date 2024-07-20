@@ -18,3 +18,13 @@ export const MAP_TITLE_EXISTS = "Map title already exists";
 export const MAP_FETCHED = "Map fetched successfully";
 export const MAPS_FETCHED = "Maps fetched successfully";
 export const MAP_STATUS_UPDATED = "Map status updated successfully";
+
+
+export const MARKER_CREATED = "Marker created successfully";
+export const MARKER_UPDATED = "Marker updated successfully";
+export const MARKER_DELETED = "Marker deleted successfully";
+export const MARKER_NOT_FOUND = "Marker not found";
+export const MARKER_FETCHED = "Marker fetched successfully";
+export const MARKERS_FETCHED = "Markers fetched successfully";
+export const MARKER_STATUS_UPDATED = "Marker status updated successfully";
+export const MARKER_TITLE_EXISTS = "Marker title already exists";
