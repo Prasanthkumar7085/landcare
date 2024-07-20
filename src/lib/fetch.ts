@@ -64,7 +64,7 @@ class FetchService {
     }
 
     // request interceptor starts
-    let url = path;
+    let url = process.env.NEXT_PUBLIC_API_URL + path;
 
     const response: any = await fetch(url, config);
 
