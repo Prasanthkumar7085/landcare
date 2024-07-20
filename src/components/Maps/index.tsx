@@ -1,7 +1,11 @@
+import { Toaster } from "sonner";
+
 const Maps = () => {
 
     return (
-        <div></div>
+        <div>
+            <Toaster richColors closeButton position="top-right" />
+        </div>
     );
 }
 export default Maps;

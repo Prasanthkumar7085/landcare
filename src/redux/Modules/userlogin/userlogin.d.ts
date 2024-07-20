@@ -9,7 +9,7 @@ declare namespace IReduxUserLogin {
     user_type: string;
     phone: boolean;
     email: string;
-    full_name: string;
+    name: string;
     last_active_at: any;
     created_at: string;
     updated_at: string;
