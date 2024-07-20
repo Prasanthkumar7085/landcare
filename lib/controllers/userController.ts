@@ -31,9 +31,8 @@ export class UserController {
         }
     }
 
-    async signIn(req:NextRequest,res:NextResponse) {
+    async signIn(reqData:any,res:NextResponse) {
         try {
-            const reqData = await req.json();
             
             const userData: any = await userDataServiceProvider.findUserByEmail(reqData.email);
             if (!userData) {

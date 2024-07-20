@@ -32,8 +32,8 @@ export class MapsDataServiceProvider {
            maps.title,
            maps.description,
            maps.status,
-           maps.puplished_on,
-           maps.puplished_by,
+           maps.published_on,
+           maps.published_by,
            maps.created_at,
            maps.updated_at
         FROM maps
