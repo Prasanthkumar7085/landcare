@@ -4,8 +4,6 @@ import { getUserAuthTokens } from "../helpers/authHelper";
 import { HashHelper } from "../helpers/hashHelper";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { UserDataServiceProvider } from "../services/userDataServiceProvider";
-import { validate } from "../middlewares/validationMiddlware";
-import { SignInSchema } from "../validations/users/signin";
 
 const hashHelper = new HashHelper();
 const userDataServiceProvider = new UserDataServiceProvider();
