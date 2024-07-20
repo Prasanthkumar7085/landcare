@@ -14,7 +14,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         return ResponseHelper.sendValidationErrorResponse(422, 'Validation Error', validationErrors);
     }
     
-    return mapsController.addMap(req, res);
+    return mapsController.addMap(reqData, res);
 }
 
 export async function GET(req: NextRequest) {

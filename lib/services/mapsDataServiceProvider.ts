@@ -75,7 +75,6 @@ export class MapsDataServiceProvider {
             .where(and(
                 ilike(maps.slug, `%${slug}%`),
                 ne(maps.id, id),
-                ne(maps.status, 'archived')
             ))
         return mapData[0];
     }
