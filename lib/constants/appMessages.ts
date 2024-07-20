@@ -16,3 +16,5 @@ export const MAP_DELETED = "Map deleted successfully";
 export const MAP_NOT_FOUND = "Map not found";
 export const MAP_TITLE_EXISTS = "Map title already exists";
 export const MAP_FETCHED = "Map fetched successfully";
+export const MAPS_FETCHED = "Maps fetched successfully";
+export const MAP_STATUS_UPDATED = "Map status updated successfully";

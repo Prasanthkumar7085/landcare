@@ -14,8 +14,8 @@ export const maps = pgTable("maps", {
     description: text('description'),
 
     status: statusEnum('status').default('draft'),
-    puplished_on: timestamp('puplished_on'),
-    puplished_by: integer('puplished_by').references(() => users.id),
+    published_on: timestamp('published_on'),
+    published_by: integer('published_by').references(() => users.id),
 
     geo_type: varchar('geo_type'),
     geo_coordinates: jsonb('geo_coordinates').$type<number[]>(),
