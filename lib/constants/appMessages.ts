@@ -28,3 +28,4 @@ export const MARKER_FETCHED = "Marker fetched successfully";
 export const MARKERS_FETCHED = "Markers fetched successfully";
 export const MARKER_STATUS_UPDATED = "Marker status updated successfully";
 export const MARKER_TITLE_EXISTS = "Marker title already exists";
+export const MARKER_NOT_FOUND_WITH_MAP = "Marker not found with map";
