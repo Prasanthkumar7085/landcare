@@ -8,6 +8,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import TablePaginationComponent from "../Core/TablePaginationComponent";
+import MapsFilters from "./MapsFilters";
 
 const Maps = () => {
     const useParam = useSearchParams();
@@ -26,13 +27,14 @@ const Maps = () => {
     const getAllMaps = async ({
         page = searchParams?.page,
         limit = searchParams?.limit,
-        // search_string = searchParams?.search_string,
+        search_string = searchParams?.search_string,
     }: Partial<ListMapsApiProps>) => {
         setLoading(true);
         try {
             let queryParams: any = {
                 page: page ? page : 1,
                 limit: limit ? limit : 8,
+                search_string: search_string ? search_string : "",
             };
             let queryString = prepareURLEncodedParams("", queryParams)
 
@@ -58,8 +60,9 @@ const Maps = () => {
         getAllMaps({
             page: searchParams?.page ? searchParams?.page : 1,
             limit: searchParams?.limit ? searchParams?.limit : 8,
+            search_string: searchParams?.search_string,
         });
-    }, [searchParams?.page, searchParams?.limit])
+    }, [searchParams?.page, searchParams?.limit, searchParams?.search_string])
 
     const capturePageNum = (value: number) => {
         getAllMaps({
@@ -78,7 +81,8 @@ const Maps = () => {
     };
 
     return (
-        <div>
+        <div style={{ marginTop: "30px" }}>
+            <MapsFilters />
             <Box sx={{ flexGrow: 1, padding: 2 }}>
                 <Grid container spacing={2}>
                     {mapsData?.map((item: any, index: any) => (
