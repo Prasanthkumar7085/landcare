@@ -75,98 +75,97 @@ const LoginPage = () => {
                         <img className="loginImg" alt="" src="/logo.svg" />
                     </picture>
                 </div>
-                {/* <form onSubmit={signIn}> */}
-                <div className="rightContainer">
-                    <div className="formContainer">
-                        <Image
-                            className="logoIcon"
-                            alt=""
-                            src="/logo.svg"
-                            height={90}
-                            width={10}
-                        />
-                        <p className="formSubTitle1">Welcome back</p>
-                        <label className="formLabel1">
-                            Enter your email an  password to access your account
-                        </label>
-                        <div className="formsBlock">
-                            <div className="InputFeild">
-                                <label className="formLabel">Email</label>
-                                <TextField
-                                    autoComplete="new-email"
-                                    variant="outlined"
-                                    placeholder="Enter your email"
-                                    name="email"
-                                    type={"text"}
-                                    value={email}
-                                    onChange={(e) => {
-                                        setEmail(e.target.value);
-                                        setErrorMessages(null);
-                                        setInvalid(null);
-                                    }}
-                                />
-                                <ErrorMessagesComponent errorMessage={errorMessages?.email} />
-                            </div>
-                            <div className="InputFeild">
-                                <label className="formLabel">Password</label>
-                                <TextField
-                                    autoComplete="new-password"
-                                    variant="outlined"
-                                    placeholder="Enter your password"
-                                    name="password"
-                                    type={showPassword ? "text" : "password"}
-                                    value={password}
-                                    onChange={(e) => {
-                                        setPassword(e.target.value);
-                                        setErrorMessages(null);
-                                        setInvalid(null);
-                                    }}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={togglePasswordVisibility}
-                                                    edge="end"
-                                                >
-                                                    {showPassword ? (
-                                                        <Visibility sx={{ fontSize: "1.2rem" }} />
+                <form onSubmit={signIn}>
+                    <div className="rightContainer">
+                        <div className="formContainer">
+                            <Image
+                                className="logoIcon"
+                                alt=""
+                                src="/logo.svg"
+                                height={90}
+                                width={10}
+                            />
+                            <p className="formSubTitle1">Welcome back</p>
+                            <label className="formLabel1">
+                                Enter your email an  password to access your account
+                            </label>
+                            <div className="formsBlock">
+                                <div className="InputFeild">
+                                    <label className="formLabel">Email</label>
+                                    <TextField
+                                        autoComplete="new-email"
+                                        variant="outlined"
+                                        placeholder="Enter your email"
+                                        name="email"
+                                        type={"text"}
+                                        value={email}
+                                        onChange={(e) => {
+                                            setEmail(e.target.value);
+                                            setErrorMessages(null);
+                                            setInvalid(null);
+                                        }}
+                                    />
+                                    <ErrorMessagesComponent errorMessage={errorMessages?.email} />
+                                </div>
+                                <div className="InputFeild">
+                                    <label className="formLabel">Password</label>
+                                    <TextField
+                                        autoComplete="new-password"
+                                        variant="outlined"
+                                        placeholder="Enter your password"
+                                        name="password"
+                                        type={showPassword ? "text" : "password"}
+                                        value={password}
+                                        onChange={(e) => {
+                                            setPassword(e.target.value);
+                                            setErrorMessages(null);
+                                            setInvalid(null);
+                                        }}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        onClick={togglePasswordVisibility}
+                                                        edge="end"
+                                                    >
+                                                        {showPassword ? (
+                                                            <Visibility sx={{ fontSize: "1.2rem" }} />
 
-                                                    ) : (
-                                                        <VisibilityOff sx={{ fontSize: "1.2rem" }} />
+                                                        ) : (
+                                                            <VisibilityOff sx={{ fontSize: "1.2rem" }} />
 
-                                                    )}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                                <ErrorMessagesComponent
-                                    errorMessage={errorMessages?.password}
-                                />
-                                <p className="errorComponent">{invalid}</p>
-                                {/* <div className="forgotBtnGrp">
+                                                        )}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                    <ErrorMessagesComponent
+                                        errorMessage={errorMessages?.password}
+                                    />
+                                    <p className="errorComponent">{invalid}</p>
+                                    {/* <div className="forgotBtnGrp">
                     <Button variant="text" className="forgotBtn">
                       Forgot Your Password ?
                     </Button>
                   </div> */}
+                                </div>
+                                <Button
+                                    type="submit"
+                                    className="loginBtn"
+                                    variant="contained"
+                                    fullWidth
+                                >
+                                    {loading ? (
+                                        <CircularProgress color="inherit" size={"1rem"} />
+                                    ) : (
+                                        "Sign In"
+                                    )}
+                                </Button>
                             </div>
-                            <Button
-                                type="submit"
-                                className="loginBtn"
-                                variant="contained"
-                                fullWidth
-                                onClick={() => router.push('/maps')}
-                            >
-                                {loading ? (
-                                    <CircularProgress color="inherit" size={"1rem"} />
-                                ) : (
-                                    "Sign In"
-                                )}
-                            </Button>
                         </div>
                     </div>
-                </div>
-                {/* </form> */}
+                </form>
             </div>
         </div>
     );

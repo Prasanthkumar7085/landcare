@@ -1,10 +1,13 @@
 import Maps from "@/components/Maps";
+import { Suspense } from "react";
 
 const MapsPage = () => {
 
     return (
         <div>
-            <Maps />
+            <Suspense>
+                <Maps />
+            </Suspense>
         </div>
     );
 }

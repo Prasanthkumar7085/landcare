@@ -3,11 +3,13 @@
   left: 0 !important;
   padding-left: 15px !important;
 }
+
 @mixin last-child-sticky {
   position: sticky !important;
   right: 0 !important;
   padding-left: 15px !important;
 }
+
 $colorTableHeader: #e6f6ee;
 $headerTextColor: #545961;
 $bodyTextColor: #24282d;
@@ -24,9 +26,11 @@ $inputBorderColor: #9c9c9c;
     border-radius: 8px;
     background: #fff;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.07);
+
     .table {
       border-collapse: collapse !important;
       width: 100%;
+
       .thead {
         height: 32px;
         position: sticky;
@@ -61,7 +65,9 @@ $inputBorderColor: #9c9c9c;
               overflow: hidden;
               @include last-child-sticky;
             }
+
             cursor: default !important;
+
             img {
               cursor: pointer;
             }
@@ -79,9 +85,11 @@ $inputBorderColor: #9c9c9c;
             background-color: $whiteColor !important;
             font-weight: 400;
             color: $blackColor;
+
             &:first-child {
               @include first-child-sticky;
             }
+
             &:last-child {
               @include last-child-sticky();
             }
@@ -93,6 +101,7 @@ $inputBorderColor: #9c9c9c;
               align-items: center;
             }
           }
+
           &:hover {
             .cell {
               background-color: $whiteColor !important;
@@ -108,10 +117,12 @@ $inputBorderColor: #9c9c9c;
     padding-right: 0;
   }
 }
+
 .tablePagenationBlock {
   padding: 0.625rem 0.625rem 0.625rem 0.9375rem !important;
   box-shadow: none !important;
   border: 1px solid #efefef !important;
+
   .tablePagination {
     display: flex !important;
     align-items: center !important;
@@ -126,12 +137,15 @@ $inputBorderColor: #9c9c9c;
       letter-spacing: 0;
       font-weight: 500;
     }
+
     .label {
       margin-right: 10px;
     }
+
     .rowPerPage {
       display: flex;
       align-items: center;
+
       .selectComponent {
         font-family: $fontPrimary;
         border: 1px solid $inputBorderColor;
@@ -153,6 +167,7 @@ $inputBorderColor: #9c9c9c;
         border: 0;
       }
     }
+
     .totalCount {
       font-size: clamp(12px, 0.625vw, 14px);
       font-family: $fontPrimary;

@@ -1,9 +1,10 @@
+import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
 import { $fetch } from "@/lib/fetch";
 import { handleAPIErrorResponse } from "@/lib/httpErrorHandler";
 
-export const getAllListMapsAPI = async () => {
+export const getAllListMapsAPI = async (params: Partial<ListMapsApiProps>) => {
     try {
-        const { success, data } = await $fetch.get("/6698b3bfacd3cb34a867ba11");
+        const { success, data } = await $fetch.get("/api/v1.0/maps", params);
         if (!success) {
             return handleAPIErrorResponse(data);
         }
