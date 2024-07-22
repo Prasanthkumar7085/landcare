@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { MarkersDataServiceProvider } from "../services/markersDataServiceProvider";
-import { MAP_NOT_FOUND, MARKER_CREATED, MARKER_DELETED, MARKER_FETCHED, MARKER_NOT_FOUND_WITH_MAP, MARKER_TITLE_EXISTS, MARKER_UPDATED, MARKERS_FETCHED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
+import { DUPLICATED_MARKER_TITLE, MAP_NOT_FOUND, MARKER_CREATED, MARKER_DELETED, MARKER_FETCHED, MARKER_NOT_FOUND_WITH_MAP, MARKER_TITLE_EXISTS, MARKER_UPDATED, MARKERS_FETCHED, MARKERS_IMPORTED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
 import { ResourceAlreadyExistsError } from "../helpers/exceptions";
 import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
 import filterHelper from "../helpers/filterHelper";
@@ -42,6 +42,42 @@ export class MarkersController {
             return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
         }
 
+    }
+
+    async addBulkMarkers(reqData: any, params: any) {
+        try {
+
+            reqData.map((map: any) => {
+                map.map_id = params.id
+            })
+
+            const mapData = await mapsDataServiceProvider.findById(params.id);
+            if (!mapData) {
+                return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
+            }
+
+            for (const marker of reqData) {
+                const duplicatedMarkers = reqData.filter((item: any) => item.title === marker.title);
+                if(duplicatedMarkers.length > 1) {
+                    throw new ResourceAlreadyExistsError('title', DUPLICATED_MARKER_TITLE);
+                }
+                const existedMarker = await markersDataServiceProvider.findByTitle(marker.title);
+                if (existedMarker) {
+                    throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
+                }
+            }
+            
+            await markersDataServiceProvider.create(reqData);
+
+            return ResponseHelper.sendSuccessResponse(200, MARKERS_IMPORTED);
+
+        } catch (error: any) {
+            console.log(error);
+            if (error.validation_error) {
+                return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
+            }
+            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+        }
     }
 
     async getOne(req: NextRequest, params: any) {
