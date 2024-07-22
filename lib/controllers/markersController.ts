@@ -44,9 +44,10 @@ export class MarkersController {
 
     }
 
-    async addBulkMarkers(reqData: any, params: any) {
+    async addBulkMarkers(req: NextRequest, params: any) {
         try {
 
+            let reqData = await req.json();
             reqData.map((map: any) => {
                 map.map_id = params.id
             })
@@ -56,17 +57,27 @@ export class MarkersController {
                 return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
 
-            for (const marker of reqData) {
-                const duplicatedMarkers = reqData.filter((item: any) => item.title === marker.title);
-                if(duplicatedMarkers.length > 1) {
-                    throw new ResourceAlreadyExistsError('title', DUPLICATED_MARKER_TITLE);
-                }
-                const existedMarker = await markersDataServiceProvider.findByTitle(marker.title);
-                if (existedMarker) {
-                    throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
+            const titles = reqData.map((marker: any) => marker.title);
+            //Check for duplicated titles within reqData
+            const titleCounts = titles.reduce((acc: any, title: string) => {
+                acc[title] = (acc[title] || 0) + 1;
+                return acc;
+            }, {});
+
+            const duplicatedTitles = Object.keys(titleCounts).filter(title => titleCounts[title] > 1);
+            if (duplicatedTitles.length > 0) {
+                throw new ResourceAlreadyExistsError('title', `${DUPLICATED_MARKER_TITLE}: ${duplicatedTitles.join(', ')}`);
+            }
+
+            const existingMarkers = await markersDataServiceProvider.findByTitles(titles);
+            if (existingMarkers.length > 0) {
+                // Extract existing titles
+                const existingTitles = existingMarkers.map(marker => marker.title);
+                if (existingTitles.length > 0) {
+                    throw new ResourceAlreadyExistsError('title', `Titles already exist: ${existingTitles.join(', ')}`);
                 }
             }
-            
+
             await markersDataServiceProvider.create(reqData);
 
             return ResponseHelper.sendSuccessResponse(200, MARKERS_IMPORTED);

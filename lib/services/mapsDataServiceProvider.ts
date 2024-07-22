@@ -1,6 +1,6 @@
-import { eq, ilike, sql,and, ne } from "drizzle-orm";
+import { eq,sql,and, ne} from "drizzle-orm";
 import { db } from "../database";
-import { maps } from "../schemas/maps";
+import { lower, maps } from "../schemas/maps";
 
 
 export class MapsDataServiceProvider {
@@ -13,7 +13,7 @@ export class MapsDataServiceProvider {
         const mapData = await db.select()
             .from(maps)
             .where(and(
-                ilike(maps.title, `%${title}%`),
+                eq(lower(maps.title), title.toLowerCase()),
                 ne(maps.status, 'archived')
             ));
         return mapData[0];
@@ -62,7 +62,7 @@ export class MapsDataServiceProvider {
         const mapData = await db.select()
             .from(maps)
             .where(and(
-                ilike(maps.title, `%${title}%`),
+                eq(lower(maps.title), title.toLowerCase()),
                 ne(maps.id, id),
                 ne(maps.status, 'archived')
             ))
@@ -73,7 +73,7 @@ export class MapsDataServiceProvider {
         const mapData = await db.select()
             .from(maps)
             .where(and(
-                ilike(maps.slug, `%${slug}%`),
+                eq(lower(maps.slug), slug.toLowerCase()),
                 ne(maps.id, id),
             ))
         return mapData[0];

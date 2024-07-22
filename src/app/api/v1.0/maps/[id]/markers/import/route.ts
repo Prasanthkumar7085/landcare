@@ -8,13 +8,13 @@ const markersController = new MarkersController();
 
 export async function POST(req: NextRequest, { params }: any) {
     // Validate request
-    const reqData = await req.json();
-    for (const marker of reqData) {
-        const validationErrors = await validate(AddMarkerSchema, marker);
-        if (validationErrors) {
-            return ResponseHelper.sendValidationErrorResponse(422, 'Validation Error', validationErrors);
-        }
-    }
+    // const reqData = await req.json();
+    // for (const marker of reqData) {
+    //     const validationErrors = await validate(AddMarkerSchema, marker);
+    //     if (validationErrors) {
+    //         return ResponseHelper.sendValidationErrorResponse(422, 'Validation Error', validationErrors);
+    //     }
+    // }
     
-    return markersController.addBulkMarkers(reqData, params);
+    return markersController.addBulkMarkers(req, params);
 }

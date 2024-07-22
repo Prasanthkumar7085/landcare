@@ -19,12 +19,13 @@ export class MapsController {
             reqData.slug = makeSlug(reqData.title);
 
             const existedMap = await mapsDataServiceProvider.findMapByTitle(reqData.title);
+            console.log(existedMap);
             if (existedMap) {
                 throw new ResourceAlreadyExistsError('title', MAP_TITLE_EXISTS);
             }
 
-            const reponseData = await mapsDataServiceProvider.create(reqData);
-            return ResponseHelper.sendSuccessResponse(200, MAP_CREATED, reponseData[0]);
+            // const reponseData = await mapsDataServiceProvider.create(reqData);
+            return ResponseHelper.sendSuccessResponse(200, MAP_CREATED, "reponseData[0]");
 
         } catch (error: any) {
             console.log(error);

@@ -1,18 +1,33 @@
 import { db } from "../database";
 import filterHelper from "../helpers/filterHelper";
 import { mapMarkers } from "../schemas/mapMarkers";
-import { ilike, eq, and, sql, desc, ne } from "drizzle-orm";
+import { ilike, eq, and, sql, desc, ne, inArray } from "drizzle-orm";
+import { lower } from "../schemas/maps";
 
 
 export class MarkersDataServiceProvider {
-    
+
     async create(data: any) {
         return await db.insert(mapMarkers).values(data).returning()
     }
 
     async findByTitle(title: string) {
-        const markerData = await db.select().from(mapMarkers).where(ilike(mapMarkers.title, `%${title}%`));
+        const markerData = await db.select()
+            .from(mapMarkers)
+            .where(eq(lower(mapMarkers.title), title.toLowerCase()));
         return markerData[0];
+    }
+
+    async findByTitles(titles: string[]) {
+        if (titles.length === 0) {
+            return [];
+        } else {
+            titles = titles.map(title => title.toLowerCase());
+            const markerData = await db.select()
+                .from(mapMarkers)
+                .where(inArray(lower(mapMarkers.title), titles));
+            return markerData;
+        }
     }
 
     async findByIdAndMapId(id: number, mapId: number) {
@@ -22,8 +37,8 @@ export class MarkersDataServiceProvider {
         return markerData[0];
     }
 
-    async findAllByMapId(page: number, limit: number,mapId: number,filters:any) {
-        let queryData:any = db.select({
+    async findAllByMapId(page: number, limit: number, mapId: number, filters: any) {
+        let queryData: any = db.select({
             id: mapMarkers.id,
             title: mapMarkers.title,
             description: mapMarkers.description,
@@ -42,19 +57,19 @@ export class MarkersDataServiceProvider {
             .offset(limit * (page - 1))
         queryData = filterHelper.markers(queryData, filters);
         return await queryData;
-        
+
     }
 
-    async findMarkersCount(query: any,mapId:number) {
-        let countQuery :any= db.select({ count: sql`COUNT(*)` })
+    async findMarkersCount(query: any, mapId: number) {
+        let countQuery: any = db.select({ count: sql`COUNT(*)` })
             .from(mapMarkers)
             .where((eq(mapMarkers.map_id, mapId)))
         countQuery = filterHelper.markers(countQuery, query);
         return await countQuery;
-        
+
     }
 
-    async findByTitleAndId(title: string, id: number,mapId: number) {
+    async findByTitleAndId(title: string, id: number, mapId: number) {
         const markerData = await db.select()
             .from(mapMarkers)
             .where(and(
