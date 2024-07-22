@@ -1,7 +1,7 @@
 
-import { index, pgTable, pgEnum, serial, timestamp, varchar, text, jsonb, integer } from 'drizzle-orm/pg-core';
+import { index, pgTable, pgEnum, serial, timestamp, varchar, text, jsonb, integer, AnyPgColumn } from 'drizzle-orm/pg-core';
 
-import { sql } from 'drizzle-orm';
+import { SQL, sql } from 'drizzle-orm';
 import { users } from './users';
 export const statusEnum = pgEnum('status', ['draft', 'active', 'publish', 'inactive', 'archived']);
 
@@ -32,3 +32,6 @@ export const maps = pgTable("maps", {
         };
     });
 
+export function lower(title: AnyPgColumn): SQL {
+    return sql`lower(${title})`;
+}
