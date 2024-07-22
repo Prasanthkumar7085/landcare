@@ -11,6 +11,7 @@ import { addMapWithCordinatesAPI } from "@/services/maps";
 import { useSelector } from "react-redux";
 import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const AddMapDrawer = ({
   addDrawerOpen,
@@ -36,6 +37,7 @@ const AddMapDrawer = ({
     try {
       const response = await addMapWithCordinatesAPI(body);
       if (response?.status == 200 || response?.status == 201) {
+        toast.success("Map added succesfully");
         router.push(`/view-map/${response?.data?.id}`);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);

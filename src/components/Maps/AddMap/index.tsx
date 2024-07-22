@@ -2,7 +2,7 @@ import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
 import { Button, Tooltip } from "@mui/material";
 import GoogleMapReact from "google-map-react";
 import Image from "next/image";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddMapDrawer from "./AddMapDrawer";
 import AddPolygonDialog from "./AddPolygonDialog";
@@ -229,6 +229,9 @@ const AddPolygon = () => {
     }
   };
 
+  useEffect(() => {
+    dispatch(storeEditPolygonCoords([]));
+  }, []);
   return (
     <div className={styles.markersPageWeb}>
       {renderField == false ? (

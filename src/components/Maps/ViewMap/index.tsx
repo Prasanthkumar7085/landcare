@@ -13,6 +13,7 @@ const ViewGoogleMap = () => {
   const mapRef: any = useRef(null);
   const infoWindowRef: any = useRef(null);
   const placesService: any = useRef(null);
+  const drawingManagerRef = useRef(null);
 
   const [renderField, setRenderField] = useState(false);
   const [mapType, setMapType] = useState("hybrid");
@@ -21,6 +22,7 @@ const ViewGoogleMap = () => {
   const [viewMapDrawerOpen, setViewMapDrawerOpen] = useState<any>(true);
   const [mapDetails, setMapDetails] = useState<any>();
   const [polygonCoords, setPolygonCoords] = useState<any>([]);
+  const [markers, setMarkers] = useState<any[]>([]);
 
   const handleApiLoaded = (map: any, maps: any) => {
     setMap(map);
@@ -34,6 +36,19 @@ const ViewGoogleMap = () => {
       map,
       mapRef,
     });
+    const drawingManager = new maps.drawing.DrawingManager({
+      drawingControl: false,
+      drawingControlOptions: {
+        position: maps.ControlPosition.TOP_RIGHT,
+        drawingModes: [maps.drawing.OverlayType.POLYGON],
+      },
+    });
+
+    drawingManager.setMap(map);
+    drawingManagerRef.current = drawingManager;
+
+    drawingManager.setMap(map);
+    drawingManagerRef.current = drawingManager;
     const newPolygon = new maps.Polygon({
       paths: polygonCoords,
       strokeColor: "#FF0000",
@@ -46,20 +61,28 @@ const ViewGoogleMap = () => {
       map: map,
     });
 
-    maps.event.addListener(newPolygon, "mouseup", () => {
-      const updatedCoords = newPolygon
-        .getPath()
-        .getArray()
-        .map((coord: any) => ({ lat: coord.lat(), lng: coord.lng() }));
-      setPolygonCoords(updatedCoords);
-    });
-
+    // maps.event.addListener(map, "click", (event: any) => {
+    //   addMarker(event.latLng);
+    // });
     // Set the polygon on the map
     setRenderField(true);
     setTimeout(() => {
       setRenderField(false);
     }, 0.1);
+    centerToPolygon(mapDetails?.geo_coordinates);
+
     newPolygon.setMap(map);
+  };
+
+  const centerToPolygon = (value: any) => {
+    if (value?.length > 0) {
+      const indiaCenter = {
+        lat: +value?.[0][0],
+        lng: +value?.[0][1],
+      };
+      map.setCenter(indiaCenter);
+      map.setZoom(17);
+    }
   };
 
   const getSingleMapDetails = async () => {
@@ -77,7 +100,7 @@ const ViewGoogleMap = () => {
         setTimeout(() => {
           setRenderField(false);
         }, 0.1);
-        console.log(updatedArray, "Fwdii399392");
+
         setPolygonCoords(updatedArray);
       }
     } catch (err) {
@@ -85,13 +108,31 @@ const ViewGoogleMap = () => {
     }
   };
 
+  // const addMarker = (location: any,) => {
+  //   const marker = new googleMaps.Marker({
+  //     position: location,
+  //     map: mapRef.current,
+  //     draggable: true,
+  //   });
+
+  //   // Add marker to the markers state array
+  //   setMarkers([...markers, marker]);
+
+  //   // Example: Add a click listener to remove the marker
+  //   marker.addListener("click", () => {
+  //     marker.setMap(null); // Remove marker from map
+  //     const updatedMarkers = markers.filter((m) => m !== marker);
+  //     setMarkers(updatedMarkers);
+  //   });
+  // };
+
   useEffect(() => {
     getSingleMapDetails();
   }, []);
 
   return (
     <div className={styles.markersPageWeb}>
-      {renderField == false ? (
+      {mapDetails?.id ? (
         <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
           <GoogleMapComponent
             mapType={mapType}
