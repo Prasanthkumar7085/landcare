@@ -16,7 +16,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          {pathname == "/" || pathname?.includes("add-map") ? (
+          {pathname == "/" ||
+          pathname?.includes("add-map") ||
+          pathname?.includes("view-map") ? (
             children
           ) : (
             <Navbar>{children}</Navbar>

@@ -7,20 +7,43 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { addMapWithCordinatesAPI } from "@/services/maps";
+import { useSelector } from "react-redux";
+import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
+import { useRouter } from "next/navigation";
 
 const AddMapDrawer = ({
   addDrawerOpen,
   setAddDrawerOpen,
   clearAllPoints,
+  closeDrawing,
 }: any) => {
-  const [open, setOpen] = React.useState(false);
-
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
+  const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
+  const router = useRouter();
   const [mapName, setMapName] = useState<any>();
   const [description, setDescription] = useState<any>();
+  const [errorMessages, setErrorMessages] = useState<any>([]);
 
+  const addMapWithCordinates = async () => {
+    let body = {
+      title: mapName ? mapName : "",
+      description: description ? description : "",
+      status: "active",
+      geo_type: "polygon",
+      geo_coordinates: polygonCoords.map((obj: any) => Object.values(obj)),
+      geo_zoom: 14,
+    };
+    try {
+      const response = await addMapWithCordinatesAPI(body);
+      if (response?.status == 200 || response?.status == 201) {
+        router.push(`/view-map/${response?.data?.id}`);
+      } else if (response?.status == 422) {
+        setErrorMessages(response?.error_data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
   return (
     <div>
       <Drawer
@@ -54,8 +77,8 @@ const AddMapDrawer = ({
             <CloseIcon />
           </IconButton>
         </div>
-
         <hr></hr>
+
         <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label>Map Name</label>
@@ -66,6 +89,7 @@ const AddMapDrawer = ({
                 setMapName(e.target.value);
               }}
             ></TextField>
+            <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label>Map Description</label>
@@ -90,12 +114,16 @@ const AddMapDrawer = ({
               onClick={() => {
                 setAddDrawerOpen(false);
                 clearAllPoints();
+                closeDrawing();
               }}
             >
               Cancel
             </Button>
 
-            <Button sx={{ background: "#769f3f", color: "white" }}>
+            <Button
+              sx={{ background: "#769f3f", color: "white" }}
+              onClick={() => addMapWithCordinates()}
+            >
               Save Map
             </Button>
           </div>

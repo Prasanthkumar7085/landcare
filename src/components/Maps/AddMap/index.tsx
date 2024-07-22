@@ -1,14 +1,16 @@
-import GoogleMapReact from "google-map-react";
-import styles from "./google-map.module.css";
-import React, { useEffect, useRef, useState } from "react";
-import { addCustomControl } from "./CustomControls/NavigationOnMaps";
-import { MapTypeOptions } from "./CustomControls/MapTypeOptions";
-import { useDispatch, useSelector } from "react-redux";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
-import AddPolygonDialog from "./AddPolygonDialog";
-import AddMapDrawer from "./AddMapDrawer";
 import { Button, Tooltip } from "@mui/material";
+import GoogleMapReact from "google-map-react";
 import Image from "next/image";
+import React, { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import AddMapDrawer from "./AddMapDrawer";
+import AddPolygonDialog from "./AddPolygonDialog";
+import { MapTypeOptions } from "./CustomControls/MapTypeOptions";
+import { addCustomControl } from "./CustomControls/NavigationOnMaps";
+import styles from "./google-map.module.css";
+import GoogleMapComponent from "@/components/Core/GoogleMap";
+import { SearchAutoComplete } from "./CustomControls/SearchAutoComplete";
 
 const AddPolygon = () => {
   const mapRef: any = useRef(null);
@@ -46,90 +48,18 @@ const AddPolygon = () => {
     setAddPolygonOpen(false);
   }
 
-  const centerMapToPlace = (place: any) => {
-    if (mapRef.current && place?.geometry && place.geometry.location) {
-      const location = place.geometry.location;
-      if (
-        location &&
-        typeof location.lat === "function" &&
-        typeof location.lng === "function"
-      ) {
-        const latLng = new google.maps.LatLng(location.lat(), location.lng());
-        mapRef.current.panTo(latLng);
-        mapRef.current.setZoom(15);
-      } else {
-        console.error("Invalid location object");
-      }
-    }
-  };
-
   const handleApiLoaded = (map: any, maps: any) => {
     setMap(map);
     setGoogleMaps(maps);
     mapRef.current = map;
     addCustomControl({ map, maps, mapRef, infoWindowRef });
     MapTypeOptions(map, maps, setMapType);
-
-    placesService.current = new maps.places.PlacesService(map);
-
-    const customAutocompleteDiv = document.createElement("div");
-    customAutocompleteDiv.style.position = "relative";
-    customAutocompleteDiv.style.width = "30%";
-    const searchInput = document.createElement("input");
-    searchInput.setAttribute("id", "searchInput");
-    searchInput.setAttribute("placeholder", "Search for a place...");
-    searchInput.setAttribute("value", "");
-    searchInput.style.marginTop = "10px";
-    searchInput.style.marginLeft = "2.5px";
-    searchInput.style.padding = "13px";
-    searchInput.style.width = "calc(100% - 32px)";
-
-    searchInput.style.borderRadius = "10px";
-    searchInput.style.overflow = "hidden";
-    searchInput.style.textOverflow = "ellipsis";
-
-    // Create a custom icon
-    const icon = document.createElement("div");
-    icon.innerHTML = "&#10060;";
-    icon.style.position = "absolute";
-    icon.style.top = "61%";
-    icon.style.left = "87%";
-    icon.style.transform = "translateY(-50%)";
-    icon.style.padding = "10px";
-    icon.style.cursor = "pointer";
-    icon.style.display = searchInput.value ? "block" : "none";
-
-    // Attach click event to the icon
-    icon.addEventListener("click", () => {
-      searchInput.value = "";
-      icon.style.display = "none";
+    SearchAutoComplete({
+      placesService,
+      maps,
+      map,
+      mapRef,
     });
-
-    searchInput.addEventListener("input", () => {
-      icon.style.display = searchInput.value ? "block" : "none";
-    });
-
-    customAutocompleteDiv.appendChild(searchInput);
-    customAutocompleteDiv.appendChild(icon);
-
-    map.controls[maps.ControlPosition.TOP_LEFT].push(customAutocompleteDiv);
-    const autocomplete = new maps.places.Autocomplete(searchInput, {
-      placeAutocompleteOptions: { strictBounds: false },
-    });
-
-    const onPlaceChanged = () => {
-      const place = autocomplete.getPlace();
-      if (!place.geometry || !place.geometry.location) {
-        console.error("No place data available");
-        return;
-      }
-
-      let location = place.formatted_address.split(",");
-      setSearchedPlaces([place]);
-      centerMapToPlace([place]);
-    };
-
-    autocomplete.addListener("place_changed", onPlaceChanged);
 
     const drawingManager = new maps.drawing.DrawingManager({
       drawingControl: polygonCoords?.length === 0 ? true : false,
@@ -207,8 +137,6 @@ const AddPolygon = () => {
       dispatch(storeEditPolygonCoords(updatedCoords));
     });
 
-    // Set the polygon on the map
-
     newPolygon.setMap(map);
     setPolygon(newPolygon);
 
@@ -253,7 +181,7 @@ const AddPolygon = () => {
   const undoLastPoint = () => {
     if (googleMaps && polygon) {
       const updatedCoords = [...polygonCoords];
-      updatedCoords.pop(); // Remove the last point from the copied coordinates
+      updatedCoords.pop();
       dispatch(storeEditPolygonCoords(updatedCoords));
 
       const path = updatedCoords.map(
@@ -305,25 +233,10 @@ const AddPolygon = () => {
     <div className={styles.markersPageWeb}>
       {renderField == false ? (
         <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
-          <GoogleMapReact
-            bootstrapURLKeys={{
-              key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
-              libraries: ["drawing", "places"],
-            }}
-            defaultCenter={{
-              lat: 20.5937,
-              lng: 78.9629,
-            }}
-            options={{
-              mapTypeId: mapType,
-              fullscreenControl: false,
-              rotateControl: true,
-              streetViewControl: true,
-            }}
-            defaultZoom={6}
-            yesIWantToUseGoogleMapApiInternals
-            onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-          ></GoogleMapReact>
+          <GoogleMapComponent
+            mapType={mapType}
+            handleApiLoaded={handleApiLoaded}
+          />
 
           {polygonCoords?.length === 0 ? (
             ""
@@ -401,6 +314,7 @@ const AddPolygon = () => {
         addDrawerOpen={addDrawerOpen}
         setAddDrawerOpen={setAddDrawerOpen}
         clearAllPoints={clearAllPoints}
+        closeDrawing={closeDrawing}
       />
     </div>
   );
