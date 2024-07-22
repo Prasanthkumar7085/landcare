@@ -3,12 +3,10 @@ import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
 import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
 import { getAllListMapsAPI } from "@/services/maps";
 import {
-  Backdrop,
   Box,
   Button,
   Card,
   CardContent,
-  CircularProgress,
   Grid,
   Typography,
 } from "@mui/material";
@@ -20,6 +18,7 @@ import { Toaster } from "sonner";
 import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
 import { datePipe } from "@/lib/helpers/datePipe";
+import LoadingComponent from "../Core/LoadingComponent";
 
 const Maps = () => {
   const useParam = useSearchParams();
@@ -145,12 +144,7 @@ const Maps = () => {
           ""
         )}
       </Box>
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <LoadingComponent loading={loading} />
       <Toaster richColors closeButton position="top-right" />
     </div>
   );

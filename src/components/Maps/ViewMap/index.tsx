@@ -7,6 +7,7 @@ import { SearchAutoComplete } from "../AddMap/CustomControls/SearchAutoComplete"
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
 import { getSingleMapDetailsAPI } from "@/services/maps";
 import { useParams } from "next/navigation";
+import LoadingComponent from "@/components/Core/LoadingComponent";
 
 const ViewGoogleMap = () => {
   const { id } = useParams();
@@ -15,6 +16,7 @@ const ViewGoogleMap = () => {
   const placesService: any = useRef(null);
   const drawingManagerRef = useRef(null);
 
+  const [loading, setLoading] = useState(false);
   const [renderField, setRenderField] = useState(false);
   const [mapType, setMapType] = useState("hybrid");
   const [map, setMap] = useState<any>(null);
@@ -86,6 +88,7 @@ const ViewGoogleMap = () => {
   };
 
   const getSingleMapDetails = async () => {
+    setLoading(true);
     try {
       const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
@@ -105,6 +108,8 @@ const ViewGoogleMap = () => {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -143,6 +148,7 @@ const ViewGoogleMap = () => {
         ""
       )}
       <ViewMapDetailsDrawer mapDetails={mapDetails} />
+      <LoadingComponent loading={loading} />
     </div>
   );
 };
