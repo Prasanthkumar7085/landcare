@@ -14,15 +14,10 @@
   flex-direction: row;
   align-items: center;
 
-  .withBackGrp {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
 
   .pagetitle {
     margin: 0;
-    color: #000;
+    // color: #000;
     font-family: $fontPrimary;
     font-size: clamp(14.5px, 0.93vw, 20px);
     font-weight: 500;
@@ -31,107 +26,44 @@
     ;
   }
 
-  .navActions {
+  .profileGrp {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    justify-content: flex-end;
-    gap: 1rem;
-    width: 80%;
+    justify-content: center;
+    gap: 6px;
+    margin-left: 0.5rem;
 
-    .defaultTextFeild {
-      width: 250px;
-
-      .MuiInputBase-root {
-        background: $whiteColor;
-        color: #6a718599;
-        font-weight: 400;
-        font-size: 13.5px;
-        box-sizing: border-box;
-        border-radius: 3;
-        height: 30px;
-        border: 1px solid $textFeildStroke;
-        font-family: $fontPrimary;
-        font-size: clamp(0.75em, 0.72vw, 1.1em);
-
-        fieldset {
-          border: 0 !important;
-        }
-      }
-    }
-
-    .defaultSelect {
-      width: 150px;
-
-      .MuiSelect-select {
-        width: 100%;
-        font-family: $fontPrimary;
-        padding: 3px 11px !important;
-        font-size: clamp(0.75em, 0.72vw, 1.1em);
-        border: 1px solid $textFeildStroke;
-        border-radius: 4px;
-        color: $blackColor;
-      }
-
-      .MuiSvgIcon-root {
-        width: 0.9em;
-      }
-
-      fieldset {
-        border: 0;
-        border-radius: 4px;
-      }
-    }
-
-    .addUserBtn {
-      border-radius: 4px;
-      background: $primaryColor;
-      text-transform: capitalize;
-      color: $whiteColor;
-      font-family: $fontPrimary;
-      font-size: clamp(11px, 0.72vw, 15px);
-      font-weight: 500;
-      padding: 5px 10px;
-      box-shadow: none;
-    }
-
-    .profileGrp {
+    .profileName {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: flex-start;
-      justify-content: center;
-      gap: 6px;
-      margin-left: 0.5rem;
+      justify-content: flex-start;
+      padding: 3px 0;
+      gap: 4px;
 
-      .profileName {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        padding: 3px 0;
-        gap: 4px;
+      .profile {
+        color: #252525;
+        letter-spacing: 0;
+        font-family: $fontPrimary;
+        font-size: clamp(12px, 0.72vw, 15px);
+        font-weight: 400;
+        line-height: 100%;
+        margin: 0;
+      }
 
-        .profile {
-          color: #252525;
-          letter-spacing: 0;
-          font-family: $fontPrimary;
-          font-size: clamp(12px, 0.72vw, 15px);
-          font-weight: 400;
-          line-height: 100%;
-          margin: 0;
-        }
-
-        .designation {
-          color: $greenColor;
-          font-family: $fontPrimary;
-          font-size: clamp(10px, 0.625vw, 14px);
-          font-weight: 400;
-          line-height: 100%;
-          margin: 0;
-          text-transform: capitalize;
-        }
+      .designation {
+        color: $greenColor;
+        font-family: $fontPrimary;
+        font-size: clamp(10px, 0.625vw, 14px);
+        font-weight: 400;
+        line-height: 100%;
+        margin: 0;
+        text-transform: capitalize;
       }
     }
   }
+
 }
 
 .menuItem {

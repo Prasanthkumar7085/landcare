@@ -11,6 +11,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeUserDetails } from '@/redux/Modules/userlogin';
 import { Menu, MenuItem } from '@mui/material';
+import { capitalizeFirstLetter, capitalizeFirstTwoWords } from '@/lib/helpers/nameFormate';
 
 interface pageProps {
     children: React.ReactNode;
@@ -43,63 +44,62 @@ const Navbar: React.FC<pageProps> = ({ children }) => {
 
     return (
         <>
-            <AppBar position='sticky' sx={{ backgroundColor: 'white', top: "0" }}>
-                <Container maxWidth="xl">
-                    <Toolbar disableGutters>
-                        <Image
-                            alt=""
-                            src="/group .svg"
-                            height={60}
-                            width={70}
-                        />
-                        <Image
-                            alt=""
-                            src="/Vector.svg"
-                            height={60}
-                            width={70}
-                        />
-
-                        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-                            <p style={{
-                                color: pathname === "/maps" ? 'red' : 'black',
-                                fontWeight: pathname === "/maps" ? 'bold' : 'normal',
-                                cursor: 'pointer'
-                            }} onClick={() => router.push('/maps')}>
-                                Maps
-                            </p>
-                        </Box>
-
-                        <Box sx={{ flexGrow: 0 }}>
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar sx={{ bgcolor: "orange" }}>
-                                    {userDetails?.name?.slice(0, 1).toUpperCase()}
-                                </Avatar>
-
-                            </IconButton>
-                            <Menu
-                                sx={{ mt: '45px' }}
-                                id="menu-appbar"
-                                anchorEl={anchorElUser}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorElUser)}
-                                onClose={handleCloseUserMenu}
-                            >
-                                <MenuItem className="menuItem" onClick={logout}>
-                                    Log Out
-                                </MenuItem>
-                            </Menu>
-                        </Box>
-                    </Toolbar>
-                </Container>
-            </AppBar>
+            <div className='headnav'>
+                <div className="logoBlock">
+                    <Image
+                        alt=""
+                        src="/group .svg"
+                        height={60}
+                        width={70}
+                    />
+                    <Image
+                        alt=""
+                        src="/Vector.svg"
+                        height={60}
+                        width={70}
+                    />
+                </div>
+                <p className='pagetitle' style={{
+                    color: pathname === "/maps" ? 'red' : 'black',
+                    fontWeight: pathname === "/maps" ? 'bold' : 'normal',
+                    cursor: 'pointer'
+                }} onClick={() => router.push('/maps')}>
+                    Maps
+                </p>
+                <div className="profileGrp">
+                    <div className="profileName">
+                        <h4 className="profile">{capitalizeFirstTwoWords(userDetails?.name)}</h4>
+                        <p className="designation">
+                            {userDetails?.user_type ? capitalizeFirstLetter(userDetails.user_type) : ''}
+                        </p>
+                    </div>
+                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                        <Avatar sx={{ bgcolor: "orange" }}>
+                            {userDetails?.name?.slice(0, 1).toUpperCase()}
+                        </Avatar>
+                    </IconButton>
+                    <Menu
+                        sx={{ mt: '45px' }}
+                        id="menu-appbar"
+                        anchorEl={anchorElUser}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        open={Boolean(anchorElUser)}
+                        onClose={handleCloseUserMenu}
+                    >
+                        <MenuItem className="menuItem" onClick={logout}>
+                            Log Out
+                        </MenuItem>
+                    </Menu>
+                </div>
+            </div>
             <div>
                 {children}
             </div>
