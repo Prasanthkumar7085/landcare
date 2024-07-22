@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
+import { datePipe } from "@/lib/helpers/datePipe";
 
 const Maps = () => {
     const useParam = useSearchParams();
@@ -100,7 +101,7 @@ const Maps = () => {
                                         {item?.description || "--"}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        {dayjs(item?.created_at).format("MMMM D, YYYY h:mm A") || "--"}
+                                        {datePipe(item?.created_at) || "--"}
                                     </Typography>
                                     <div style={{ display: 'flex', justifyContent: "flex-end" }}>
                                         <Button
