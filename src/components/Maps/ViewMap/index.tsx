@@ -15,7 +15,7 @@ const ViewGoogleMap = () => {
   const placesService: any = useRef(null);
   const drawingManagerRef = useRef(null);
 
-  const [renderField, setRenderField] = useState(false);
+  const [renderField, setRenderField] = useState(true);
   const [mapType, setMapType] = useState("hybrid");
   const [map, setMap] = useState<any>(null);
   const [googleMaps, setGoogleMaps] = useState<any>(null);
@@ -65,9 +65,9 @@ const ViewGoogleMap = () => {
     //   addMarker(event.latLng);
     // });
     // Set the polygon on the map
-    setRenderField(true);
+    setRenderField(false);
     setTimeout(() => {
-      setRenderField(false);
+      setRenderField(true);
     }, 0.1);
     centerToPolygon(mapDetails?.geo_coordinates);
 
@@ -96,9 +96,9 @@ const ViewGoogleMap = () => {
             lng: item[1],
           };
         });
-        setRenderField(true);
+        setRenderField(false);
         setTimeout(() => {
-          setRenderField(false);
+          setRenderField(true);
         }, 0.1);
 
         setPolygonCoords(updatedArray);
