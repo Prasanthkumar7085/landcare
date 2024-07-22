@@ -7,8 +7,8 @@ import Toolbar from '@mui/material/Toolbar';
 import * as React from 'react';
 import Cookies from "js-cookie";
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
+import { usePathname, useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
 import { removeUserDetails } from '@/redux/Modules/userlogin';
 import { Menu, MenuItem } from '@mui/material';
 
@@ -18,7 +18,12 @@ interface pageProps {
 
 const Navbar: React.FC<pageProps> = ({ children }) => {
     const router = useRouter();
+    const pathname = usePathname();
     const dispatch = useDispatch();
+
+    const userDetails = useSelector(
+        (state: any) => state.auth.user?.data?.user_details
+    );
 
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -54,16 +59,22 @@ const Navbar: React.FC<pageProps> = ({ children }) => {
                             width={70}
                         />
 
-                        <Box sx={{ flexGrow: 1, display: 'flex', textAlign: 'center', gap: "2rem" }}>
-                            <p style={{ color: 'black' }}>
+                        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+                            <p style={{
+                                color: pathname === "/maps" ? 'red' : 'black',
+                                fontWeight: pathname === "/maps" ? 'bold' : 'normal',
+                                cursor: 'pointer'
+                            }} onClick={() => router.push('/maps')}>
                                 Maps
                             </p>
                         </Box>
 
                         <Box sx={{ flexGrow: 0 }}>
-                            {/* <Tooltip title="Open settings"> */}
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <Avatar sx={{ bgcolor: "orange" }}>
+                                    {userDetails?.name?.slice(0, 1).toUpperCase()}
+                                </Avatar>
+
                             </IconButton>
                             <Menu
                                 sx={{ mt: '45px' }}
@@ -88,7 +99,6 @@ const Navbar: React.FC<pageProps> = ({ children }) => {
                         </Box>
                     </Toolbar>
                 </Container>
-
             </AppBar>
             <div>
                 {children}
