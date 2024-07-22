@@ -19,6 +19,7 @@
     "@reduxjs/toolkit": "^2.2.6",
     "@types/js-cookie": "^3.0.6",
     "bcrypt": "^5.1.1",
+    "dayjs": "^1.11.12",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.29.5",
     "google-map-react": "^2.2.1",
