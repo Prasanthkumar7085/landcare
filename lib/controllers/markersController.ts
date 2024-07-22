@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { MarkersDataServiceProvider } from "../services/markersDataServiceProvider";
-import { MAP_NOT_FOUND, MARKER_CREATED, MARKER_FETCHED, MARKER_NOT_FOUND_WITH_MAP, MARKER_TITLE_EXISTS, SOMETHING_WENT_WRONG } from "../constants/appMessages";
+import { MAP_NOT_FOUND, MARKER_CREATED, MARKER_FETCHED, MARKER_NOT_FOUND_WITH_MAP, MARKER_TITLE_EXISTS, MARKERS_FETCHED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
 import { ResourceAlreadyExistsError } from "../helpers/exceptions";
 import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
+import filterHelper from "../helpers/filterHelper";
+import paginationHelper from "../helpers/paginationHelper";
 
 const markersDataServiceProvider = new MarkersDataServiceProvider();
 const mapsDataServiceProvider = new MapsDataServiceProvider();
@@ -13,7 +15,7 @@ const mapsDataServiceProvider = new MapsDataServiceProvider();
 
 export class MarkersController {
 
-    async addMarker(reqData: any,params: any) {
+    async addMarker(reqData: any, params: any) {
 
         try {
 
@@ -22,7 +24,7 @@ export class MarkersController {
             const mapData = await mapsDataServiceProvider.findById(params.id);
             if (!mapData) {
                 return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
-            }   
+            }
 
             const existedMarker = await markersDataServiceProvider.findByTitle(reqData.title);
             if (existedMarker) {
@@ -34,6 +36,9 @@ export class MarkersController {
 
         } catch (error: any) {
             console.log(error);
+            if (error.validation_error) {
+                return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
+            }
             return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
         }
 
@@ -45,14 +50,48 @@ export class MarkersController {
             const mapData = await mapsDataServiceProvider.findById(params.id);
             if (!mapData) {
                 return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
-            }  
+            }
 
             const markerData: any = await markersDataServiceProvider.findByIdAndMapId(params.marker_id, params.id);
-            if (!markerData) {  
+            if (!markerData) {
                 return ResponseHelper.sendErrorResponse(400, MARKER_NOT_FOUND_WITH_MAP);
             }
 
             return ResponseHelper.sendSuccessResponse(200, MARKER_FETCHED, markerData);
+        } catch (error: any) {
+            console.log(error);
+            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+        }
+    }
+
+    async listMarkers(query: any, params: any) {
+        try {
+
+            const mapId = params.id;
+            const mapData = await mapsDataServiceProvider.findById(mapId);
+            if (!mapData) {
+                return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
+            }
+
+            const { page = 1, limit = 10, ...filteredQuery } = query;
+
+            const [markersData, markerCount]: any = await Promise.all([
+                markersDataServiceProvider.findAllByMapId(page, limit, mapId, filteredQuery),
+                markersDataServiceProvider.findMarkersCount(filteredQuery, mapId)
+            ])
+
+            const responseData = paginationHelper.getPaginationResponse({
+                page: page,
+                count: parseInt(markerCount[0].count),
+                limit: parseInt(limit),
+                skip: (page - 1) * limit,
+                data: markersData,
+                message: MARKERS_FETCHED,
+                searchString: query.search_string
+            });
+
+            return NextResponse.json(responseData);
+
         } catch (error: any) {
             console.log(error);
             return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);

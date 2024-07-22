@@ -15,6 +15,12 @@ export async function POST(req: NextRequest, { params }: any) {
         return ResponseHelper.sendValidationErrorResponse(422, 'Validation Error', validationErrors);
     }
     
-    return markersController.addMarker(reqData,params);
+    return markersController.addMarker(reqData, params);
+}   
 
+export async function GET(req: NextRequest, { params }: any) {
+    const { searchParams } = new URL(req.url);
+    const query = Object.fromEntries(new URLSearchParams(Array.from(searchParams.entries())));
+    
+    return markersController.listMarkers(query, params);
 }
