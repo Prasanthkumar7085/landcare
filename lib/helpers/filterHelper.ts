@@ -1,3 +1,5 @@
+import { eq,and, ilike, or, desc, asc } from "drizzle-orm";
+import { mapMarkers } from "../schemas/mapMarkers";
 
 class FilterHelper {
 
@@ -15,12 +17,39 @@ class FilterHelper {
             conditions.push(`maps.status != 'archived'`);
         }
 
+        if (query.from_date && query.to_date) {
+            const fromDate = query.from_date;
+            const toDate = query.to_date;
+            conditions.push(`maps.created_at >= '${fromDate} 00:00:00' AND maps.created_at <= '${toDate} 23:59:59'`);
+        }
+
         if (conditions.length > 0) {
             query = conditions.join("AND ");
         }
 
         return query;
     }
+
+
+    async markers(query: any,filters:any) {
+        const conditions: any = [];
+
+        if (filters && filters.search_string) {
+            const searchString = `%${filters.search_string}%`;
+            conditions.push(or(
+                ilike(mapMarkers.title, `${searchString}`),
+                ilike(mapMarkers.type, `${searchString}`)
+            ));
+        }
+
+        if(conditions.length > 0) {
+            query = query.where(and(...conditions));     
+        }
+
+        return query;
+    }
+
+    
 
 }
 
