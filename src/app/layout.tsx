@@ -16,7 +16,11 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          {pathname == "/" ? children : <Navbar>{children}</Navbar>}
+          {pathname == "/" || pathname?.includes("add-map") ? (
+            children
+          ) : (
+            <Navbar>{children}</Navbar>
+          )}
         </Providers>
       </body>
       <Toaster richColors closeButton position="top-right" />
