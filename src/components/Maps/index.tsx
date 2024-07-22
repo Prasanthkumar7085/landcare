@@ -104,13 +104,13 @@ const Maps = () => {
                     style={{ width: "100%", height: "auto", marginBottom: 10 }}
                   />
                   <Typography variant="body2" component="div" gutterBottom>
-                    {item?.title || "--"}
+                    {item?.title ? item?.title : "--"}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {item?.description || "--"}
+                    {item?.description ? item?.description : "--"}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {datePipe(item?.created_at) || "--"}
+                    {item?.created_at ? datePipe(item?.created_at) : "--"}
                   </Typography>
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Button
