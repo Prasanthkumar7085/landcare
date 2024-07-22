@@ -18,5 +18,10 @@ export async function PATCH(req: NextRequest, { params }: any) {
         return ResponseHelper.sendValidationErrorResponse(422, 'Validation Error', validationErrors);
     }
    
-    return markersController.update(reqData,params);
+    return markersController.update(reqData, params);
+}
+
+
+export async function DELETE(req: NextRequest, { params }: any) {
+    return markersController.delete(req, params);
 }

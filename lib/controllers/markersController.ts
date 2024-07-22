@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { MarkersDataServiceProvider } from "../services/markersDataServiceProvider";
-import { MAP_NOT_FOUND, MARKER_CREATED, MARKER_FETCHED, MARKER_NOT_FOUND_WITH_MAP, MARKER_TITLE_EXISTS, MARKER_UPDATED, MARKERS_FETCHED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
+import { MAP_NOT_FOUND, MARKER_CREATED, MARKER_DELETED, MARKER_FETCHED, MARKER_NOT_FOUND_WITH_MAP, MARKER_TITLE_EXISTS, MARKER_UPDATED, MARKERS_FETCHED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
 import { ResourceAlreadyExistsError } from "../helpers/exceptions";
 import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
 import filterHelper from "../helpers/filterHelper";
@@ -127,6 +127,32 @@ export class MarkersController {
             if (error.validation_error) {
                 return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
             }
+            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+        }
+    }
+
+    async delete(req: NextRequest, params: any) {
+        try {
+
+            const mapId = params.id;
+            const markerId = params.marker_id;
+
+            const mapData: any = await mapsDataServiceProvider.findById(mapId);
+            if (!mapData) {
+                return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
+            }
+
+            const markerData: any = await markersDataServiceProvider.findByIdAndMapId(markerId, mapId);
+            if (!markerData) {
+                return ResponseHelper.sendErrorResponse(400, MARKER_NOT_FOUND_WITH_MAP);
+            }
+
+            await markersDataServiceProvider.delete(markerId);
+
+            return ResponseHelper.sendSuccessResponse(200, MARKER_DELETED);
+
+        } catch (error: any) {
+            console.log(error);
             return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
         }
     }

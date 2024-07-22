@@ -71,4 +71,10 @@ export class MarkersDataServiceProvider {
             .set(data)
             .where(eq(mapMarkers.id, id))
     }
+
+    async delete(id: number) {
+        return await db
+            .delete(mapMarkers)
+            .where(eq(mapMarkers.id, id))
+    }
 }
