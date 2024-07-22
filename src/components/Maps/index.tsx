@@ -2,7 +2,8 @@
 import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
 import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
 import { getAllListMapsAPI } from "@/services/maps";
-import { Backdrop, Box, Card, CardContent, CircularProgress, Grid, Typography } from "@mui/material";
+import { Backdrop, Box, Button, Card, CardContent, CircularProgress, Grid, Typography } from "@mui/material";
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import dayjs from "dayjs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,8 +22,6 @@ const Maps = () => {
     const [searchParams, setSearchParams] = useState(
         Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
     );
-    console.log(mapsData);
-    console.log(paginationDetails);
 
     const getAllMaps = async ({
         page = searchParams?.page,
@@ -103,6 +102,14 @@ const Maps = () => {
                                     <Typography variant="body2" color="text.secondary">
                                         {dayjs(item?.created_at).format("MMMM D, YYYY h:mm A") || "--"}
                                     </Typography>
+                                    <div style={{ display: 'flex', justifyContent: "flex-end" }}>
+                                        <Button
+                                            variant='text'
+                                            sx={{ color: 'black' }}
+                                        >
+                                            <VisibilityOutlinedIcon />   Preview
+                                        </Button>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </Grid>

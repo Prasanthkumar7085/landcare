@@ -1,5 +1,6 @@
 import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
-import { InputAdornment, TextField } from "@mui/material";
+import { Button, InputAdornment, TextField } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 import Image from "next/image";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -34,10 +35,11 @@ const MapsFilters = () => {
     }, [params]);
 
     return (
-        <div style={{ display: 'flex', justifyContent: "flex-end" }}>
+        <div style={{ display: 'flex', justifyContent: "flex-end", gap: "1rem" }}>
             <TextField
                 variant="outlined"
                 type="search"
+                size="small"
                 value={searchString}
                 onChange={handleSearchChange}
                 placeholder="Search Title"
@@ -49,6 +51,13 @@ const MapsFilters = () => {
                     ),
                 }}
             />
+            <Button
+                variant='contained'
+                color='success'
+            >
+                Create New Map
+                <AddIcon />
+            </Button>
 
         </div>
     );
