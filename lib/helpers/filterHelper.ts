@@ -17,6 +17,12 @@ class FilterHelper {
             conditions.push(`maps.status != 'archived'`);
         }
 
+        if (query.from_date && query.to_date) {
+            const fromDate = query.from_date;
+            const toDate = query.to_date;
+            conditions.push(`maps.created_at >= '${fromDate} 00:00:00' AND maps.created_at <= '${toDate} 23:59:59'`);
+        }
+
         if (conditions.length > 0) {
             query = conditions.join("AND ");
         }
