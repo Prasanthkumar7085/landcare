@@ -29,3 +29,5 @@ export const MARKERS_FETCHED = "Markers fetched successfully";
 export const MARKER_STATUS_UPDATED = "Marker status updated successfully";
 export const MARKER_TITLE_EXISTS = "Marker title already exists";
 export const MARKER_NOT_FOUND_WITH_MAP = "Marker not found with map";
+export const DUPLICATED_MARKER_TITLE = "Duplicate marker titles detected";
+export const MARKERS_IMPORTED = "Markers imported successfully";

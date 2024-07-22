@@ -48,6 +48,10 @@ function getCustomErrorMessage(issue: any) {
         default:
             break
     }
+
+    if(issue.input === undefined) {
+        return `${key} is Required`
+    }
 }
 
 function formatKey(key: string): string {
