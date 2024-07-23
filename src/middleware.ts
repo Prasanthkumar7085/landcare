@@ -14,18 +14,18 @@ const isAuthenticated = (req: NextRequest) => {
 };
 
 export default function middleware(req: NextRequest) {
-  if (
-    !isAuthenticated(req) &&
-    containsSubstring(req.nextUrl.pathname, protectedRoutes)
-  ) {
-    const absoluteURL = new URL("/", req.nextUrl.origin);
-    return NextResponse.redirect(absoluteURL.toString());
-  }
-  if (
-    isAuthenticated(req) &&
-    unProtectedRoutes.includes(req.nextUrl.pathname)
-  ) {
-    const absoluteURL = new URL("/maps", req.nextUrl.origin);
-    return NextResponse.redirect(absoluteURL.toString());
-  }
+  // if (
+  //   !isAuthenticated(req) &&
+  //   containsSubstring(req.nextUrl.pathname, protectedRoutes)
+  // ) {
+  //   const absoluteURL = new URL("/", req.nextUrl.origin);
+  //   return NextResponse.redirect(absoluteURL.toString());
+  // }
+  // if (
+  //   isAuthenticated(req) &&
+  //   unProtectedRoutes.includes(req.nextUrl.pathname)
+  // ) {
+  //   const absoluteURL = new URL("/maps", req.nextUrl.origin);
+  //   return NextResponse.redirect(absoluteURL.toString());
+  // }
 }
