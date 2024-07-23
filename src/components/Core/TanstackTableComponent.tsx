@@ -15,7 +15,7 @@ interface pageProps {
     data: any[];
     loading: boolean;
 }
-const SingleColumnTable: FC<pageProps> = ({
+const TanstackTableComponent: FC<pageProps> = ({
     columns,
     data,
     loading,
@@ -80,11 +80,6 @@ const SingleColumnTable: FC<pageProps> = ({
     return (
         <div
             style={{ width: "100%", overflowX: "auto" }}
-            className={
-                pathName?.includes("patient-results")
-                    ? "patientDetailsTable"
-                    : "tableContainer"
-            }
         >
             <table style={{ width: "100%" }}>
                 <thead
@@ -138,7 +133,7 @@ const SingleColumnTable: FC<pageProps> = ({
                                                     {{
                                                         asc: (
                                                             <Image
-                                                                src="/core/sort/sort-asc.svg"
+                                                                src="/sort-asc.svg"
                                                                 height={8}
                                                                 width={8}
                                                                 alt="image"
@@ -146,7 +141,7 @@ const SingleColumnTable: FC<pageProps> = ({
                                                         ),
                                                         desc: (
                                                             <Image
-                                                                src="/core/sort/sort-desc.svg"
+                                                                src="/sort-desc.svg"
                                                                 height={8}
                                                                 width={8}
                                                                 alt="image"
@@ -154,7 +149,7 @@ const SingleColumnTable: FC<pageProps> = ({
                                                         ),
                                                     }[header.column.getIsSorted() as string] ?? (
                                                             <Image
-                                                                src="/core/sort/un-sort.svg"
+                                                                src="/un-sort.svg"
                                                                 height={8}
                                                                 width={8}
                                                                 alt="Unsorted"
@@ -237,4 +232,4 @@ const SingleColumnTable: FC<pageProps> = ({
         </div>
     );
 };
-export default SingleColumnTable;
+export default TanstackTableComponent;

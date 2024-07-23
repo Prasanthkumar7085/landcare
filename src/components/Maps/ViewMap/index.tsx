@@ -5,10 +5,7 @@ import { addCustomControl } from "../AddMap/CustomControls/NavigationOnMaps";
 import { MapTypeOptions } from "../AddMap/CustomControls/MapTypeOptions";
 import { SearchAutoComplete } from "../AddMap/CustomControls/SearchAutoComplete";
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
-import {
-  getSingleMapDetailsAPI,
-  getSingleMapMarkersAPI,
-} from "@/services/maps";
+import { getAllMapMarkersAPI, getSingleMapDetailsAPI, getSingleMapMarkersAPI } from "@/services/maps";
 import { useParams } from "next/navigation";
 import LoadingComponent from "@/components/Core/LoadingComponent";
 import MarkerPopup from "./AddMarker/AddMarkerFrom";
@@ -26,6 +23,9 @@ const ViewGoogleMap = () => {
   const [mapDetails, setMapDetails] = useState<any>({});
   const [polygonCoords, setPolygonCoords] = useState<any>([]);
   const [markers, setMarkers] = useState<any[]>([]);
+  const [singleMarkers, setSingleMarkers] = useState<any[]>([]);
+  const [paginationDetails, setPaginationDetails] = useState({});
+  const [search, setSearch] = useState('');
 
   console.log(markers, "Fdsdododoods");
   const [showMarkerPopup, setShowMarkerPopup] = useState(false);
@@ -150,11 +150,42 @@ const ViewGoogleMap = () => {
     }
   };
 
-  const getSingleMapMarkers = async () => {
+  const getAllMapMarkers = async ({
+    page = 1,
+    limit = 8,
+    search_string = search
+  }) => {
     setLoading(true);
     try {
-      const response = await getSingleMapMarkersAPI(id);
-      setMarkers(response?.data);
+      let queryParams: any = {
+        search_string: search_string ? search_string : "",
+        page: page,
+        limit: limit
+      };
+      const response = await getAllMapMarkersAPI(id, queryParams);
+      const { data, ...rest } = response;
+      setMarkers(data);
+      setPaginationDetails(rest);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getSingleMapMarkers = async ({
+    page = 1,
+    limit = 5,
+  }) => {
+    setLoading(true);
+    try {
+      let queryParams: any = {
+        page: page,
+        limit: limit
+      };
+      const response = await getSingleMapMarkersAPI(id, queryParams);
+      const { data, ...rest } = response;
+      setSingleMarkers(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -164,8 +195,19 @@ const ViewGoogleMap = () => {
 
   useEffect(() => {
     getSingleMapDetails();
-    getSingleMapMarkers();
+    getSingleMapMarkers({
+      page: 1,
+      limit: 5
+    })
   }, []);
+
+  useEffect(() => {
+    getAllMapMarkers({
+      page: 1,
+      limit: 8,
+      search_string: search
+    });
+  }, [search]);
 
   return (
     <div
@@ -179,7 +221,15 @@ const ViewGoogleMap = () => {
         />
       </div>
 
-      <ViewMapDetailsDrawer mapDetails={mapDetails} markers={markers} />
+      <ViewMapDetailsDrawer
+        mapDetails={mapDetails}
+        markers={markers}
+        paginationDetails={paginationDetails}
+        getData={getAllMapMarkers}
+        setSearch={setSearch}
+        search={search}
+        singleMarkers={singleMarkers}
+      />
       <MarkerPopup
         setShowMarkerPopup={setShowMarkerPopup}
         showMarkerPopup={showMarkerPopup}
