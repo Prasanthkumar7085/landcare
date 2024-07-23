@@ -89,13 +89,6 @@ const MapMarkersList = ({ markers, paginationDetails, getData, setSearch, search
                     <Typography variant="button" className={styles.showAllMarkers}>Show All markers</Typography>
                 </CardActions>
             </div>
-            <div className={styles.allmarkersgroup}>
-                <CardActions className={styles.inputbutton}>
-                    <Typography variant="button" className={styles.showAllMarkers}>
-                        Show All markers
-                    </Typography>
-                </CardActions>
-            </div>
             <MapMarkersListDialog
                 open={open}
                 handleClose={handleClose}
