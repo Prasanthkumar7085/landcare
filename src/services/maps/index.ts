@@ -38,9 +38,21 @@ export const getSingleMapDetailsAPI = async (id: any) => {
   }
 };
 
-export const getSingleMapMarkersAPI = async (id: any) => {
+export const getAllMapMarkersAPI = async (id: any, params: any) => {
   try {
-    const { success, data } = await $fetch.get(`/api/v1.0/maps/${id}/markers`);
+    const { success, data } = await $fetch.get(`/api/v1.0/maps/${id}/markers`, params);
+    if (!success) {
+      return handleAPIErrorResponse(data);
+    }
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getSingleMapMarkersAPI = async (id: any, params: any) => {
+  try {
+    const { success, data } = await $fetch.get(`/api/v1.0/maps/${id}/markers`, params);
     if (!success) {
       return handleAPIErrorResponse(data);
     }

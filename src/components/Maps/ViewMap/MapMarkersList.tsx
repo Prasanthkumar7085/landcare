@@ -7,8 +7,17 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import styles from "./index.module.css";
 import { datePipe } from "@/lib/helpers/datePipe";
+import MapMarkersListDialog from "./MapMarkersLIstDialog";
 
-const MapMarkersList = ({ markers }: any) => {
+const MapMarkersList = ({ markers, paginationDetails, getData, setSearch, search, singleMarkers }: any) => {
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
     return (
         <div className={styles.markergroup}>
             <div className={styles.markersection}>
@@ -36,7 +45,7 @@ const MapMarkersList = ({ markers }: any) => {
                             </IconButton>
                         </div>
                     </div>
-                    {markers.map((marker: any, index: any) => (
+                    {singleMarkers.map((marker: any, index: any) => (
                         <Card className={styles.markerlocation} key={index}>
                             <CardContent className={styles.locationcard}>
                                 <div className={styles.locationprofile}>
@@ -65,11 +74,22 @@ const MapMarkersList = ({ markers }: any) => {
                     ))}
                 </div>
             </div>
-            <div className={styles.allmarkersgroup}>
+            <div className={styles.allmarkersgroup}
+                onClick={handleClickOpen}
+            >
                 <CardActions className={styles.inputbutton}>
                     <Typography variant="button" className={styles.showAllMarkers}>Show All markers</Typography>
                 </CardActions>
             </div>
+            <MapMarkersListDialog
+                open={open}
+                handleClose={handleClose}
+                markers={markers}
+                paginationDetails={paginationDetails}
+                getData={getData}
+                setSearch={setSearch}
+                search={search}
+            />
         </div>
     );
 };

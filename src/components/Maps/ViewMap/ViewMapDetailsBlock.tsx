@@ -3,7 +3,7 @@ import styles from "./view-map-block.module.css";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
 import MapMarkersList from "./MapMarkersList";
-const ViewMapDetailsDrawer = ({ mapDetails, markers }: any) => {
+const ViewMapDetailsDrawer = ({ mapDetails, markers, paginationDetails, getData, setSearch, search, singleMarkers }: any) => {
   const router = useRouter();
   return (
     <div className={styles.detailsslidebarfarmslist}>
@@ -27,7 +27,14 @@ const ViewMapDetailsDrawer = ({ mapDetails, markers }: any) => {
           </Typography>
         </div>
         <div>
-          <MapMarkersList markers={markers} />
+          <MapMarkersList
+            markers={markers}
+            paginationDetails={paginationDetails}
+            getData={getData}
+            setSearch={setSearch}
+            search={search}
+            singleMarkers={singleMarkers}
+          />
         </div>
       </div>
       <div className={styles.buttoncontainer}></div>
