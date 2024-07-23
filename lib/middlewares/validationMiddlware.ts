@@ -15,6 +15,7 @@ export function validate(schema:any, reqData:any){
             return errors;
         }
     } catch (error: any) {
+        console.log(error);
         return ResponseHelper.sendErrorResponse(500, 'Something went wrong');
     }
 };

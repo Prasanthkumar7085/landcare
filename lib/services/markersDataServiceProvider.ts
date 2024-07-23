@@ -1,7 +1,7 @@
 import { db } from "../database";
 import filterHelper from "../helpers/filterHelper";
 import { mapMarkers } from "../schemas/mapMarkers";
-import { ilike, eq, and, sql, desc, ne, inArray } from "drizzle-orm";
+import { ilike, eq, and, sql, desc, ne, inArray, asc } from "drizzle-orm";
 import { lower } from "../schemas/maps";
 
 
@@ -52,9 +52,19 @@ export class MarkersDataServiceProvider {
         })
             .from(mapMarkers)
             .where(eq(mapMarkers.map_id, mapId))
-            .orderBy(desc(mapMarkers.id))
             .limit(limit)
             .offset(limit * (page - 1))
+             
+        // Apply dynamic sorting
+        if (filters.sort_by && filters.sort_type) {
+            const sortColumn = mapMarkers[filters.sort_by];
+            const sortOrder = filters.sort_type.toLowerCase() === 'asc' ? asc(sortColumn) : desc(sortColumn);
+            queryData = queryData.orderBy(sortOrder);
+        } else {
+            // Default sorting
+            queryData = queryData.orderBy(desc(mapMarkers.created_at));
+        }
+
         queryData = filterHelper.markers(queryData, filters);
         return await queryData;
 

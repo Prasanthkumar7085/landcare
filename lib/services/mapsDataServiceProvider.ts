@@ -39,7 +39,7 @@ export class MapsDataServiceProvider {
         FROM maps
         ${Object.keys(filters).length > 0 ? sql`WHERE ${sql.raw(filters)}` : sql``}
         ORDER BY 
-           maps.id DESC
+           maps.created_at DESC
         LIMIT ${limit} 
         OFFSET ${limit * (page - 1)}`;
 

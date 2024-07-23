@@ -4,7 +4,7 @@ import { index, integer, pgTable, pgEnum, serial, timestamp, varchar, text, json
 import { sql } from 'drizzle-orm';
 import { maps } from './maps';
 
-export const mapMarkers = pgTable("map_markers", {
+export const mapMarkers:any = pgTable("map_markers", {
     id: serial('id').primaryKey(),
     map_id: integer('map_id').references(() => maps.id),
 
