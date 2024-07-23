@@ -19,4 +19,9 @@ export class UserDataServiceProvider {
         return userData[0];
     }
 
+    async findById(id: number) {
+        const userData = await db.select().from(users).where(eq(users.id, id)).limit(1);
+        return userData[0];
+    }
+
 }
