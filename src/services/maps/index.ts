@@ -51,3 +51,15 @@ export const addMarkerDeatilsAPI = async (id: any, body: any) => {
     throw err;
   }
 };
+
+export const getSingleMapMarkersAPI = async (id: any) => {
+  try {
+    const { success, data } = await $fetch.get(`/api/v1.0/maps/${id}/markers`);
+    if (!success) {
+      return handleAPIErrorResponse(data);
+    }
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};

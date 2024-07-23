@@ -4,11 +4,13 @@ import { Dialog, MenuItem, Select } from "@mui/material";
 import { mapTypeOptions } from "@/lib/constants/mapConstants";
 import { addMarkerDeatilsAPI } from "@/services/maps";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 const MarkerPopup = ({
   setShowMarkerPopup,
   showMarkerPopup,
   popupMarker,
   placeDetails,
+  getSingleMapMarkers,
 }: any) => {
   const { id } = useParams();
   console.log(showMarkerPopup, "9239932932");
@@ -35,13 +37,16 @@ const MarkerPopup = ({
   };
 
   const handleSave = async () => {
-    console.log("Saved:", popupFormData);
     let body = {
       ...popupFormData,
       ...placeDetails,
     };
     try {
       const response = await addMarkerDeatilsAPI(id, body);
+      if (response?.status == 200 || response?.status == 201) {
+        toast.success("Marker added successfully");
+        getSingleMapMarkers();
+      }
     } catch (err) {
     } finally {
     }

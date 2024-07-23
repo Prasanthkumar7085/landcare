@@ -4,7 +4,8 @@ import { addCustomControl } from "../Maps/AddMap/CustomControls/NavigationOnMaps
 import { MapTypeOptions } from "../Maps/AddMap/CustomControls/MapTypeOptions";
 import { SearchAutoComplete } from "../Maps/AddMap/CustomControls/SearchAutoComplete";
 
-const GoogleMapComponent = ({ OtherMapOptions }: any) => {
+const GoogleMapComponent = ({ OtherMapOptions, markers }: any) => {
+  console.log(markers, "dpp3200320032");
   const mapRef: any = useRef(null);
   const infoWindowRef: any = useRef(null);
   const placesService: any = useRef(null);
@@ -22,6 +23,24 @@ const GoogleMapComponent = ({ OtherMapOptions }: any) => {
     });
     OtherMapOptions(map, maps);
   };
+
+  const Marker = ({ text }: any) => (
+    <div
+      style={{
+        color: "white",
+        background: "blue",
+        padding: "10px 15px",
+        display: "inline-flex",
+        textAlign: "center",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "100%",
+        transform: "translate(-50%, -50%)",
+      }}
+    >
+      {text}
+    </div>
+  );
   return (
     <GoogleMapReact
       bootstrapURLKeys={{
@@ -41,7 +60,16 @@ const GoogleMapComponent = ({ OtherMapOptions }: any) => {
       defaultZoom={6}
       yesIWantToUseGoogleMapApiInternals
       onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-    ></GoogleMapReact>
+    >
+      {markers?.map((marker: any, index: any) => (
+        <Marker
+          key={index}
+          lat={22.9288203647487}
+          lng={81.92789885758059}
+          text={marker?.type}
+        />
+      ))}
+    </GoogleMapReact>
   );
 };
 export default GoogleMapComponent;

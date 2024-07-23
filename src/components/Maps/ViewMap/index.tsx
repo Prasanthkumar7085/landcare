@@ -5,7 +5,10 @@ import { addCustomControl } from "../AddMap/CustomControls/NavigationOnMaps";
 import { MapTypeOptions } from "../AddMap/CustomControls/MapTypeOptions";
 import { SearchAutoComplete } from "../AddMap/CustomControls/SearchAutoComplete";
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
-import { getSingleMapDetailsAPI } from "@/services/maps";
+import {
+  getSingleMapDetailsAPI,
+  getSingleMapMarkersAPI,
+} from "@/services/maps";
 import { useParams } from "next/navigation";
 import LoadingComponent from "@/components/Core/LoadingComponent";
 import MarkerPopup from "./AddMarker/AddMarkerFrom";
@@ -23,10 +26,11 @@ const ViewGoogleMap = () => {
   const [mapDetails, setMapDetails] = useState<any>({});
   const [polygonCoords, setPolygonCoords] = useState<any>([]);
   const [markers, setMarkers] = useState<any[]>([]);
+
+  console.log(markers, "Fdsdododoods");
   const [showMarkerPopup, setShowMarkerPopup] = useState(false);
   const [popupMarker, setPopupMarker] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState(null); // State to hold the selected marker
-  console.log(selectedMarker, "dsppdsd0d");
 
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
@@ -94,8 +98,6 @@ const ViewGoogleMap = () => {
           }
         });
       });
-      console.log(marker, "fdasiidsiidi");
-      setMarkers((prevMarkers) => [...prevMarkers, marker]);
     });
 
     drawingManager.setMap(map);
@@ -148,27 +150,42 @@ const ViewGoogleMap = () => {
     }
   };
 
-  useEffect(() => {
-    if (id) {
-      getSingleMapDetails();
+  const getSingleMapMarkers = async () => {
+    setLoading(true);
+    try {
+      const response = await getSingleMapMarkersAPI(id);
+      setMarkers(response?.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    getSingleMapDetails();
+    getSingleMapMarkers();
   }, []);
 
   return (
     <div
       className={styles.markersPageWeb}
-      style={{ display: mapDetails?.id && renderField == false ? "" : "none" }}
+      style={{ display: mapDetails?.id ? "" : "none" }}
     >
       <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
-        <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
+        <GoogleMapComponent
+          OtherMapOptions={OtherMapOptions}
+          markers={markers}
+        />
       </div>
 
-      <ViewMapDetailsDrawer mapDetails={mapDetails} />
+      <ViewMapDetailsDrawer mapDetails={mapDetails} markers={markers} />
       <MarkerPopup
         setShowMarkerPopup={setShowMarkerPopup}
         showMarkerPopup={showMarkerPopup}
         popupMarker={popupMarker}
         placeDetails={placeDetails}
+        getSingleMapMarkers={getSingleMapMarkers}
       />
       <LoadingComponent loading={loading} />
     </div>
