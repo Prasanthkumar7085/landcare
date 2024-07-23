@@ -19,7 +19,6 @@ export class MapsController {
             reqData.slug = makeSlug(reqData.title);
 
             const existedMap = await mapsDataServiceProvider.findMapByTitle(reqData.title);
-            console.log(existedMap);
             if (existedMap) {
                 throw new ResourceAlreadyExistsError('title', MAP_TITLE_EXISTS);
             }
