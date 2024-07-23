@@ -1,0 +1,52 @@
+/* MapMarkersList.module.css */
+.root {
+    padding: 16px;
+}
+
+.card {
+    margin-bottom: 16px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    border-left-width: 6px;
+    border-left-style: solid;
+}
+
+.hospitalCard {
+    border-left-color: #3f51b5;
+    /* Primary color */
+}
+
+.restaurantCard {
+    border-left-color: #f50057;
+    /* Secondary color */
+}
+
+.shoppingCard {
+    border-left-color: #ff4081;
+    /* Light primary color */
+}
+
+.avatar {
+    margin-right: 16px;
+}
+
+.address {
+    color: #757575;
+    /* Text secondary color */
+}
+
+.date {
+    color: #757575;
+    /* Text secondary color */
+    display: flex;
+    align-items: center;
+}
+
+.dateIcon {
+    margin-right: 8px;
+}
+
+.chip {
+    margin-top: 8px;
+    margin-right: 8px;
+}

@@ -5,7 +5,7 @@ import { addCustomControl } from "../AddMap/CustomControls/NavigationOnMaps";
 import { MapTypeOptions } from "../AddMap/CustomControls/MapTypeOptions";
 import { SearchAutoComplete } from "../AddMap/CustomControls/SearchAutoComplete";
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
-import { getSingleMapDetailsAPI } from "@/services/maps";
+import { getSingleMapDetailsAPI, getSingleMapMarkersAPI } from "@/services/maps";
 import { useParams } from "next/navigation";
 import LoadingComponent from "@/components/Core/LoadingComponent";
 
@@ -113,6 +113,18 @@ const ViewGoogleMap = () => {
     }
   };
 
+  const getSingleMapMarkers = async () => {
+    setLoading(true);
+    try {
+      const response = await getSingleMapMarkersAPI(id);
+      setMarkers(response?.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // const addMarker = (location: any,) => {
   //   const marker = new googleMaps.Marker({
   //     position: location,
@@ -133,6 +145,7 @@ const ViewGoogleMap = () => {
 
   useEffect(() => {
     getSingleMapDetails();
+    getSingleMapMarkers();
   }, []);
 
   return (
@@ -147,7 +160,7 @@ const ViewGoogleMap = () => {
       ) : (
         ""
       )}
-      <ViewMapDetailsDrawer mapDetails={mapDetails} />
+      <ViewMapDetailsDrawer mapDetails={mapDetails} markers={markers} />
       <LoadingComponent loading={loading} />
     </div>
   );
