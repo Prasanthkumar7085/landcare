@@ -2,7 +2,8 @@ import { Button, Typography } from "@mui/material";
 import styles from "./view-map-block.module.css";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-const ViewMapDetailsDrawer = ({ mapDetails }: any) => {
+import MapMarkersList from "./MapMarkersList";
+const ViewMapDetailsDrawer = ({ mapDetails, markers }: any) => {
   const router = useRouter();
   return (
     <div className={styles.detailsslidebarfarmslist}>
@@ -26,7 +27,7 @@ const ViewMapDetailsDrawer = ({ mapDetails }: any) => {
           </Typography>
         </div>
         <div>
-          <Typography variant="h6">Markers</Typography>
+          <MapMarkersList markers={markers} />
         </div>
       </div>
       <div className={styles.buttoncontainer}></div>
