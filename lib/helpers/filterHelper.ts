@@ -1,5 +1,6 @@
 import { eq,and, ilike, or, desc, asc } from "drizzle-orm";
 import { mapMarkers } from "../schemas/mapMarkers";
+import { lower } from "../schemas/maps";
 
 class FilterHelper {
 
@@ -40,6 +41,10 @@ class FilterHelper {
                 ilike(mapMarkers.title, `${searchString}`),
                 ilike(mapMarkers.type, `${searchString}`)
             ));
+        }
+
+        if (filters && filters.type) {
+            conditions.push(eq(lower(mapMarkers.type), `${filters.type.toLowerCase()}`));
         }
 
         if(conditions.length > 0) {
