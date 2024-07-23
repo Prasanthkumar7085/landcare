@@ -20,7 +20,7 @@ const AddPolygon = () => {
   const dispatch = useDispatch();
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
   const [addPolygonOpen, setAddPolygonOpen] = useState<boolean>(false);
-
+  const [loading, setLoading] = useState<boolean>(false);
   const [mapType, setMapType] = useState("hybrid");
   const [renderField, setRenderField] = useState(false);
   const [map, setMap] = useState<any>(null);
@@ -48,23 +48,14 @@ const AddPolygon = () => {
     setAddPolygonOpen(false);
   }
 
-  const handleApiLoaded = (map: any, maps: any) => {
+  const OtherMapOptions = (map: any, maps: any) => {
     setMap(map);
     setGoogleMaps(maps);
-    mapRef.current = map;
-    addCustomControl({ map, maps, mapRef, infoWindowRef });
-    MapTypeOptions(map, maps, setMapType);
-    SearchAutoComplete({
-      placesService,
-      maps,
-      map,
-      mapRef,
-    });
 
     const drawingManager = new maps.drawing.DrawingManager({
       drawingControl: polygonCoords?.length === 0 ? true : false,
       drawingControlOptions: {
-        position: maps.ControlPosition.TOP_RIGHT,
+        position: maps.ControlPosition.LEFT_CENTER,
         drawingModes: [maps.drawing.OverlayType.POLYGON],
       },
       polygonOptions: {
@@ -84,7 +75,7 @@ const AddPolygon = () => {
         }));
 
         const geocoder = new maps.Geocoder();
-        const lastCoord = paths[paths.length - 1]; // Accessing the last point of the polygon
+        const lastCoord = paths[paths.length - 1];
 
         geocoder.geocode(
           { location: lastCoord },
@@ -96,8 +87,7 @@ const AddPolygon = () => {
                 let afterRemoveingSpaces = locationName
                   .split(" ")[1]
                   ?.replace(/[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/? ]/g, "");
-                // Accessing latitude and longitude from lastCoord object
-                const latitude = lastCoord.lat(); // Get the latitude
+                const latitude = lastCoord.lat();
                 const longitude = lastCoord.lng();
                 const geocoder = new google.maps.Geocoder();
                 const latlngs = { lat: latitude, lng: longitude };
@@ -229,17 +219,14 @@ const AddPolygon = () => {
     }
   };
 
-  useEffect(() => {
-    dispatch(storeEditPolygonCoords([]));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(storeEditPolygonCoords([]));
+  // }, []);
   return (
     <div className={styles.markersPageWeb}>
       {renderField == false ? (
         <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
-          <GoogleMapComponent
-            mapType={mapType}
-            handleApiLoaded={handleApiLoaded}
-          />
+          <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
 
           {polygonCoords?.length === 0 ? (
             ""

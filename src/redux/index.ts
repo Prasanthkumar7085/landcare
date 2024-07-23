@@ -13,7 +13,7 @@ import { combinedReducer } from "./Modules";
 import pesistStorage from "./persistateStore";
 
 const persistConfig = {
-  key: "apfc_peepul_agri",
+  key: "app_landcare",
   version: 1,
   storage: pesistStorage,
   REHYDRATE: false,

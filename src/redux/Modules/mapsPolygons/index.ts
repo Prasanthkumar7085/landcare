@@ -1,4 +1,5 @@
-import { mapsSliceReducer } from ".";
+"use client";
+import { mapsSliceReducer } from "./maps.slice";
 
 const combinedReducer = {
   ...mapsSliceReducer,

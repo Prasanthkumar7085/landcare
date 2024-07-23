@@ -1,6 +1,27 @@
 import GoogleMapReact from "google-map-react";
+import { useRef, useState } from "react";
+import { addCustomControl } from "../Maps/AddMap/CustomControls/NavigationOnMaps";
+import { MapTypeOptions } from "../Maps/AddMap/CustomControls/MapTypeOptions";
+import { SearchAutoComplete } from "../Maps/AddMap/CustomControls/SearchAutoComplete";
 
-const GoogleMapComponent = ({ mapType, handleApiLoaded }: any) => {
+const GoogleMapComponent = ({ OtherMapOptions }: any) => {
+  const mapRef: any = useRef(null);
+  const infoWindowRef: any = useRef(null);
+  const placesService: any = useRef(null);
+  const [mapType, setMapType] = useState("hybrid");
+
+  const handleApiLoaded = (map: any, maps: any) => {
+    mapRef.current = map;
+    addCustomControl({ map, maps, mapRef, infoWindowRef });
+    MapTypeOptions(map, maps, setMapType);
+    SearchAutoComplete({
+      placesService,
+      maps,
+      map,
+      mapRef,
+    });
+    OtherMapOptions(map, maps);
+  };
   return (
     <GoogleMapReact
       bootstrapURLKeys={{

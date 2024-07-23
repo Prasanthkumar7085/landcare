@@ -8,10 +8,11 @@ import {
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { addMapWithCordinatesAPI } from "@/services/maps";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
 
 const AddMapDrawer = ({
   addDrawerOpen,
@@ -21,11 +22,15 @@ const AddMapDrawer = ({
 }: any) => {
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const [mapName, setMapName] = useState<any>();
   const [description, setDescription] = useState<any>();
   const [errorMessages, setErrorMessages] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const addMapWithCordinates = async () => {
+    setLoading(true);
     let body = {
       title: mapName ? mapName : "",
       description: description ? description : "",
@@ -38,12 +43,15 @@ const AddMapDrawer = ({
       const response = await addMapWithCordinatesAPI(body);
       if (response?.status == 200 || response?.status == 201) {
         toast.success("Map added succesfully");
+        dispatch(storeEditPolygonCoords([]));
         router.push(`/view-map/${response?.data?.id}`);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -74,6 +82,7 @@ const AddMapDrawer = ({
           <IconButton
             onClick={() => {
               setAddDrawerOpen(false);
+              dispatch(storeEditPolygonCoords([]));
             }}
           >
             <CloseIcon />

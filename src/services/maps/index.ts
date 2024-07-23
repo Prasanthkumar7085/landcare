@@ -37,3 +37,17 @@ export const getSingleMapDetailsAPI = async (id: any) => {
     throw err;
   }
 };
+export const addMarkerDeatilsAPI = async (id: any, body: any) => {
+  try {
+    const { success, data } = await $fetch.post(
+      `/api/v1.0/maps/${id}/markers`,
+      body
+    );
+    if (!success) {
+      return handleAPIErrorResponse(data);
+    }
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
