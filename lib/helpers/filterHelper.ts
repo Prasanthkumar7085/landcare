@@ -1,31 +1,36 @@
-import { eq,and, ilike, or, desc, asc } from "drizzle-orm";
+import { eq,and, ilike, or, desc, asc, ne, gte, lte } from "drizzle-orm";
 import { mapMarkers } from "../schemas/mapMarkers";
-import { lower } from "../schemas/maps";
+import { lower, maps } from "../schemas/maps";
 
 class FilterHelper {
 
-    async maps(query: any) {
+    async maps(query: any, filters: any) {
         const conditions: any = [];
 
-        if (query && query.search_string) {
-            const searchString = `%${query.search_string}%`;
-            conditions.push(`maps.title ILIKE '${searchString}'`);
+        if (filters && filters.search_string) {
+            const searchString = `%${filters.search_string}%`;
+            conditions.push(ilike(maps.title, `${searchString}`));
         }
 
-        if (query && query.status) {
-            conditions.push(`maps.status = '${query.status}'`);
+        if (filters && filters.status) {
+            conditions.push(eq(lower(maps.status), `${filters.status.toLowerCase()}`));
         } else {
-            conditions.push(`maps.status != 'archived'`);
+            conditions.push(ne(maps.status,'archived'));
         }
 
-        if (query.from_date && query.to_date) {
-            const fromDate = query.from_date;
-            const toDate = query.to_date;
-            conditions.push(`maps.created_at >= '${fromDate} 00:00:00' AND maps.created_at <= '${toDate} 23:59:59'`);
+        if (filters.from_date && filters.to_date) {
+            const fromDate = filters.from_date;
+            const toDate = filters.to_date;
+            const startDate = new Date(fromDate);
+            const endDate = new Date(toDate);
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(23, 59, 59, 999);
+
+            conditions.push(and(gte(maps.created_at, startDate), lte(maps.created_at, endDate)));
         }
 
-        if (conditions.length > 0) {
-            query = conditions.join("AND ");
+        if(conditions.length > 0) {
+            query = query.where(and(...conditions));     
         }
 
         return query;
