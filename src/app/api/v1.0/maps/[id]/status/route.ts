@@ -19,6 +19,6 @@ export async function PATCH(req: NextRequest, { params }: any) {
     if (validationErrors) {
         return ResponseHelper.sendValidationErrorResponse(422, 'Validation Error', validationErrors);
     }
-    reqData.user_id = authResult.id;
-    return mapsController.updateStatus(reqData, params);
+
+    return mapsController.updateStatus(reqData, params,authResult);
 }
