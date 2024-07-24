@@ -54,6 +54,15 @@ body {
   }
 }
 
+.tableContainer .thead .table-row .cell:first-child {
+  border-left: 0.633951px solid #e0e0e0 !important;
+  border-radius: 5px 0px 0px 5px !important;
+  position: sticky !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.12) !important;
+  left: 0 !important;
+  background: #f0edff !important;
+}
+
 .errorComponent {
   color: $secondaryColor;
   font-size: clamp(11px, 0.69vw, 13px);

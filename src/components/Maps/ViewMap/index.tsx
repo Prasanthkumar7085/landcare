@@ -2,13 +2,17 @@ import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
 import { calculatePolygonCentroid } from "@/lib/helpers/mapsHelpers";
 import {
+  getAllMapMarkersAPI,
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
 } from "@/services/maps";
+import styles from "./view-map.module.css";
+import { addCustomControl } from "../AddMap/CustomControls/NavigationOnMaps";
+import { MapTypeOptions } from "../AddMap/CustomControls/MapTypeOptions";
+import { SearchAutoComplete } from "../AddMap/CustomControls/SearchAutoComplete";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import MarkerPopup from "./AddMarker/AddMarkerFrom";
-import styles from "./view-map.module.css";
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
 
 const ViewGoogleMap = () => {
@@ -26,6 +30,11 @@ const ViewGoogleMap = () => {
   const [markers, setMarkers] = useState<any[]>([]);
   console.log(polygonCoords, "r4pp43p4p3p43");
   console.log(markers, "34343443");
+  const [singleMarkers, setSingleMarkers] = useState<any[]>([]);
+  const [paginationDetails, setPaginationDetails] = useState({});
+  const [search, setSearch] = useState("");
+
+  console.log(markers, "Fdsdododoods");
   const [showMarkerPopup, setShowMarkerPopup] = useState(false);
   const [popupMarker, setPopupMarker] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
@@ -162,7 +171,10 @@ const ViewGoogleMap = () => {
             lng: item[1],
           };
         });
-        await getSingleMapMarkers();
+        await getSingleMapMarkers({
+          page: 1,
+          limit: 5,
+        });
         setPolygonCoords(updatedArray);
       }
     } catch (err) {
@@ -172,10 +184,36 @@ const ViewGoogleMap = () => {
     }
   };
 
-  const getSingleMapMarkers = async () => {
+  const getAllMapMarkers = async ({
+    page = 1,
+    limit = 8,
+    search_string = search,
+  }) => {
     try {
-      const response = await getSingleMapMarkersAPI(id);
-      setMarkers(response?.data);
+      let queryParams: any = {
+        search_string: search_string ? search_string : "",
+        page: page,
+        limit: limit,
+      };
+      const response = await getAllMapMarkersAPI(id, queryParams);
+      const { data, ...rest } = response;
+      setMarkers(data);
+      setPaginationDetails(rest);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getSingleMapMarkers = async ({ page = 1, limit = 5 }) => {
+    setLoading(true);
+    try {
+      let queryParams: any = {
+        page: page,
+        limit: limit,
+      };
+      const response = await getSingleMapMarkersAPI(id, queryParams);
+      const { data, ...rest } = response;
+      setSingleMarkers(data);
     } catch (err) {
       console.error(err);
     }
@@ -184,6 +222,14 @@ const ViewGoogleMap = () => {
   useEffect(() => {
     getSingleMapDetails();
   }, []);
+
+  useEffect(() => {
+    getAllMapMarkers({
+      page: 1,
+      limit: 8,
+      search_string: search,
+    });
+  }, [search]);
 
   return (
     <div
@@ -194,7 +240,15 @@ const ViewGoogleMap = () => {
         <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
       </div>
 
-      <ViewMapDetailsDrawer mapDetails={mapDetails} markers={markers} />
+      <ViewMapDetailsDrawer
+        mapDetails={mapDetails}
+        markers={markers}
+        paginationDetails={paginationDetails}
+        getData={getAllMapMarkers}
+        setSearch={setSearch}
+        search={search}
+        singleMarkers={singleMarkers}
+      />
       <MarkerPopup
         setShowMarkerPopup={setShowMarkerPopup}
         showMarkerPopup={showMarkerPopup}

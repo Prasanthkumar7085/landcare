@@ -19,7 +19,6 @@ export class MapsController {
             reqData.slug = makeSlug(reqData.title);
 
             const existedMap = await mapsDataServiceProvider.findMapByTitle(reqData.title);
-            console.log(existedMap);
             if (existedMap) {
                 throw new ResourceAlreadyExistsError('title', MAP_TITLE_EXISTS);
             }
@@ -135,7 +134,7 @@ export class MapsController {
         }
     }
 
-    async updateStatus(reqData: any, params: any) {
+    async updateStatus(reqData: any, params: any, user: any) {
         try {
 
             const mapData: any = await mapsDataServiceProvider.findById(params.id);
@@ -145,6 +144,7 @@ export class MapsController {
             
             if (reqData.status === 'publish') {
                 reqData.published_on = new Date();
+                reqData.published_by = user.id;
             }
             
             await mapsDataServiceProvider.updateStatus(params.id, reqData); 
