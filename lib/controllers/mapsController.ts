@@ -144,6 +144,7 @@ export class MapsController {
             
             if (reqData.status === 'publish') {
                 reqData.published_on = new Date();
+                reqData.published_by = reqData.user_id;
             }
             
             await mapsDataServiceProvider.updateStatus(params.id, reqData); 

@@ -3,11 +3,17 @@ import { MarkersController } from "../../../../../../../lib/controllers/markersC
 import { validate } from "../../../../../../../lib/middlewares/validationMiddlware";
 import { AddMarkerSchema } from "../../../../../../../lib/validations/markers/addMarker";
 import { ResponseHelper } from "../../../../../../../lib/helpers/reponseHelper";
+import { validateAccessToken } from "../../../../../../../lib/middlewares/authMiddleware";
 
 const markersController = new MarkersController();
 
 
 export async function POST(req: NextRequest, { params }: any) {
+    //Check authorization
+    const authResult: any = await validateAccessToken(req);
+    if (authResult.status === 403) {
+        return authResult
+    }
     // Validate request
     const reqData = await req.json();
     const validationErrors = await validate(AddMarkerSchema, reqData);
@@ -19,6 +25,12 @@ export async function POST(req: NextRequest, { params }: any) {
 }   
 
 export async function GET(req: NextRequest, { params }: any) {
+    //Check authorization
+    const authResult: any = await validateAccessToken(req);
+    if (authResult.status === 403) {
+        return authResult
+    }
+    
     const { searchParams } = new URL(req.url);
     const query = Object.fromEntries(new URLSearchParams(Array.from(searchParams.entries())));
     
