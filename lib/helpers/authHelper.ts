@@ -9,8 +9,8 @@ export const getUserAuthTokens = function (userData:any) {
       full_name: userData.full_name,
     };
   
-    let tokenSecret = configData.jwt.token_secret + userData.password;
-    let refreshTokenSecret = configData.jwt.refresh_token_secret + userData.password;
+    let tokenSecret = configData.jwt.token_secret
+    let refreshTokenSecret = configData.jwt.refresh_token_secret
   
     const token = jwt.sign(user, tokenSecret, {
       expiresIn: configData.jwt.token_life,

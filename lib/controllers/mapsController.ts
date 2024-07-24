@@ -134,7 +134,7 @@ export class MapsController {
         }
     }
 
-    async updateStatus(reqData: any, params: any) {
+    async updateStatus(reqData: any, params: any, user: any) {
         try {
 
             const mapData: any = await mapsDataServiceProvider.findById(params.id);
@@ -144,6 +144,7 @@ export class MapsController {
             
             if (reqData.status === 'publish') {
                 reqData.published_on = new Date();
+                reqData.published_by = user.id;
             }
             
             await mapsDataServiceProvider.updateStatus(params.id, reqData); 
