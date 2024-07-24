@@ -11,9 +11,9 @@ const MarkerPopup = ({
   popupMarker,
   placeDetails,
   getSingleMapMarkers,
+  removalMarker,
 }: any) => {
   const { id } = useParams();
-  console.log(showMarkerPopup, "9239932932");
   const [popupFormData, setPopupFormData] = useState({
     title: "",
     description: "",
@@ -25,15 +25,13 @@ const MarkerPopup = ({
   };
 
   const handleCancel = () => {
+    removalMarker();
     setPopupFormData({
       title: "",
       description: "",
       type: "",
     });
     setShowMarkerPopup(false);
-    if (popupMarker) {
-      popupMarker.setMap(null);
-    }
   };
 
   const handleSave = async () => {
@@ -46,6 +44,7 @@ const MarkerPopup = ({
       if (response?.status == 200 || response?.status == 201) {
         toast.success("Marker added successfully");
         getSingleMapMarkers();
+        location.reload();
       }
     } catch (err) {
     } finally {

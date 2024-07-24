@@ -1,11 +1,10 @@
 import GoogleMapReact from "google-map-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { addCustomControl } from "../Maps/AddMap/CustomControls/NavigationOnMaps";
 import { MapTypeOptions } from "../Maps/AddMap/CustomControls/MapTypeOptions";
 import { SearchAutoComplete } from "../Maps/AddMap/CustomControls/SearchAutoComplete";
 
-const GoogleMapComponent = ({ OtherMapOptions, markers }: any) => {
-  console.log(markers, "dpp3200320032");
+const GoogleMapComponent = ({ OtherMapOptions }: any) => {
   const mapRef: any = useRef(null);
   const infoWindowRef: any = useRef(null);
   const placesService: any = useRef(null);
@@ -24,23 +23,17 @@ const GoogleMapComponent = ({ OtherMapOptions, markers }: any) => {
     OtherMapOptions(map, maps);
   };
 
-  const Marker = ({ text }: any) => (
-    <div
-      style={{
-        color: "white",
-        background: "blue",
-        padding: "10px 15px",
-        display: "inline-flex",
-        textAlign: "center",
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: "100%",
-        transform: "translate(-50%, -50%)",
-      }}
-    >
-      {text}
-    </div>
-  );
+  useEffect(() => {
+    if (mapRef.current) {
+      const { maps } = window.google;
+
+      // Initialize the PlacesService
+      placesService.current = new maps.places.PlacesService(
+        mapRef.current.map_
+      );
+    }
+  }, []);
+
   return (
     <GoogleMapReact
       bootstrapURLKeys={{
@@ -48,8 +41,8 @@ const GoogleMapComponent = ({ OtherMapOptions, markers }: any) => {
         libraries: ["drawing", "places"],
       }}
       defaultCenter={{
-        lat: 20.5937,
-        lng: 78.9629,
+        lat: -26.1225415,
+        lng: 141.3153582,
       }}
       options={{
         mapTypeId: mapType,
@@ -60,16 +53,7 @@ const GoogleMapComponent = ({ OtherMapOptions, markers }: any) => {
       defaultZoom={6}
       yesIWantToUseGoogleMapApiInternals
       onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-    >
-      {markers?.map((marker: any, index: any) => (
-        <Marker
-          key={index}
-          lat={22.9288203647487}
-          lng={81.92789885758059}
-          text={marker?.type}
-        />
-      ))}
-    </GoogleMapReact>
+    ></GoogleMapReact>
   );
 };
 export default GoogleMapComponent;

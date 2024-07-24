@@ -1,22 +1,20 @@
+import GoogleMapComponent from "@/components/Core/GoogleMap";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
 import { Button, Tooltip } from "@mui/material";
-import GoogleMapReact from "google-map-react";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddMapDrawer from "./AddMapDrawer";
 import AddPolygonDialog from "./AddPolygonDialog";
-import { MapTypeOptions } from "./CustomControls/MapTypeOptions";
-import { addCustomControl } from "./CustomControls/NavigationOnMaps";
 import styles from "./google-map.module.css";
-import GoogleMapComponent from "@/components/Core/GoogleMap";
-import { SearchAutoComplete } from "./CustomControls/SearchAutoComplete";
+import { useRouter } from "next/navigation";
 
 const AddPolygon = () => {
   const mapRef: any = useRef(null);
   const infoWindowRef: any = useRef(null);
   const placesService: any = useRef(null);
   const drawingManagerRef = React.useRef(null);
+  const router = useRouter();
   const dispatch = useDispatch();
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
   const [addPolygonOpen, setAddPolygonOpen] = useState<boolean>(false);
@@ -122,7 +120,6 @@ const AddPolygon = () => {
         .getPath()
         .getArray()
         .map((coord: any) => ({ lat: coord.lat(), lng: coord.lng() }));
-      // Calculate and log the initial area of the polygon
 
       dispatch(storeEditPolygonCoords(updatedCoords));
     });
@@ -196,7 +193,6 @@ const AddPolygon = () => {
     }
   };
 
-  //clear all points when the polygon is draw
   const clearAllPoints = () => {
     if (googleMaps && polygon) {
       dispatch(storeEditPolygonCoords([]));
@@ -210,7 +206,7 @@ const AddPolygon = () => {
     const drawingManager: any = drawingManagerRef.current;
     if (drawingManager) {
       drawingManager.setOptions({
-        drawingControl: true, // show drawing options
+        drawingControl: true,
       });
     }
     if (drawingManager) {
@@ -219,13 +215,11 @@ const AddPolygon = () => {
     }
   };
 
-  // useEffect(() => {
-  //   dispatch(storeEditPolygonCoords([]));
-  // }, []);
   return (
     <div className={styles.markersPageWeb}>
       {renderField == false ? (
         <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
+          <Button onClick={() => router.back()}>Back</Button>
           <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
 
           {polygonCoords?.length === 0 ? (
@@ -262,7 +256,6 @@ const AddPolygon = () => {
                   disabled={polygonCoords?.length >= 3 ? false : true}
                   sx={{ display: polygonCoords?.length >= 3 ? "" : "none" }}
                 >
-                  {/* {editFarmDetails?._id ? "Update" : "Save"} */}
                   <Image
                     src={"/markers/save-icon.svg"}
                     alt=""
@@ -291,8 +284,6 @@ const AddPolygon = () => {
       ) : (
         ""
       )}
-
-      <div></div>
       <AddPolygonDialog
         addPolygonOpen={addPolygonOpen}
         setAddPolygonOpen={setAddPolygonOpen}
