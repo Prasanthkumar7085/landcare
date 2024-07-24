@@ -1,6 +1,7 @@
-import { eq,sql,and, ne} from "drizzle-orm";
+import { eq, sql, and, ne, desc } from "drizzle-orm";
 import { db } from "../database";
 import { lower, maps } from "../schemas/maps";
+import filterHelper from "../helpers/filterHelper";
 
 
 export class MapsDataServiceProvider {
@@ -26,35 +27,33 @@ export class MapsDataServiceProvider {
 
     async findAll(page: number, limit: number, filters: any) {
 
-        let query = sql`
-        SELECT
-           maps.id,
-           maps.title,
-           maps.description,
-           maps.status,
-           maps.published_on,
-           maps.published_by,
-           maps.created_at,
-           maps.updated_at
-        FROM maps
-        ${Object.keys(filters).length > 0 ? sql`WHERE ${sql.raw(filters)}` : sql``}
-        ORDER BY 
-           maps.created_at DESC
-        LIMIT ${limit} 
-        OFFSET ${limit * (page - 1)}`;
+        let queryData:any = db.select({
+            id: maps.id,
+            title: maps.title,
+            description: maps.description,
+            status: maps.status,
+            image: maps.image,
+            published_on: maps.published_on,
+            published_by: maps.published_by,
+            created_at: maps.created_at,
+            updated_at: maps.updated_at
+        })
+            .from(maps)
+            .orderBy(desc(maps.created_at))
+            .limit(limit)
+            .offset(limit * (page - 1));
 
-        return await db.execute(query)
+        queryData = filterHelper.maps(queryData, filters);
+        
+        return await queryData;
     }
 
     async findMapsCount(query: any) {
-        const statement = sql`
-               SELECT
-                  COUNT(*) AS count
-               FROM maps
-               ${Object.keys(query).length > 0 ? sql`WHERE ${sql.raw(query)}` : sql``}
-               `;
-               
-        return await db.execute(statement)
+        let countQuery: any = db.select({ count: sql`COUNT(*)` })
+            .from(maps)
+            
+        countQuery = filterHelper.maps(countQuery, query);
+        return countQuery;
 
     }
 

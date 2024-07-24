@@ -1,0 +1,1 @@
+ALTER TABLE "maps" ADD COLUMN "image" text;

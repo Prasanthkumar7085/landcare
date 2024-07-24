@@ -56,11 +56,9 @@ export class MapsController {
 
             const { page = 1, limit = 10, ...filters } = query;
 
-            const filteredQuery = await filterHelper.maps(filters);
-
             const [mapsData, mapsCount]: any = await Promise.all([
-                mapsDataServiceProvider.findAll(page, limit, filteredQuery),
-                mapsDataServiceProvider.findMapsCount(filteredQuery)
+                mapsDataServiceProvider.findAll(page, limit, filters),
+                mapsDataServiceProvider.findMapsCount(filters)
             ]);
 
             const responseData = paginationHelper.getPaginationResponse({
