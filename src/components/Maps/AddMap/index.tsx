@@ -10,20 +10,21 @@ import styles from "./google-map.module.css";
 import { useRouter } from "next/navigation";
 
 const AddPolygon = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+
   const mapRef: any = useRef(null);
   const infoWindowRef: any = useRef(null);
   const placesService: any = useRef(null);
   const drawingManagerRef = React.useRef(null);
-  const router = useRouter();
-  const dispatch = useDispatch();
+
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
+
   const [addPolygonOpen, setAddPolygonOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [mapType, setMapType] = useState("hybrid");
   const [renderField, setRenderField] = useState(false);
   const [map, setMap] = useState<any>(null);
   const [googleMaps, setGoogleMaps] = useState<any>(null);
-  const [searchedPlaces, setSearchedPlaces] = useState<any>([]);
   const [drawingOpen, setDrawingOpen] = useState<boolean>(false);
   const [polygon, setPolygon] = useState<any>(null);
   const [addDrawerOpen, setAddDrawerOpen] = useState<any>();
@@ -110,9 +111,9 @@ const AddPolygon = () => {
       strokeWeight: 2,
       fillColor: "#FF0000",
       fillOpacity: 0.35,
-      editable: true, // Set the polygon as editable
+      editable: true,
       draggable: true,
-      map: map, // Assuming 'map' is your Google Map instance
+      map: map,
     });
 
     maps.event.addListener(newPolygon, "mouseup", () => {
@@ -131,7 +132,6 @@ const AddPolygon = () => {
       drawingManager,
       "drawingmode_changed",
       function () {
-        // Check the current drawing mode
         const currentDrawingMode = drawingManager.getDrawingMode();
 
         if (currentDrawingMode === null) {
@@ -218,7 +218,7 @@ const AddPolygon = () => {
   // Function to generate static map image URL
   const generateStaticMapUrl = () => {
     if (polygonCoords.length === 0) {
-      return; // No polygon to render
+      return;
     }
 
     const center = `${polygonCoords[3].lat},${polygonCoords[3].lng}`;

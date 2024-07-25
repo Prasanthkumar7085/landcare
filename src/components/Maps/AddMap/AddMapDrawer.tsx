@@ -44,7 +44,7 @@ const AddMapDrawer = ({
       if (response?.status == 200 || response?.status == 201) {
         toast.success("Map added succesfully");
         dispatch(storeEditPolygonCoords([]));
-        router.push(`/view-map/${response?.data?.id}`);
+        router.push(`/add-markers/${response?.data?.id}`);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
       }

@@ -9,7 +9,7 @@ const MarkerPopup = ({
   setShowMarkerPopup,
   showMarkerPopup,
   placeDetails,
-  getSingleMapDetails,
+  getAllMapMarkers,
   removalMarker,
 }: any) => {
   const { id } = useParams();
@@ -24,7 +24,7 @@ const MarkerPopup = ({
   };
 
   const handleCancel = () => {
-    removalMarker();
+    removalMarker(0);
     setPopupFormData({
       title: "",
       description: "",
@@ -42,7 +42,7 @@ const MarkerPopup = ({
       const response = await addMarkerDeatilsAPI(id, body);
       if (response?.status == 200 || response?.status == 201) {
         toast.success("Marker added successfully");
-        getSingleMapDetails();
+        await getAllMapMarkers({});
       }
     } catch (err) {
     } finally {

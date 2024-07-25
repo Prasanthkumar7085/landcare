@@ -6,7 +6,7 @@ import {
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
 } from "@/services/maps";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import MarkerPopup from "./AddMarker/AddMarkerFrom";
 import styles from "./view-map.module.css";
@@ -17,12 +17,12 @@ const ViewGoogleMap = () => {
   const { id } = useParams();
 
   const drawingManagerRef = useRef(null);
+  const pathName = usePathname();
 
   const [loading, setLoading] = useState(true);
   const [renderField, setRenderField] = useState(false);
   const [map, setMaps] = useState<any>(null);
   const [googleMaps, setGoogleMaps] = useState<any>(null);
-  const [viewMapDrawerOpen, setViewMapDrawerOpen] = useState<any>(true);
   const [mapDetails, setMapDetails] = useState<any>({});
   const [polygonCoords, setPolygonCoords] = useState<any>([]);
   const [markers, setMarkers] = useState<any[]>([]);
@@ -31,9 +31,10 @@ const ViewGoogleMap = () => {
   const [paginationDetails, setPaginationDetails] = useState({});
   const [search, setSearch] = useState("");
   const [showMarkerPopup, setShowMarkerPopup] = useState(false);
-  const [popupMarker, setPopupMarker] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
   const [localMarkers, setLocalMarkers] = useState<any>([]);
+  const [overlays, setOverlays] = useState<any[]>([]);
+
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     state: "",
@@ -45,32 +46,21 @@ const ViewGoogleMap = () => {
     coordinates: [],
   });
 
-  function setMarkerDrawingMode() {
-    const drawingManager: any = drawingManagerRef.current;
-
-    if (drawingManager) {
-      drawingManager.setOptions({
-        drawingMode: google.maps.drawing.OverlayType.MARKER,
-      });
-    }
-  }
-
-  const closeDrawing = () => {
-    const drawingManager: any = drawingManagerRef.current;
-    if (drawingManager) {
-      drawingManager.setDrawingMode(null);
-    }
-  };
-
   const removalMarker = (markerIndex: number) => {
-    location.reload();
-    // const marker = localMarkers[markerIndex];
-    // if (marker) {
-    //   marker.setMap(null);
-    //   setLocalMarkers((prevMarkers: any) =>
-    //     prevMarkers.filter((_: any, i: any) => i !== markerIndex)
-    //   );
-    // }
+    const marker = localMarkers[markerIndex];
+    if (marker) {
+      marker.setMap(null);
+      setLocalMarkers((prevMarkers: any) =>
+        prevMarkers.filter((_: any, i: any) => i !== markerIndex)
+      );
+    }
+    const overlay = overlays[markerIndex];
+    if (overlay) {
+      overlay.setMap(null);
+      setOverlays((prevOverlays: any) =>
+        prevOverlays.filter((_: any, i: any) => i !== markerIndex)
+      );
+    }
   };
 
   const addMarkerEVent = (event: any, map: any, maps: any) => {
@@ -82,6 +72,9 @@ const ViewGoogleMap = () => {
     setShowMarkerPopup(true);
     setSelectedMarker(marker);
     setLocalMarkers((prev: any) => [...prev, marker]);
+    const newOverlay = event.overlay;
+    setOverlays((prevOverlays) => [...prevOverlays, newOverlay]);
+
     marker.setMap(map);
 
     const markerPosition: any = marker.getPosition();
@@ -111,7 +104,7 @@ const ViewGoogleMap = () => {
     setMaps(map);
     setGoogleMaps(maps);
     const drawingManager = new maps.drawing.DrawingManager({
-      drawingControl: true,
+      drawingControl: pathName?.includes("/view-map") ? false : true,
       drawingControlOptions: {
         position: maps.ControlPosition.LEFT_CENTER,
         drawingModes: [google.maps.drawing.OverlayType.MARKER],
@@ -258,7 +251,7 @@ const ViewGoogleMap = () => {
         setShowMarkerPopup={setShowMarkerPopup}
         showMarkerPopup={showMarkerPopup}
         placeDetails={placeDetails}
-        getSingleMapDetails={getSingleMapDetails}
+        getAllMapMarkers={getAllMapMarkers}
         removalMarker={removalMarker}
       />
 
