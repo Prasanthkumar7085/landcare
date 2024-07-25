@@ -215,6 +215,43 @@ const AddPolygon = () => {
     }
   };
 
+  // Function to generate static map image URL
+  const generateStaticMapUrl = () => {
+    if (polygonCoords.length === 0) {
+      return; // No polygon to render
+    }
+
+    const center = `${polygonCoords[3].lat},${polygonCoords[3].lng}`;
+    const path = polygonCoords
+      .map(({ lat, lng }: any) => `${lat},${lng}`)
+      .join("|");
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string;
+    const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${center}&zoom=8&size=600x400&path=color:0x0000ff|weight:5|fillcolor:0xFFFF00|${path}&key=${apiKey}`;
+
+    return mapUrl;
+  };
+
+  // Function to fetch and convert image to base64
+  const fetchMapImage = async () => {
+    const mapUrl = generateStaticMapUrl();
+    if (!mapUrl) {
+      return;
+    }
+
+    try {
+      const response = await fetch(mapUrl);
+      const blob = await response.blob();
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        console.log(base64data, "Fdso993993939");
+      };
+    } catch (error) {
+      console.error("Error fetching map image:", error);
+    }
+  };
+
   return (
     <div className={styles.markersPageWeb}>
       {renderField == false ? (
@@ -233,6 +270,7 @@ const AddPolygon = () => {
                 right: "25%",
               }}
             >
+              <button onClick={fetchMapImage}>Generate Map Image</button>
               <Tooltip title="Clear">
                 <Button
                   onClick={clearAllPoints}

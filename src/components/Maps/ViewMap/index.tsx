@@ -6,14 +6,12 @@ import {
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
 } from "@/services/maps";
-import styles from "./view-map.module.css";
-import { addCustomControl } from "../AddMap/CustomControls/NavigationOnMaps";
-import { MapTypeOptions } from "../AddMap/CustomControls/MapTypeOptions";
-import { SearchAutoComplete } from "../AddMap/CustomControls/SearchAutoComplete";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import MarkerPopup from "./AddMarker/AddMarkerFrom";
+import styles from "./view-map.module.css";
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
+import { Button } from "@mui/material";
 
 const ViewGoogleMap = () => {
   const { id } = useParams();
@@ -22,22 +20,20 @@ const ViewGoogleMap = () => {
 
   const [loading, setLoading] = useState(true);
   const [renderField, setRenderField] = useState(false);
-  const [map, setMap] = useState<any>(null);
+  const [map, setMaps] = useState<any>(null);
   const [googleMaps, setGoogleMaps] = useState<any>(null);
   const [viewMapDrawerOpen, setViewMapDrawerOpen] = useState<any>(true);
   const [mapDetails, setMapDetails] = useState<any>({});
   const [polygonCoords, setPolygonCoords] = useState<any>([]);
   const [markers, setMarkers] = useState<any[]>([]);
-  console.log(polygonCoords, "r4pp43p4p3p43");
-  console.log(markers, "34343443");
+  const [mapRef, setMapRef] = useState<any>(null);
   const [singleMarkers, setSingleMarkers] = useState<any[]>([]);
   const [paginationDetails, setPaginationDetails] = useState({});
   const [search, setSearch] = useState("");
-
-  console.log(markers, "Fdsdododoods");
   const [showMarkerPopup, setShowMarkerPopup] = useState(false);
   const [popupMarker, setPopupMarker] = useState(null);
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
+  const [localMarkers, setLocalMarkers] = useState<any>([]);
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     state: "",
@@ -66,22 +62,29 @@ const ViewGoogleMap = () => {
     }
   };
 
-  const removalMarker = () => {
-    if (selectedMarker) {
-      selectedMarker.setMap(null);
-      setSelectedMarker(null);
-    }
+  const removalMarker = (markerIndex: number) => {
+    location.reload();
+    // const marker = localMarkers[markerIndex];
+    // if (marker) {
+    //   marker.setMap(null);
+    //   setLocalMarkers((prevMarkers: any) =>
+    //     prevMarkers.filter((_: any, i: any) => i !== markerIndex)
+    //   );
+    // }
   };
 
-  const addMarkerEVent = (event: any) => {
-    const marker = new googleMaps.Marker({
+  const addMarkerEVent = (event: any, map: any, maps: any) => {
+    const marker = new google.maps.Marker({
       position: event.overlay.getPosition(),
       map: map,
       draggable: true,
     });
     setShowMarkerPopup(true);
     setSelectedMarker(marker);
-    const markerPosition = marker.getPosition();
+    setLocalMarkers((prev: any) => [...prev, marker]);
+    marker.setMap(map);
+
+    const markerPosition: any = marker.getPosition();
     const latitude = markerPosition.lat();
     const longitude = markerPosition.lng();
 
@@ -105,14 +108,13 @@ const ViewGoogleMap = () => {
   };
 
   const OtherMapOptions = (map: any, maps: any) => {
-    setMap(map);
+    setMaps(map);
     setGoogleMaps(maps);
-
     const drawingManager = new maps.drawing.DrawingManager({
       drawingControl: true,
       drawingControlOptions: {
         position: maps.ControlPosition.LEFT_CENTER,
-        drawingModes: ["marker"],
+        drawingModes: [google.maps.drawing.OverlayType.MARKER],
       },
     });
 
@@ -130,7 +132,9 @@ const ViewGoogleMap = () => {
     });
     newPolygon.setMap(map);
 
-    maps.event.addListener(drawingManager, "overlaycomplete", addMarkerEVent);
+    maps.event.addListener(drawingManager, "overlaycomplete", (event: any) => {
+      addMarkerEVent(event, map, maps);
+    });
 
     for (let i = 0; i < markers.length; i++) {
       const markerData = markers[i];
@@ -150,13 +154,6 @@ const ViewGoogleMap = () => {
       });
       markere.setMap(map);
     }
-    let centroid = calculatePolygonCentroid(mapDetails?.geo_coordinates);
-    centerToPolygon(centroid);
-  };
-
-  const centerToPolygon = (value: any) => {
-    map.setCenter(value);
-    map.setZoom(17);
   };
 
   const getSingleMapDetails = async () => {
@@ -205,7 +202,6 @@ const ViewGoogleMap = () => {
   };
 
   const getSingleMapMarkers = async ({ page = 1, limit = 5 }) => {
-    setLoading(true);
     try {
       let queryParams: any = {
         page: page,
@@ -222,6 +218,15 @@ const ViewGoogleMap = () => {
   useEffect(() => {
     getSingleMapDetails();
   }, []);
+
+  useEffect(() => {
+    if (map && googleMaps) {
+      let centroid = calculatePolygonCentroid(mapDetails?.geo_coordinates);
+      const indiaCenter = { lat: centroid.lat, lng: centroid.lng };
+      map.setCenter(indiaCenter);
+      map.setZoom(17);
+    }
+  }, [map, googleMaps]);
 
   useEffect(() => {
     getAllMapMarkers({
@@ -252,9 +257,8 @@ const ViewGoogleMap = () => {
       <MarkerPopup
         setShowMarkerPopup={setShowMarkerPopup}
         showMarkerPopup={showMarkerPopup}
-        popupMarker={popupMarker}
         placeDetails={placeDetails}
-        getSingleMapMarkers={getSingleMapMarkers}
+        getSingleMapDetails={getSingleMapDetails}
         removalMarker={removalMarker}
       />
 

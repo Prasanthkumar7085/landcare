@@ -8,9 +8,8 @@ import { toast } from "sonner";
 const MarkerPopup = ({
   setShowMarkerPopup,
   showMarkerPopup,
-  popupMarker,
   placeDetails,
-  getSingleMapMarkers,
+  getSingleMapDetails,
   removalMarker,
 }: any) => {
   const { id } = useParams();
@@ -43,8 +42,7 @@ const MarkerPopup = ({
       const response = await addMarkerDeatilsAPI(id, body);
       if (response?.status == 200 || response?.status == 201) {
         toast.success("Marker added successfully");
-        getSingleMapMarkers();
-        location.reload();
+        getSingleMapDetails();
       }
     } catch (err) {
     } finally {
