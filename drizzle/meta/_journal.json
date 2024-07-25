@@ -29,6 +29,13 @@
       "when": 1721824871886,
       "tag": "0003_mighty_hardball",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1721889234554,
+      "tag": "0004_huge_scourge",
+      "breakpoints": true
     }
   ]
 }
