@@ -8,6 +8,7 @@ import AddMapDrawer from "./AddMapDrawer";
 import AddPolygonDialog from "./AddPolygonDialog";
 import styles from "./google-map.module.css";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const AddPolygon = () => {
   const router = useRouter();
@@ -17,6 +18,7 @@ const AddPolygon = () => {
   const infoWindowRef: any = useRef(null);
   const placesService: any = useRef(null);
   const drawingManagerRef = React.useRef(null);
+  const polygonRef = useRef<any>(null);
 
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
 
@@ -32,6 +34,50 @@ const AddPolygon = () => {
   const createInfoWindow = (map: any) => {
     const infoWindow = new (window as any).google.maps.InfoWindow();
     infoWindowRef.current = infoWindow;
+  };
+
+  const handleGenerateBase64 = () => {
+    mapRef.current = map;
+    if (polygonRef.current && mapRef.current) {
+      const canvas = document.createElement("canvas");
+      const map = mapRef.current;
+
+      const bounds = new window.google.maps.LatLngBounds();
+      polygonCoords.forEach((coord: any) =>
+        bounds.extend({ lat: coord[0], lng: coord[1] })
+      );
+
+      const scale = 2; // adjust as needed for better resolution
+      const mapWidth =
+        scale * (bounds.getNorthEast().lng() - bounds.getSouthWest().lng());
+      const mapHeight =
+        scale * (bounds.getNorthEast().lat() - bounds.getSouthWest().lat());
+
+      canvas.width = mapWidth;
+      canvas.height = mapHeight;
+
+      const ctx: any = canvas.getContext("2d");
+      const projection = map.getProjection();
+
+      ctx.fillStyle = polygonRef.current.getOptions().fillColor; // Access fillColor from polygon options
+      ctx.strokeStyle = polygonRef.current.getOptions().strokeColor; // Access strokeColor from polygon options
+      ctx.lineWidth = polygonRef.current.getOptions().strokeWeight; // Access strokeWeight from polygon options
+
+      ctx.beginPath();
+      polygonCoords.forEach((coord: any) => {
+        const pixel = projection.fromLatLngToPoint({
+          lat: coord[0],
+          lng: coord[1],
+        });
+        ctx.lineTo(pixel.x * scale, pixel.y * scale);
+      });
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      const dataUrl = canvas.toDataURL();
+      console.log(dataUrl, "fdsakdskdskdkks");
+    }
   };
 
   function setPolygonDrawingMode() {
@@ -103,7 +149,6 @@ const AddPolygon = () => {
         );
       }
     });
-    // Create a new polygon
     const newPolygon = new maps.Polygon({
       paths: polygonCoords,
       strokeColor: "#FF0000",
@@ -124,6 +169,7 @@ const AddPolygon = () => {
 
       dispatch(storeEditPolygonCoords(updatedCoords));
     });
+    polygonRef.current = newPolygon;
 
     newPolygon.setMap(map);
     setPolygon(newPolygon);
@@ -239,7 +285,7 @@ const AddPolygon = () => {
     }
 
     try {
-      const response = await fetch(mapUrl);
+      const response: any = await axios.get(mapUrl);
       const blob = await response.blob();
       const reader = new FileReader();
       reader.readAsDataURL(blob);
@@ -256,7 +302,6 @@ const AddPolygon = () => {
     <div className={styles.markersPageWeb}>
       {renderField == false ? (
         <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
-          <Button onClick={() => router.back()}>Back</Button>
           <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
 
           {polygonCoords?.length === 0 ? (
@@ -270,7 +315,9 @@ const AddPolygon = () => {
                 right: "25%",
               }}
             >
-              <button onClick={fetchMapImage}>Generate Map Image</button>
+              <button onClick={() => handleGenerateBase64()}>
+                Generate Map Image
+              </button>
               <Tooltip title="Clear">
                 <Button
                   onClick={clearAllPoints}
