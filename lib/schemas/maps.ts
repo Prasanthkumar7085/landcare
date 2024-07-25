@@ -5,7 +5,7 @@ import { SQL, sql } from 'drizzle-orm';
 import { users } from './users';
 export const statusEnum = pgEnum('status', ['draft', 'active', 'publish', 'inactive', 'archived']);
 
-export const maps = pgTable("maps", {
+export const maps :any= pgTable("maps", {
 
     id: serial('id').primaryKey(),
 
