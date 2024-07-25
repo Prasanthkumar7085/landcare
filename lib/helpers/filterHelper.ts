@@ -13,7 +13,7 @@ class FilterHelper {
         }
 
         if (filters && filters.status) {
-            conditions.push(eq(lower(maps.status), `${filters.status.toLowerCase()}`));
+            conditions.push(eq(maps.status, `${filters.status}`));
         } else {
             conditions.push(ne(maps.status,'archived'));
         }

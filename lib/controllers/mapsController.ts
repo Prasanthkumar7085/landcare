@@ -55,6 +55,10 @@ export class MapsController {
         try {
 
             const { page = 1, limit = 10, ...filters } = query;
+            
+            if (filters.status && (filters.status != 'active' && filters.status != 'publish' && filters.status != 'draft')) {
+                return ResponseHelper.sendErrorResponse(400, 'Invalid status provided in query');   
+            }
 
             const [mapsData, mapsCount]: any = await Promise.all([
                 mapsDataServiceProvider.findAll(page, limit, filters),
