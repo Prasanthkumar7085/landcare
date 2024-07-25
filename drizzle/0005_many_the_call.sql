@@ -1,0 +1,1 @@
+ALTER TABLE "map_markers" ADD COLUMN "color_code" varchar;

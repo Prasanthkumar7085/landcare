@@ -12,6 +12,7 @@ export const mapMarkers:any = pgTable("map_markers", {
     description: text('description'),
     type: varchar('type'),
     coordinates: jsonb('coordinates').$type<number[]>().notNull(),
+    color_code: varchar('color_code'),
 
     full_address: varchar('full_address').notNull(),
     state: varchar('state'),

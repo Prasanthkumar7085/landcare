@@ -46,6 +46,7 @@ export class MarkersDataServiceProvider {
             coordinates: mapMarkers.coordinates,
             full_address: mapMarkers.full_address,
             images: mapMarkers.images,
+            color_code: mapMarkers.color_code,
             tags: mapMarkers.tags,
             created_at: mapMarkers.created_at,
             updated_at: mapMarkers.updated_at

@@ -19,5 +19,6 @@ export const AddMarkerSchema = v.object({
     social_links: v.optional(v.array(v.string())),
     added_by: v.optional(v.string()),
     coordinates: v.pipe(v.array(v.number()), v.nonEmpty()),
+    color_code: v.optional(v.string()),
 });
   
