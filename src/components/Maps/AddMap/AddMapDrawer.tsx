@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Drawer,
   IconButton,
   TextField,
@@ -13,12 +14,16 @@ import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
+import LoadingComponent from "@/components/Core/LoadingComponent";
+import { handleGeneratePolygonBase64 } from "@/lib/helpers/mapsHelpers";
 
 const AddMapDrawer = ({
   addDrawerOpen,
   setAddDrawerOpen,
   clearAllPoints,
   closeDrawing,
+  map,
+  mapRef,
 }: any) => {
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
   const router = useRouter();
@@ -30,14 +35,24 @@ const AddMapDrawer = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const addMapWithCordinates = async () => {
+    let mapImage;
+    await handleGeneratePolygonBase64(map, mapRef, polygonCoords)
+      .then((base64Url) => {
+        mapImage = base64Url;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
     setLoading(true);
     let body = {
       title: mapName ? mapName : "",
       description: description ? description : "",
-      status: "active",
+      status: "draft",
       geo_type: "polygon",
       geo_coordinates: polygonCoords.map((obj: any) => Object.values(obj)),
       geo_zoom: 14,
+      image: mapImage,
     };
     try {
       const response = await addMapWithCordinatesAPI(body);
@@ -82,7 +97,6 @@ const AddMapDrawer = ({
           <IconButton
             onClick={() => {
               setAddDrawerOpen(false);
-              dispatch(storeEditPolygonCoords([]));
             }}
           >
             <CloseIcon />
@@ -105,8 +119,10 @@ const AddMapDrawer = ({
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label>Map Description</label>
             <TextField
+              multiline
               placeholder="Enter Map Description"
               value={description}
+              rows={7}
               onChange={(e) => {
                 setDescription(e.target.value);
               }}
@@ -122,6 +138,7 @@ const AddMapDrawer = ({
           >
             <Button
               sx={{ background: "white", color: "#769f3f" }}
+              disabled={loading ? true : false}
               onClick={() => {
                 setAddDrawerOpen(false);
                 clearAllPoints();
@@ -135,7 +152,14 @@ const AddMapDrawer = ({
               sx={{ background: "#769f3f", color: "white" }}
               onClick={() => addMapWithCordinates()}
             >
-              Save Map
+              {loading ? (
+                <CircularProgress
+                  color="inherit"
+                  sx={{ width: "10px", height: "10px" }}
+                />
+              ) : (
+                "Save Map"
+              )}
             </Button>
           </div>
         </div>
