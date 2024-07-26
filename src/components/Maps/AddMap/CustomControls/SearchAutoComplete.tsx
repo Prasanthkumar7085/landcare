@@ -66,18 +66,17 @@ export const SearchAutoComplete = ({
   autocomplete.addListener("place_changed", onPlaceChanged);
 };
 const centerMapToPlace = (place: any, mapRef: any) => {
-  if (mapRef.current && place?.geometry && place.geometry.location) {
-    const location = place.geometry.location;
-    if (
-      location &&
-      typeof location.lat === "function" &&
-      typeof location.lng === "function"
-    ) {
-      const latLng = new google.maps.LatLng(location.lat(), location.lng());
-      mapRef.current.panTo(latLng);
-      mapRef.current.setZoom(14);
-    } else {
-      console.error("Invalid location object");
+  if (mapRef.current && place?.geometry && place.geometry.viewport) {
+    const viewport = place.geometry.viewport;
+
+    mapRef.current.fitBounds(viewport);
+
+    const maxZoom = 14;
+    const zoom = mapRef.current.getZoom();
+    if (zoom > maxZoom) {
+      mapRef.current.setZoom(maxZoom);
     }
+  } else {
+    console.error("Invalid place object or viewport not available");
   }
 };

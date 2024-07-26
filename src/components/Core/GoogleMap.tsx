@@ -23,17 +23,6 @@ const GoogleMapComponent = ({ OtherMapOptions }: any) => {
     OtherMapOptions(map, maps);
   };
 
-  useEffect(() => {
-    if (mapRef.current) {
-      const { maps } = window.google;
-
-      // Initialize the PlacesService
-      placesService.current = new maps.places.PlacesService(
-        mapRef.current.map_
-      );
-    }
-  }, []);
-
   return (
     <GoogleMapReact
       bootstrapURLKeys={{

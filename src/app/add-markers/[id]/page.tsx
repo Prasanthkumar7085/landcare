@@ -6,11 +6,11 @@ import { Suspense } from "react";
 const ViewGoogleMap = dynamic(() => import("@/components/Maps/ViewMap"), {
   ssr: false,
 });
-const ViewMapDetails = () => {
+const AddMarkersPage = () => {
   return (
     <Suspense>
       <ViewGoogleMap />
     </Suspense>
   );
 };
-export default ViewMapDetails;
+export default AddMarkersPage;
