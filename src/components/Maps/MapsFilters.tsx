@@ -1,5 +1,5 @@
 import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
-import { Button, InputAdornment, TextField } from "@mui/material";
+import { Button, InputAdornment, Tab, Tabs, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Image from "next/image";
 import {
@@ -80,43 +80,54 @@ const MapsFilters = () => {
   }, [params]);
 
   return (
-    <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
-      <DateRangePicker
-        value={
-          fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
-        }
-        onChange={handleDateRangeChange}
-        placeholder="Select Start Date - End Date"
-        style={{ width: 250 }}
-        disabledDate={(date) => {
-          return date.getTime() >= new Date().getTime();
-        }}
-      />
-      <TextField
-        variant="outlined"
-        type="search"
-        size="small"
-        value={searchString}
-        onChange={handleSearchChange}
-        placeholder="Search Title"
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Image src="/search-icon.svg" alt="" width={15} height={15} />
-            </InputAdornment>
-          ),
-        }}
-      />
-      <Button
-        variant="contained"
-        color="success"
-        onClick={() => {
-          router.push("/add-map");
-        }}
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem", borderBottom: "1px solid #ddd" }}>
+      <Tabs
+        textColor="secondary"
+        indicatorColor="secondary"
+        aria-label="secondary tabs example"
       >
-        Create New Map
-        <AddIcon />
-      </Button>
+        <Tab value="" label='All' />
+        <Tab value="" label='Owned' />
+        <Tab value="" label='Shared' />
+      </Tabs>
+      <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+        <DateRangePicker
+          value={
+            fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
+          }
+          onChange={handleDateRangeChange}
+          placeholder="Start Date - End Date"
+          style={{ width: 250 }}
+          disabledDate={(date) => {
+            return date.getTime() >= new Date().getTime();
+          }}
+        />
+        <TextField
+          variant="outlined"
+          type="search"
+          size="small"
+          value={searchString}
+          onChange={handleSearchChange}
+          placeholder="Search"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Image src="/search-icon.svg" alt="" width={15} height={15} />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => {
+            router.push("/add-map");
+          }}
+          startIcon={<AddIcon />}
+        >
+          Create New Map
+        </Button>
+      </div>
     </div>
   );
 };
