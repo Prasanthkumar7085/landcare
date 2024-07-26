@@ -142,7 +142,7 @@ const AddMapDrawer = ({
               value={mapDetails?.title}
               name="title"
               onChange={handleFieldValue}
-            ></TextField>
+            />
             <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -154,7 +154,7 @@ const AddMapDrawer = ({
               rows={7}
               name="description"
               onChange={handleFieldValue}
-            ></TextField>
+            />
           </div>
           <div
             style={{

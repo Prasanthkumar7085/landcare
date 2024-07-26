@@ -59,7 +59,7 @@ const ViewMapDetailsDrawer = ({
             Markers
           </Typography>
         </div>
-        {markers?.length > 0 ? (
+        {markers?.length > 0 || singleMarkers?.length > 0 ? (
           <div>
             <MapMarkersList
               markers={markers}

@@ -224,10 +224,12 @@ const AddPolygon = () => {
   useEffect(() => {
     if (map && googleMaps) {
       if (id) {
-        let centroid = calculatePolygonCentroid(mapDetails?.geo_coordinates);
-        const center = { lat: centroid.lat, lng: centroid.lng };
-        map.setCenter(center);
-        map.setZoom(10);
+        const bounds = new google.maps.LatLngBounds();
+        polygonCoords.forEach((coord: any) => {
+          bounds.extend(new google.maps.LatLng(coord.lat, coord.lng));
+        });
+
+        map.fitBounds(bounds);
       } else {
         let center = { lat: -25.1198163, lng: 135.9791755 };
         map.setCenter(center);

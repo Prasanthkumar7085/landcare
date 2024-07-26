@@ -16,6 +16,8 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import styles from "./index.module.css";
 import { datePipe } from "@/lib/helpers/datePipe";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
+import Image from "next/image";
+import { mapTypeOptions } from "@/lib/constants/mapConstants";
 
 const MapMarkersList = ({
   singleMarkers,
@@ -85,7 +87,16 @@ const MapMarkersList = ({
                     </Typography>
                   </div>
                   <div className={styles.markerlocation1}>
-                    <LocationOnIcon className={styles.clock1Icon} />
+                    <Image
+                      src={
+                        mapTypeOptions?.find(
+                          (item: any) => item?.title == marker.type
+                        )?.img as string
+                      }
+                      width={12}
+                      height={12}
+                      alt="type"
+                    />
                     <Typography className={styles.filter}>
                       {marker.type}
                     </Typography>
