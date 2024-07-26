@@ -17,7 +17,7 @@ import styles from "./index.module.css";
 import { datePipe } from "@/lib/helpers/datePipe";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
 
-const MapMarkersList = ({ markers, paginationDetails, getData, setSearch, search, singleMarkers }: any) => {
+const MapMarkersList = ({ markers, paginationDetails, getData, setSearch, search, singleMarkers, setSearchString, searchString }: any) => {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -35,11 +35,15 @@ const MapMarkersList = ({ markers, paginationDetails, getData, setSearch, search
                         <div className={styles.inputsearch}>
                             <TextField
                                 variant="outlined"
+                                size='small'
+                                type='search'
                                 placeholder="Search"
+                                value={searchString}
+                                onChange={(e) => setSearchString(e.target.value)}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <SearchIcon className={styles.searchicon} />
+                                            <SearchIcon />
                                         </InputAdornment>
                                     ),
                                 }}

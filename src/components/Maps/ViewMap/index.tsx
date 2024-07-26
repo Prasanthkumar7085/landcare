@@ -30,6 +30,7 @@ const ViewGoogleMap = () => {
   const [singleMarkers, setSingleMarkers] = useState<any[]>([]);
   const [paginationDetails, setPaginationDetails] = useState({});
   const [search, setSearch] = useState("");
+  const [searchString, setSearchString] = useState("");
   const [showMarkerPopup, setShowMarkerPopup] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
   const [localMarkers, setLocalMarkers] = useState<any>([]);
@@ -194,11 +195,16 @@ const ViewGoogleMap = () => {
     }
   };
 
-  const getSingleMapMarkers = async ({ page = 1, limit = 5 }) => {
+  const getSingleMapMarkers = async ({
+    page = 1,
+    limit = 5,
+    search_string = searchString,
+  }) => {
     try {
       let queryParams: any = {
         page: page,
         limit: limit,
+        search_string: search_string
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
@@ -229,6 +235,14 @@ const ViewGoogleMap = () => {
     });
   }, [search]);
 
+  useEffect(() => {
+    getSingleMapMarkers({
+      page: 1,
+      limit: 8,
+      search_string: searchString,
+    });
+  }, [searchString]);
+
   return (
     <div
       className={styles.markersPageWeb}
@@ -246,6 +260,8 @@ const ViewGoogleMap = () => {
         setSearch={setSearch}
         search={search}
         singleMarkers={singleMarkers}
+        setSearchString={setSearchString}
+        searchString={searchString}
       />
       <MarkerPopup
         setShowMarkerPopup={setShowMarkerPopup}
