@@ -30,8 +30,8 @@ const GoogleMapComponent = ({ OtherMapOptions }: any) => {
         libraries: ["drawing", "places"],
       }}
       defaultCenter={{
-        lat: -26.1225415,
-        lng: 141.3153582,
+        lat: -25.1198163,
+        lng: 135.9791755,
       }}
       options={{
         mapTypeId: mapType,

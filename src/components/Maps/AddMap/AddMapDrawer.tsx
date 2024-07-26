@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
 import LoadingComponent from "@/components/Core/LoadingComponent";
 import { handleGeneratePolygonBase64 } from "@/lib/helpers/mapsHelpers";
+import { checkAllowedValidText } from "@/lib/helpers/inputCheckingFunctions";
 
 const AddMapDrawer = ({
   mapDetails,
@@ -41,11 +42,15 @@ const AddMapDrawer = ({
 
   const handleFieldValue = (event: any) => {
     const { name, value } = event.target;
-    const deviceVAlue = value.replace(/\s+/g, " ");
-    setMapDetails({
-      ...mapDetails,
-      [name]: deviceVAlue,
-    });
+    if (value && checkAllowedValidText(value)) {
+      let details = { ...mapDetails };
+      details[name] = value;
+      setMapDetails(details);
+    } else {
+      let details = { ...mapDetails };
+      delete details[name];
+      setMapDetails(details);
+    }
   };
 
   const getmapDetailsAPI = (body: any) => {
@@ -164,8 +169,6 @@ const AddMapDrawer = ({
               disabled={loading ? true : false}
               onClick={() => {
                 setAddDrawerOpen(false);
-                clearAllPoints();
-                closeDrawing();
               }}
             >
               Cancel

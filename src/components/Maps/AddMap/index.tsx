@@ -222,11 +222,16 @@ const AddPolygon = () => {
   }, []);
 
   useEffect(() => {
-    if (map && googleMaps && mapDetails) {
-      let centroid = calculatePolygonCentroid(mapDetails?.geo_coordinates);
-      const indiaCenter = { lat: centroid.lat, lng: centroid.lng };
-      map.setCenter(indiaCenter);
-      map.setZoom(15);
+    if (map && googleMaps) {
+      if (id) {
+        let centroid = calculatePolygonCentroid(mapDetails?.geo_coordinates);
+        const center = { lat: centroid.lat, lng: centroid.lng };
+        map.setCenter(center);
+        map.setZoom(10);
+      } else {
+        let center = { lat: -25.1198163, lng: 135.9791755 };
+        map.setCenter(center);
+      }
     }
   }, [map, googleMaps]);
 
