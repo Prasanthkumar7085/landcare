@@ -36,6 +36,8 @@ const Maps = () => {
     page = searchParams?.page,
     limit = searchParams?.limit,
     search_string = searchParams?.search_string,
+    from_date = searchParams?.from_date,
+    to_date = searchParams?.to_date
   }: Partial<ListMapsApiProps>) => {
     setLoading(true);
     try {
@@ -43,6 +45,8 @@ const Maps = () => {
         page: page ? page : 1,
         limit: limit ? limit : 8,
         search_string: search_string ? search_string : "",
+        from_date: from_date ? from_date : "",
+        to_date: to_date ? to_date : "",
       };
       let queryString = prepareURLEncodedParams("", queryParams);
 
@@ -69,8 +73,10 @@ const Maps = () => {
       page: searchParams?.page ? searchParams?.page : 1,
       limit: searchParams?.limit ? searchParams?.limit : 8,
       search_string: searchParams?.search_string,
+      from_date: searchParams?.from_date,
+      to_date: searchParams?.to_date
     });
-  }, [searchParams?.page, searchParams?.limit, searchParams?.search_string]);
+  }, [searchParams?.page, searchParams?.limit, searchParams?.search_string, searchParams?.from_date, searchParams?.to_date]);
 
   const capturePageNum = (value: number) => {
     getAllMaps({

@@ -9,6 +9,9 @@ import {
   useSearchParams,
 } from "next/navigation";
 import { useEffect, useState } from "react";
+import { DateRangePicker } from "rsuite";
+import 'rsuite/dist/rsuite.css';
+import dayjs from "dayjs";
 
 const MapsFilters = () => {
   const router = useRouter();
@@ -16,9 +19,9 @@ const MapsFilters = () => {
   const params = useSearchParams();
   const param = useParams();
 
-  const [searchString, setSearchString] = useState(
-    params.get("search_string") || ""
-  );
+  const [searchString, setSearchString] = useState(params.get("search_string") || "");
+  const [fromDate, setFromDate] = useState<string | null>(params.get("from_date") || null);
+  const [toDate, setToDate] = useState<string | null>(params.get("to_date") || null);
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
   );
@@ -35,6 +38,41 @@ const MapsFilters = () => {
     router.push(`${path}${queryString}`);
   };
 
+  const formatDate = (date: any) => {
+    if (!date) return null;
+    const dateFormat = dayjs(date).format("YYYY-MM-DD")
+    return dateFormat;
+  };
+
+  const handleDateRangeChange = (range: any) => {
+    if (range) {
+      const [start, end] = range;
+      setFromDate(formatDate(start));
+      setToDate(formatDate(end));
+
+      let queryParams = {
+        ...searchParams,
+        from_date: formatDate(start) ? formatDate(start) : "",
+        to_date: formatDate(end) ? formatDate(end) : "",
+        page: 1,
+      };
+      let queryString = prepareURLEncodedParams("", queryParams);
+      router.push(`${path}${queryString}`);
+    } else {
+      setFromDate(null);
+      setToDate(null);
+
+      let queryParams = {
+        ...searchParams,
+        from_date: "",
+        to_date: "",
+        page: 1,
+      };
+      let queryString = prepareURLEncodedParams("", queryParams);
+      router.push(`${path}${queryString}`);
+    }
+  };
+
   useEffect(() => {
     setSearchParams(
       Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
@@ -43,6 +81,17 @@ const MapsFilters = () => {
 
   return (
     <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
+      <DateRangePicker
+        value={
+          fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
+        }
+        onChange={handleDateRangeChange}
+        placeholder="Select Start Date - End Date"
+        style={{ width: 250 }}
+        disabledDate={(date) => {
+          return date.getTime() >= new Date().getTime();
+        }}
+      />
       <TextField
         variant="outlined"
         type="search"
@@ -71,4 +120,5 @@ const MapsFilters = () => {
     </div>
   );
 };
+
 export default MapsFilters;
