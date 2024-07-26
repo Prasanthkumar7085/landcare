@@ -53,7 +53,6 @@ export const SearchAutoComplete = ({
 
   const onPlaceChanged = () => {
     const place = autocomplete.getPlace();
-    console.log(place, "yes rewiqj");
     if (!place.geometry || !place.geometry.location) {
       console.error("No place data available");
       return;

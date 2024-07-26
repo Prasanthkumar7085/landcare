@@ -14,7 +14,7 @@ export const handleGeneratePolygonBase64 = (
   polygonCoords: any
 ): Promise<string | null> => {
   return new Promise((resolve, reject) => {
-    const expansionFactor = 0.12;
+    const expansionFactor = 0.9;
     const canvasWidth = 600;
     const canvasHeight = 400;
     mapRef.current = map;

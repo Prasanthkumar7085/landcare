@@ -1,20 +1,22 @@
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
 import { Button, Tooltip } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddMapDrawer from "./AddMapDrawer";
 import AddPolygonDialog from "./AddPolygonDialog";
 import styles from "./google-map.module.css";
+import { getSingleMapDetailsAPI } from "@/services/maps";
+import { useParams } from "next/navigation";
+import { calculatePolygonCentroid } from "@/lib/helpers/mapsHelpers";
 
 const AddPolygon = () => {
   const dispatch = useDispatch();
-
+  const { id } = useParams();
   const drawingManagerRef = React.useRef(null);
   const mapRef: any = useRef(null);
 
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
-
   const [addPolygonOpen, setAddPolygonOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [renderField, setRenderField] = useState(false);
@@ -23,6 +25,7 @@ const AddPolygon = () => {
   const [drawingOpen, setDrawingOpen] = useState<boolean>(false);
   const [polygon, setPolygon] = useState<any>(null);
   const [addDrawerOpen, setAddDrawerOpen] = useState<any>();
+  const [mapDetails, setMapDetails] = useState<any>({});
 
   const setPolygonDrawingMode = () => {
     const drawingManager: any = drawingManagerRef.current;
@@ -48,6 +51,16 @@ const AddPolygon = () => {
       dispatch(storeEditPolygonCoords(updatedCoords));
       stopDrawingMode();
     }
+  };
+
+  const updatePolygonEvent = (newPolygon: any, map: any, maps: any) => {
+    const paths = newPolygon.getPath().getArray();
+    let updatedCoords = paths.map((coord: any) => ({
+      lat: coord.lat(),
+      lng: coord.lng(),
+    }));
+    dispatch(storeEditPolygonCoords(updatedCoords));
+    stopDrawingMode();
   };
 
   const OtherMapOptions = (map: any, maps: any) => {
@@ -85,7 +98,9 @@ const AddPolygon = () => {
       draggable: true,
       map: map,
     });
-    maps.event.addListener(newPolygon, "mouseup", addPolygonEvent);
+    maps.event.addListener(newPolygon, "mouseup", (event: any) => {
+      updatePolygonEvent(newPolygon, map, maps);
+    });
 
     newPolygon.setMap(map);
     setPolygon(newPolygon);
@@ -176,6 +191,45 @@ const AddPolygon = () => {
     }
   };
 
+  const getSingleMapDetails = async () => {
+    setLoading(true);
+    try {
+      const response = await getSingleMapDetailsAPI(id);
+      if (response?.status == 200 || response?.status == 201) {
+        setMapDetails(response?.data);
+        let updatedArray = response?.data?.geo_coordinates.map((item: any) => {
+          return {
+            lat: item[0],
+            lng: item[1],
+          };
+        });
+        setRenderField(true);
+        setTimeout(() => {
+          setRenderField(false);
+        }, 100);
+        dispatch(storeEditPolygonCoords(updatedArray));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (id) {
+      getSingleMapDetails();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (map && googleMaps && mapDetails) {
+      let centroid = calculatePolygonCentroid(mapDetails?.geo_coordinates);
+      const indiaCenter = { lat: centroid.lat, lng: centroid.lng };
+      map.setCenter(indiaCenter);
+      map.setZoom(15);
+    }
+  }, [map, googleMaps]);
+
   return (
     <div className={styles.markersPageWeb}>
       {renderField == false ? (
@@ -252,6 +306,8 @@ const AddPolygon = () => {
         setDrawingOpen={setDrawingOpen}
       />
       <AddMapDrawer
+        mapDetails={mapDetails}
+        setMapDetails={setMapDetails}
         addDrawerOpen={addDrawerOpen}
         setAddDrawerOpen={setAddDrawerOpen}
         clearAllPoints={clearAllPoints}

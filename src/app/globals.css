@@ -31,3 +31,6 @@
   /* Border radiuses */
   --br-3xs: 10px;
 }
+.rs-picker-daterange-header {
+  display: none !important;
+}
