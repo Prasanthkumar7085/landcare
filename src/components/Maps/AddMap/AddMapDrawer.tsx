@@ -81,7 +81,6 @@ const AddMapDrawer = ({
     };
     try {
       const response = await getmapDetailsAPI(body);
-      console.log(response, "sdaksai9");
       if (response?.status == 200 || response?.status == 201) {
         toast.success(response?.message);
         dispatch(storeEditPolygonCoords([]));

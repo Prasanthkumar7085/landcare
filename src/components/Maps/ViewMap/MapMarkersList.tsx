@@ -18,11 +18,6 @@ import { datePipe } from "@/lib/helpers/datePipe";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
 
 const MapMarkersList = ({
-  markers,
-  paginationDetails,
-  getData,
-  setSearch,
-  search,
   singleMarkers,
   setSearchString,
   searchString,
@@ -40,6 +35,9 @@ const MapMarkersList = ({
       <div className={styles.markersection}>
         <div className={styles.mapdetails}>
           <div className={styles.markertop}>
+            <Typography variant="h6" className={styles.title}>
+              Markers
+            </Typography>
             <div className={styles.inputsearch}>
               <TextField
                 variant="outlined"
@@ -69,7 +67,7 @@ const MapMarkersList = ({
               </IconButton>
             </div>
           </div>
-          {singleMarkers.map((marker: any, index: any) => (
+          {singleMarkers?.map((marker: any, index: any) => (
             <Card className={styles.markerlocation} key={index}>
               <CardContent className={styles.locationcard}>
                 <div className={styles.locationprofile}>
@@ -122,15 +120,7 @@ const MapMarkersList = ({
           </Typography>
         </CardActions>
       </div>
-      <MapMarkersListDialog
-        open={open}
-        handleClose={handleClose}
-        markers={markers}
-        paginationDetails={paginationDetails}
-        getData={getData}
-        setSearch={setSearch}
-        search={search}
-      />
+      <MapMarkersListDialog open={open} handleClose={handleClose} />
     </div>
   );
 };

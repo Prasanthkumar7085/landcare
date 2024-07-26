@@ -175,26 +175,6 @@ const ViewGoogleMap = () => {
     }
   };
 
-  const getAllMapMarkers = async ({
-    page = 1,
-    limit = 8,
-    search_string = search,
-  }) => {
-    try {
-      let queryParams: any = {
-        search_string: search_string ? search_string : "",
-        page: page,
-        limit: limit,
-      };
-      const response = await getAllMapMarkersAPI(id, queryParams);
-      const { data, ...rest } = response;
-      setMarkers(data);
-      setPaginationDetails(rest);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const getSingleMapMarkers = async ({
     page = 1,
     limit = 5,
@@ -227,18 +207,11 @@ const ViewGoogleMap = () => {
     }
   }, [map, googleMaps]);
 
-  useEffect(() => {
-    getAllMapMarkers({
-      page: 1,
-      limit: 8,
-      search_string: search,
-    });
-  }, [search]);
 
   useEffect(() => {
     getSingleMapMarkers({
       page: 1,
-      limit: 8,
+      limit: 5,
       search_string: searchString,
     });
   }, [searchString]);
@@ -254,11 +227,6 @@ const ViewGoogleMap = () => {
 
       <ViewMapDetailsDrawer
         mapDetails={mapDetails}
-        markers={markers}
-        paginationDetails={paginationDetails}
-        getData={getAllMapMarkers}
-        setSearch={setSearch}
-        search={search}
         singleMarkers={singleMarkers}
         setSearchString={setSearchString}
         searchString={searchString}
@@ -267,7 +235,7 @@ const ViewGoogleMap = () => {
         setShowMarkerPopup={setShowMarkerPopup}
         showMarkerPopup={showMarkerPopup}
         placeDetails={placeDetails}
-        getAllMapMarkers={getAllMapMarkers}
+        getSingleMapMarkers={getSingleMapMarkers}
         removalMarker={removalMarker}
       />
 

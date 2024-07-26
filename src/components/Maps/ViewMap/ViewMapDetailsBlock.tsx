@@ -2,9 +2,9 @@ import { Button, Menu, MenuItem, Typography } from "@mui/material";
 import styles from "./view-map-block.module.css";
 import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
-import MapMarkersList from "./MapMarkersList";
 import React from "react";
 import Image from "next/image";
+import MapMarkersList from "./MapMarkersList";
 const ViewMapDetailsDrawer = ({
   mapDetails,
   markers,

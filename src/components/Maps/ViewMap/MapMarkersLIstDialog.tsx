@@ -12,6 +12,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
+import { getAllMapMarkersAPI } from '@/services/maps';
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -22,7 +25,40 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const MapMarkersListDialog = ({ open, handleClose, markers, getData, paginationDetails, setSearch, search }: any) => {
+const MapMarkersListDialog = ({ open, handleClose }: any) => {
+    const { id } = useParams();
+
+    const [markers, setMarkers] = useState<any[]>([]);
+    const [paginationDetails, setPaginationDetails] = useState({});
+    const [search, setSearch] = useState("");
+
+    const getAllMapMarkers = async ({
+        page = 1,
+        limit = 8,
+        search_string = search,
+    }) => {
+        try {
+            let queryParams: any = {
+                search_string: search_string ? search_string : "",
+                page: page,
+                limit: limit,
+            };
+            const response = await getAllMapMarkersAPI(id, queryParams);
+            const { data, ...rest } = response;
+            setMarkers(data);
+            setPaginationDetails(rest);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    useEffect(() => {
+        getAllMapMarkers({
+            page: 1,
+            limit: 8,
+            search_string: search,
+        });
+    }, [search]);
 
     const columns = [
         {
@@ -118,14 +154,14 @@ const MapMarkersListDialog = ({ open, handleClose, markers, getData, paginationD
     ];
 
     const capturePageNum = (value: number) => {
-        getData({
+        getAllMapMarkers({
             limit: 10,
             page: value,
         });
     };
 
     const captureRowPerItems = (value: number) => {
-        getData({
+        getAllMapMarkers({
             limit: value,
             page: 1,
         });

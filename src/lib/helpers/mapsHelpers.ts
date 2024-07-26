@@ -27,14 +27,20 @@ export const handleGeneratePolygonBase64 = (
     const minLng = Math.min(...longitudes);
     const maxLng = Math.max(...longitudes);
 
-    // Create a canvas element
+    const polygonWidth = maxLng - minLng;
+    const polygonHeight = maxLat - minLat;
+
+    const centerLng = (maxLng + minLng) / 2;
+    const centerLat = (maxLat + minLat) / 2;
+
     const canvas = document.createElement("canvas");
     const ctx: any = canvas.getContext("2d");
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
 
-    // Draw the map image on the canvas
     const mapImage = mapRef.current.getDiv().querySelector("img");
+    const zoomLevel = map.getZoom();
+
     if (mapImage) {
       const img = new Image();
       img.crossOrigin = "Anonymous";
@@ -43,16 +49,19 @@ export const handleGeneratePolygonBase64 = (
         try {
           ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
 
+          ctx.translate(canvasWidth / 2, canvasHeight / 2);
+          const zoomFactor = 0.5;
+
           ctx.beginPath();
           polygonCoords.forEach((coord: any, index: number) => {
             const x =
-              ((coord.lng - minLng) / (maxLng - minLng)) *
+              ((coord.lng - centerLng) / polygonWidth) *
               canvasWidth *
-              (1 + expansionFactor);
+              zoomFactor;
             const y =
+              ((centerLat - coord.lat) / polygonHeight) *
               canvasHeight *
-              (1 - (coord.lat - minLat) / (maxLat - minLat)) *
-              (1 + expansionFactor);
+              zoomFactor;
 
             if (index === 0) {
               ctx.moveTo(x, y);
@@ -65,6 +74,8 @@ export const handleGeneratePolygonBase64 = (
           ctx.fill();
           ctx.strokeStyle = "red";
           ctx.stroke();
+
+          ctx.translate(-canvasWidth / 2, -canvasHeight / 2);
 
           const dataUrl = canvas.toDataURL();
           resolve(dataUrl);

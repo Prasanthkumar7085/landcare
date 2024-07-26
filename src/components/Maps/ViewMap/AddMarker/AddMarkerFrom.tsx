@@ -9,7 +9,7 @@ const MarkerPopup = ({
   setShowMarkerPopup,
   showMarkerPopup,
   placeDetails,
-  getAllMapMarkers,
+  getSingleMapMarkers,
   removalMarker,
 }: any) => {
   const { id } = useParams();
@@ -42,7 +42,7 @@ const MarkerPopup = ({
       const response = await addMarkerDeatilsAPI(id, body);
       if (response?.status == 200 || response?.status == 201) {
         toast.success("Marker added successfully");
-        await getAllMapMarkers({});
+        await getSingleMapMarkers({});
       }
     } catch (err) {
     } finally {
