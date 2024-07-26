@@ -15,6 +15,8 @@ import { styled } from '@mui/material/styles';
 import { getAllMapMarkersAPI } from '@/services/maps';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import AutoCopleteSearch from '@/components/Core/AutoCompleteSearch';
+import { mapTypeOptions } from '@/lib/constants/mapConstants';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -31,17 +33,20 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
     const [markers, setMarkers] = useState<any[]>([]);
     const [paginationDetails, setPaginationDetails] = useState({});
     const [search, setSearch] = useState("");
+    const [selectType, setSelectType] = useState<any>();
 
     const getAllMapMarkers = async ({
         page = 1,
         limit = 8,
         search_string = search,
+        type = selectType?.title
     }) => {
         try {
             let queryParams: any = {
                 search_string: search_string ? search_string : "",
                 page: page,
                 limit: limit,
+                type: type ? type : ""
             };
             const response = await getAllMapMarkersAPI(id, queryParams);
             const { data, ...rest } = response;
@@ -57,8 +62,9 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
             page: 1,
             limit: 8,
             search_string: search,
+            type: selectType?.title
         });
-    }, [search]);
+    }, [search, selectType?.title]);
 
     const columns = [
         {
@@ -205,6 +211,12 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
                         </InputAdornment>
                     ),
                 }}
+            />
+            <AutoCopleteSearch
+                data={mapTypeOptions}
+                setSelectType={setSelectType}
+                selectType={selectType}
+                placeholder="Search Type"
             />
             <IconButton
                 aria-label="close"
