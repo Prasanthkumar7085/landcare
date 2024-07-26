@@ -16,10 +16,15 @@ const AutoCopleteSearch = ({
     return (
         <Autocomplete
             options={data}
-            getOptionLabel={(option) => option.label} // Adjust this based on your data structure
+            getOptionLabel={(option) => option.label}
             value={selectType}
             onChange={handleChange}
-            renderInput={(params) => <TextField {...params} label={placeholder} variant="outlined" />}
+            renderInput={(params) =>
+                <TextField
+                    {...params}
+                    label={placeholder}
+                    variant="outlined"
+                />}
         />
     );
 }
