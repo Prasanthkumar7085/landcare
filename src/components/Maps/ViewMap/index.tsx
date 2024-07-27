@@ -1,8 +1,7 @@
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
-import { calculatePolygonCentroid } from "@/lib/helpers/mapsHelpers";
+import { mapTypeOptions } from "@/lib/constants/mapConstants";
 import {
-  getAllMapMarkersAPI,
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
 } from "@/services/maps";
@@ -11,8 +10,6 @@ import { useEffect, useRef, useState } from "react";
 import MarkerPopup from "./AddMarker/AddMarkerFrom";
 import styles from "./view-map.module.css";
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
-import { Button } from "@mui/material";
-import { mapTypeOptions } from "@/lib/constants/mapConstants";
 
 const ViewGoogleMap = () => {
   const { id } = useParams();
@@ -36,7 +33,6 @@ const ViewGoogleMap = () => {
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
   const [localMarkers, setLocalMarkers] = useState<any>([]);
   const [overlays, setOverlays] = useState<any[]>([]);
-
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     state: "",
@@ -102,6 +98,27 @@ const ViewGoogleMap = () => {
     });
   };
 
+  const renderAllMarkers = () => {
+    markers.forEach((markerData) => {
+      const latLng = new google.maps.LatLng(
+        markerData.coordinates[0],
+        markerData.coordinates[1]
+      );
+      const markere = new google.maps.Marker({
+        position: latLng,
+        map: map,
+        title: markerData.title,
+        icon: {
+          url: mapTypeOptions?.find(
+            (item: any) => item?.title == markerData.type
+          )?.img as string,
+        },
+        animation: google.maps.Animation.DROP,
+      });
+      markere.setMap(map);
+    });
+  };
+
   const OtherMapOptions = (map: any, maps: any) => {
     setMaps(map);
     setGoogleMaps(maps);
@@ -130,28 +147,6 @@ const ViewGoogleMap = () => {
     maps.event.addListener(drawingManager, "overlaycomplete", (event: any) => {
       addMarkerEVent(event, map, maps);
     });
-
-    for (let i = 0; i < markers.length; i++) {
-      const markerData = markers[i];
-      let imag = mapTypeOptions?.find(
-        (item: any) => item?.title == markers[i].type
-      )?.img;
-      const latLng = new google.maps.LatLng(
-        markerData.coordinates[0],
-        markerData.coordinates[1]
-      );
-
-      const markere = new google.maps.Marker({
-        position: latLng,
-        map: map,
-        title: markerData.title,
-        icon: {
-          url: imag as string,
-        },
-        animation: google.maps.Animation.DROP,
-      });
-      markere.setMap(map);
-    }
   };
 
   const getSingleMapDetails = async () => {
@@ -192,6 +187,7 @@ const ViewGoogleMap = () => {
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
+      setMarkers(data);
       setSingleMarkers(data);
       setMarkers(data);
     } catch (err) {
@@ -212,12 +208,18 @@ const ViewGoogleMap = () => {
 
       map.fitBounds(bounds);
     }
-  }, [map, googleMaps]);
+  }, [map, googleMaps, markers]);
+
+  useEffect(() => {
+    if (markers?.length > 0) {
+      renderAllMarkers();
+    }
+  }, [markers]);
 
   return (
     <div
       className={styles.markersPageWeb}
-      style={{ display: id && loading == false ? "" : "none" }}
+      style={{ display: loading == false ? "" : "none" }}
     >
       <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
         <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
