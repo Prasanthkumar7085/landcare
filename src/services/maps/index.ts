@@ -105,3 +105,15 @@ export const deleteMarkerAPI = async (id: any, marker_id: any) => {
     throw err;
   }
 };
+
+export const deleteMapAPI = async (id: any) => {
+  try {
+    const { success, data } = await $fetch.delete(`/api/v1.0/maps/${id}`);
+    if (!success) {
+      return handleAPIErrorResponse(data);
+    }
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
