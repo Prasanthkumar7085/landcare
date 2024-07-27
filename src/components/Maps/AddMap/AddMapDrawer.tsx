@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Drawer,
   IconButton,
   TextField,
@@ -7,44 +8,88 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import { addMapWithCordinatesAPI } from "@/services/maps";
+import {
+  addMapWithCordinatesAPI,
+  updateMapWithCordinatesAPI,
+} from "@/services/maps";
 import { useDispatch, useSelector } from "react-redux";
 import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
+import LoadingComponent from "@/components/Core/LoadingComponent";
+import { handleGeneratePolygonBase64 } from "@/lib/helpers/mapsHelpers";
+import { checkAllowedValidText } from "@/lib/helpers/inputCheckingFunctions";
 
 const AddMapDrawer = ({
+  mapDetails,
+  setMapDetails,
   addDrawerOpen,
   setAddDrawerOpen,
   clearAllPoints,
   closeDrawing,
+  map,
+  mapRef,
 }: any) => {
+  const { id } = useParams();
+
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const [mapName, setMapName] = useState<any>();
-  const [description, setDescription] = useState<any>();
   const [errorMessages, setErrorMessages] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
+  const handleFieldValue = (event: any) => {
+    const { name, value } = event.target;
+    if (value && checkAllowedValidText(value)) {
+      let details = { ...mapDetails };
+      details[name] = value;
+      setMapDetails(details);
+    } else {
+      let details = { ...mapDetails };
+      delete details[name];
+      setMapDetails(details);
+    }
+  };
+
+  const getmapDetailsAPI = (body: any) => {
+    let responseData: any;
+
+    if (id) {
+      responseData = updateMapWithCordinatesAPI(body, id);
+    } else {
+      responseData = addMapWithCordinatesAPI(body);
+    }
+    return responseData;
+  };
+
   const addMapWithCordinates = async () => {
+    let mapImage;
+    await handleGeneratePolygonBase64(map, mapRef, polygonCoords)
+      .then((base64Url) => {
+        mapImage = base64Url;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
     setLoading(true);
     let body = {
-      title: mapName ? mapName : "",
-      description: description ? description : "",
-      status: "active",
+      title: mapDetails?.title ? mapDetails?.title : "",
+      description: mapDetails?.description ? mapDetails?.description : "",
+      status: "draft",
       geo_type: "polygon",
       geo_coordinates: polygonCoords.map((obj: any) => Object.values(obj)),
       geo_zoom: 14,
+      image: mapImage,
     };
     try {
-      const response = await addMapWithCordinatesAPI(body);
+      const response = await getmapDetailsAPI(body);
       if (response?.status == 200 || response?.status == 201) {
-        toast.success("Map added succesfully");
+        toast.success(response?.message);
         dispatch(storeEditPolygonCoords([]));
-        router.push(`/add-markers/${response?.data?.id}`);
+        router.push(`/add-markers/${response?.data?.id || id}`);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
       }
@@ -82,7 +127,6 @@ const AddMapDrawer = ({
           <IconButton
             onClick={() => {
               setAddDrawerOpen(false);
-              dispatch(storeEditPolygonCoords([]));
             }}
           >
             <CloseIcon />
@@ -95,22 +139,22 @@ const AddMapDrawer = ({
             <label>Map Name</label>
             <TextField
               placeholder="Enter Map Name"
-              value={mapName}
-              onChange={(e) => {
-                setMapName(e.target.value);
-              }}
-            ></TextField>
+              value={mapDetails?.title}
+              name="title"
+              onChange={handleFieldValue}
+            />
             <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label>Map Description</label>
             <TextField
+              multiline
               placeholder="Enter Map Description"
-              value={description}
-              onChange={(e) => {
-                setDescription(e.target.value);
-              }}
-            ></TextField>
+              value={mapDetails?.description}
+              rows={7}
+              name="description"
+              onChange={handleFieldValue}
+            />
           </div>
           <div
             style={{
@@ -122,10 +166,9 @@ const AddMapDrawer = ({
           >
             <Button
               sx={{ background: "white", color: "#769f3f" }}
+              disabled={loading ? true : false}
               onClick={() => {
                 setAddDrawerOpen(false);
-                clearAllPoints();
-                closeDrawing();
               }}
             >
               Cancel
@@ -135,7 +178,14 @@ const AddMapDrawer = ({
               sx={{ background: "#769f3f", color: "white" }}
               onClick={() => addMapWithCordinates()}
             >
-              Save Map
+              {loading ? (
+                <CircularProgress
+                  color="inherit"
+                  sx={{ width: "10px", height: "10px" }}
+                />
+              ) : (
+                "Save Map"
+              )}
             </Button>
           </div>
         </div>

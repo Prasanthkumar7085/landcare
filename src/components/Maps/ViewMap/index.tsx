@@ -12,6 +12,7 @@ import MarkerPopup from "./AddMarker/AddMarkerFrom";
 import styles from "./view-map.module.css";
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
 import { Button } from "@mui/material";
+import { mapTypeOptions } from "@/lib/constants/mapConstants";
 
 const ViewGoogleMap = () => {
   const { id } = useParams();
@@ -132,6 +133,9 @@ const ViewGoogleMap = () => {
 
     for (let i = 0; i < markers.length; i++) {
       const markerData = markers[i];
+      let imag = mapTypeOptions?.find(
+        (item: any) => item?.title == markers[i].type
+      )?.img;
       const latLng = new google.maps.LatLng(
         markerData.coordinates[0],
         markerData.coordinates[1]
@@ -142,7 +146,7 @@ const ViewGoogleMap = () => {
         map: map,
         title: markerData.title,
         icon: {
-          url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+          url: imag as string,
         },
         animation: google.maps.Animation.DROP,
       });
@@ -184,11 +188,12 @@ const ViewGoogleMap = () => {
       let queryParams: any = {
         page: page,
         limit: limit,
-        search_string: search_string
+        search_string: search_string,
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
       setSingleMarkers(data);
+      setMarkers(data);
     } catch (err) {
       console.error(err);
     }
@@ -200,21 +205,14 @@ const ViewGoogleMap = () => {
 
   useEffect(() => {
     if (map && googleMaps) {
-      let centroid = calculatePolygonCentroid(mapDetails?.geo_coordinates);
-      const indiaCenter = { lat: centroid.lat, lng: centroid.lng };
-      map.setCenter(indiaCenter);
-      map.setZoom(17);
+      const bounds = new google.maps.LatLngBounds();
+      polygonCoords.forEach((coord: any) => {
+        bounds.extend(new google.maps.LatLng(coord.lat, coord.lng));
+      });
+
+      map.fitBounds(bounds);
     }
   }, [map, googleMaps]);
-
-
-  useEffect(() => {
-    getSingleMapMarkers({
-      page: 1,
-      limit: 5,
-      search_string: searchString,
-    });
-  }, [searchString]);
 
   return (
     <div

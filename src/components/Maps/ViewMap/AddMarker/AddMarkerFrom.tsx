@@ -1,10 +1,21 @@
 import { useState } from "react";
 import styles from "./add-marker.module.css";
-import { Dialog, MenuItem, Select } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Dialog,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+} from "@mui/material";
 import { mapTypeOptions } from "@/lib/constants/mapConstants";
 import { addMarkerDeatilsAPI } from "@/services/maps";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
+import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
+import Image from "next/image";
+
 const MarkerPopup = ({
   setShowMarkerPopup,
   showMarkerPopup,
@@ -13,11 +24,14 @@ const MarkerPopup = ({
   removalMarker,
 }: any) => {
   const { id } = useParams();
+
   const [popupFormData, setPopupFormData] = useState({
     title: "",
     description: "",
-    type: "",
   });
+  const [errorMessages, setErrorMessages] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [markerType, setMarkerType] = useState<any>(null);
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setPopupFormData({ ...popupFormData, [name]: value });
@@ -28,26 +42,31 @@ const MarkerPopup = ({
     setPopupFormData({
       title: "",
       description: "",
-      type: "",
     });
     setShowMarkerPopup(false);
   };
 
   const handleSave = async () => {
+    setLoading(true);
     let body = {
       ...popupFormData,
       ...placeDetails,
+      type: markerType?.title,
     };
     try {
       const response = await addMarkerDeatilsAPI(id, body);
       if (response?.status == 200 || response?.status == 201) {
         toast.success("Marker added successfully");
+        setShowMarkerPopup(false);
         await getSingleMapMarkers({});
+      } else if (response?.status == 422) {
+        setErrorMessages(response?.error_data);
       }
     } catch (err) {
+      console.error(err);
     } finally {
+      setLoading(false);
     }
-    setShowMarkerPopup(false);
   };
 
   return (
@@ -69,41 +88,99 @@ const MarkerPopup = ({
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label>Name:</label>
-              <input
-                type="text"
-                name="title"
+              <TextField
+                placeholder="Enter Title"
                 value={popupFormData.title}
+                name="title"
                 onChange={handleInputChange}
               />
+              <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label>Description: </label>
 
-              <input
+              <TextField
                 name="description"
                 value={popupFormData.description}
+                rows={4}
                 onChange={handleInputChange}
+              />
+              <ErrorMessagesComponent
+                errorMessage={errorMessages["description"]}
               />
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label>Marker Type: </label>
+              <div style={{ width: "100%" }}>
+                <Autocomplete
+                  className="defaultAutoComplete"
+                  value={markerType ? markerType : null}
+                  disablePortal
+                  options={mapTypeOptions?.length ? mapTypeOptions : []}
+                  PaperComponent={({ children }: any) => (
+                    <Paper
+                      style={{
+                        fontSize: "12px",
+                        fontFamily: "'Poppins', Sans-serif",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {children}
+                    </Paper>
+                  )}
+                  getOptionLabel={(option: any) =>
+                    typeof option === "string" ? option : option?.["title"]
+                  }
+                  renderOption={(props: any, option: any) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <Box
+                        key={option.label}
+                        component="li"
+                        sx={{
+                          "& > img": { mr: 2, flexShrink: 0 },
+                        }}
+                        {...optionProps}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: "0.6rem",
+                          }}
+                        >
+                          <Image
+                            src={option?.img}
+                            width={12}
+                            height={12}
+                            alt="type"
+                          />
 
-              <Select
-                className="settingSelectFeild"
-                onChange={handleInputChange}
-                name={"type"}
-                value={popupFormData?.type}
-              >
-                {mapTypeOptions?.map((option: any) => (
-                  <MenuItem
-                    className="menuItem"
-                    key={option}
-                    value={option?.title}
-                  >
-                    {option?.title}
-                  </MenuItem>
-                ))}
-              </Select>
+                          {option.label}
+                        </div>
+                      </Box>
+                    );
+                  }}
+                  onChange={(_: any, newValue: any) => {
+                    setMarkerType(newValue);
+                  }}
+                  sx={{
+                    "& .MuiFormControl-root": {
+                      width: "170px",
+                      background: "#fff",
+                    },
+                  }}
+                  renderInput={(params: any) => (
+                    <TextField
+                      {...params}
+                      placeholder={"Select Marker Type"}
+                      size="small"
+                    />
+                  )}
+                />
+              </div>
+              <ErrorMessagesComponent errorMessage={errorMessages["type"]} />
             </div>
           </div>
           <div className={styles.buttonGroup}>

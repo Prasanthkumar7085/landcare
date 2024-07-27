@@ -10,7 +10,7 @@ import {
 } from "next/navigation";
 import { useEffect, useState } from "react";
 import { DateRangePicker } from "rsuite";
-import 'rsuite/dist/rsuite.css';
+import "rsuite/dist/rsuite.css";
 import dayjs from "dayjs";
 
 const MapsFilters = ({ getAllMaps }: any) => {
@@ -19,9 +19,15 @@ const MapsFilters = ({ getAllMaps }: any) => {
   const params = useSearchParams();
   const param = useParams();
 
-  const [searchString, setSearchString] = useState(params.get("search_string") || "");
-  const [fromDate, setFromDate] = useState<string | null>(params.get("from_date") || null);
-  const [toDate, setToDate] = useState<string | null>(params.get("to_date") || null);
+  const [searchString, setSearchString] = useState(
+    params.get("search_string") || ""
+  );
+  const [fromDate, setFromDate] = useState<string | null>(
+    params.get("from_date") || null
+  );
+  const [toDate, setToDate] = useState<string | null>(
+    params.get("to_date") || null
+  );
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
   );
@@ -38,7 +44,7 @@ const MapsFilters = ({ getAllMaps }: any) => {
 
   const formatDate = (date: any) => {
     if (!date) return null;
-    const dateFormat = dayjs(date).format("YYYY-MM-DD")
+    const dateFormat = dayjs(date).format("YYYY-MM-DD");
     return dateFormat;
   };
 
@@ -73,27 +79,37 @@ const MapsFilters = ({ getAllMaps }: any) => {
   }, [params]);
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem", borderBottom: "1px solid #ddd" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: "1rem",
+        borderBottom: "1px solid #ddd",
+      }}
+    >
       <Tabs
         textColor="secondary"
         indicatorColor="secondary"
         aria-label="secondary tabs example"
       >
-        <Tab value="" label='All' />
-        <Tab value="" label='Owned' />
-        <Tab value="" label='Shared' />
+        <Tab value="" label="All" />
+        <Tab value="" label="Owned" />
+        <Tab value="" label="Shared" />
       </Tabs>
       <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
         <DateRangePicker
           value={
             fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
           }
+          editable={false}
           onChange={handleDateRangeChange}
           placeholder="Start Date - End Date"
           style={{ width: 250 }}
           disabledDate={(date) => {
             return date.getTime() >= new Date().getTime();
           }}
+          placement="bottomEnd"
         />
         <TextField
           variant="outlined"

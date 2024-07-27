@@ -26,6 +26,18 @@ export const addMapWithCordinatesAPI = async (body: any) => {
   }
 };
 
+export const updateMapWithCordinatesAPI = async (body: any, id: any) => {
+  try {
+    const { success, data } = await $fetch.patch(`/api/v1.0/maps/${id}`, body);
+    if (!success) {
+      return handleAPIErrorResponse(data);
+    }
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const getSingleMapDetailsAPI = async (id: any) => {
   try {
     const { success, data } = await $fetch.get(`/api/v1.0/maps/${id}`);
@@ -54,7 +66,10 @@ export const addMarkerDeatilsAPI = async (id: any, body: any) => {
 
 export const getAllMapMarkersAPI = async (id: any, params: any) => {
   try {
-    const { success, data } = await $fetch.get(`/api/v1.0/maps/${id}/markers`, params);
+    const { success, data } = await $fetch.get(
+      `/api/v1.0/maps/${id}/markers`,
+      params
+    );
     if (!success) {
       return handleAPIErrorResponse(data);
     }
@@ -66,7 +81,10 @@ export const getAllMapMarkersAPI = async (id: any, params: any) => {
 
 export const getSingleMapMarkersAPI = async (id: any, params: any) => {
   try {
-    const { success, data } = await $fetch.get(`/api/v1.0/maps/${id}/markers`, params);
+    const { success, data } = await $fetch.get(
+      `/api/v1.0/maps/${id}/markers`,
+      params
+    );
     if (!success) {
       return handleAPIErrorResponse(data);
     }
