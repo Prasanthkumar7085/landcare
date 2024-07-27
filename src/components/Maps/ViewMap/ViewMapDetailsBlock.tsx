@@ -2,9 +2,12 @@ import { Button, Menu, MenuItem, Typography } from "@mui/material";
 import styles from "./view-map-block.module.css";
 import dayjs from "dayjs";
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import MapMarkersList from "./MapMarkersList";
+import { deleteMapAPI } from "@/services/maps";
+import { toast, Toaster } from "sonner";
+import DeleteDialog from "@/components/Core/DeleteDialog";
 const ViewMapDetailsDrawer = ({
   mapDetails,
   markers,
@@ -20,12 +23,35 @@ const ViewMapDetailsDrawer = ({
   const { id } = useParams();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [loading, setLoading] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleClickDeleteOpen = () => {
+    setDeleteOpen(true);
+  };
+  const handleDeleteCose = () => {
+    setDeleteOpen(false);
+  };
+
+  const deleteMap = async () => {
+    setLoading(true);
+    try {
+      const response = await deleteMapAPI(id);
+      toast.success(response?.message);
+      router.push("/maps")
+      handleDeleteCose();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -109,8 +135,20 @@ const ViewMapDetailsDrawer = ({
         <MenuItem onClick={() => router.push(`/update-map/${id}`)}>
           Edit
         </MenuItem>
-        <MenuItem onClick={handleClose}>Delete</MenuItem>
+        <MenuItem onClick={() => {
+          handleClickDeleteOpen();
+          handleClose();
+        }}>Delete</MenuItem>
       </Menu>
+      <DeleteDialog
+        deleteOpen={deleteOpen}
+        handleDeleteCose={handleDeleteCose}
+        deleteFunction={deleteMap}
+        lable="Delete Map"
+        text="Are you sure want to delete map?"
+        loading={loading}
+      />
+      <Toaster richColors closeButton position="top-right" />
     </div>
   );
 };
