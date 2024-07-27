@@ -76,7 +76,7 @@ const Maps = () => {
       from_date: searchParams?.from_date,
       to_date: searchParams?.to_date
     });
-  }, [searchParams?.page, searchParams?.limit, searchParams?.search_string, searchParams?.from_date, searchParams?.to_date]);
+  }, [searchParams]);
 
   const capturePageNum = (value: number) => {
     getAllMaps({
@@ -96,7 +96,9 @@ const Maps = () => {
 
   return (
     <div style={{ marginTop: "30px" }}>
-      <MapsFilters />
+      <MapsFilters
+        getAllMaps={getAllMaps}
+      />
       <Box sx={{ flexGrow: 1, padding: 2 }}>
         <Grid container spacing={2}>
           {mapsData?.map((item: any, index: any) => (
