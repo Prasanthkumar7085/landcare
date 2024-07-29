@@ -82,7 +82,7 @@ const TablePaginationComponent = ({ paginationDetails, capturePageNum, captureRo
           sx={{
             "& .MuiButtonBase-root": {
               height: "25px !important",
-              minWidth: "inherit",
+              minWidth: "25px",
             },
           }}
           page={paginationDetails?.page}

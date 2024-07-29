@@ -13,11 +13,12 @@ import {
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
-import { mapTypeOptions } from "@/lib/constants/mapConstants";
+import { mapTypeOptions, markerFilterOptions } from "@/lib/constants/mapConstants";
 import { datePipe } from "@/lib/helpers/datePipe";
 import { getSingleMarkerAPI } from "@/services/maps";
 import styles from "./index.module.css";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
+import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 
 const MapMarkersList = ({
   singleMarkers,
@@ -26,7 +27,9 @@ const MapMarkersList = ({
   setSingleMarkerOpen,
   singleMarkeropen,
   setMarkerData,
-  markerData
+  markerData,
+  setMarkerOption,
+  markerOption,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
@@ -72,16 +75,17 @@ const MapMarkersList = ({
                 }}
               />
               <div className={styles.inputfilter}>
-                <img
-                  className={styles.filtericon}
-                  alt=""
-                  src="/filtericon.svg"
+
+                <AutoCompleteSearch
+                  data={markerFilterOptions}
+                  setSelectValue={setMarkerOption}
+                  selectedValue={markerOption}
+                  placeholder="Search Filter"
                 />
-                <p className={styles.filter}>Filter</p>
               </div>
-              <IconButton className={styles.more1}>
+              {/* <IconButton className={styles.more1}>
                 <MoreVertIcon className={styles.dotsThreeOutlineIcon} />
-              </IconButton>
+              </IconButton> */}
             </div>
           </div>
           {singleMarkers?.map((marker: any, index: any) => (

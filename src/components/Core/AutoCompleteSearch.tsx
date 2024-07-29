@@ -32,7 +32,7 @@ const AutoCompleteSearch = ({
         </Paper>
       )}
       getOptionLabel={(option: any) =>
-        typeof option === "string" ? option : option?.["title"]
+        typeof option === "string" ? option : option?.["label"]
       }
       renderOption={(props: any, option: any) => {
         const { key, ...optionProps } = props;
@@ -53,7 +53,11 @@ const AutoCompleteSearch = ({
                 gap: "0.6rem",
               }}
             >
-              <Image src={option?.img} width={12} height={12} alt="type" />
+              {option.img ? (
+                <Image src={option?.img} width={12} height={12} alt="type" />
+              ) : (
+                ""
+              )}
 
               {option.label}
             </div>
@@ -73,7 +77,7 @@ const AutoCompleteSearch = ({
       renderInput={(params: any) => (
         <TextField
           {...params}
-          placeholder={"Select Marker Type"}
+          placeholder={placeholder}
           size="small"
         />
       )}

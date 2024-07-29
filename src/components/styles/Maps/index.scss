@@ -1,0 +1,135 @@
+.allMapsContainer {
+  .mapHeaderContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    .tabsGrp {
+      min-height: inherit;
+      .tabBtn {
+        min-height: inherit;
+        padding: 4px 0;
+        text-transform: capitalize;
+        font-family: $fontPrimary;
+        font-size: $font_16;
+        font-weight: $fw-400;
+        color: #00000099;
+      }
+    }
+    .filterGrp {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      .defaultDatePicker {
+        width: 200px !important;
+        .rs-input-group {
+          border-radius: 4px;
+        }
+        input {
+          font-size: 11.5px;
+          padding: 5px 11px !important;
+        }
+        .rs-input-group-addon {
+          padding: 7px 12px !important;
+        }
+      }
+      .defaultTextFeild {
+        .MuiInputBase-root {
+          background: $whiteColor;
+          color: $blackColor;
+          font-weight: $fw_400;
+          font-size: 12px;
+          box-sizing: border-box;
+          border-radius: 4px;
+          height: 30px;
+          border: 1.4px solid #e4e4e4;
+          font-family: $fontPrimary;
+          width: 200px;
+
+          fieldset {
+            border: 0 !important;
+          }
+        }
+      }
+      .addNewBtn {
+        border-radius: 4px;
+        background: $primaryColor;
+        text-transform: capitalize;
+        color: $whiteColor;
+        font-family: $fontPrimary;
+        font-size: $font_14;
+        font-weight: $fw_500;
+        padding: 4px 10px;
+      }
+    }
+  }
+  .mapListContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 1rem;
+    height: calc(100vh - 180px);
+    overflow-y: auto;
+    grid-auto-rows: min-content;
+
+    .eachListCard {
+      border-radius: 8px;
+      background: $whiteColor;
+      box-shadow: 0px -4px 17px 0px #0000000a, 0px 6px 8px -6px #18274b0f,
+        0px 8px 16px -6px #18274b05;
+      padding: 5px;
+      .imgBlock {
+        background-color: #f0f4f7;
+        width: 100%;
+        height: 130px;
+        border-radius: 8px 8px 0 0;
+
+        .mapImg {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: contain;
+        }
+      }
+      .cardContent {
+        .cardTitle {
+          font-family: $font-secondary;
+          color: $blackColor;
+          font-size: $font_16;
+          font-weight: $fw-400;
+          margin: 0.5rem 0 0.2rem;
+        }
+        .cardDesc {
+          color: #000000b3;
+          font-family: $font-secondary;
+          font-size: $font_12;
+          font-weight: $fw-400;
+        }
+      }
+      .cardFooter {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .createDate {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: #000000b3;
+          font-family: $font-secondary;
+          font-size: $font_12;
+          font-weight: $fw-400;
+          line-height: 100%;
+        }
+        .previewBtn {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: $blackColor;
+          font-family: $font-secondary;
+          font-size: $font_12;
+          font-weight: $fw-400;
+          text-transform: capitalize;
+          letter-spacing: 0;
+        }
+      }
+    }
+  }
+}

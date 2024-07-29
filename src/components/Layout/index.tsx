@@ -45,34 +45,27 @@ const Navbar: React.FC<pageProps> = ({ children }) => {
     return (
         <>
             <div className='headnav'>
+                <div className="navContainer">
+
                 <div className="logoBlock">
                     <Image
                         alt=""
-                        src="/group .svg"
-                        height={60}
-                        width={70}
+                        src="/login/landcare-logo.svg"
+                        height={50}
+                        width={150}
                     />
-                    <Image
-                        alt=""
-                        src="/Vector.svg"
-                        height={60}
-                        width={70}
-                    />
+                   
                 </div>
-                <p className='pagetitle' style={{
-                    color: pathname === "/maps" ? 'red' : 'black',
-                    fontWeight: pathname === "/maps" ? 'bold' : 'normal',
-                    cursor: 'pointer'
-                }} onClick={() => router.push('/maps')}>
+                <p className={pathname === "/maps" ? 'pagetitleActive':"pageTitle" } onClick={() => router.push('/maps')}>
                     Maps
                 </p>
                 <div className="profileGrp">
-                    <div className="profileName">
+                    {/* <div className="profileName">
                         <h4 className="profile">{capitalizeFirstTwoWords(userDetails?.name)}</h4>
                         <p className="designation">
                             {userDetails?.user_type ? capitalizeFirstLetter(userDetails.user_type) : ''}
                         </p>
-                    </div>
+                    </div> */}
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                         <Avatar sx={{ bgcolor: "orange" }}>
                             {userDetails?.name?.slice(0, 1).toUpperCase()}
@@ -99,8 +92,9 @@ const Navbar: React.FC<pageProps> = ({ children }) => {
                         </MenuItem>
                     </Menu>
                 </div>
+                </div>
             </div>
-            <div>
+            <div className='baseContainer'>
                 {children}
             </div>
         </>

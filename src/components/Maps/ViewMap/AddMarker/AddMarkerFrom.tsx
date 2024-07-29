@@ -109,7 +109,7 @@ const MarkerPopup = ({
                   data={mapTypeOptions}
                   setSelectValue={setMarkerType}
                   selectedValue={markerType}
-                  placeholder=""
+                  placeholder="Select Marker Type"
                 />
               </div>
               <ErrorMessagesComponent errorMessage={errorMessages["type"]} />

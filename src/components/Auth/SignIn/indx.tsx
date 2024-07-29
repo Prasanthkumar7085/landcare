@@ -70,22 +70,22 @@ const LoginPage = () => {
     <div className="loginPage">
       <div className="loginContainer">
         <div className="leftContainer">
-          <picture>
-            <img className="loginImg" alt="" src="/logo.svg" />
-          </picture>
+            <img className="loginImg" alt="" src="/login/login-image.png" />
         </div>
         <form onSubmit={signIn}>
           <div className="rightContainer">
             <div className="formContainer">
+              <div className="logoBlock">
               <Image
                 className="logoIcon"
                 alt=""
                 src="/logo.svg"
-                height={90}
-                width={10}
+                height={100}
+                width={130}
               />
-              <p className="formSubTitle1">Welcome back</p>
-              <label className="formLabel1">
+              </div>
+              <p className="formTitle">Welcome back</p>
+              <label className="formSubTitle">
                 Enter your email an password to access your account
               </label>
               <div className="formsBlock">
@@ -128,9 +128,10 @@ const LoginPage = () => {
                             edge="end"
                           >
                             {showPassword ? (
-                              <Visibility sx={{ fontSize: "1.2rem" }} />
+                              <Image src="/login/view-icon.svg" alt="" height={16} width={16} />
+
                             ) : (
-                              <VisibilityOff sx={{ fontSize: "1.2rem" }} />
+                                <Image src="/login/hide-icon.svg" alt="" height={16} width={16}/>
                             )}
                           </IconButton>
                         </InputAdornment>

@@ -68,6 +68,9 @@ body {
   font-size: clamp(11px, 0.69vw, 13px);
   font-family: $fontPrimary
 }
+button {
+  box-shadow: none !important;
+}
 
 // @import "./helpers/sideNavbar";
 @import "./helpers/navbar";
@@ -77,3 +80,4 @@ body {
 
 //auth module
 @import "./signin.scss";
+@import "./Maps/index.scss";
