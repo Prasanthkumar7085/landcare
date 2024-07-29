@@ -8,7 +8,7 @@ import MapMarkersList from "./MapMarkersList";
 import { deleteMapAPI } from "@/services/maps";
 import { toast, Toaster } from "sonner";
 import DeleteDialog from "@/components/Core/DeleteDialog";
-import ImportModal from "./ImportModal";
+import ImportModal from "./Importmodal";
 
 const ViewMapDetailsDrawer = ({
   mapDetails,
@@ -27,6 +27,7 @@ const ViewMapDetailsDrawer = ({
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [loading, setLoading] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [file, setFile] = useState<File | any>(null);
   const open = Boolean(anchorEl);
   const [showModal, setShowModal] = useState<any>(false);
 
@@ -64,6 +65,7 @@ const ViewMapDetailsDrawer = ({
 
   const closeModal = () => {
     setShowModal(false);
+    setFile(null);
   };
 
   return (
@@ -73,7 +75,11 @@ const ViewMapDetailsDrawer = ({
           <Button onClick={() => router.push("/maps")}>Back</Button>
           <div>
           <Button onClick={openModal}>Import</Button>
-          <ImportModal show={showModal} onClose={closeModal} />
+          <ImportModal 
+          show={showModal} 
+          onClose={closeModal} 
+          file={file} 
+          setFile={setFile} />
           <Button onClick={handleClick}>...</Button>
           </div>
         </div>
