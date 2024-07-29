@@ -196,6 +196,14 @@ const ViewGoogleMap = () => {
   };
 
   useEffect(() => {
+    getSingleMapMarkers({
+      page: 1,
+      limit: 5,
+      search_string: searchString,
+    });
+  }, [searchString]);
+
+  useEffect(() => {
     getSingleMapDetails();
   }, []);
 

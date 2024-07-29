@@ -13,7 +13,7 @@ import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.css";
 import dayjs from "dayjs";
 
-const MapsFilters = ({ getAllMaps }: any) => {
+const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   const router = useRouter();
   const path = usePathname();
   const params = useSearchParams();
@@ -97,46 +97,50 @@ const MapsFilters = ({ getAllMaps }: any) => {
         <Tab value="" label="Owned" />
         <Tab value="" label="Shared" />
       </Tabs>
-      <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-        <DateRangePicker
-          value={
-            fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
-          }
-          editable={false}
-          onChange={handleDateRangeChange}
-          placeholder="Start Date - End Date"
-          style={{ width: 250 }}
-          disabledDate={(date) => {
-            return date.getTime() >= new Date().getTime();
-          }}
-          placement="bottomEnd"
-        />
-        <TextField
-          variant="outlined"
-          type="search"
-          size="small"
-          value={searchString}
-          onChange={handleSearchChange}
-          placeholder="Search"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Image src="/search-icon.svg" alt="" width={15} height={15} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => {
-            router.push("/add-map");
-          }}
-          startIcon={<AddIcon />}
-        >
-          Create New Map
-        </Button>
-      </div>
+      {mapsData?.length ? (
+        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+          <DateRangePicker
+            value={
+              fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
+            }
+            editable={false}
+            onChange={handleDateRangeChange}
+            placeholder="Start Date - End Date"
+            style={{ width: 250 }}
+            disabledDate={(date) => {
+              return date.getTime() >= new Date().getTime();
+            }}
+            placement="bottomEnd"
+          />
+          <TextField
+            variant="outlined"
+            type="search"
+            size="small"
+            value={searchString}
+            onChange={handleSearchChange}
+            placeholder="Search"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Image src="/search-icon.svg" alt="" width={15} height={15} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => {
+              router.push("/add-map");
+            }}
+            startIcon={<AddIcon />}
+          >
+            Create New Map
+          </Button>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

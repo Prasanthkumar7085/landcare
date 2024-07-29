@@ -2,6 +2,7 @@
 import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
 import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
 import { getAllListMapsAPI } from "@/services/maps";
+import AddIcon from "@mui/icons-material/Add";
 import {
   Box,
   Button,
@@ -20,6 +21,7 @@ import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
 import { datePipe } from "@/lib/helpers/datePipe";
 import LoadingComponent from "../Core/LoadingComponent";
+import Image from "next/image";
 
 const Maps = () => {
   const useParam = useSearchParams();
@@ -99,62 +101,85 @@ const Maps = () => {
     <div style={{ marginTop: "30px" }}>
       <MapsFilters
         getAllMaps={getAllMaps}
+        mapsData={mapsData}
       />
       <Box sx={{ flexGrow: 1, padding: 2 }}>
         <Grid container spacing={2}>
-          {mapsData?.map((item: any, index: any) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Card variant="outlined">
-                <CardContent>
-                  <img
-                    style={{ width: "100%", height: "220px", marginBottom: 10 }}
-                    src={item?.image ? item?.image : "/no-image.png"}
-                    alt="map image"
-                  />
-                  <Typography variant="body2" component="div" gutterBottom>
-                    <Tooltip
-                      title={item?.title?.length >= 50 ? item?.title : ""}
-                      placement="bottom"
-                    >
-                      {item?.title
-                        ? item?.title?.length >= 50
-                          ? `${item?.title.slice(0, 30)}....`
-                          : item?.title
-                        : "--"}
-                    </Tooltip>
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    <Tooltip
-                      title={
-                        item?.description?.length >= 50 ? item?.description : ""
-                      }
-                      placement="bottom"
-                    >
-                      {item?.description
-                        ? item?.description?.length >= 50
-                          ? `${item?.description.slice(0, 30)}....`
-                          : item?.description
-                        : "--"}
-                    </Tooltip>
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {item?.created_at ? datePipe(item?.created_at) : "--"}
-                  </Typography>
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Button
-                      variant="text"
-                      sx={{ color: "black" }}
-                      onClick={() => {
-                        router.push(`/view-map/${item?.id}`);
-                      }}
-                    >
-                      <VisibilityOutlinedIcon /> Preview
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+          {mapsData?.length ? (
+            mapsData.map((item: any, index: number) => {
+              return (
+                <>
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <Card variant="outlined">
+                      <CardContent>
+                        <img
+                          style={{ width: "100%", height: "220px", marginBottom: 10 }}
+                          src={item?.image ? item?.image : "/no-image.png"}
+                          alt="map image"
+                        />
+                        <Typography variant="body2" component="div" gutterBottom>
+                          <Tooltip
+                            title={item?.title?.length >= 50 ? item?.title : ""}
+                            placement="bottom"
+                          >
+                            {item?.title
+                              ? item?.title?.length >= 50
+                                ? `${item?.title.slice(0, 30)}....`
+                                : item?.title
+                              : "--"}
+                          </Tooltip>
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          <Tooltip
+                            title={
+                              item?.description?.length >= 50 ? item?.description : ""
+                            }
+                            placement="bottom"
+                          >
+                            {item?.description
+                              ? item?.description?.length >= 50
+                                ? `${item?.description.slice(0, 30)}....`
+                                : item?.description
+                              : "--"}
+                          </Tooltip>
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {item?.created_at ? datePipe(item?.created_at) : "--"}
+                        </Typography>
+                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                          <Button
+                            variant="text"
+                            sx={{ color: "black" }}
+                            onClick={() => {
+                              router.push(`/view-map/${item?.id}`);
+                            }}
+                          >
+                            <VisibilityOutlinedIcon /> Preview
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </>
+              );
+            })
+          ) : !loading ? (
+            <div style={{ margin: 'auto' }}>
+              <Image src="/add-map-image.svg" alt="" height={300} width={300} />
+              <p >
+                {"No maps added yet. Click 'Add New' to start."}
+              </p>
+              <Button
+                variant="outlined"
+                onClick={() => router.push("/add-map")}
+                endIcon={<AddIcon />}
+              >
+                Add New Map
+              </Button>
+            </div>
+          ) : (
+            ""
+          )}
         </Grid>
         {mapsData?.length ? (
           <>
