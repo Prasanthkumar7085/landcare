@@ -162,17 +162,17 @@ export class MapsController {
         }
     }
 
-    async getMapStaticImage(req: NextRequest) {
+    async getMapStaticImage(reqData: any) {
 
         try {
-            const { coordinates } = await req.json();
+            const coordinates = reqData.coordinates;
             const path = coordinates.map((coord: any) => `${coord.lat},${coord.lng}`).join('|');
-            const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=600x400&path=color:0xff0000ff%7Cweight:2%7C${path}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
+            const mapUrl = `https://maps.googleapis.com/maps/api/staticmap?size=600x400&path=fillcolor:0x33333333|color:0x000000ff|weight:2|${path}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`;
 
             const response: any = await axios.get(mapUrl, { responseType: 'arraybuffer' });
             const base64Image = Buffer.from(response.data, 'binary').toString('base64');
 
-            return NextResponse.json({ image: `data:image/png;base64,${base64Image}` });
+            return ResponseHelper.sendSuccessResponse(200, 'Map image fetched', `data:image/png;base64,${base64Image}`);
 
         } catch (error: any) {
             console.log(error);
