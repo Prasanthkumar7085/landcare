@@ -8,7 +8,7 @@ const GoogleMapComponent = ({ OtherMapOptions }: any) => {
   const mapRef: any = useRef(null);
   const infoWindowRef: any = useRef(null);
   const placesService: any = useRef(null);
-  const [mapType, setMapType] = useState("hybrid");
+  const [mapType, setMapType] = useState("roadmap");
 
   const createInfoWindow = (map: any) => {
     const infoWindow = new (window as any).google.maps.InfoWindow();

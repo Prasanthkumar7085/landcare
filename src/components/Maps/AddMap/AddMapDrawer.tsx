@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   addMapWithCordinatesAPI,
+  getStaticMapAPI,
   updateMapWithCordinatesAPI,
 } from "@/services/maps";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +19,6 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
 import LoadingComponent from "@/components/Core/LoadingComponent";
-import { handleGeneratePolygonBase64 } from "@/lib/helpers/mapsHelpers";
 import { checkAllowedValidText } from "@/lib/helpers/inputCheckingFunctions";
 
 const AddMapDrawer = ({
@@ -64,15 +64,21 @@ const AddMapDrawer = ({
     return responseData;
   };
 
+  const getStaticMap = async () => {
+    let body = {
+      coordinates: [...polygonCoords, polygonCoords[0]],
+    };
+    try {
+      const response = await getStaticMapAPI(body);
+      return response.image;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const addMapWithCordinates = async () => {
     let mapImage;
-    await handleGeneratePolygonBase64(map, mapRef, polygonCoords)
-      .then((base64Url) => {
-        mapImage = base64Url;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    mapImage = await getStaticMap();
 
     setLoading(true);
     let body = {
@@ -85,13 +91,18 @@ const AddMapDrawer = ({
       image: mapImage,
     };
     try {
-      const response = await getmapDetailsAPI(body);
-      if (response?.status == 200 || response?.status == 201) {
-        toast.success(response?.message);
-        dispatch(storeEditPolygonCoords([]));
-        router.push(`/add-markers/${response?.data?.id || id}`);
-      } else if (response?.status == 422) {
-        setErrorMessages(response?.error_data);
+      if (!mapImage) {
+        toast.warning("Please add polygon!");
+        return;
+      } else {
+        const response = await getmapDetailsAPI(body);
+        if (response?.status == 200 || response?.status == 201) {
+          toast.success(response?.message);
+          dispatch(storeEditPolygonCoords([]));
+          router.push(`/add-markers/${response?.data?.id || id}`);
+        } else if (response?.status == 422) {
+          setErrorMessages(response?.error_data);
+        }
       }
     } catch (err) {
       console.error(err);
