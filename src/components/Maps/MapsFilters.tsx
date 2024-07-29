@@ -80,13 +80,7 @@ const MapsFilters = ({ getAllMaps }: any) => {
 
   return (
     <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "1rem",
-        borderBottom: "1px solid #ddd",
-      }}
+      className="mapHeaderContainer"
     >
       <Tabs
         textColor="secondary"
@@ -97,7 +91,7 @@ const MapsFilters = ({ getAllMaps }: any) => {
         <Tab value="" label="Owned" />
         <Tab value="" label="Shared" />
       </Tabs>
-      <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+      <div className="filterGrp" >
         <DateRangePicker
           value={
             fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
@@ -127,12 +121,12 @@ const MapsFilters = ({ getAllMaps }: any) => {
           }}
         />
         <Button
+          className="addNewBtn"
           variant="contained"
-          color="success"
           onClick={() => {
             router.push("/add-map");
           }}
-          startIcon={<AddIcon />}
+          endIcon={<Image src="/map/add-icon.svg" alt="" height={13} width={13} />}
         >
           Create New Map
         </Button>

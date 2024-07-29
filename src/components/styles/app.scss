@@ -69,7 +69,7 @@ body {
   font-family: $fontPrimary
 }
 button {
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 // @import "./helpers/sideNavbar";
@@ -80,3 +80,4 @@ button {
 
 //auth module
 @import "./signin.scss";
+@import "./Maps/index.scss";

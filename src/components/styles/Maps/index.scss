@@ -1,0 +1,23 @@
+.allMapsContainer {
+  .mapHeaderContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    .filterGrp {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      .addNewBtn {
+        border-radius: 4px;
+        background: $primaryColor;
+        text-transform: capitalize;
+        color: $whiteColor;
+        font-family: $fontPrimary;
+        font-size: $font_14;
+        font-weight: $fw_500;
+        padding: 4px 10px;
+      }
+    }
+  }
+}

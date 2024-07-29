@@ -96,7 +96,7 @@ const Maps = () => {
   };
 
   return (
-    <div style={{ marginTop: "30px" }}>
+    <div className="allMapsContainer" >
       <MapsFilters
         getAllMaps={getAllMaps}
       />
