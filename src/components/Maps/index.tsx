@@ -3,12 +3,14 @@ import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
 import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
 import { getAllListMapsAPI } from "@/services/maps";
 import AddIcon from "@mui/icons-material/Add";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Box,
   Button,
   Card,
   CardContent,
   Grid,
+  IconButton,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -117,6 +119,9 @@ const Maps = () => {
                           src={item?.image ? item?.image : "/no-image.png"}
                           alt="map image"
                         />
+                        <IconButton >
+                          <MoreVertIcon />
+                        </IconButton>
                         <Typography variant="body2" component="div" gutterBottom>
                           <Tooltip
                             title={item?.title?.length >= 50 ? item?.title : ""}
@@ -165,17 +170,25 @@ const Maps = () => {
             })
           ) : !loading ? (
             <div style={{ margin: 'auto' }}>
-              <Image src="/add-map-image.svg" alt="" height={300} width={300} />
-              <p >
-                {"No maps added yet. Click 'Add New' to start."}
-              </p>
-              <Button
-                variant="outlined"
-                onClick={() => router.push("/add-map")}
-                endIcon={<AddIcon />}
-              >
-                Add New Map
-              </Button>
+              {!mapsData?.length && (useParam?.get('from_date') || useParam?.get('to_date') || useParam?.get('search_string')) ? (
+                <>
+                  <Image src="/no-image-maps.svg" alt="" height={400} width={400} />
+                </>
+              ) : (
+                <>
+                  <Image src="/add-map-image.svg" alt="" height={300} width={300} />
+                  <p >
+                    {"No maps added yet. Click 'Add New' to start."}
+                  </p>
+                  <Button
+                    variant="outlined"
+                    onClick={() => router.push("/add-map")}
+                    endIcon={<AddIcon />}
+                  >
+                    Add New Map
+                  </Button>
+                </>
+              )}
             </div>
           ) : (
             ""

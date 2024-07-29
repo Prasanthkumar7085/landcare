@@ -215,12 +215,12 @@ const TanstackTableComponent: FC<pageProps> = ({
                                         alignItems: "center",
                                     }}
                                 >
-                                    {/* <Image
-                                        src="/NoDataImageAnalytics.svg"
+                                    <Image
+                                        src="/no-image-markers.svg"
                                         alt=""
                                         height={110}
                                         width={210}
-                                    /> */}
+                                    />
                                 </div>
                             </td>
                         </tr>
