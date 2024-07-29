@@ -98,8 +98,8 @@ const ViewGoogleMap = () => {
     });
   };
 
-  const renderAllMarkers = () => {
-    markers.forEach((markerData) => {
+  const renderAllMarkers = (markers1: any) => {
+    markers1.forEach((markerData: any) => {
       const latLng = new google.maps.LatLng(
         markerData.coordinates[0],
         markerData.coordinates[1]
@@ -188,8 +188,8 @@ const ViewGoogleMap = () => {
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
       setMarkers(data);
+      renderAllMarkers(data);
       setSingleMarkers(data);
-      setMarkers(data);
     } catch (err) {
       console.error(err);
     }
@@ -219,8 +219,8 @@ const ViewGoogleMap = () => {
   }, [map, googleMaps, markers]);
 
   useEffect(() => {
-    if (markers?.length > 0) {
-      renderAllMarkers();
+    if (markers?.length > 0 && map) {
+      renderAllMarkers(markers);
     }
   }, [markers]);
 

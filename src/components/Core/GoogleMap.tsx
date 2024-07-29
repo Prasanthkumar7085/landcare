@@ -10,8 +10,14 @@ const GoogleMapComponent = ({ OtherMapOptions }: any) => {
   const placesService: any = useRef(null);
   const [mapType, setMapType] = useState("hybrid");
 
+  const createInfoWindow = (map: any) => {
+    const infoWindow = new (window as any).google.maps.InfoWindow();
+    infoWindowRef.current = infoWindow;
+  };
+
   const handleApiLoaded = (map: any, maps: any) => {
     mapRef.current = map;
+    createInfoWindow(map);
     addCustomControl({ map, maps, mapRef, infoWindowRef });
     MapTypeOptions(map, maps, setMapType);
     SearchAutoComplete({

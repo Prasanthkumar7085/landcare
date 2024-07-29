@@ -18,9 +18,9 @@ export const addCustomControl = ({ map, maps, mapRef, infoWindowRef }: any) => {
   controlUI.addEventListener("click", () => {
     if (navigator.geolocation && mapRef.current) {
       const options = {
-        enableHighAccuracy: true, // Request high accuracy if available
-        timeout: 5000, // Set a timeout (milliseconds) for the request
-        maximumAge: 0, // Force a fresh location request
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
       };
 
       navigator.geolocation.getCurrentPosition(
@@ -31,7 +31,7 @@ export const addCustomControl = ({ map, maps, mapRef, infoWindowRef }: any) => {
           };
 
           mapRef.current.panTo(currentPosition);
-          mapRef.current.setZoom(15); // Optionally set the zoom level as needed
+          mapRef.current.setZoom(15);
 
           const infoWindow = infoWindowRef.current;
           infoWindow.setPosition(currentPosition);
@@ -54,7 +54,7 @@ export const addCustomControl = ({ map, maps, mapRef, infoWindowRef }: any) => {
               break;
           }
         },
-        options // Pass the options to getCurrentPosition
+        options
       );
     } else {
       console.error("Geolocation is not supported");

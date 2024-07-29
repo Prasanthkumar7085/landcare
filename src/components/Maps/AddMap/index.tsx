@@ -1,14 +1,13 @@
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
+import { getSingleMapDetailsAPI } from "@/services/maps";
 import { Button, Tooltip } from "@mui/material";
+import { useParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddMapDrawer from "./AddMapDrawer";
 import AddPolygonDialog from "./AddPolygonDialog";
 import styles from "./google-map.module.css";
-import { getSingleMapDetailsAPI } from "@/services/maps";
-import { useParams } from "next/navigation";
-import { calculatePolygonCentroid } from "@/lib/helpers/mapsHelpers";
 
 const AddPolygon = () => {
   const dispatch = useDispatch();
@@ -226,9 +225,6 @@ const AddPolygon = () => {
         });
 
         map.fitBounds(bounds);
-      } else {
-        let center = { lat: -25.1198163, lng: 135.9791755 };
-        map.setCenter(center);
       }
     }
   }, [map, googleMaps]);
