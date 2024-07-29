@@ -21,7 +21,9 @@ const ViewMapDetailsDrawer = ({
   setSingleMarkerOpen,
   singleMarkeropen,
   setMarkerData,
-  markerData
+  markerData,
+  setMarkerOption,
+  markerOption,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -104,6 +106,8 @@ const ViewMapDetailsDrawer = ({
               singleMarkeropen={singleMarkeropen}
               setMarkerData={setMarkerData}
               markerData={markerData}
+              setMarkerOption={setMarkerOption}
+              markerOption={markerOption}
             />
           </div>
         ) : (

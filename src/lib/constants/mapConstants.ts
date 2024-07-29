@@ -47,3 +47,26 @@ export const mapTypeOptions = [
     img: "/markers/cinemas.svg",
   },
 ];
+
+export const markerFilterOptions = [
+  {
+    title: "asc",
+    value: "title",
+    label: "Title (High to Low)",
+  },
+  {
+    title: "dsc",
+    value: "title",
+    label: "Title (Low to High)",
+  },
+  {
+    title: "asc",
+    value: "created_at",
+    label: "Created AT (High to Low)",
+  },
+  {
+    title: "dsc",
+    value: "created_at",
+    label: "Created AT (Low to High)",
+  }
+]

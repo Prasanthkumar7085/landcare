@@ -15,12 +15,12 @@ import { styled } from '@mui/material/styles';
 import { deleteMarkerAPI, getAllMapMarkersAPI } from '@/services/maps';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import AutoCopleteSearch from '@/components/Core/AutoCompleteSearch';
 import { mapTypeOptions } from '@/lib/constants/mapConstants';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast, Toaster } from 'sonner';
 import DeleteDialog from '@/components/Core/DeleteDialog';
 import LoadingComponent from '@/components/Core/LoadingComponent';
+import AutoCompleteSearch from '@/components/Core/AutoCompleteSearch';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -252,11 +252,11 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
                     ),
                 }}
             />
-            <AutoCopleteSearch
+            <AutoCompleteSearch
                 data={mapTypeOptions}
-                setSelectType={setSelectType}
-                selectType={selectType}
-                placeholder="Search Type"
+                setSelectValue={setSelectType}
+                selectedValue={selectType}
+                placeholder="Select Marker Type"
             />
             <IconButton
                 aria-label="close"
