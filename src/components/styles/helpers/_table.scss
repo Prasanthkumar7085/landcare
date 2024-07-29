@@ -132,7 +132,7 @@ $inputBorderColor: #9c9c9c;
     width: 100% !important;
 
     & * {
-      font-size: clamp(12px, 0.625vw, 14px);
+      font-size: $font_12;
       font-family: $fontPrimary;
       letter-spacing: 0;
       font-weight: $fw_500;

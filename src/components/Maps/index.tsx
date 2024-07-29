@@ -20,6 +20,7 @@ import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
 import { datePipe } from "@/lib/helpers/datePipe";
 import LoadingComponent from "../Core/LoadingComponent";
+import Image from "next/image";
 
 const Maps = () => {
   const useParam = useSearchParams();
@@ -100,62 +101,73 @@ const Maps = () => {
       <MapsFilters
         getAllMaps={getAllMaps}
       />
-      <Box sx={{ flexGrow: 1, padding: 2 }}>
-        <Grid container spacing={2}>
+      <Box >
+        <div className="mapListContainer">
           {mapsData?.map((item: any, index: any) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <Card variant="outlined">
-                <CardContent>
-                  <img
-                    style={{ width: "100%", height: "220px", marginBottom: 10 }}
-                    src={item?.image ? item?.image : "/no-image.png"}
-                    alt="map image"
-                  />
-                  <Typography variant="body2" component="div" gutterBottom>
-                    <Tooltip
-                      title={item?.title?.length >= 50 ? item?.title : ""}
-                      placement="bottom"
-                    >
-                      {item?.title
-                        ? item?.title?.length >= 50
-                          ? `${item?.title.slice(0, 30)}....`
-                          : item?.title
-                        : "--"}
-                    </Tooltip>
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    <Tooltip
-                      title={
-                        item?.description?.length >= 50 ? item?.description : ""
-                      }
-                      placement="bottom"
-                    >
-                      {item?.description
-                        ? item?.description?.length >= 50
-                          ? `${item?.description.slice(0, 30)}....`
-                          : item?.description
-                        : "--"}
-                    </Tooltip>
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
+            <Card className="eachListCard" key={index} >
+              <div className="imgBlock">
+
+                <Image
+                  className="mapImg"
+                  src={item?.image ? item?.image : "/no-image.png"}
+                  alt="map image"
+                  width={100}
+                  height={150}
+                />
+              </div>
+              <div className="cardContent">
+
+                <Typography className="cardTitle" >
+                  <Tooltip
+                    title={item?.title?.length >= 50 ? item?.title : ""}
+                    placement="bottom"
+                  >
+                    {item?.title
+                      ? item?.title?.length >= 50
+                        ? `${item?.title.slice(0, 30)}....`
+                        : item?.title
+                      : "--"}
+                  </Tooltip>
+                </Typography>
+                <Typography className="cardDesc">
+                  <Tooltip
+                    title={
+                      item?.description?.length >= 50 ? item?.description : ""
+                    }
+                    placement="bottom"
+                  >
+                    {item?.description
+                      ? item?.description?.length >= 50
+                        ? `${item?.description.slice(0, 30)}....`
+                        : item?.description
+                      : "--"}
+                  </Tooltip>
+                </Typography>
+
+              </div>
+
+              <div className="cardFooter" >
+                <Typography className="createDate">
+                  <Image src="/map/clock.svg" height={15} width={15} alt="" />
+                  <span>
+
                     {item?.created_at ? datePipe(item?.created_at) : "--"}
-                  </Typography>
-                  <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Button
-                      variant="text"
-                      sx={{ color: "black" }}
-                      onClick={() => {
-                        router.push(`/view-map/${item?.id}`);
-                      }}
-                    >
-                      <VisibilityOutlinedIcon /> Preview
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </Grid>
+                  </span>
+                </Typography>
+                <Button
+                  className="previewBtn"
+                  variant="text"
+                  onClick={() => {
+                    router.push(`/view-map/${item?.id}`);
+                  }}
+                  >
+               <Image src="/login/view-icon.svg" height={13} width={13} alt="" />
+                  Preview
+                </Button>
+              </div>
+            </Card>
           ))}
-        </Grid>
+        </div>
         {mapsData?.length ? (
           <>
             {!loading ? (
