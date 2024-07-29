@@ -8,6 +8,8 @@ import DeleteDialog from "@/components/Core/DeleteDialog";
 import { deleteMapAPI } from "@/services/maps";
 import MapMarkersList from "./MapMarkersList";
 import styles from "./view-map-block.module.css";
+import ImportModal from "./ImportModal";
+
 const ViewMapDetailsDrawer = ({
   mapDetails,
   markers,
@@ -31,7 +33,10 @@ const ViewMapDetailsDrawer = ({
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [loading, setLoading] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [file, setFile] = useState<File | any>(null);
   const open = Boolean(anchorEl);
+  const [showModal, setShowModal] = useState<any>(false);
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -51,7 +56,7 @@ const ViewMapDetailsDrawer = ({
     try {
       const response = await deleteMapAPI(id);
       toast.success(response?.message);
-      router.push("/maps")
+      router.push("/maps");
       handleDeleteCose();
     } catch (err) {
       console.error(err);
@@ -60,13 +65,28 @@ const ViewMapDetailsDrawer = ({
     }
   };
 
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setFile(null);
+  };
+
   return (
     <div className={styles.detailsslidebarfarmslist}>
       <header className={styles.header}>
         <div className={styles.headingcontainer}>
           <Button onClick={() => router.push("/maps")}>Back</Button>
           <div>
-            <Button variant="contained">Import</Button>
+            <Button onClick={openModal}>Import</Button>
+            <ImportModal
+              show={showModal}
+              onClose={closeModal}
+              file={file}
+              setFile={setFile}
+            />
             <Button onClick={handleClick}>...</Button>
           </div>
         </div>
@@ -147,10 +167,14 @@ const ViewMapDetailsDrawer = ({
         <MenuItem onClick={() => router.push(`/update-map/${id}`)}>
           Edit
         </MenuItem>
-        <MenuItem onClick={() => {
-          handleClickDeleteOpen();
-          handleClose();
-        }}>Delete</MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClickDeleteOpen();
+            handleClose();
+          }}
+        >
+          Delete
+        </MenuItem>
       </Menu>
       <DeleteDialog
         deleteOpen={deleteOpen}

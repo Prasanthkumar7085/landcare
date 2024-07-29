@@ -127,7 +127,7 @@ const ViewGoogleMap = () => {
     setMaps(map);
     setGoogleMaps(maps);
     const drawingManager = new maps.drawing.DrawingManager({
-      drawingControl: pathName?.includes("/view-map") ? false : true,
+      drawingControl: true,
       drawingControlOptions: {
         position: maps.ControlPosition.LEFT_CENTER,
         drawingModes: [google.maps.drawing.OverlayType.MARKER],
@@ -183,7 +183,7 @@ const ViewGoogleMap = () => {
     limit = 5,
     search_string = searchString,
     sort_by = markerOption?.value,
-    sort_type = markerOption?.title
+    sort_type = markerOption?.title,
   }) => {
     try {
       let queryParams: any = {
@@ -191,7 +191,7 @@ const ViewGoogleMap = () => {
         limit: limit,
         search_string: search_string,
         sort_by: sort_by,
-        sort_type: sort_type
+        sort_type: sort_type,
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
@@ -209,7 +209,7 @@ const ViewGoogleMap = () => {
       limit: 5,
       search_string: searchString,
       sort_by: markerOption?.value,
-      sort_type: markerOption?.title
+      sort_type: markerOption?.title,
     });
   }, [searchString, markerOption?.value, markerOption?.title]);
 

@@ -35,6 +35,8 @@ const MarkerPopup = ({
       title: "",
       description: "",
     });
+    setMarkerType(null);
+    setErrorMessages([]);
     setShowMarkerPopup(false);
   };
 
