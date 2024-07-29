@@ -36,6 +36,7 @@ const ViewGoogleMap = () => {
   const [overlays, setOverlays] = useState<any[]>([]);
   const [singleMarkeropen, setSingleMarkerOpen] = useState(false);
   const [markerData, setMarkerData] = useState<any>();
+  const [markerOption, setMarkerOption] = useState<any>();
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     state: "",
@@ -181,12 +182,16 @@ const ViewGoogleMap = () => {
     page = 1,
     limit = 5,
     search_string = searchString,
+    sort_by = markerOption?.value,
+    sort_type = markerOption?.title
   }) => {
     try {
       let queryParams: any = {
         page: page,
         limit: limit,
         search_string: search_string,
+        sort_by: sort_by,
+        sort_type: sort_type
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
@@ -203,8 +208,10 @@ const ViewGoogleMap = () => {
       page: 1,
       limit: 5,
       search_string: searchString,
+      sort_by: markerOption?.value,
+      sort_type: markerOption?.title
     });
-  }, [searchString]);
+  }, [searchString, markerOption?.value, markerOption?.title]);
 
   useEffect(() => {
     getSingleMapDetails();
@@ -249,6 +256,8 @@ const ViewGoogleMap = () => {
           singleMarkeropen={singleMarkeropen}
           setMarkerData={setMarkerData}
           markerData={markerData}
+          setMarkerOption={setMarkerOption}
+          markerOption={markerOption}
         />
       )}
       <MarkerPopup
