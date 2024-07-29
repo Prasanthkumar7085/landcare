@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ResponseHelper } from "../helpers/reponseHelper";
-import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
-import { MAP_CREATED, MAP_DELETED, MAP_FETCHED, MAP_NOT_FOUND, MAP_STATUS_UPDATED, MAP_TITLE_EXISTS, MAP_UPDATED, MAPS_FETCHED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
-import { makeSlug } from "../utils/app.utils";
+import { MAP_CREATED, MAP_DELETED, MAP_FETCHED, MAP_NOT_FOUND, MAP_STATUS_UPDATED, MAP_TITLE_EXISTS, MAP_UPDATED, MAPS_FETCHED,SOMETHING_WENT_WRONG } from "../constants/appMessages";
 import { ResourceAlreadyExistsError } from "../helpers/exceptions";
 import paginationHelper from "../helpers/paginationHelper";
-import filterHelper from "../helpers/filterHelper";
+import { ResponseHelper } from "../helpers/reponseHelper";
+import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
+import { MarkersDataServiceProvider } from "../services/markersDataServiceProvider";
+import { makeSlug } from "../utils/app.utils";
 
 const mapsDataServiceProvider = new MapsDataServiceProvider();
+const markersDataServiceProvider = new MarkersDataServiceProvider();
 
 
 
@@ -31,7 +32,7 @@ export class MapsController {
             if (error.validation_error) {
                 return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
             }
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG, error);
         }
     }
 
@@ -47,7 +48,7 @@ export class MapsController {
 
         } catch (error: any) {
             console.log(error);
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG, error);
         }
     }
 
@@ -79,7 +80,7 @@ export class MapsController {
 
         } catch (error: any) {
             console.log(error);
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG, error);
         }
     }
 
@@ -114,7 +115,7 @@ export class MapsController {
             if (error.validation_error) {
                 return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
             }
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG, error);
         }
     }
 
@@ -127,12 +128,13 @@ export class MapsController {
             }
 
             await mapsDataServiceProvider.delete(params.id);
+            await markersDataServiceProvider.deleteByMapId(params.id);
 
             return ResponseHelper.sendSuccessResponse(200, MAP_DELETED);
 
         } catch (error: any) {
             console.log(error);
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG, error);
         }
     }
 
@@ -155,7 +157,7 @@ export class MapsController {
 
         } catch (error: any) {
             console.log(error);
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG, error);
         }
     }
 }

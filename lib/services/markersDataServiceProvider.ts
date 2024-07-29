@@ -103,4 +103,10 @@ export class MarkersDataServiceProvider {
             .delete(mapMarkers)
             .where(eq(mapMarkers.id, id))
     }
+
+    async deleteByMapId(mapId: number) {
+        return await db
+            .delete(mapMarkers)
+            .where(eq(mapMarkers.map_id, mapId))
+    }
 }

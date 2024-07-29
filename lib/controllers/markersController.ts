@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ResponseHelper } from "../helpers/reponseHelper";
-import { MarkersDataServiceProvider } from "../services/markersDataServiceProvider";
 import { DUPLICATED_MARKER_TITLE, MAP_NOT_FOUND, MARKER_CREATED, MARKER_DELETED, MARKER_FETCHED, MARKER_NOT_FOUND_WITH_MAP, MARKER_TITLE_EXISTS, MARKER_UPDATED, MARKERS_FETCHED, MARKERS_IMPORTED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
 import { ResourceAlreadyExistsError } from "../helpers/exceptions";
-import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
-import filterHelper from "../helpers/filterHelper";
 import paginationHelper from "../helpers/paginationHelper";
+import { ResponseHelper } from "../helpers/reponseHelper";
+import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
+import { MarkersDataServiceProvider } from "../services/markersDataServiceProvider";
 
 const markersDataServiceProvider = new MarkersDataServiceProvider();
 const mapsDataServiceProvider = new MapsDataServiceProvider();
@@ -39,7 +38,7 @@ export class MarkersController {
             if (error.validation_error) {
                 return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
             }
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
 
     }
@@ -87,7 +86,7 @@ export class MarkersController {
             if (error.validation_error) {
                 return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
             }
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
     }
 
@@ -107,7 +106,7 @@ export class MarkersController {
             return ResponseHelper.sendSuccessResponse(200, MARKER_FETCHED, markerData);
         } catch (error: any) {
             console.log(error);
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
     }
 
@@ -141,7 +140,7 @@ export class MarkersController {
 
         } catch (error: any) {
             console.log(error);
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
     }
 
@@ -174,7 +173,7 @@ export class MarkersController {
             if (error.validation_error) {
                 return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
             }
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
     }
 
@@ -200,7 +199,7 @@ export class MarkersController {
 
         } catch (error: any) {
             console.log(error);
-            return ResponseHelper.sendErrorResponse(500, SOMETHING_WENT_WRONG, error);
+            return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
     }
 }
