@@ -58,7 +58,7 @@ const Maps = () => {
       router.push(`${pathname}${queryString}`);
       const response = await getAllListMapsAPI(queryParams);
       const { data, ...rest } = response;
-      // setMapsData(data);
+      setMapsData(data);
       setPaginationDetails(rest);
     } catch (err) {
       console.error(err);
