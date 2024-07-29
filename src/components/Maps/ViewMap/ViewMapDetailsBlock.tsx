@@ -8,6 +8,8 @@ import MapMarkersList from "./MapMarkersList";
 import { deleteMapAPI } from "@/services/maps";
 import { toast, Toaster } from "sonner";
 import DeleteDialog from "@/components/Core/DeleteDialog";
+import ImportModal from "./ImportModal";
+
 const ViewMapDetailsDrawer = ({
   mapDetails,
   markers,
@@ -26,6 +28,8 @@ const ViewMapDetailsDrawer = ({
   const [loading, setLoading] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const open = Boolean(anchorEl);
+  const [showModal, setShowModal] = useState<any>(false);
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -54,14 +58,23 @@ const ViewMapDetailsDrawer = ({
     }
   };
 
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <div className={styles.detailsslidebarfarmslist}>
       <header className={styles.header}>
         <div className={styles.headingcontainer}>
           <Button onClick={() => router.push("/maps")}>Back</Button>
           <div>
-            <Button variant="contained">Import</Button>
-            <Button onClick={handleClick}>...</Button>
+          <Button onClick={openModal}>Import</Button>
+          <ImportModal show={showModal} onClose={closeModal} />
+          <Button onClick={handleClick}>...</Button>
           </div>
         </div>
         <h2 className={styles.heading}>Map Details</h2>
