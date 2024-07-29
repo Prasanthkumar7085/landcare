@@ -128,7 +128,7 @@ export class MapsController {
             }
 
             await mapsDataServiceProvider.delete(params.id);
-            await markersDataServiceProvider.deleteByMapId(params.id);
+            // await markersDataServiceProvider.deleteByMapId(params.id);
 
             return ResponseHelper.sendSuccessResponse(200, MAP_DELETED);
 
