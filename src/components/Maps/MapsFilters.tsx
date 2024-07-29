@@ -83,16 +83,18 @@ const MapsFilters = ({ getAllMaps }: any) => {
       className="mapHeaderContainer"
     >
       <Tabs
+        className="tabsGrp"
         textColor="secondary"
         indicatorColor="secondary"
         aria-label="secondary tabs example"
       >
-        <Tab value="" label="All" />
-        <Tab value="" label="Owned" />
-        <Tab value="" label="Shared" />
+        <Tab className="tabBtn" value="" label="All" />
+        <Tab className="tabBtn" value="" label="Owned" />
+        <Tab className="tabBtn" value="" label="Shared" />
       </Tabs>
       <div className="filterGrp" >
         <DateRangePicker
+          className="defaultDatePicker"
           value={
             fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
           }
@@ -106,6 +108,7 @@ const MapsFilters = ({ getAllMaps }: any) => {
           placement="bottomEnd"
         />
         <TextField
+          className="defaultTextFeild"
           variant="outlined"
           type="search"
           size="small"

@@ -3,11 +3,54 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding:0.8rem 0;
+    .tabsGrp {
+        min-height: inherit;
+        .tabBtn {
+            min-height: inherit;
+            padding: 4px 0;
+            text-transform: capitalize;
+            font-family: $fontPrimary;
+            font-size:$font_16;
+            font-weight: $fw-400;
+            color: #00000099;
+        }
+    }
     .filterGrp {
       display: flex;
       align-items: center;
       gap: 1rem;
+      .defaultDatePicker {
+        width: 200px !important;
+        .rs-input-group {
+            border-radius: 4px;
+        }
+        input {
+          font-size: 11.5px;
+          padding: 5px 11px !important;
+        }
+        .rs-input-group-addon {
+            padding: 7px 12px !important;
+        }
+      }
+      .defaultTextFeild {
+        .MuiInputBase-root {
+          background: $whiteColor;
+          color: $blackColor;
+          font-weight: $fw_400;
+          font-size: 12px;
+          box-sizing: border-box;
+          border-radius: 4px;
+          height:30px;
+          border: 1.4px solid #e4e4e4;
+          font-family: $fontPrimary;
+          width: 200px;
+
+          fieldset {
+            border: 0 !important;
+          }
+        }
+      }
       .addNewBtn {
         border-radius: 4px;
         background: $primaryColor;
