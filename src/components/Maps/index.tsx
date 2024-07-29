@@ -1,7 +1,7 @@
 "use client";
 import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
 import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
-import { getAllListMapsAPI } from "@/services/maps";
+import { deleteMapAPI, getAllListMapsAPI } from "@/services/maps";
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
@@ -11,19 +11,22 @@ import {
   CardContent,
   Grid,
   IconButton,
+  Menu,
+  MenuItem,
   Tooltip,
   Typography,
 } from "@mui/material";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import dayjs from "dayjs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Toaster } from "sonner";
+import React, { useEffect, useState } from "react";
+import { toast, Toaster } from "sonner";
 import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
 import { datePipe } from "@/lib/helpers/datePipe";
 import LoadingComponent from "../Core/LoadingComponent";
 import Image from "next/image";
+import DeleteDialog from "../Core/DeleteDialog";
 
 const Maps = () => {
   const useParam = useSearchParams();
@@ -31,11 +34,30 @@ const Maps = () => {
   const pathname = usePathname();
 
   const [loading, setLoading] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
   const [mapsData, setMapsData] = useState<any[]>([]);
   const [paginationDetails, setPaginationDetails] = useState({});
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [mapId, setMapId] = useState<any>();
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
   );
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const handleClickDeleteOpen = () => {
+    setDeleteOpen(true);
+  };
+  const handleDeleteCose = () => {
+    setDeleteOpen(false);
+  };
 
   const getAllMaps = async ({
     page = searchParams?.page,
@@ -64,6 +86,20 @@ const Maps = () => {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const deleteMap = async () => {
+    setShowLoading(true);
+    try {
+      const response = await deleteMapAPI(mapId);
+      toast.success(response?.message);
+      getAllMaps({});
+      handleDeleteCose();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setShowLoading(false);
     }
   };
 
@@ -118,6 +154,41 @@ const Maps = () => {
                       height={150}
                     />
                   </div>
+                  <IconButton onClick={(event) => {
+                    handleOpenUserMenu(event)
+                    setMapId(item?.id)
+                  }}>
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    sx={{ mt: '45px' }}
+                    id="menu-appbar"
+                    anchorEl={anchorElUser}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                  >
+                    <MenuItem className="menuItem" onClick={handleCloseUserMenu}>
+                      Open In New Tab
+                    </MenuItem>
+                    <MenuItem className="menuItem" onClick={handleCloseUserMenu}>
+                      Copy
+                    </MenuItem>
+                    <MenuItem className="menuItem" onClick={() => {
+                      handleCloseUserMenu();
+                      handleClickDeleteOpen();
+                    }}>
+                      Delete
+                    </MenuItem>
+                  </Menu>
                   <div className="cardContent">
                     <Typography className="cardTitle">
                       <Tooltip
@@ -216,6 +287,14 @@ const Maps = () => {
           ""
         )}
       </Box>
+      <DeleteDialog
+        deleteOpen={deleteOpen}
+        handleDeleteCose={handleDeleteCose}
+        deleteFunction={deleteMap}
+        lable="Delete Map"
+        text="Are you sure want to delete map?"
+        loading={showLoading}
+      />
       <LoadingComponent loading={loading} />
       <Toaster richColors closeButton position="top-right" />
     </div>
