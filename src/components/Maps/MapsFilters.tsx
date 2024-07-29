@@ -28,6 +28,9 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   const [toDate, setToDate] = useState<string | null>(
     params.get("to_date") || null
   );
+  const [status, setStatus] = useState<string | null>(
+    params.get("status") || null
+  );
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
   );
@@ -38,6 +41,15 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
     getAllMaps({
       ...searchParams,
       search_string: encodeURIComponent(newSearchString),
+      page: 1,
+    });
+  };
+
+  const handleStatusChange = (event: React.SyntheticEvent, newValue: string) => {
+    setStatus(newValue);
+    getAllMaps({
+      ...searchParams,
+      status: encodeURIComponent(newValue),
       page: 1,
     });
   };
@@ -85,10 +97,12 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
         textColor="secondary"
         indicatorColor="secondary"
         aria-label="secondary tabs example"
+        value={searchParams?.status ? searchParams?.status : ""}
+        onChange={handleStatusChange}
       >
         <Tab className="tabBtn" value="" label="All" />
-        <Tab className="tabBtn" value="" label="Owned" />
-        <Tab className="tabBtn" value="" label="Shared" />
+        <Tab className="tabBtn" value="draft" label="Draft" />
+        <Tab className="tabBtn" value="publish" label="Published" />
       </Tabs>
       <div className="filterGrp">
         <DateRangePicker

@@ -33,7 +33,7 @@ const Maps = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [showLoading, setShowLoading] = useState(false);
   const [mapsData, setMapsData] = useState<any[]>([]);
   const [paginationDetails, setPaginationDetails] = useState({});
@@ -65,6 +65,7 @@ const Maps = () => {
     search_string = searchParams?.search_string,
     from_date = searchParams?.from_date,
     to_date = searchParams?.to_date,
+    status = searchParams?.status
   }: Partial<ListMapsApiProps>) => {
     setLoading(true);
     try {
@@ -74,6 +75,7 @@ const Maps = () => {
         search_string: search_string ? search_string : "",
         from_date: from_date ? from_date : "",
         to_date: to_date ? to_date : "",
+        status: status ? status : "",
       };
       let queryString = prepareURLEncodedParams("", queryParams);
 
@@ -116,6 +118,7 @@ const Maps = () => {
       search_string: searchParams?.search_string,
       from_date: searchParams?.from_date,
       to_date: searchParams?.to_date,
+      status: searchParams?.status
     });
   }, [searchParams]);
 
