@@ -1,20 +1,12 @@
-import { useState } from "react";
-import styles from "./add-marker.module.css";
-import {
-  Autocomplete,
-  Box,
-  Dialog,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-} from "@mui/material";
+import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
+import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
 import { mapTypeOptions } from "@/lib/constants/mapConstants";
 import { addMarkerDeatilsAPI } from "@/services/maps";
+import { Button, CircularProgress, Dialog, TextField } from "@mui/material";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
-import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
-import Image from "next/image";
+import styles from "./add-marker.module.css";
 
 const MarkerPopup = ({
   setShowMarkerPopup,
@@ -57,7 +49,7 @@ const MarkerPopup = ({
       const response = await addMarkerDeatilsAPI(id, body);
       if (response?.status == 200 || response?.status == 201) {
         toast.success("Marker added successfully");
-        setShowMarkerPopup(false);
+        handleCancel();
         await getSingleMapMarkers({});
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
@@ -101,6 +93,7 @@ const MarkerPopup = ({
 
               <TextField
                 name="description"
+                placeholder="Enter Description"
                 value={popupFormData.description}
                 rows={4}
                 onChange={handleInputChange}
@@ -112,84 +105,30 @@ const MarkerPopup = ({
             <div style={{ display: "flex", flexDirection: "column" }}>
               <label>Marker Type: </label>
               <div style={{ width: "100%" }}>
-                <Autocomplete
-                  className="defaultAutoComplete"
-                  value={markerType ? markerType : null}
-                  disablePortal
-                  options={mapTypeOptions?.length ? mapTypeOptions : []}
-                  PaperComponent={({ children }: any) => (
-                    <Paper
-                      style={{
-                        fontSize: "12px",
-                        fontFamily: "'Poppins', Sans-serif",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {children}
-                    </Paper>
-                  )}
-                  getOptionLabel={(option: any) =>
-                    typeof option === "string" ? option : option?.["title"]
-                  }
-                  renderOption={(props: any, option: any) => {
-                    const { key, ...optionProps } = props;
-                    return (
-                      <Box
-                        key={option.label}
-                        component="li"
-                        sx={{
-                          "& > img": { mr: 2, flexShrink: 0 },
-                        }}
-                        {...optionProps}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: "0.6rem",
-                          }}
-                        >
-                          <Image
-                            src={option?.img}
-                            width={12}
-                            height={12}
-                            alt="type"
-                          />
-
-                          {option.label}
-                        </div>
-                      </Box>
-                    );
-                  }}
-                  onChange={(_: any, newValue: any) => {
-                    setMarkerType(newValue);
-                  }}
-                  sx={{
-                    "& .MuiFormControl-root": {
-                      width: "170px",
-                      background: "#fff",
-                    },
-                  }}
-                  renderInput={(params: any) => (
-                    <TextField
-                      {...params}
-                      placeholder={"Select Marker Type"}
-                      size="small"
-                    />
-                  )}
+                <AutoCompleteSearch
+                  data={mapTypeOptions}
+                  setSelectValue={setMarkerType}
+                  selectedValue={markerType}
+                  placeholder=""
                 />
               </div>
               <ErrorMessagesComponent errorMessage={errorMessages["type"]} />
             </div>
           </div>
           <div className={styles.buttonGroup}>
-            <button type="button" onClick={handleCancel}>
+            <Button onClick={handleCancel} disabled={loading ? true : false}>
               Cancel
-            </button>
-            <button type="button" onClick={handleSave}>
-              Save
-            </button>
+            </Button>
+            <Button onClick={handleSave}>
+              {loading ? (
+                <CircularProgress
+                  color="inherit"
+                  sx={{ width: "10px", height: "10px" }}
+                />
+              ) : (
+                "Save"
+              )}
+            </Button>
           </div>
         </form>
       </div>

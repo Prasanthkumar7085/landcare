@@ -13,7 +13,7 @@ import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.css";
 import dayjs from "dayjs";
 
-const MapsFilters = () => {
+const MapsFilters = ({ getAllMaps }: any) => {
   const router = useRouter();
   const path = usePathname();
   const params = useSearchParams();
@@ -35,13 +35,11 @@ const MapsFilters = () => {
   const handleSearchChange = (event: any) => {
     const newSearchString = event.target.value;
     setSearchString(newSearchString);
-    let queryParams = {
+    getAllMaps({
       ...searchParams,
       search_string: encodeURIComponent(newSearchString),
       page: 1,
-    };
-    let queryString = prepareURLEncodedParams("", queryParams);
-    router.push(`${path}${queryString}`);
+    })
   };
 
   const formatDate = (date: any) => {
@@ -55,27 +53,22 @@ const MapsFilters = () => {
       const [start, end] = range;
       setFromDate(formatDate(start));
       setToDate(formatDate(end));
-
-      let queryParams = {
+      getAllMaps({
         ...searchParams,
         from_date: formatDate(start) ? formatDate(start) : "",
         to_date: formatDate(end) ? formatDate(end) : "",
         page: 1,
-      };
-      let queryString = prepareURLEncodedParams("", queryParams);
-      router.push(`${path}${queryString}`);
+      })
     } else {
       setFromDate(null);
       setToDate(null);
 
-      let queryParams = {
+      getAllMaps({
         ...searchParams,
         from_date: "",
         to_date: "",
         page: 1,
-      };
-      let queryString = prepareURLEncodedParams("", queryParams);
-      router.push(`${path}${queryString}`);
+      })
     }
   };
 

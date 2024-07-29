@@ -203,10 +203,6 @@ const AddPolygon = () => {
             lng: item[1],
           };
         });
-        setRenderField(true);
-        setTimeout(() => {
-          setRenderField(false);
-        }, 100);
         dispatch(storeEditPolygonCoords(updatedArray));
       }
     } catch (err) {

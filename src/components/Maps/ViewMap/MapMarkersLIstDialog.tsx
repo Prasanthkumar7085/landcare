@@ -12,9 +12,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
-import { getAllMapMarkersAPI } from '@/services/maps';
+import { deleteMarkerAPI, getAllMapMarkersAPI } from '@/services/maps';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import AutoCopleteSearch from '@/components/Core/AutoCompleteSearch';
+import { mapTypeOptions } from '@/lib/constants/mapConstants';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { toast, Toaster } from 'sonner';
+import DeleteDialog from '@/components/Core/DeleteDialog';
+import LoadingComponent from '@/components/Core/LoadingComponent';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -31,17 +37,33 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
     const [markers, setMarkers] = useState<any[]>([]);
     const [paginationDetails, setPaginationDetails] = useState({});
     const [search, setSearch] = useState("");
+    const [selectType, setSelectType] = useState<any>();
+    const [markerId, setMarkerId] = useState<any>();
+    const [loading, setLoading] = useState(false);
+    const [showLoading, setShowLoading] = useState(false);
+    const [deleteOpen, setDeleteOpen] = useState(false);
+
+    const handleClickDeleteOpen = (id: any) => {
+        setDeleteOpen(true);
+        setMarkerId(id);
+    };
+    const handleDeleteCose = () => {
+        setDeleteOpen(false);
+    };
 
     const getAllMapMarkers = async ({
         page = 1,
         limit = 8,
         search_string = search,
+        type = selectType?.title
     }) => {
+        setShowLoading(true);
         try {
             let queryParams: any = {
                 search_string: search_string ? search_string : "",
                 page: page,
                 limit: limit,
+                type: type ? type : ""
             };
             const response = await getAllMapMarkersAPI(id, queryParams);
             const { data, ...rest } = response;
@@ -49,6 +71,22 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
             setPaginationDetails(rest);
         } catch (err) {
             console.error(err);
+        } finally {
+            setShowLoading(false);
+        }
+    };
+
+    const deleteMarker = async () => {
+        setLoading(true);
+        try {
+            const response = await deleteMarkerAPI(id, markerId);
+            toast.success(response?.message);
+            getAllMapMarkers({})
+            handleDeleteCose();
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -57,8 +95,9 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
             page: 1,
             limit: 8,
             search_string: search,
+            type: selectType?.title
         });
-    }, [search]);
+    }, [search, selectType?.title]);
 
     const columns = [
         {
@@ -145,6 +184,13 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
                     <VisibilityIcon />
                     <ShareIcon />
                     <FileCopyIcon />
+                    <IconButton
+                        onClick={() => {
+                            handleClickDeleteOpen(info?.row?.original?.id)
+                        }}
+                    >
+                        <DeleteIcon />
+                    </IconButton>
                 </div>
             ),
             header: () => <span>ACTIONS</span>,
@@ -206,6 +252,12 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
                     ),
                 }}
             />
+            <AutoCopleteSearch
+                data={mapTypeOptions}
+                setSelectType={setSelectType}
+                selectType={selectType}
+                placeholder="Search Type"
+            />
             <IconButton
                 aria-label="close"
                 onClick={handleClose}
@@ -237,6 +289,16 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
                     ""
                 )}
             </DialogContent>
+            <DeleteDialog
+                deleteOpen={deleteOpen}
+                handleDeleteCose={handleDeleteCose}
+                deleteFunction={deleteMarker}
+                lable="Delete Marker"
+                text="Are you sure want to delete marker?"
+                loading={loading}
+            />
+            <LoadingComponent loading={showLoading} />
+            <Toaster richColors closeButton position="top-right" />
         </BootstrapDialog>
     );
 }
