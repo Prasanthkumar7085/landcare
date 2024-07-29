@@ -37,19 +37,22 @@ class FilterHelper {
     }
 
 
-    async markers(query: any,filters:any) {
+    async markers(query: any,filters:any,mapId:number) {
         const conditions: any = [];
 
         if (filters && filters.search_string) {
             const searchString = `%${filters.search_string}%`;
-            conditions.push(or(
+            conditions.push(and(
                 ilike(mapMarkers.title, `${searchString}`),
-                ilike(mapMarkers.type, `${searchString}`)
+                eq(mapMarkers.map_id, mapId)
             ));
         }
 
         if (filters && filters.type) {
-            conditions.push(eq(lower(mapMarkers.type), `${filters.type.toLowerCase()}`));
+            conditions.push(and(
+                eq(lower(mapMarkers.type), `${filters.type.toLowerCase()}`),
+                eq(mapMarkers.map_id, mapId)
+            ));
         }
 
         if(conditions.length > 0) {
