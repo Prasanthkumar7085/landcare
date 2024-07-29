@@ -68,6 +68,9 @@ body {
   font-size: clamp(11px, 0.69vw, 13px);
   font-family: $fontPrimary
 }
+button {
+  box-shadow: none;
+}
 
 // @import "./helpers/sideNavbar";
 @import "./helpers/navbar";

@@ -84,8 +84,8 @@ const LoginPage = () => {
                 width={130}
               />
               </div>
-              <p className="formSubTitle1">Welcome back</p>
-              <label className="formLabel1">
+              <p className="formTitle">Welcome back</p>
+              <label className="formSubTitle">
                 Enter your email an password to access your account
               </label>
               <div className="formsBlock">
@@ -128,9 +128,10 @@ const LoginPage = () => {
                             edge="end"
                           >
                             {showPassword ? (
-                              <Visibility sx={{ fontSize: "1.2rem" }} />
+                              <Image src="/login/view-icon.svg" alt="" height={16} width={16} />
+
                             ) : (
-                              <VisibilityOff sx={{ fontSize: "1.2rem" }} />
+                                <Image src="/login/hide-icon.svg" alt="" height={16} width={16}/>
                             )}
                           </IconButton>
                         </InputAdornment>

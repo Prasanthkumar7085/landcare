@@ -1,66 +1,93 @@
 .headnav {
   width: 100%;
   background-color: $whiteColor;
-  box-sizing: border-box;
   max-width: 100%;
   overflow: hidden;
-  justify-content: space-between;
-  padding: 0.6rem 1.5rem;
   position: sticky;
   top: 0;
   z-index: 999;
   border-bottom: 1px solid #d5d9dd;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 
-  .pagetitle {
-    margin: 0;
-    // color: #000;
-    font-family: $fontPrimary;
-    font-size: clamp(14.5px, 0.93vw, 20px);
-    font-weight: $fw_500;
-    line-height: 100%;
-    white-space: nowrap;
-  }
-
-  .profileGrp {
+  .navContainer {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    margin-left: 0.5rem;
-
-    .profileName {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
-      padding: 3px 0;
-      gap: 4px;
-
-      .profile {
-        color: #252525;
-        letter-spacing: 0;
-        font-family: $fontPrimary;
-        font-size: clamp(12px, 0.72vw, 15px);
-        font-weight: $fw_400;
-        line-height: 100%;
-        margin: 0;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 92%;
+    margin: 0 auto;
+    .logoBlock {
+      img {
+        height: 100%;
       }
-
-      .designation {
-        color: $greenColor;
-        font-family: $fontPrimary;
-        font-size: clamp(10px, 0.625vw, 14px);
-        font-weight: $fw_400;
-        line-height: 100%;
-        margin: 0;
-        text-transform: capitalize;
+    }
+  
+    .pagetitle {
+      margin: 0;
+      color: #000;
+      font-family: $fontPrimary;
+      font-size: $font_14;
+      font-weight: $fw_500;
+      line-height: 100%;
+      white-space: nowrap;
+      cursor: pointer;
+      padding: 1.5rem 0;
+    }
+    .pagetitleActive {
+      margin: 0;
+      color: #385642;
+      font-family: $fontPrimary;
+      font-size: $font_14;
+      font-weight: $fw_500;
+      line-height: 100%;
+      white-space: nowrap;
+      cursor: pointer;
+      border-bottom: 2px solid #385642;
+      padding: 1.5rem 0;
+    }
+  
+    .profileGrp {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-left: 0.5rem;
+  
+      .profileName {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 3px 0;
+        gap: 4px;
+  
+        .profile {
+          color: #252525;
+          letter-spacing: 0;
+          font-family: $fontPrimary;
+          font-size: clamp(12px, 0.72vw, 15px);
+          font-weight: $fw_400;
+          line-height: 100%;
+          margin: 0;
+        }
+  
+        .designation {
+          color: $greenColor;
+          font-family: $fontPrimary;
+          font-size: clamp(10px, 0.625vw, 14px);
+          font-weight: $fw_400;
+          line-height: 100%;
+          margin: 0;
+          text-transform: capitalize;
+        }
       }
     }
   }
+}
+.baseContainer {
+  width: 92%;
+  margin: 0 auto;
 }
 
 .menuItem {
@@ -82,4 +109,6 @@
       padding: 0;
     }
   }
+}
+.maniContainer {
 }
