@@ -3,12 +3,14 @@ import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
 import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
 import { getAllListMapsAPI } from "@/services/maps";
 import AddIcon from "@mui/icons-material/Add";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Box,
   Button,
   Card,
   CardContent,
   Grid,
+  IconButton,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -56,7 +58,7 @@ const Maps = () => {
       router.push(`${pathname}${queryString}`);
       const response = await getAllListMapsAPI(queryParams);
       const { data, ...rest } = response;
-      setMapsData(data);
+      // setMapsData(data);
       setPaginationDetails(rest);
     } catch (err) {
       console.error(err);
@@ -102,71 +104,100 @@ const Maps = () => {
       <MapsFilters getAllMaps={getAllMaps} mapsData={mapsData} />
       <Box>
         <div className="mapListContainer">
-          {mapsData?.map((item: any, index: any) => (
-            <Card className="eachListCard" key={index}>
-              <div className="imgBlock">
-                <Image
-                  className="mapImg"
-                  src={item?.image ? item?.image : "/no-image.png"}
-                  alt="map image"
-                  width={100}
-                  height={150}
-                />
-              </div>
-              <div className="cardContent">
-                <Typography className="cardTitle">
-                  <Tooltip
-                    title={item?.title?.length >= 50 ? item?.title : ""}
-                    placement="bottom"
-                  >
-                    {item?.title
-                      ? item?.title?.length >= 50
-                        ? `${item?.title.slice(0, 30)}....`
-                        : item?.title
-                      : "--"}
-                  </Tooltip>
-                </Typography>
-                <Typography className="cardDesc">
-                  <Tooltip
-                    title={
-                      item?.description?.length >= 50 ? item?.description : ""
-                    }
-                    placement="bottom"
-                  >
-                    {item?.description
-                      ? item?.description?.length >= 50
-                        ? `${item?.description.slice(0, 30)}....`
-                        : item?.description
-                      : "--"}
-                  </Tooltip>
-                </Typography>
-              </div>
+          {mapsData?.length ? (
+            mapsData.map((item: any, index: number) => {
+              return (
 
-              <div className="cardFooter">
-                <Typography className="createDate">
-                  <Image src="/map/clock.svg" height={13} width={13} alt="" />
-                  <span>
-                    {item?.created_at ? datePipe(item?.created_at) : "--"}
-                  </span>
-                </Typography>
-                <Button
-                  className="previewBtn"
-                  variant="text"
-                  onClick={() => {
-                    router.push(`/view-map/${item?.id}`);
-                  }}
-                >
-                  <Image
-                    src="/login/view-icon.svg"
-                    height={13}
-                    width={13}
-                    alt=""
-                  />
-                  Preview
-                </Button>
-              </div>
-            </Card>
-          ))}
+                <Card className="eachListCard" key={index}>
+                  <div className="imgBlock">
+                    <Image
+                      className="mapImg"
+                      src={item?.image ? item?.image : "/no-image.png"}
+                      alt="map image"
+                      width={100}
+                      height={150}
+                    />
+                  </div>
+                  <div className="cardContent">
+                    <Typography className="cardTitle">
+                      <Tooltip
+                        title={item?.title?.length >= 50 ? item?.title : ""}
+                        placement="bottom"
+                      >
+                        {item?.title
+                          ? item?.title?.length >= 50
+                            ? `${item?.title.slice(0, 30)}....`
+                            : item?.title
+                          : "--"}
+                      </Tooltip>
+                    </Typography>
+                    <Typography className="cardDesc">
+                      <Tooltip
+                        title={
+                          item?.description?.length >= 50 ? item?.description : ""
+                        }
+                        placement="bottom"
+                      >
+                        {item?.description
+                          ? item?.description?.length >= 50
+                            ? `${item?.description.slice(0, 30)}....`
+                            : item?.description
+                          : "--"}
+                      </Tooltip>
+                    </Typography>
+                  </div>
+
+                  <div className="cardFooter">
+                    <Typography className="createDate">
+                      <Image src="/map/clock.svg" height={13} width={13} alt="" />
+                      <span>
+                        {item?.created_at ? datePipe(item?.created_at) : "--"}
+                      </span>
+                    </Typography>
+                    <Button
+                      className="previewBtn"
+                      variant="text"
+                      onClick={() => {
+                        router.push(`/view-map/${item?.id}`);
+                      }}
+                    >
+                      <Image
+                        src="/login/view-icon.svg"
+                        height={13}
+                        width={13}
+                        alt=""
+                      />
+                      Preview
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })
+          ) : !loading ? (
+            <div style={{ margin: 'auto' }}>
+              {!mapsData?.length && (useParam?.get('from_date') || useParam?.get('to_date') || useParam?.get('search_string')) ? (
+                <>
+                  <Image src="/no-image-maps.svg" alt="" height={400} width={400} />
+                </>
+              ) : (
+                <>
+                  <Image src="/add-map-image.svg" alt="" height={300} width={300} />
+                  <p >
+                    {"No maps added yet. Click 'Add New' to start."}
+                  </p>
+                  <Button
+                    variant="outlined"
+                    onClick={() => router.push("/add-map")}
+                    endIcon={<AddIcon />}
+                  >
+                    Add New Map
+                  </Button>
+                </>
+              )}
+            </div>
+          ) : (
+            ""
+          )}
         </div>
         {mapsData?.length ? (
           <>
