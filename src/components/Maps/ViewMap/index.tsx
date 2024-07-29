@@ -2,7 +2,7 @@ import { useParams, usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
-import ViewMarkerDrawer from "@/components/Core/ViewMarkerDrawer";
+import ViewMarkerDrawer from "@/components/Maps/ViewMap/ViewMarkerDrawer";
 import { mapTypeOptions } from "@/lib/constants/mapConstants";
 import {
   getSingleMapDetailsAPI,
@@ -225,7 +225,7 @@ const ViewGoogleMap = () => {
     if (markers?.length > 0 && map) {
       renderAllMarkers(markers);
     }
-  }, [markers]);
+  }, [markers, map]);
 
   return (
     <div
@@ -236,9 +236,12 @@ const ViewGoogleMap = () => {
         <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
       </div>
 
-
       {singleMarkeropen == true ? (
-        <ViewMarkerDrawer onClose={setSingleMarkerOpen} data={markerData} setData={setMarkerData} />
+        <ViewMarkerDrawer
+          onClose={setSingleMarkerOpen}
+          data={markerData}
+          setData={setMarkerData}
+        />
       ) : (
         <ViewMapDetailsDrawer
           mapDetails={mapDetails}

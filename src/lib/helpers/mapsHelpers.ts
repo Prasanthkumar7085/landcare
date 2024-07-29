@@ -17,6 +17,7 @@ export const handleGeneratePolygonBase64 = (
     const expansionFactor = 0.9;
     const canvasWidth = 600;
     const canvasHeight = 400;
+    map.setMapTypeId(google.maps.MapTypeId.HYBRID);
     mapRef.current = map;
 
     const latitudes = polygonCoords.map((coord: any) => coord.lat);
