@@ -1,30 +1,44 @@
-import React from "react";
-import {
-  Card,
-  CardContent,
-  CardActions,
-  IconButton,
-  Typography,
-  TextField,
-  InputAdornment,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import styles from "./index.module.css";
-import { datePipe } from "@/lib/helpers/datePipe";
-import MapMarkersListDialog from "./MapMarkersLIstDialog";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import SearchIcon from "@mui/icons-material/Search";
+import {
+  CardActions,
+  CardContent,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography
+} from "@mui/material";
 import Image from "next/image";
+import { useParams } from "next/navigation";
+import React, { useState } from "react";
 import { mapTypeOptions } from "@/lib/constants/mapConstants";
+import { datePipe } from "@/lib/helpers/datePipe";
+import { getSingleMarkerAPI } from "@/services/maps";
+import styles from "./index.module.css";
+import MapMarkersListDialog from "./MapMarkersLIstDialog";
 
 const MapMarkersList = ({
   singleMarkers,
   setSearchString,
   searchString,
+  setSingleMarkerOpen,
+  singleMarkeropen,
+  setMarkerData,
+  markerData
 }: any) => {
+  const { id } = useParams();
   const [open, setOpen] = React.useState(false);
+
+  const getSingleMarker = async (marker_id: any) => {
+    try {
+      const response = await getSingleMarkerAPI(id, marker_id);
+      setMarkerData(response?.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -32,6 +46,7 @@ const MapMarkersList = ({
   const handleClose = () => {
     setOpen(false);
   };
+
   return (
     <div className={styles.markergroup}>
       <div className={styles.markersection}>
@@ -70,7 +85,14 @@ const MapMarkersList = ({
             </div>
           </div>
           {singleMarkers?.map((marker: any, index: any) => (
-            <Card className={styles.markerlocation} key={index}>
+            <div
+              className={styles.markerlocation}
+              key={index}
+              onClick={() => {
+                setSingleMarkerOpen(true);
+                getSingleMarker(marker?.id);
+              }}
+            >
               <CardContent className={styles.locationcard}>
                 <div className={styles.locationprofile}>
                   <div className={styles.locationname}>
@@ -120,7 +142,7 @@ const MapMarkersList = ({
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </div>
           ))}
         </div>
       </div>

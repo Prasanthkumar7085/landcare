@@ -1,12 +1,13 @@
+import { useParams, usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
+import ViewMarkerDrawer from "@/components/Core/ViewMarkerDrawer";
 import { mapTypeOptions } from "@/lib/constants/mapConstants";
 import {
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
 } from "@/services/maps";
-import { useParams, usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
 import MarkerPopup from "./AddMarker/AddMarkerFrom";
 import styles from "./view-map.module.css";
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
@@ -33,6 +34,8 @@ const ViewGoogleMap = () => {
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
   const [localMarkers, setLocalMarkers] = useState<any>([]);
   const [overlays, setOverlays] = useState<any[]>([]);
+  const [singleMarkeropen, setSingleMarkerOpen] = useState(false);
+  const [markerData, setMarkerData] = useState<any>();
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     state: "",
@@ -233,12 +236,21 @@ const ViewGoogleMap = () => {
         <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
       </div>
 
-      <ViewMapDetailsDrawer
-        mapDetails={mapDetails}
-        singleMarkers={singleMarkers}
-        setSearchString={setSearchString}
-        searchString={searchString}
-      />
+
+      {singleMarkeropen == true ? (
+        <ViewMarkerDrawer onClose={setSingleMarkerOpen} data={markerData} setData={setMarkerData} />
+      ) : (
+        <ViewMapDetailsDrawer
+          mapDetails={mapDetails}
+          singleMarkers={singleMarkers}
+          setSearchString={setSearchString}
+          searchString={searchString}
+          setSingleMarkerOpen={setSingleMarkerOpen}
+          singleMarkeropen={singleMarkeropen}
+          setMarkerData={setMarkerData}
+          markerData={markerData}
+        />
+      )}
       <MarkerPopup
         setShowMarkerPopup={setShowMarkerPopup}
         showMarkerPopup={showMarkerPopup}

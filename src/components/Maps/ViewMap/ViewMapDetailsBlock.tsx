@@ -1,13 +1,13 @@
 import { Button, Menu, MenuItem, Typography } from "@mui/material";
-import styles from "./view-map-block.module.css";
 import dayjs from "dayjs";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import Image from "next/image";
-import MapMarkersList from "./MapMarkersList";
-import { deleteMapAPI } from "@/services/maps";
 import { toast, Toaster } from "sonner";
 import DeleteDialog from "@/components/Core/DeleteDialog";
+import { deleteMapAPI } from "@/services/maps";
+import MapMarkersList from "./MapMarkersList";
+import styles from "./view-map-block.module.css";
 const ViewMapDetailsDrawer = ({
   mapDetails,
   markers,
@@ -18,6 +18,10 @@ const ViewMapDetailsDrawer = ({
   singleMarkers,
   setSearchString,
   searchString,
+  setSingleMarkerOpen,
+  singleMarkeropen,
+  setMarkerData,
+  markerData
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -96,6 +100,10 @@ const ViewMapDetailsDrawer = ({
               singleMarkers={singleMarkers}
               setSearchString={setSearchString}
               searchString={searchString}
+              setSingleMarkerOpen={setSingleMarkerOpen}
+              singleMarkeropen={singleMarkeropen}
+              setMarkerData={setMarkerData}
+              markerData={markerData}
             />
           </div>
         ) : (
