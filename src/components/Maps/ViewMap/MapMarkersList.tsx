@@ -1,36 +1,35 @@
-import React, { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardActions,
-  IconButton,
-  Typography,
-  TextField,
-  InputAdornment,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import styles from "./index.module.css";
-import { datePipe } from "@/lib/helpers/datePipe";
-import MapMarkersListDialog from "./MapMarkersLIstDialog";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import SearchIcon from "@mui/icons-material/Search";
+import {
+  CardActions,
+  CardContent,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography
+} from "@mui/material";
 import Image from "next/image";
-import { mapTypeOptions } from "@/lib/constants/mapConstants";
-import ViewMarkerDrawer from "@/components/Core/ViewMarkerDrawer";
-import { getSingleMarkerAPI } from "@/services/maps";
 import { useParams } from "next/navigation";
+import React, { useState } from "react";
+import { mapTypeOptions } from "@/lib/constants/mapConstants";
+import { datePipe } from "@/lib/helpers/datePipe";
+import { getSingleMarkerAPI } from "@/services/maps";
+import styles from "./index.module.css";
+import MapMarkersListDialog from "./MapMarkersLIstDialog";
 
 const MapMarkersList = ({
   singleMarkers,
   setSearchString,
   searchString,
+  setSingleMarkerOpen,
+  singleMarkeropen,
+  setMarkerData,
+  markerData
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [markerData, setMarkerData] = useState<any>();
 
   const getSingleMarker = async (marker_id: any) => {
     try {
@@ -39,13 +38,6 @@ const MapMarkersList = ({
     } catch (err) {
       console.error(err);
     }
-  };
-
-  const handleClickDrawerOpen = () => {
-    setDrawerOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
   };
 
   const handleClickOpen = () => {
@@ -97,7 +89,7 @@ const MapMarkersList = ({
               className={styles.markerlocation}
               key={index}
               onClick={() => {
-                handleClickDrawerOpen();
+                setSingleMarkerOpen(true);
                 getSingleMarker(marker?.id);
               }}
             >
@@ -162,7 +154,6 @@ const MapMarkersList = ({
         </CardActions>
       </div>
       <MapMarkersListDialog open={open} handleClose={handleClose} />
-      <ViewMarkerDrawer open={drawerOpen} onClose={handleDrawerClose} data={markerData} setData={setMarkerData} />
     </div>
   );
 };

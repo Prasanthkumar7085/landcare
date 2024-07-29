@@ -1,31 +1,23 @@
-import React from 'react';
-import Drawer from '@mui/material/Drawer';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
+import { datePipe } from '@/lib/helpers/datePipe';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ShareIcon from '@mui/icons-material/Share';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import Skeleton from '@mui/material/Skeleton';
-import { datePipe } from '@/lib/helpers/datePipe';
+import Typography from '@mui/material/Typography';
 
-const ViewMarkerDrawer = ({ open, onClose, data, setData }: any) => {
+const ViewMarkerDrawer = ({ data, setData, onClose }: any) => {
 
     return (
-        <Drawer
-            anchor="right"
-            open={open}
-            onClose={() => {
-                onClose();
-                setData({});
-            }}
+        <div
         >
             <Box sx={{ width: 300, p: 2 }}>
                 <IconButton
                     onClick={() => {
-                        onClose();
+                        onClose(false);
                         setData({});
                     }}>
                     <ArrowBackIcon />
@@ -61,7 +53,7 @@ const ViewMarkerDrawer = ({ open, onClose, data, setData }: any) => {
                     </IconButton>
                 </Box>
             </Box>
-        </Drawer>
+        </div>
     );
 }
 
