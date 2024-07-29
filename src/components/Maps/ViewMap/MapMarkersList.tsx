@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -18,13 +18,35 @@ import { datePipe } from "@/lib/helpers/datePipe";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
 import Image from "next/image";
 import { mapTypeOptions } from "@/lib/constants/mapConstants";
+import ViewMarkerDrawer from "@/components/Core/ViewMarkerDrawer";
+import { getSingleMarkerAPI } from "@/services/maps";
+import { useParams } from "next/navigation";
 
 const MapMarkersList = ({
   singleMarkers,
   setSearchString,
   searchString,
 }: any) => {
+  const { id } = useParams();
   const [open, setOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [markerData, setMarkerData] = useState<any>();
+
+  const getSingleMarker = async (marker_id: any) => {
+    try {
+      const response = await getSingleMarkerAPI(id, marker_id);
+      setMarkerData(response?.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleClickDrawerOpen = () => {
+    setDrawerOpen(true);
+  };
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -32,6 +54,7 @@ const MapMarkersList = ({
   const handleClose = () => {
     setOpen(false);
   };
+
   return (
     <div className={styles.markergroup}>
       <div className={styles.markersection}>
@@ -70,7 +93,14 @@ const MapMarkersList = ({
             </div>
           </div>
           {singleMarkers?.map((marker: any, index: any) => (
-            <Card className={styles.markerlocation} key={index}>
+            <div
+              className={styles.markerlocation}
+              key={index}
+              onClick={() => {
+                handleClickDrawerOpen();
+                getSingleMarker(marker?.id);
+              }}
+            >
               <CardContent className={styles.locationcard}>
                 <div className={styles.locationprofile}>
                   <div className={styles.locationname}>
@@ -120,7 +150,7 @@ const MapMarkersList = ({
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </div>
           ))}
         </div>
       </div>
@@ -132,6 +162,7 @@ const MapMarkersList = ({
         </CardActions>
       </div>
       <MapMarkersListDialog open={open} handleClose={handleClose} />
+      <ViewMarkerDrawer open={drawerOpen} onClose={handleDrawerClose} data={markerData} setData={setMarkerData} />
     </div>
   );
 };
