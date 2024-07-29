@@ -66,7 +66,7 @@ export class MarkersDataServiceProvider {
             queryData = queryData.orderBy(desc(mapMarkers.created_at));
         }
 
-        queryData = filterHelper.markers(queryData, filters);
+        queryData = filterHelper.markers(queryData, filters, mapId);
         return await queryData;
 
     }
@@ -75,7 +75,7 @@ export class MarkersDataServiceProvider {
         let countQuery: any = db.select({ count: sql`COUNT(*)` })
             .from(mapMarkers)
             .where((eq(mapMarkers.map_id, mapId)))
-        countQuery = filterHelper.markers(countQuery, query);
+        countQuery = filterHelper.markers(countQuery, query, mapId);
         return await countQuery;
 
     }
