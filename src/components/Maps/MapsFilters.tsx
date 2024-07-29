@@ -39,7 +39,7 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
       ...searchParams,
       search_string: encodeURIComponent(newSearchString),
       page: 1,
-    })
+    });
   };
 
   const formatDate = (date: any) => {
@@ -58,7 +58,7 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
         from_date: formatDate(start) ? formatDate(start) : "",
         to_date: formatDate(end) ? formatDate(end) : "",
         page: 1,
-      })
+      });
     } else {
       setFromDate(null);
       setToDate(null);
@@ -68,7 +68,7 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
         from_date: "",
         to_date: "",
         page: 1,
-      })
+      });
     }
   };
 
@@ -79,68 +79,61 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   }, [params]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "1rem",
-        borderBottom: "1px solid #ddd",
-      }}
-    >
+    <div className="mapHeaderContainer">
       <Tabs
+        className="tabsGrp"
         textColor="secondary"
         indicatorColor="secondary"
         aria-label="secondary tabs example"
       >
-        <Tab value="" label="All" />
-        <Tab value="" label="Owned" />
-        <Tab value="" label="Shared" />
+        <Tab className="tabBtn" value="" label="All" />
+        <Tab className="tabBtn" value="" label="Owned" />
+        <Tab className="tabBtn" value="" label="Shared" />
       </Tabs>
-      {mapsData?.length ? (
-        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <DateRangePicker
-            value={
-              fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
-            }
-            editable={false}
-            onChange={handleDateRangeChange}
-            placeholder="Start Date - End Date"
-            style={{ width: 250 }}
-            disabledDate={(date) => {
-              return date.getTime() >= new Date().getTime();
-            }}
-            placement="bottomEnd"
-          />
-          <TextField
-            variant="outlined"
-            type="search"
-            size="small"
-            value={searchString}
-            onChange={handleSearchChange}
-            placeholder="Search"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Image src="/search-icon.svg" alt="" width={15} height={15} />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => {
-              router.push("/add-map");
-            }}
-            startIcon={<AddIcon />}
-          >
-            Create New Map
-          </Button>
-        </div>
-      ) : (
-        ""
-      )}
+      <div className="filterGrp">
+        <DateRangePicker
+          className="defaultDatePicker"
+          value={
+            fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
+          }
+          editable={false}
+          onChange={handleDateRangeChange}
+          placeholder="Start Date - End Date"
+          style={{ width: 250 }}
+          disabledDate={(date) => {
+            return date.getTime() >= new Date().getTime();
+          }}
+          placement="bottomEnd"
+        />
+        <TextField
+          className="defaultTextFeild"
+          variant="outlined"
+          type="search"
+          size="small"
+          value={searchString}
+          onChange={handleSearchChange}
+          placeholder="Search"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Image src="/search-icon.svg" alt="" width={15} height={15} />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button
+          className="addNewBtn"
+          variant="contained"
+          onClick={() => {
+            router.push("/add-map");
+          }}
+          endIcon={
+            <Image src="/map/add-icon.svg" alt="" height={13} width={13} />
+          }
+        >
+          Create New Map
+        </Button>
+      </div>
     </div>
   );
 };

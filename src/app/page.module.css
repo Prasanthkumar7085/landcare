@@ -60,7 +60,7 @@
 }
 
 .card h2 {
-  font-weight: 600;
+  font-weight: $fw_600;
   margin-bottom: 0.7rem;
 }
 
