@@ -1,170 +1,169 @@
 .drawerBlock {
-    width: 400px;
-    padding: 1rem 1.5rem;
+  width: 400px;
+  padding: 1rem 1.5rem;
 }
 
 .drawerHeadingBlock {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
 }
 
 .drawerHeading {
-    color: #35353D;
-    font-family: 'Inter', sans-serif;
-    font-size: clamp(18px, 1.2vw, 24px);
-    font-weight: 400;
-    line-height: 18px;
-    margin: 0;
+  color: #35353d;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(18px, 1.2vw, 24px);
+  font-weight: $fw_400;
+  line-height: 18px;
+  margin: 0;
 }
 
 .heading,
 .totalacres {
-    margin: 0;
-    position: relative;
-    line-height: 100%;
+  margin: 0;
+  position: relative;
+  line-height: 100%;
 }
 
 .heading {
-    color: #000;
-    font-family: 'Inter', sans-serif;
-    font-size: clamp(16px, 1vw, 22px);
-    font-weight: 400;
-    line-height: 100%;
+  color: #000;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(16px, 1vw, 22px);
+  font-weight: $fw_400;
+  line-height: 100%;
 }
 
 .totalacres {
-    flex: 1;
-    font-size: 0.88rem;
-    text-decoration: underline;
-    color: #45a845;
+  flex: 1;
+  font-size: 0.88rem;
+  text-decoration: underline;
+  color: #45a845;
 }
 
 .headingcontainer {
-    align-self: stretch;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
+  align-self: stretch;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
-
 
 .actionsbar,
 .header,
 #listview {
-    align-self: stretch;
-    display: flex;
-    justify-content: flex-start;
+  align-self: stretch;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .actionsbar {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.63rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.63rem;
 }
 
 .header,
 #listview {
-    flex-direction: column;
-    align-items: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .header {
-    padding: 0.5rem 0.75rem;
-    gap: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #ECECEC;
+  padding: 0.5rem 0.75rem;
+  gap: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ececec;
 }
 
 #listview {
-    height: calc(100vh - 155px);
-    overflow-y: auto;
-    gap: 0.35rem;
-    margin: 1rem 0.5rem;
+  height: calc(100vh - 155px);
+  overflow-y: auto;
+  gap: 0.35rem;
+  margin: 1rem 0.5rem;
 }
 
 .addfarmbutton {
-    border-radius: 8px !important;
-    background: #45A845 !important;
-    color: #FFF !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: clamp(13px, 0.83vw, 16px) !important;
-    font-weight: 500 !important;
-    line-height: 100% !important;
-    text-transform: capitalize !important;
-    width: 100% !important;
-    padding-block: 0.8rem !important;
+  border-radius: 8px !important;
+  background: #45a845 !important;
+  color: #fff !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: clamp(13px, 0.83vw, 16px) !important;
+  font-weight: 500 !important;
+  line-height: 100% !important;
+  text-transform: capitalize !important;
+  width: 100% !important;
+  padding-block: 0.8rem !important;
 }
 
 .addfarmbutton_disable {
-    border-radius: 8px !important;
-    background: gray !important;
-    color: #FFF !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: clamp(13px, 0.83vw, 16px) !important;
-    font-weight: 500 !important;
-    line-height: 100% !important;
-    text-transform: capitalize !important;
-    width: 100% !important;
-    padding-block: 0.8rem !important;
+  border-radius: 8px !important;
+  background: gray !important;
+  color: #fff !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: clamp(13px, 0.83vw, 16px) !important;
+  font-weight: 500 !important;
+  line-height: 100% !important;
+  text-transform: capitalize !important;
+  width: 100% !important;
+  padding-block: 0.8rem !important;
 }
 
 .closefarmbutton {
-    border-radius: 8px !important;
-    background: #c42323 !important;
-    color: #FFF !important;
-    font-family: 'Inter', sans-serif !important;
-    font-size: clamp(13px, 0.83vw, 16px) !important;
-    font-weight: 500 !important;
-    line-height: 100% !important;
-    text-transform: capitalize !important;
-    width: 100% !important;
-    padding-block: 0.8rem !important;
+  border-radius: 8px !important;
+  background: #c42323 !important;
+  color: #fff !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: clamp(13px, 0.83vw, 16px) !important;
+  font-weight: 500 !important;
+  line-height: 100% !important;
+  text-transform: capitalize !important;
+  width: 100% !important;
+  padding-block: 0.8rem !important;
 }
 
 .addfarmbutton:hover {
-    border-radius: 8px !important;
-    background: #45A845 !important;
-    color: #FFF !important;
+  border-radius: 8px !important;
+  background: #45a845 !important;
+  color: #fff !important;
 }
 
 .addfarmbutton_disable:hover {
-    border-radius: 8px !important;
-    background: #353735 !important;
-    color: #FFF !important;
+  border-radius: 8px !important;
+  background: #353735 !important;
+  color: #fff !important;
 }
 
 .buttoncontainer,
 .detailsslidebarfarmslist {
-    align-self: stretch;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .buttoncontainer {
-    padding-inline: 0.5rem;
+  padding-inline: 0.5rem;
 }
 
 .detailsslidebarfarmslist {
-    border-radius: 8px;
-    background-color: #fff;
-    flex-direction: column;
-    text-align: left;
-    font-size: 1rem;
-    color: #000;
-    font-family: 'Inter', sans-serif;
-    width: 25%;
+  border-radius: 8px;
+  background-color: #fff;
+  flex-direction: column;
+  text-align: left;
+  font-size: 1rem;
+  color: #000;
+  font-family: "Inter", sans-serif;
+  width: 25%;
 }
 
 .acresCount {
-    color: #45A845;
-    font-family: 'Inter', sans-serif;
-    font-size: clamp(12px, 0.72vw, 14px);
-    font-weight: 400;
-    line-height: 100%;
-    text-decoration-line: underline;
+  color: #45a845;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(12px, 0.72vw, 14px);
+  font-weight: $fw_400;
+  line-height: 100%;
+  text-decoration-line: underline;
 }

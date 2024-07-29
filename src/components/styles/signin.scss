@@ -1,10 +1,11 @@
 .loginPage {
   background-color: $whiteColor;
   height: 100vh;
+  max-height: 100vh;
+  overflow-y: hidden;
   display: flex;
 
   .loginContainer {
-    margin: 1.2rem;
     display: grid;
     width: 100%;
     grid-template-columns: 60% 40%;
@@ -13,6 +14,7 @@
 
     .leftContainer {
       height: 100%;
+      background-color: #f6fff1;
 
       .loginImg {
         width: 100%;
@@ -30,24 +32,25 @@
   .formContainer {
     width: 55%;
     margin: 8vh auto 0;
-
-    .logoIcon {
-      width: 110px;
-      margin-bottom: 8vh;
+    .logoBlock {
+      text-align: center;
+      .logoIcon {
+        margin-bottom: 8vh;
+      }
     }
 
     .formTitle {
       color: $primaryColor;
       font-family: $fontPrimary;
-      font-size: clamp(12px, 0.72vw, 16px);
-      font-weight: 500;
+      font-size: $font_14;
+      font-weight: $fw_500;
       margin: 0;
     }
 
     .formSubTitle {
       color: $blackColor;
       font-size: clamp(20px, 1.45vw, 30px);
-      font-weight: 500;
+      font-weight: $fw_500;
       margin: 0.5rem 0 0;
       line-height: 150%;
     }
@@ -55,7 +58,7 @@
     .formSubTitle1 {
       color: $blackColor;
       font-size: clamp(20px, 1.45vw, 30px);
-      font-weight: 500;
+      font-weight: $fw_500;
       margin: 0.5rem 0 0;
       line-height: 150%;
       text-align: center;
@@ -72,7 +75,7 @@
         .MuiInputBase-root {
           background: $whiteColor;
           color: $blackColor;
-          font-weight: 400;
+          font-weight: $fw_400;
           font-size: 13.5px;
           box-sizing: border-box;
           border-radius: 3.56227px;
@@ -86,15 +89,15 @@
 
         .formLabel {
           color: $blackColor;
-          font-size: clamp(12px, 0.72vw, 16px);
-          font-weight: 400;
+          font-size: $font_14;
+          font-weight: $fw_400;
           margin-bottom: 0.3rem;
         }
 
         .formLabel1 {
           color: $blackColor;
           font-size: clamp(9px, 0.75vw, 10px);
-          font-weight: 300;
+          font-weight: $fw-300;
           margin-bottom: 0.3rem;
           text-align: center;
         }
@@ -109,7 +112,7 @@
           text-transform: capitalize;
           font-family: $fontPrimary;
           font-size: clamp(13px, 0.83vw, 16px);
-          font-weight: 500;
+          font-weight: $fw_500;
           line-height: 100%;
           letter-spacing: 0;
           padding: 0;
@@ -128,7 +131,7 @@
         text-align: center;
         font-family: $fontPrimary;
         font-size: clamp(13px, 0.83vw, 18px);
-        font-weight: 500;
+        font-weight: $fw_500;
         line-height: 100%;
         padding-block: 0.7rem;
         margin-top: 2rem;

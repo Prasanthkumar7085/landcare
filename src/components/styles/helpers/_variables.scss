@@ -1,4 +1,4 @@
-$primaryColor: #45a845;
+$primaryColor: #75A237;
 $secondaryColor: #d94841;
 $greenColor: #05a155;
 $blackColor: #000000;
@@ -9,3 +9,19 @@ $textFeildStroke: #d2dff4;
 
 $fontPrimary: "Poppins", sans-serif;
 $font-secondary: "Poppins", sans-serif;
+
+//font sizes
+$font_12:clamp(11px, 0.625vw, 13px);
+$font_13:clamp(12px, 0.69vw, 14px);
+$font_14:clamp(12px, 0.72vw, 15px);
+$font_16:clamp(13px, 0.83vw, 17px);
+$font_18:clamp(15px, 0.93vw, 19px);
+$font_20:clamp(18px, 1.04vw, 22px);
+
+//font weights
+$fw_300:300;
+$fw_400:400;
+$fw_500:500;
+$fw_600:600;
+$fw_700:700;
+

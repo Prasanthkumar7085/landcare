@@ -70,20 +70,20 @@ const LoginPage = () => {
     <div className="loginPage">
       <div className="loginContainer">
         <div className="leftContainer">
-          <picture>
-            <img className="loginImg" alt="" src="/logo.svg" />
-          </picture>
+            <img className="loginImg" alt="" src="/login/login-image.png" />
         </div>
         <form onSubmit={signIn}>
           <div className="rightContainer">
             <div className="formContainer">
+              <div className="logoBlock">
               <Image
                 className="logoIcon"
                 alt=""
                 src="/logo.svg"
-                height={90}
-                width={10}
+                height={100}
+                width={130}
               />
+              </div>
               <p className="formSubTitle1">Welcome back</p>
               <label className="formLabel1">
                 Enter your email an password to access your account

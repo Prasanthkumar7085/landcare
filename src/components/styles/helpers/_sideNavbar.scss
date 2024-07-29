@@ -47,7 +47,7 @@
       color: $blackColor;
       font-family: $fontPrimary;
       font-size: clamp(11px, 0.625vw, 16px);
-      font-weight: 400;
+      font-weight: $fw_400;
       line-height: 100%;
     }
     &.Active {

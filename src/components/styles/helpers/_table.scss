@@ -40,14 +40,14 @@ $inputBorderColor: #9c9c9c;
 
         .table-row {
           background: $colorTableHeader !important;
-          font-weight: 600;
+          font-weight: $fw_600;
           padding: 6px 12px;
 
           .cell {
             color: $blackColor;
             font-size: clamp(12px, 0.72vw, 16px);
             font-style: normal;
-            font-weight: 500;
+            font-weight: $fw_500;
             text-transform: capitalize;
             box-sizing: border-box;
             padding: 0 12px;
@@ -83,7 +83,7 @@ $inputBorderColor: #9c9c9c;
             text-align: start;
             box-shadow: none !important;
             background-color: $whiteColor !important;
-            font-weight: 400;
+            font-weight: $fw_400;
             color: $blackColor;
 
             &:first-child {
@@ -135,7 +135,7 @@ $inputBorderColor: #9c9c9c;
       font-size: clamp(12px, 0.625vw, 14px);
       font-family: $fontPrimary;
       letter-spacing: 0;
-      font-weight: 500;
+      font-weight: $fw_500;
     }
 
     .label {
@@ -171,7 +171,7 @@ $inputBorderColor: #9c9c9c;
     .totalCount {
       font-size: clamp(12px, 0.625vw, 14px);
       font-family: $fontPrimary;
-      font-weight: 500;
+      font-weight: $fw_500;
       margin-top: 5px;
       margin-right: 1rem;
       white-space: pre-wrap;
