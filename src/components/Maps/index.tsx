@@ -144,7 +144,7 @@ const Maps = () => {
 
               <div className="cardFooter">
                 <Typography className="createDate">
-                  <Image src="/map/clock.svg" height={15} width={15} alt="" />
+                  <Image src="/map/clock.svg" height={13} width={13} alt="" />
                   <span>
                     {item?.created_at ? datePipe(item?.created_at) : "--"}
                   </span>
