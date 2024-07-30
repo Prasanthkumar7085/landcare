@@ -19,6 +19,15 @@ export const mapMarkers:any = pgTable("map_markers", {
     city: varchar('city'),
     zipcode: varchar('zipcode'),
 
+    name: varchar('name'),
+    position: text('position'),
+    host_organization: varchar('host_organization'),
+    lls_region: varchar('lls_region'),
+    phone: varchar('phone'),
+    email: varchar('email'),
+    location: varchar('location'),
+    post_code: varchar('post_code'),
+
     images: jsonb('images').$type<string[]>(),
     tags: jsonb('tags').$type<string[]>(),
     social_links: jsonb('social_links').$type<string[]>(),

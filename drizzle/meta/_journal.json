@@ -43,6 +43,13 @@
       "when": 1721890882726,
       "tag": "0005_many_the_call",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1722327158444,
+      "tag": "0006_public_prima",
+      "breakpoints": true
     }
   ]
 }
