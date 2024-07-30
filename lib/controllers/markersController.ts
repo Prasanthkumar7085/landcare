@@ -56,26 +56,26 @@ export class MarkersController {
                 return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
 
-            const titles = reqData.map((marker: any) => marker.title);
-            //Check for duplicated titles within reqData
-            const titleCounts = titles.reduce((acc: any, title: string) => {
-                acc[title] = (acc[title] || 0) + 1;
-                return acc;
-            }, {});
+            // const titles = reqData.map((marker: any) => marker.title);
+            // //Check for duplicated titles within reqData
+            // const titleCounts = titles.reduce((acc: any, title: string) => {
+            //     acc[title] = (acc[title] || 0) + 1;
+            //     return acc;
+            // }, {});
 
-            const duplicatedTitles = Object.keys(titleCounts).filter(title => titleCounts[title] > 1);
-            if (duplicatedTitles.length > 0) {
-                throw new ResourceAlreadyExistsError('title', `${DUPLICATED_MARKER_TITLE}: ${duplicatedTitles.join(', ')}`);
-            }
+            // const duplicatedTitles = Object.keys(titleCounts).filter(title => titleCounts[title] > 1);
+            // if (duplicatedTitles.length > 0) {
+            //     throw new ResourceAlreadyExistsError('title', `${DUPLICATED_MARKER_TITLE}: ${duplicatedTitles.join(', ')}`);
+            // }
 
-            const existingMarkers = await markersDataServiceProvider.findByTitles(titles);
-            if (existingMarkers.length > 0) {
-                // Extract existing titles
-                const existingTitles = existingMarkers.map(marker => marker.title);
-                if (existingTitles.length > 0) {
-                    throw new ResourceAlreadyExistsError('title', `Titles already exist: ${existingTitles.join(', ')}`);
-                }
-            }
+            // const existingMarkers = await markersDataServiceProvider.findByTitles(titles);
+            // if (existingMarkers.length > 0) {
+            //     // Extract existing titles
+            //     const existingTitles = existingMarkers.map(marker => marker.title);
+            //     if (existingTitles.length > 0) {
+            //         throw new ResourceAlreadyExistsError('title', `Titles already exist: ${existingTitles.join(', ')}`);
+            //     }
+            // }
 
             await markersDataServiceProvider.create(reqData);
 
@@ -83,9 +83,9 @@ export class MarkersController {
 
         } catch (error: any) {
             console.log(error);
-            if (error.validation_error) {
-                return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
-            }
+            // if (error.validation_error) {
+            //     return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
+            // }
             return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
     }
