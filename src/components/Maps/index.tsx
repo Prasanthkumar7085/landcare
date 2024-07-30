@@ -1,6 +1,4 @@
 "use client";
-import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
-import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
 import { deleteMapAPI, getAllListMapsAPI } from "@/services/maps";
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -8,25 +6,24 @@ import {
   Box,
   Button,
   Card,
-  CardContent,
-  Grid,
   IconButton,
   Menu,
   MenuItem,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import dayjs from "dayjs";
+import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
+import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
+import { copyURL } from "@/lib/helpers/copyURL";
+import { datePipe } from "@/lib/helpers/datePipe";
+import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
+import DeleteDialog from "../Core/DeleteDialog";
+import LoadingComponent from "../Core/LoadingComponent";
 import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
-import { datePipe } from "@/lib/helpers/datePipe";
-import LoadingComponent from "../Core/LoadingComponent";
-import Image from "next/image";
-import DeleteDialog from "../Core/DeleteDialog";
 
 const Maps = () => {
   const useParam = useSearchParams();
@@ -146,25 +143,28 @@ const Maps = () => {
           {mapsData?.length ? (
             mapsData.map((item: any, index: number) => {
               return (
-
                 <Card className="eachListCard" key={index}>
-                  <div className="imgBlock">
+                  <div className="imgBlock" >
                     <Image
                       className="mapImg"
+                      style={{
+                        objectFit: item?.image ? "cover" : "contain"
+                      }}
                       src={item?.image ? item?.image : "/no-image.png"}
                       alt="map image"
                       width={100}
                       height={150}
                     />
+                    <IconButton className="iconBtn" onClick={(event) => {
+                      handleOpenUserMenu(event)
+                      setMapId(item?.id)
+                    }}>
+                      <Image src="/map/menu-icon.svg" alt="" height={30} width={30}/>
+                    </IconButton>
                   </div>
-                  <IconButton onClick={(event) => {
-                    handleOpenUserMenu(event)
-                    setMapId(item?.id)
-                  }}>
-                    <MoreVertIcon />
-                  </IconButton>
+                  
                   <Menu
-                    sx={{ mt: '45px' }}
+                    sx={{ mt: '30px' }}
                     id="menu-appbar"
                     anchorEl={anchorElUser}
                     anchorOrigin={{
@@ -182,7 +182,10 @@ const Maps = () => {
                     <MenuItem className="menuItem" onClick={handleCloseUserMenu}>
                       Open In New Tab
                     </MenuItem>
-                    <MenuItem className="menuItem" onClick={handleCloseUserMenu}>
+                    <MenuItem className="menuItem" onClick={() => {
+                      copyURL(mapId);
+                      handleCloseUserMenu();
+                    }}>
                       Copy
                     </MenuItem>
                     <MenuItem className="menuItem" onClick={() => {
