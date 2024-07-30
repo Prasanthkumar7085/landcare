@@ -8,13 +8,13 @@ export const mapMarkers:any = pgTable("map_markers", {
     id: serial('id').primaryKey(),
     map_id: integer('map_id').references(() => maps.id),
 
-    title: varchar('title').notNull(),
+    title: varchar('title'),
     description: text('description'),
     type: varchar('type'),
-    coordinates: jsonb('coordinates').$type<number[]>().notNull(),
+    coordinates: jsonb('coordinates').$type<number[]>(),
     color_code: varchar('color_code'),
 
-    full_address: varchar('full_address').notNull(),
+    full_address: varchar('full_address'),
     state: varchar('state'),
     city: varchar('city'),
     zipcode: varchar('zipcode'),
