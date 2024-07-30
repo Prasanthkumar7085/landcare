@@ -1,24 +1,19 @@
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import SearchIcon from "@mui/icons-material/Search";
 import {
   CardActions,
-  CardContent,
-  IconButton,
   InputAdornment,
   TextField,
+  Tooltip,
   Typography
 } from "@mui/material";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
+import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import { mapTypeOptions, markerFilterOptions } from "@/lib/constants/mapConstants";
 import { datePipe } from "@/lib/helpers/datePipe";
 import { getSingleMarkerAPI } from "@/services/maps";
 import styles from "./index.module.css";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
-import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 
 const MapMarkersList = ({
   singleMarkers,
@@ -87,52 +82,54 @@ const MapMarkersList = ({
               getSingleMarker(marker?.id);
             }}
           >
-              <div className="markerHeader">
-                <div className="location">
-                  <Image
-                    alt=""
-                    src="/avatar@2x.png"
-                    width={20}
-                    height={20}
-                  />
-                  <span   >
-                    {marker.title}
-                  </span>
-                </div>
-                <div className="locationType">
-                  <Image
-                    src={
-                      mapTypeOptions?.find(
-                        (item: any) => item?.title == marker.type
-                      )?.img as string
-                    }
-                    width={12}
-                    height={12}
-                    alt="type"
-                  />
-                  <span >
-                    {marker.type}
-                  </span>
-                </div>
+            <div className="markerHeader">
+              <div className="location">
+                <Image
+                  alt=""
+                  src="/avatar@2x.png"
+                  width={20}
+                  height={20}
+                />
+                <span   >
+                  {marker.title}
+                </span>
               </div>
-              <Typography className="markerDesc">
-                {marker.description}
-              </Typography>
-              <div className="markerFooter">
+              <div className="locationType">
+                <Image
+                  src={
+                    mapTypeOptions?.find(
+                      (item: any) => item?.title == marker.type
+                    )?.img as string
+                  }
+                  width={12}
+                  height={12}
+                  alt="type"
+                />
+                <span >
+                  {marker.type}
+                </span>
+              </div>
+            </div>
+            <Typography className="markerDesc">
+              {marker.description}
+            </Typography>
+            <div className="markerFooter">
               <div className="latLang">
-                <Image src="/map/location-blue.svg" alt="" width={10} height={10}/>
-                  <span >
-                    {marker.coordinates.join(", ")}
-                  </span>
-                </div>
+                <Image src="/map/location-blue.svg" alt="" width={10} height={10} />
+                <Tooltip
+                  title={marker.coordinates.map((coord: any) => coord).join(", ")}
+                >
+                  <span>{marker.coordinates.map((coord: any) => coord.toFixed(3) + "...").join(", ")}</span>
+                </Tooltip>
+              </div>
               <div className="createdDate">
                 <Image src="/map/clock.svg" height={13} width={13} alt="" />
-                  <span >
-                    {datePipe(marker.created_at)}
-                  </span>
-                </div>
+                <span >
+                  {datePipe(marker.created_at)}
+                </span>
               </div>
-          
+            </div>
+
           </div>
         ))}
       </div>
