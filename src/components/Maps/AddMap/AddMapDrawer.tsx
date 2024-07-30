@@ -132,12 +132,13 @@ const AddMapDrawer = ({
             <CloseIcon sx={{fontSize:"1rem"}} />
           </IconButton>
         </div>
-        <hr></hr>
+       
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <label>Map Name</label>
+        <div className="dialogBody" >
+          <div className="eachFeildGrp" >
+            <label className="label">Map Name</label>
             <TextField
+              className="defaultTextFeild text"
               placeholder="Enter Map Name"
               value={mapDetails?.title}
               name="title"
@@ -145,27 +146,20 @@ const AddMapDrawer = ({
             />
             <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
           </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <label>Map Description</label>
+          <div className="eachFeildGrp" >
+            <label className="label">Map Description</label>
             <TextField
+              className="defaultTextFeild multiline"
               multiline
               placeholder="Enter Map Description"
               value={mapDetails?.description}
-              rows={7}
+              rows={4}
               name="description"
               onChange={handleFieldValue}
             />
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-          >
+          <div className="dialogActionBtn"          >
             <Button
-              sx={{ background: "white", color: "#769f3f" }}
               disabled={loading ? true : false}
               onClick={() => {
                 setAddDrawerOpen(false);
@@ -175,7 +169,6 @@ const AddMapDrawer = ({
             </Button>
 
             <Button
-              sx={{ background: "#769f3f", color: "white" }}
               onClick={() => addMapWithCordinates()}
             >
               {loading ? (
