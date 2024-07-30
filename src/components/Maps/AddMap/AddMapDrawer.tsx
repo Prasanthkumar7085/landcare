@@ -117,34 +117,19 @@ const AddMapDrawer = ({
   return (
     <div>
       <Drawer
+        className="addMapDrawer"
         open={addDrawerOpen}
         anchor={"right"}
-        sx={{
-          zIndex: "1300 !important",
-          "& .MuiPaper-root": {
-            width: "100%",
-            maxWidth: "400px",
-            margin: "0 auto",
-            borderRadius: "20px 20px 0 0 ",
-          },
-        }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            padding: "0.5rem",
-            borderBottom: "1px solid #dddddd",
-          }}
-        >
-          <Typography variant="caption">{"Add map"}</Typography>
+        <div className="dialogHedaer"        >
+          <Typography className="dialogHeading">{"Add map"}</Typography>
           <IconButton
+            className="iconBtn"
             onClick={() => {
               setAddDrawerOpen(false);
             }}
           >
-            <CloseIcon />
+            <CloseIcon sx={{fontSize:"1rem"}} />
           </IconButton>
         </div>
         <hr></hr>

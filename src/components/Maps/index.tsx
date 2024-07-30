@@ -146,25 +146,28 @@ const Maps = () => {
           {mapsData?.length ? (
             mapsData.map((item: any, index: number) => {
               return (
-
                 <Card className="eachListCard" key={index}>
-                  <div className="imgBlock">
+                  <div className="imgBlock" >
                     <Image
                       className="mapImg"
+                      style={{
+                        objectFit: item?.image ? "cover" : "contain"
+                      }}
                       src={item?.image ? item?.image : "/no-image.png"}
                       alt="map image"
                       width={100}
                       height={150}
                     />
+                    <IconButton className="iconBtn" onClick={(event) => {
+                      handleOpenUserMenu(event)
+                      setMapId(item?.id)
+                    }}>
+                      <Image src="/map/menu-icon.svg" alt="" height={30} width={30}/>
+                    </IconButton>
                   </div>
-                  <IconButton onClick={(event) => {
-                    handleOpenUserMenu(event)
-                    setMapId(item?.id)
-                  }}>
-                    <MoreVertIcon />
-                  </IconButton>
+                  
                   <Menu
-                    sx={{ mt: '45px' }}
+                    sx={{ mt: '30px' }}
                     id="menu-appbar"
                     anchorEl={anchorElUser}
                     anchorOrigin={{
