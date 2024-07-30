@@ -25,7 +25,7 @@ export class MarkersController {
                 return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
 
-            const existedMarker = await markersDataServiceProvider.findByTitle(reqData.title);
+            const existedMarker = await markersDataServiceProvider.findByTitleAndMapId(reqData.title, params.id);
             if (existedMarker) {
                 throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
             }

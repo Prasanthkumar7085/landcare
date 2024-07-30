@@ -11,10 +11,13 @@ export class MarkersDataServiceProvider {
         return await db.insert(mapMarkers).values(data).returning()
     }
 
-    async findByTitle(title: string) {
+    async findByTitleAndMapId(title: string, mapId: number) {
         const markerData = await db.select()
             .from(mapMarkers)
-            .where(eq(lower(mapMarkers.title), title.toLowerCase()));
+            .where(and(
+                eq(lower(mapMarkers.title), title.toLowerCase()),
+                eq(mapMarkers.map_id, mapId)
+            ));
         return markerData[0];
     }
 
