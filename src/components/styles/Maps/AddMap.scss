@@ -102,3 +102,52 @@
     }
   }
 }
+.mapViewContainer {
+  height: 100vh;
+  background-color: $whiteColor;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+     padding: 0 0 0.5rem 0;
+    border-bottom: 1px solid #dddddd;
+    button {
+      text-transform: capitalize;
+      font-family: $fontPrimary;
+      font-weight: $fw_400;
+    }
+    .backBtn {
+      font-size: $font_14;
+      color: $blackColor;
+      padding: 0;
+    }
+    .actionGrp {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      .importBtn {
+        border: 1px solid $primaryColor;
+        padding: 2px 10px;
+        color: $primaryColor;
+        font-size: $font_12;
+        &:hover {
+            background: transparent;
+        }
+      }
+      .iconBtn {
+         padding: 0;
+        &:hover {
+            background: transparent;
+        }
+      }
+    }
+  }
+  .viewContent {
+     padding: 1rem 0;
+     .mapDetails {
+        
+     }
+  }
+}

@@ -1,4 +1,4 @@
-import { Button, Menu, MenuItem, Typography } from "@mui/material";
+import { Button, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -75,34 +75,31 @@ const ViewMapDetailsDrawer = ({
   };
 
   return (
-    <div className={styles.detailsslidebarfarmslist}>
-      <header className={styles.header}>
-        <div className={styles.headingcontainer}>
-          <Button onClick={() => router.push("/maps")}>Back</Button>
-          <div>
-            <Button onClick={openModal}>Import</Button>
+    <div className="mapViewContainer"  >
+      <header className="header">
+        <Button className="backBtn" startIcon={<Image src="/map/map-backBtn.svg" alt="" height={15} width={15} />} onClick={() => router.push("/maps")}>Back</Button>
+          <div className="actionGrp">
+            <Button  onClick={openModal}  className="importBtn">Import</Button>
             <ImportModal
               show={showModal}
               onClose={closeModal}
               file={file}
               setFile={setFile}
             />
-            <Button onClick={handleClick}>...</Button>
+          <IconButton className="iconBtn" onClick={handleClick}>
+            <Image src="/map/menu-with-bg.svg" alt="" height={25} width={25} />
+            </IconButton>
           </div>
-        </div>
-        <h2 className={styles.heading}>Map Details</h2>
-
-        <div className={styles.actionsbar}></div>
       </header>
-      <div id={styles.listview} className="scrollbar">
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <Typography variant="caption">
+      <div className="viewContent">
+        <div className="mapDetails" >
+          <Typography className="mapTitle" >
             {mapDetails?.title ? mapDetails?.title : "--"}
           </Typography>
-          <Typography variant="caption">
+          <Typography className="mapCreated">
             {dayjs(mapDetails?.created_at).format("MM-DD-YYYY")}
           </Typography>
-          <Typography variant="caption">
+          <Typography className="mapDescription">
             {mapDetails?.description ? mapDetails?.description : "--"}
           </Typography>
         </div>
@@ -110,7 +107,7 @@ const ViewMapDetailsDrawer = ({
           <Typography variant="h6" className={styles.title}>
             Markers
           </Typography>
-        </div>
+  
         {markers?.length > 0 || singleMarkers?.length > 0 ? (
           <div>
             <MapMarkersList
@@ -151,10 +148,9 @@ const ViewMapDetailsDrawer = ({
               Start placing markers on your map.
             </Typography>
           </div>
-        )}
+          )}
+        </div>
       </div>
-      <div className={styles.buttoncontainer}></div>
-
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
@@ -164,10 +160,10 @@ const ViewMapDetailsDrawer = ({
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={() => router.push(`/update-map/${id}`)}>
+        <MenuItem className="menuItem" onClick={() => router.push(`/update-map/${id}`)}>
           Edit
         </MenuItem>
-        <MenuItem
+        <MenuItem className="menuItem"
           onClick={() => {
             handleClickDeleteOpen();
             handleClose();
