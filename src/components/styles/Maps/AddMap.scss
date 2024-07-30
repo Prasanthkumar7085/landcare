@@ -111,7 +111,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-     padding: 0 0 0.5rem 0;
+    padding: 0 0 0.5rem 0;
     border-bottom: 1px solid #dddddd;
     button {
       text-transform: capitalize;
@@ -133,21 +133,68 @@
         color: $primaryColor;
         font-size: $font_12;
         &:hover {
-            background: transparent;
+          background: transparent;
         }
       }
       .iconBtn {
-         padding: 0;
+        padding: 0;
         &:hover {
-            background: transparent;
+          background: transparent;
         }
       }
     }
   }
   .viewContent {
-     padding: 1rem 0;
-     .mapDetails {
-        
-     }
+    padding: 1rem 0;
+    .mapDetails {
+      font-family: $font-secondary;
+      font-weight: $fw_400;
+      letter-spacing: 0;
+      .mapTitle {
+        color: #000000e6;
+        font-size: $font_16;
+      }
+      .mapCreated {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #000000cc;
+        font-size: $font_12;
+      }
+      .mapDescription {
+        color: #000000b3;
+        font-size: $font_12;
+        margin-top: 0.5rem;
+      }
+    }
+    .markersBlock {
+      margin-top: 1.5rem;
+      .blockHeading {
+        color: #202124;
+        font-family: $font-secondary;
+        font-size: $font_16;
+        font-weight: $fw_500;
+      }
+      .markersContainer {
+        height: calc(100vh - 165px);
+        .nodataGrp {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          width: 60%;
+          margin: 0 auto;
+          .nodataTxt {
+            color: $blackColor;
+            text-align: center;
+            font-family: $font-secondary;
+            font-size: $font_14;
+            font-weight: $fw-400;
+            letter-spacing: 0;
+          }
+        }
+      }
+    }
   }
 }

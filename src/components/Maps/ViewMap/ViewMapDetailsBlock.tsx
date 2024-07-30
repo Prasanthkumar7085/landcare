@@ -7,7 +7,6 @@ import { toast, Toaster } from "sonner";
 import DeleteDialog from "@/components/Core/DeleteDialog";
 import { deleteMapAPI } from "@/services/maps";
 import MapMarkersList from "./MapMarkersList";
-import styles from "./view-map-block.module.css";
 import ImportModal from "./ImportModal";
 
 const ViewMapDetailsDrawer = ({
@@ -78,18 +77,18 @@ const ViewMapDetailsDrawer = ({
     <div className="mapViewContainer"  >
       <header className="header">
         <Button className="backBtn" startIcon={<Image src="/map/map-backBtn.svg" alt="" height={15} width={15} />} onClick={() => router.push("/maps")}>Back</Button>
-          <div className="actionGrp">
-            <Button  onClick={openModal}  className="importBtn">Import</Button>
-            <ImportModal
-              show={showModal}
-              onClose={closeModal}
-              file={file}
-              setFile={setFile}
-            />
+        <div className="actionGrp">
+          <Button onClick={openModal} className="importBtn">Import</Button>
+          <ImportModal
+            show={showModal}
+            onClose={closeModal}
+            file={file}
+            setFile={setFile}
+          />
           <IconButton className="iconBtn" onClick={handleClick}>
             <Image src="/map/menu-with-bg.svg" alt="" height={25} width={25} />
-            </IconButton>
-          </div>
+          </IconButton>
+        </div>
       </header>
       <div className="viewContent">
         <div className="mapDetails" >
@@ -97,61 +96,55 @@ const ViewMapDetailsDrawer = ({
             {mapDetails?.title ? mapDetails?.title : "--"}
           </Typography>
           <Typography className="mapCreated">
+            <Image src="/map/clock.svg" height={13} width={13} alt="" />
             {dayjs(mapDetails?.created_at).format("MM-DD-YYYY")}
           </Typography>
           <Typography className="mapDescription">
             {mapDetails?.description ? mapDetails?.description : "--"}
           </Typography>
         </div>
-        <div>
-          <Typography variant="h6" className={styles.title}>
+        <div className="markersBlock">
+          <Typography className="blockHeading">
             Markers
           </Typography>
-  
-        {markers?.length > 0 || singleMarkers?.length > 0 ? (
-          <div>
-            <MapMarkersList
-              markers={markers}
-              paginationDetails={paginationDetails}
-              getData={getData}
-              setSearch={setSearch}
-              search={search}
-              singleMarkers={singleMarkers}
-              setSearchString={setSearchString}
-              searchString={searchString}
-              setSingleMarkerOpen={setSingleMarkerOpen}
-              singleMarkeropen={singleMarkeropen}
-              setMarkerData={setMarkerData}
-              markerData={markerData}
-              setMarkerOption={setMarkerOption}
-              markerOption={markerOption}
-            />
+          <div className="markersContainer">
+            {markers?.length > 0 || singleMarkers?.length > 0 ? (
+              <MapMarkersList
+                markers={markers}
+                paginationDetails={paginationDetails}
+                getData={getData}
+                setSearch={setSearch}
+                search={search}
+                singleMarkers={singleMarkers}
+                setSearchString={setSearchString}
+                searchString={searchString}
+                setSingleMarkerOpen={setSingleMarkerOpen}
+                singleMarkeropen={singleMarkeropen}
+                setMarkerData={setMarkerData}
+                markerData={markerData}
+                setMarkerOption={setMarkerOption}
+                markerOption={markerOption}
+              />
+
+            ) : (
+              <div className="nodataGrp"              >
+                <Image
+                  src={"/no-markers.svg"}
+                  width={180}
+                  height={180}
+                  alt="no data"
+                />
+                <Typography className="nodataTxt">
+                  No markers added yet.
+                  Start placing markers on your map.
+                </Typography>
+              </div>
+            )}
           </div>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-            }}
-          >
-            <Image
-              src={"/no-markers.svg"}
-              width={120}
-              height={120}
-              alt="no data"
-            />
-            <Typography variant="caption">
-              No markers added yet.{""}
-              Start placing markers on your map.
-            </Typography>
-          </div>
-          )}
         </div>
       </div>
       <Menu
+        sx={{mt:1}}
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
