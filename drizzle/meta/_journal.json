@@ -50,6 +50,13 @@
       "when": 1722327158444,
       "tag": "0006_public_prima",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1722336690452,
+      "tag": "0007_strong_odin",
+      "breakpoints": true
     }
   ]
 }
