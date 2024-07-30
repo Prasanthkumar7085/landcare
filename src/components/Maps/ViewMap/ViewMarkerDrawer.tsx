@@ -8,11 +8,11 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
-import styles from "./view-map-block.module.css";
+// import styles from "./view-map-block.module.css";
 
 const ViewMarkerDrawer = ({ data, setData, onClose }: any) => {
   return (
-    <div className={styles.detailsslidebarfarmslist}>
+    <div className="detailsslidebarfarmslist">
       <Box sx={{ width: 300, p: 2 }}>
         <IconButton
           onClick={() => {

@@ -91,9 +91,9 @@
 }
 
 .menuItem {
-  font-size: clamp(0.75em, 0.72vw, 1.1em);
-  font-family: $fontPrimary;
-  font-weight: $fw_400;
+  font-size: clamp(0.75em, 0.72vw, 1.1em) !important;
+  font-family: $fontPrimary !important;
+  font-weight: $fw_400 !important;
 }
 
 .profileMenuBlock {

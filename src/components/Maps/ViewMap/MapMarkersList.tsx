@@ -51,104 +51,90 @@ const MapMarkersList = ({
   };
 
   return (
-    <div className={styles.markergroup}>
-      <div className={styles.markersection}>
-        <div className={styles.mapdetails}>
-          <div className={styles.markertop}>
-            <Typography variant="h6" className={styles.title}>
-              Markers
-            </Typography>
-            <div className={styles.inputsearch}>
-              <TextField
-                variant="outlined"
-                size="small"
-                type="search"
-                placeholder="Search"
-                value={searchString}
-                onChange={(e) => setSearchString(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <div className={styles.inputfilter}>
+    <div className="markersList">
+      <div className="filterGrp">
+        <TextField
+          className="defaultTextFeild"
+          variant="outlined"
+          size="small"
+          type="search"
+          placeholder="Search"
+          value={searchString}
+          onChange={(e) => setSearchString(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Image src="/search-icon.svg" alt="" width={15} height={15} />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <AutoCompleteSearch
+          data={markerFilterOptions}
+          setSelectValue={setMarkerOption}
+          selectedValue={markerOption}
+          placeholder="Search Filter"
+        />
+      </div>
+      <div className="listContainer">
 
-                <AutoCompleteSearch
-                  data={markerFilterOptions}
-                  setSelectValue={setMarkerOption}
-                  selectedValue={markerOption}
-                  placeholder="Search Filter"
-                />
+        {singleMarkers?.map((marker: any, index: any) => (
+          <div
+            className="eachListItem"
+            key={index}
+            onClick={() => {
+              setSingleMarkerOpen(true);
+              getSingleMarker(marker?.id);
+            }}
+          >
+              <div className="markerHeader">
+                <div className="location">
+                  <Image
+                    alt=""
+                    src="/avatar@2x.png"
+                    width={20}
+                    height={20}
+                  />
+                  <span   >
+                    {marker.title}
+                  </span>
+                </div>
+                <div className="locationType">
+                  <Image
+                    src={
+                      mapTypeOptions?.find(
+                        (item: any) => item?.title == marker.type
+                      )?.img as string
+                    }
+                    width={12}
+                    height={12}
+                    alt="type"
+                  />
+                  <span >
+                    {marker.type}
+                  </span>
+                </div>
               </div>
-              {/* <IconButton className={styles.more1}>
-                <MoreVertIcon className={styles.dotsThreeOutlineIcon} />
-              </IconButton> */}
-            </div>
+              <Typography className="markerDesc">
+                {marker.description}
+              </Typography>
+              <div className="markerFooter">
+              <div className="latLang">
+                <Image src="/map/location-blue.svg" alt="" width={10} height={10}/>
+                  <span >
+                    {marker.coordinates.join(", ")}
+                  </span>
+                </div>
+              <div className="createdDate">
+                <Image src="/map/clock.svg" height={13} width={13} alt="" />
+                  <span >
+                    {datePipe(marker.created_at)}
+                  </span>
+                </div>
+              </div>
+          
           </div>
-          {singleMarkers?.map((marker: any, index: any) => (
-            <div
-              className={styles.markerlocation}
-              key={index}
-              onClick={() => {
-                setSingleMarkerOpen(true);
-                getSingleMarker(marker?.id);
-              }}
-            >
-              <CardContent className={styles.locationcard}>
-                <div className={styles.locationprofile}>
-                  <div className={styles.locationname}>
-                    <img
-                      className={styles.avatarIcon}
-                      alt=""
-                      src="/avatar@2x.png"
-                    />
-                    <Typography
-                      variant="subtitle1"
-                      className={styles.locationtitle}
-                    >
-                      {marker.title}
-                    </Typography>
-                  </div>
-                  <div className={styles.markerlocation1}>
-                    <Image
-                      src={
-                        mapTypeOptions?.find(
-                          (item: any) => item?.title == marker.type
-                        )?.img as string
-                      }
-                      width={12}
-                      height={12}
-                      alt="type"
-                    />
-                    <Typography className={styles.filter}>
-                      {marker.type}
-                    </Typography>
-                  </div>
-                </div>
-                <Typography className={styles.paragraph1}>
-                  {marker.description}
-                </Typography>
-                <div className={styles.longitudegroup}>
-                  <div className={styles.longitudediv}>
-                    <LocationOnIcon className={styles.clock1Icon} />
-                    <Typography className={styles.filter}>
-                      {marker.coordinates.join(", ")}
-                    </Typography>
-                  </div>
-                  <div className={styles.datetime1}>
-                    <AccessTimeIcon className={styles.timeicon} />
-                    <Typography className={styles.filter}>
-                      {datePipe(marker.created_at)}
-                    </Typography>
-                  </div>
-                </div>
-              </CardContent>
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
       <div className={styles.allmarkersgroup} onClick={handleClickOpen}>
         <CardActions className={styles.inputbutton}>
@@ -157,6 +143,7 @@ const MapMarkersList = ({
           </Typography>
         </CardActions>
       </div>
+
       <MapMarkersListDialog open={open} handleClose={handleClose} />
     </div>
   );

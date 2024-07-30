@@ -1,0 +1,314 @@
+.addMapDrawer {
+  z-index: 1300 !important;
+  .MuiBackdrop-root {
+    background: #00000020;
+  }
+  .MuiPaper-root {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+    border-radius: 8px 8px 0 0;
+    height: calc(100vh - 10px);
+    top: 10px;
+    right: 10px;
+    box-sizing: border-box;
+    padding: 0.5rem;
+  }
+  .dialogHedaer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0 0.5rem 0;
+    border-bottom: 1px solid #dddddd;
+    .dialogHeading {
+      color: $blackColor;
+      font-family: $fontPrimary;
+      font-size: $font_14;
+      font-weight: $fw_400;
+    }
+    .iconBtn {
+      padding: 0;
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+  .dialogBody {
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    .eachFeildGrp {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      .label {
+        color: #00000099;
+        font-family: $fontPrimary;
+        font-size: $font_12;
+        font-weight: $fw_500;
+      }
+      .defaultTextFeild {
+        &.text {
+          .MuiInputBase-root {
+            height: 30px;
+          }
+        }
+        &.multiline {
+          .MuiInputBase-root {
+            padding: 8px 14px;
+          }
+        }
+        .MuiInputBase-root {
+          background: $whiteColor;
+          color: $blackColor;
+          font-weight: $fw_400;
+          font-size: 12px;
+          box-sizing: border-box;
+          border-radius: 4px;
+          border: 1.4px solid #c8c7ce;
+          font-family: $fontPrimary;
+          width: 100%;
+
+          fieldset {
+            border: 0 !important;
+          }
+        }
+      }
+    }
+    .dialogActionBtn {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      button {
+        text-transform: capitalize;
+        font-family: $fontPrimary;
+        font-size: $font_14;
+        font-weight: $fw_500;
+        padding: 6px 15px;
+        &:first-child {
+          color: $primaryColor;
+          &:hover {
+            background-color: transparent;
+          }
+        }
+        &:last-child {
+          color: $whiteColor;
+          background-color: $primaryColor;
+        }
+      }
+    }
+  }
+}
+.mapViewContainer {
+  height: 100vh;
+  background-color: $whiteColor;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0 0.5rem 0;
+    border-bottom: 1px solid #dddddd;
+    button {
+      text-transform: capitalize;
+      font-family: $fontPrimary;
+      font-weight: $fw_400;
+    }
+    .backBtn {
+      font-size: $font_14;
+      color: $blackColor;
+      padding: 0;
+    }
+    .actionGrp {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      .importBtn {
+        border: 1px solid $primaryColor;
+        padding: 2px 10px;
+        color: $primaryColor;
+        font-size: $font_12;
+        &:hover {
+          background: transparent;
+        }
+      }
+      .iconBtn {
+        padding: 0;
+        &:hover {
+          background: transparent;
+        }
+      }
+    }
+  }
+  .viewContent {
+    padding: 1rem 0 0;
+    .mapDetails {
+      font-family: $font-secondary;
+      font-weight: $fw_400;
+      letter-spacing: 0;
+      .mapTitle {
+        color: #000000e6;
+        font-size: $font_16;
+      }
+      .mapCreated {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #000000cc;
+        font-size: $font_12;
+      }
+      .mapDescription {
+        color: #000000b3;
+        font-size: $font_12;
+        margin-top: 0.5rem;
+      }
+    }
+    .markersBlock {
+      margin-top: 1.5rem;
+      .blockHeading {
+        color: #202124;
+        font-family: $font-secondary;
+        font-size: $font_16;
+        font-weight: $fw_500;
+      }
+      .markersContainer {
+        .markersList {
+          margin-top: 0.5rem;
+          .filterGrp {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-column-gap: 0.5rem;
+            .defaultTextFeild {
+              .MuiInputBase-root {
+                background: $whiteColor;
+                color: $blackColor;
+                font-weight: $fw_400;
+                font-size: 12px;
+                box-sizing: border-box;
+                border-radius: 4px;
+                border: 1.4px solid #c8c7ce;
+                font-family: $fontPrimary;
+                width: 100%;
+                height: 30px;
+                fieldset {
+                  border: 0 !important;
+                }
+              }
+            }
+            .defaultAutoComplete {
+              width: 100%;
+              .MuiFormControl-root {
+                width: 100%;
+              }
+              .MuiInputBase-root {
+                background: $whiteColor;
+                color: $blackColor;
+                font-weight: $fw_400;
+                font-size: 12px;
+                box-sizing: border-box;
+                border-radius: 4px;
+                border: 1.4px solid #c8c7ce;
+                font-family: $fontPrimary;
+                width: 100%;
+                height: 30px;
+                fieldset {
+                  border: 0 !important;
+                }
+              }
+            }
+          }
+          .listContainer {
+            margin-top: 10px;
+            height: calc(100vh - 220px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            row-gap: 0.5rem;
+            .eachListItem {
+              border-radius: 8px;
+              background: #edf5e0;
+              padding: 8px;
+              .markerHeader {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 0.5rem;
+                .location {
+                  display: flex;
+                  align-items: center;
+                  gap: 4px;
+                  color: $blackColor;
+                  font-family: $font-secondary;
+                  font-size: $font_14;
+                  font-weight: $fw-400;
+                }
+                .locationType {
+                  display: flex;
+                  align-items: center;
+                  gap: 4px;
+                  color: $blackColor;
+                  font-family: $font-secondary;
+                  font-size: $font_12;
+                  font-weight: $fw-400;
+                }
+              }
+              .markerDesc {
+                color: #000000cc;
+                text-overflow: ellipsis;
+                font-family: $font-secondary;
+                font-size: $font_12;
+                font-weight: $fw-400;
+                line-height: 130%;
+              }
+              .markerFooter {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-top: 0.5rem;
+                .latLang {
+                  display: flex;
+                  align-items: center;
+                  gap: 4px;
+                  color: #034a75;
+                  font-family: $font-secondary;
+                  font-size: $font_12;
+                  font-weight: $fw_400;
+                }
+                .createdDate {
+                  display: flex;
+                  align-items: center;
+                  gap: 4px;
+                  color: #000000b3;
+                  font-family: $font-secondary;
+                  font-size: $font_12;
+                  font-weight: $fw_400;
+                }
+              }
+            }
+          }
+        }
+        .nodataGrp {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          width: 60%;
+          margin: 0 auto;
+          .nodataTxt {
+            color: $blackColor;
+            text-align: center;
+            font-family: $font-secondary;
+            font-size: $font_14;
+            font-weight: $fw-400;
+            letter-spacing: 0;
+          }
+        }
+      }
+    }
+  }
+}
