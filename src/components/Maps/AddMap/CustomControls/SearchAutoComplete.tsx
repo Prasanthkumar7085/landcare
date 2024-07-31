@@ -9,16 +9,19 @@ export const SearchAutoComplete = ({
   const customAutocompleteDiv = document.createElement("div");
   customAutocompleteDiv.style.position = "relative";
   customAutocompleteDiv.style.width = "20%";
+  customAutocompleteDiv.style.minWidth = "200px";
   const searchInput = document.createElement("input");
   searchInput.setAttribute("id", "searchInput");
   searchInput.setAttribute("placeholder", "Search for a place...");
   searchInput.setAttribute("value", "");
   searchInput.style.marginTop = "10px";
-  searchInput.style.marginLeft = "2.5px";
-  searchInput.style.padding = "13px";
+  searchInput.style.marginLeft = "10px";
+  searchInput.style.padding = "8px 13px";
+  searchInput.style.fontSize = "clamp(12px, 0.72vw, 14px)";
   searchInput.style.width = "calc(100% - 32px)";
-
-  searchInput.style.borderRadius = "10px";
+  searchInput.style.border = "1px solid rgba(0, 0, 0, 0.40)";
+  searchInput.style.fontFamily = "Poppins";
+  searchInput.style.borderRadius = "8px";
   searchInput.style.overflow = "hidden";
   searchInput.style.textOverflow = "ellipsis";
 
