@@ -418,3 +418,71 @@
     }
   }
 }
+.showAllMarkerDialog {
+  .dialogHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1rem;
+    .dialogTitle {
+      color: #201c1c;
+      font-family: $fontPrimary;
+      font-size: $font_16;
+      font-weight: $fw_500;
+      letter-spacing: -0.25px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .filterGrp {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      .defaultTextFeild {
+        .MuiInputBase-root {
+          background: $whiteColor;
+          color: $blackColor;
+          font-weight: $fw_400;
+          font-size: 12px;
+          box-sizing: border-box;
+          border-radius: 4px;
+          border: 1.4px solid #c8c7ce;
+          font-family: $fontPrimary;
+          width: 200px;
+          height: 30px;
+
+          fieldset {
+            border: 0 !important;
+          }
+        }
+      }
+      .defaultAutoComplete {
+        width: 200px;
+        .MuiFormControl-root {
+          width: 100%;
+        }
+        .MuiInputBase-root {
+          background: $whiteColor;
+          color: $blackColor;
+          font-weight: $fw_400;
+          font-size: 12px;
+          box-sizing: border-box;
+          border-radius: 4px;
+          border: 1.4px solid #c8c7ce;
+          font-family: $fontPrimary;
+          width: 100%;
+          height: 30px;
+          fieldset {
+            border: 0 !important;
+          }
+        }
+      }
+      .iconBtn {
+        padding: 0;
+        &:hover {
+          background: transparent;
+        }
+      }
+    }
+  }
+}
