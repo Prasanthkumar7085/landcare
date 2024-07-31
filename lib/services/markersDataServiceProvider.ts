@@ -43,14 +43,6 @@ export class MarkersDataServiceProvider {
     async findAllByMapId(page: number, limit: number, mapId: number, filters: any) {
         let queryData: any = db.select({
             id: mapMarkers.id,
-            title: mapMarkers.title,
-            description: mapMarkers.description,
-            type: mapMarkers.type,
-            coordinates: mapMarkers.coordinates,
-            full_address: mapMarkers.full_address,
-            images: mapMarkers.images,
-            color_code: mapMarkers.color_code,
-            tags: mapMarkers.tags,
             name: mapMarkers.name,
             position: mapMarkers.position,
             host_organization: mapMarkers.host_organization,
