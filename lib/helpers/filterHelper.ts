@@ -43,14 +43,7 @@ class FilterHelper {
         if (filters && filters.search_string) {
             const searchString = `%${filters.search_string}%`;
             conditions.push(and(
-                ilike(mapMarkers.title, `${searchString}`),
-                eq(mapMarkers.map_id, mapId)
-            ));
-        }
-
-        if (filters && filters.type) {
-            conditions.push(and(
-                eq(lower(mapMarkers.type), `${filters.type.toLowerCase()}`),
+                ilike(mapMarkers.name, `${searchString}`),
                 eq(mapMarkers.map_id, mapId)
             ));
         }
