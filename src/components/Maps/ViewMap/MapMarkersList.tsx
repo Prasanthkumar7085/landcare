@@ -88,23 +88,24 @@ const MapMarkersList = ({
             <div className="markerHeader">
               <div className="location">
                 <Image alt="" src="/avatar@2x.png" width={20} height={20} />
-                <span>{marker.title}</span>
+                <span>{marker?.name}</span>
               </div>
               <div className="locationType">
                 <Image
-                  src={
-                    mapTypeOptions?.find(
-                      (item: any) => item?.title == marker.type
-                    )?.img as string
-                  }
+                  src={"/markers/marker-location-icon.svg"}
                   width={12}
                   height={12}
                   alt="type"
                 />
-                <span>{marker.type}</span>
+                <span>{marker?.location}</span>
               </div>
             </div>
-            <Typography className="markerDesc">{marker.description}</Typography>
+            <Typography className="markerDesc">{marker?.lls_region}</Typography>
+
+            <Typography className="markerDesc">
+              {marker?.host_organization}
+            </Typography>
+
             <div className="markerFooter">
               <div className="latLang">
                 <Image
@@ -113,21 +114,11 @@ const MapMarkersList = ({
                   width={10}
                   height={10}
                 />
-                <Tooltip
-                  title={marker?.coordinates
-                    ?.map((coord: any) => coord)
-                    .join(", ")}
-                >
-                  <span>
-                    {marker?.coordinates
-                      .map((coord: any) => coord.toFixed(3) + "...")
-                      .join(", ")}
-                  </span>
-                </Tooltip>
+                {marker?.email}
               </div>
               <div className="createdDate">
                 <Image src="/map/clock.svg" height={13} width={13} alt="" />
-                <span>{datePipe(marker.created_at)}</span>
+                <span>{marker?.phone}</span>
               </div>
             </div>
           </div>

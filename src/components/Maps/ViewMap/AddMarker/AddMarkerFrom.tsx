@@ -17,10 +17,7 @@ const MarkerPopup = ({
 }: any) => {
   const { id } = useParams();
 
-  const [popupFormData, setPopupFormData] = useState({
-    title: "",
-    description: "",
-  });
+  const [popupFormData, setPopupFormData] = useState<any>({});
   const [errorMessages, setErrorMessages] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [markerType, setMarkerType] = useState<any>(null);
@@ -78,48 +75,48 @@ const MarkerPopup = ({
     >
       <div className="addMarkerDialog">
         <h3 className="dialogHeading">Add Marker</h3>
-        <form >
-            <div className="eachFeildGrp" >
-              <label >Marker Name</label>
+        <form>
+          <div className="eachFeildGrp">
+            <label>Marker Name</label>
             <TextField
               className="defaultTextFeild text"
-                placeholder="Enter Title"
-                value={popupFormData.title}
-                name="title"
-                onChange={handleInputChange}
-              />
-              <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
-            </div>
-          <div className="eachFeildGrp" >
-              <label>Description</label>
+              placeholder="Enter Title"
+              value={popupFormData.title}
+              name="title"
+              onChange={handleInputChange}
+            />
+            <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
+          </div>
+          <div className="eachFeildGrp">
+            <label>Description</label>
             <TextField
               className="defaultTextFeild multiline"
-                name="description"
-                placeholder="Enter Description"
-                value={popupFormData.description}
-                rows={3}
-                onChange={handleInputChange}
-              />
-              <ErrorMessagesComponent
-                errorMessage={errorMessages["description"]}
-              />
-            </div>
-          <div className="eachFeildGrp" >
-              <label>Marker Type</label>
-                <AutoCompleteSearch
-                  data={mapTypeOptions}
-                  setSelectValue={setMarkerType}
-                  selectedValue={markerType}
-                  placeholder="Select Marker Type"
-                />
-              <ErrorMessagesComponent errorMessage={errorMessages["type"]} />
-            </div>
-       
+              name="description"
+              placeholder="Enter Description"
+              value={popupFormData.description}
+              rows={3}
+              onChange={handleInputChange}
+            />
+            <ErrorMessagesComponent
+              errorMessage={errorMessages["description"]}
+            />
+          </div>
+          <div className="eachFeildGrp">
+            <label>Marker Type</label>
+            <AutoCompleteSearch
+              data={mapTypeOptions}
+              setSelectValue={setMarkerType}
+              selectedValue={markerType}
+              placeholder="Select Marker Type"
+            />
+            <ErrorMessagesComponent errorMessage={errorMessages["type"]} />
+          </div>
+
           <div className="actionBtnGrp">
-            <Button  onClick={handleCancel} disabled={loading ? true : false}>
+            <Button onClick={handleCancel} disabled={loading ? true : false}>
               Cancel
             </Button>
-            <Button  onClick={handleSave}>
+            <Button onClick={handleSave}>
               {loading ? (
                 <CircularProgress
                   color="inherit"
