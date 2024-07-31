@@ -25,10 +25,10 @@ export class MarkersController {
                 return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
 
-            const existedMarker = await markersDataServiceProvider.findByTitleAndMapId(reqData.title, params.id);
-            if (existedMarker) {
-                throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
-            }
+            // const existedMarker = await markersDataServiceProvider.findByTitleAndMapId(reqData.title, params.id);
+            // if (existedMarker) {
+            //     throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
+            // }
 
             const reponseData = await markersDataServiceProvider.create(reqData);
             return ResponseHelper.sendSuccessResponse(200, MARKER_CREATED, reponseData[0]);
@@ -159,10 +159,10 @@ export class MarkersController {
                 return ResponseHelper.sendErrorResponse(400, MARKER_NOT_FOUND_WITH_MAP);
             }
 
-            const existedMarker = await markersDataServiceProvider.findByTitleAndId(reqData.title, markerId, mapId);
-            if (existedMarker) {
-                throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
-            }
+            // const existedMarker = await markersDataServiceProvider.findByTitleAndId(reqData.title, markerId, mapId);
+            // if (existedMarker) {
+            //     throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
+            // }
 
             await markersDataServiceProvider.update(markerId, reqData);
 
