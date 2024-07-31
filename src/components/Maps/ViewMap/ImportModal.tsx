@@ -85,7 +85,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
           };
           const rows: any = jsonData.slice(1);
 
-          const dataObjects = await Promise.all(
+          const dataObjects = await Promise.allSettled(
             rows.map(async (row: any) => {
               let obj: any = {};
               headers.forEach((headerName: any, i: any) => {

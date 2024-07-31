@@ -1,27 +1,21 @@
 import TablePaginationComponent from '@/components/Core/TablePaginationComponent';
 import TanstackTableComponent from '@/components/Core/TanstackTableComponent';
-import { datePipe } from '@/lib/helpers/datePipe';
-import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import { InputAdornment, TextField } from '@mui/material';
-import ShareIcon from '@mui/icons-material/Share';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
 import Dialog from '@mui/material/Dialog';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import { deleteMarkerAPI, getAllMapMarkersAPI } from '@/services/maps';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { mapTypeOptions } from '@/lib/constants/mapConstants';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { toast, Toaster } from 'sonner';
 import DeleteDialog from '@/components/Core/DeleteDialog';
 import LoadingComponent from '@/components/Core/LoadingComponent';
 import AutoCompleteSearch from '@/components/Core/AutoCompleteSearch';
 import { ListMarkersColumns } from './ListMarkersColumns';
+import Image from 'next/image';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -106,22 +100,23 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
             sortDescFirst: false,
             id: "actions",
             cell: (info: any) => (
-                <div style={{ display: 'flex', gap: "1.5rem" }}>
-                    <VisibilityIcon />
-                    <ShareIcon />
-                    <FileCopyIcon />
+                <div style={{ display: 'flex', gap: "0.5rem", alignItems:"center" }}>
+                    <Image src="/map/table/view.svg" alt="" width={15} height={15} />
+                    <Image src="/map/table/share.svg" alt="" width={15} height={15} />
+                    <Image src="/map/table/copy.svg" alt="" width={15} height={15} />
                     <IconButton
+                        className='iconBtn'
                         onClick={() => {
                             handleClickDeleteOpen(info?.row?.original?.id)
                         }}
                     >
-                        <DeleteIcon />
+                        <Image src="/map/table/trash.svg" alt="" width={15} height={15} />
                     </IconButton>
                 </div>
             ),
             header: () => <span>ACTIONS</span>,
             footer: (props: any) => props.column.id,
-            width: "150px",
+            width: "110px",
         },
     ];
 
@@ -145,58 +140,57 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
             aria-labelledby="customized-dialog-title"
             open={open}
             fullWidth
+            className='showAllMarkerDialog'
             sx={{
                 background: "#0000008f",
                 zIndex: 1000,
                 "& .MuiPaper-root": {
-                    margin: "0 !important",
-                    // width: "100%",
-                    // height: "calc(100% - 10px)",
-                    maxWidth: "75% !important",
+                    margin: "0 auto!important",
+                    maxWidth: "90% !important",
                     maxHeight: "600px",
+                    borderRadius:"10px"
                 },
-                // "& .MuiTypography-root": {
-                //     color: "#fff",
-                // },
             }}
+
         >
-            <DialogTitle>
-                All Markers
-            </DialogTitle>
-            <TextField
-                variant="outlined"
-                size='small'
-                type='search'
-                placeholder="Search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <SearchIcon />
-                        </InputAdornment>
-                    ),
-                }}
-            />
-            <AutoCompleteSearch
-                data={mapTypeOptions}
-                setSelectValue={setSelectType}
-                selectedValue={selectType}
-                placeholder="Select Marker Type"
-            />
-            <IconButton
-                aria-label="close"
-                onClick={handleClose}
-                sx={{
-                    position: 'absolute',
-                    right: 8,
-                    top: 8,
-                    color: (theme) => theme.palette.grey[500],
-                }}
-            >
-                <CloseIcon />
-            </IconButton>
-            <DialogContent dividers>
+            <div className="dialogHeader">
+                <div className='dialogTitle'>
+                    <Image src="/map/map-orangebg.svg" alt='' width={30} height={30} />
+                    <span> All Markers</span>
+                </div>
+                <div className="filterGrp">
+                    <TextField
+                        className='defaultTextFeild'
+                        variant="outlined"
+                        size='small'
+                        type='search'
+                        placeholder="Search"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                    <AutoCompleteSearch
+                        data={mapTypeOptions}
+                        setSelectValue={setSelectType}
+                        selectedValue={selectType}
+                        placeholder="Select Marker Type"
+                    />
+                    <IconButton
+                        className='iconBtn'
+                        aria-label="close"
+                        onClick={handleClose}                    >
+                        <Image src="/map/close-with-border.svg" alt='' width={30} height={30} />
+                    </IconButton>
+                </div>
+            </div>
+
+            <div >
                 <TanstackTableComponent
                     data={markers}
                     columns={[...ListMarkersColumns, ...columns]}
@@ -214,7 +208,7 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
                 ) : (
                     ""
                 )}
-            </DialogContent>
+            </div>
             <DeleteDialog
                 deleteOpen={deleteOpen}
                 handleDeleteCose={handleDeleteCose}
