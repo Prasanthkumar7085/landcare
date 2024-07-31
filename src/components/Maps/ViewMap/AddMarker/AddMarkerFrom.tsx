@@ -23,7 +23,8 @@ const MarkerPopup = ({
   const [markerType, setMarkerType] = useState<any>(null);
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    setPopupFormData({ ...popupFormData, [name]: value });
+    const markerValue = value.replace(/^\s+/, '');
+    setPopupFormData({ ...popupFormData, [name]: markerValue });
   };
 
   const handleCancel = () => {
