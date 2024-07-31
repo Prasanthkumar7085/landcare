@@ -188,7 +188,7 @@ const MarkerPopup = ({
             </Button>
             <Button
               onClick={handleSave}
-              disabled={popupFormData?.title ? false : true}
+              disabled={popupFormData?.name ? false : true}
             >
               {loading ? (
                 <CircularProgress
