@@ -42,9 +42,9 @@ const ViewGoogleMap = () => {
     state: "",
     city: "",
     zipcode: "",
-    images: "",
-    tags: "",
-    social_links: "",
+    images: [],
+    tags: [],
+    social_links: [],
     coordinates: [],
   });
 
