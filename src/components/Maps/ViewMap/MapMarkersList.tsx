@@ -1,4 +1,5 @@
 import {
+  Button,
   CardActions,
   InputAdornment,
   TextField,
@@ -132,12 +133,10 @@ const MapMarkersList = ({
           </div>
         ))}
       </div>
-      <div className={styles.allmarkersgroup} onClick={handleClickOpen}>
-        <CardActions className={styles.inputbutton}>
-          <Typography variant="button" className={styles.showAllMarkers}>
+      <div style={{textAlign:"end"}}>
+        <Button className="showAllBtn" variant="outlined" onClick={handleClickOpen}>
             Show All markers
-          </Typography>
-        </CardActions>
+          </Button>
       </div>
 
       <MapMarkersListDialog open={open} handleClose={handleClose} />
