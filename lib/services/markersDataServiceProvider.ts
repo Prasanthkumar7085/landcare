@@ -44,6 +44,7 @@ export class MarkersDataServiceProvider {
         let queryData: any = db.select({
             id: mapMarkers.id,
             name: mapMarkers.name,
+            coordinates: mapMarkers.coordinates,
             position: mapMarkers.position,
             host_organization: mapMarkers.host_organization,
             lls_region: mapMarkers.lls_region,
