@@ -70,19 +70,19 @@ const MarkerPopup = ({
         zIndex: "1300 !important",
         "& .MuiPaper-root": {
           width: "100%",
-          maxWidth: "350px",
+          maxWidth: "300px",
           margin: "0 auto",
           borderRadius: "8px",
         },
       }}
     >
-      <div>
-        <h3>Marker Details</h3>
-        <form>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <label>Name:</label>
-              <TextField
+      <div className="addMarkerDialog">
+        <h3 className="dialogHeading">Add Marker</h3>
+        <form >
+            <div className="eachFeildGrp" >
+              <label >Marker Name</label>
+            <TextField
+              className="defaultTextFeild text"
                 placeholder="Enter Title"
                 value={popupFormData.title}
                 name="title"
@@ -90,38 +90,36 @@ const MarkerPopup = ({
               />
               <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
             </div>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <label>Description: </label>
-
-              <TextField
+          <div className="eachFeildGrp" >
+              <label>Description</label>
+            <TextField
+              className="defaultTextFeild multiline"
                 name="description"
                 placeholder="Enter Description"
                 value={popupFormData.description}
-                rows={4}
+                rows={3}
                 onChange={handleInputChange}
               />
               <ErrorMessagesComponent
                 errorMessage={errorMessages["description"]}
               />
             </div>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <label>Marker Type: </label>
-              <div style={{ width: "100%" }}>
+          <div className="eachFeildGrp" >
+              <label>Marker Type</label>
                 <AutoCompleteSearch
                   data={mapTypeOptions}
                   setSelectValue={setMarkerType}
                   selectedValue={markerType}
                   placeholder="Select Marker Type"
                 />
-              </div>
               <ErrorMessagesComponent errorMessage={errorMessages["type"]} />
             </div>
-          </div>
-          <div className={styles.buttonGroup}>
-            <Button onClick={handleCancel} disabled={loading ? true : false}>
+       
+          <div className="actionBtnGrp">
+            <Button  onClick={handleCancel} disabled={loading ? true : false}>
               Cancel
             </Button>
-            <Button onClick={handleSave}>
+            <Button  onClick={handleSave}>
               {loading ? (
                 <CircularProgress
                   color="inherit"

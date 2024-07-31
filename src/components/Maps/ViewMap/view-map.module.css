@@ -9,16 +9,10 @@
 .markersPageWeb .googleMapBlock {
     width: 75%;
     height: 100vh;
+    flex:1 ;
 }
 
-.markersPageWeb .rightFarmDtailsContainer {
-    width: 23%;
-    height: calc(100vh - 1rem);
-    border: 1px solid yellow;
-    border-radius: 8px;
-    background-color: #fff;
-    min-width: 270px;
-}
+
 
 .updateFarmButtonGrp {
     display: flex;

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AddMapDrawer from "./AddMapDrawer";
 import AddPolygonDialog from "./AddPolygonDialog";
 import styles from "./google-map.module.css";
+import Image from "next/image";
 
 const AddPolygon = () => {
   const dispatch = useDispatch();
@@ -252,7 +253,7 @@ const AddPolygon = () => {
                   variant="contained"
                   disabled={polygonCoords?.length === 0}
                 >
-                  <img
+                  <Image
                     src="/markers/clear-icon.svg"
                     alt=""
                     width={20}
@@ -269,7 +270,7 @@ const AddPolygon = () => {
                   disabled={polygonCoords?.length >= 3 ? false : true}
                   sx={{ display: polygonCoords?.length >= 3 ? "" : "none" }}
                 >
-                  <img
+                  <Image
                     src={"/markers/save-icon.svg"}
                     alt=""
                     width={20}
@@ -283,7 +284,7 @@ const AddPolygon = () => {
                   variant="contained"
                   disabled={polygonCoords?.length === 0}
                 >
-                  <img
+                  <Image
                     src="/markers/undo-icon.svg"
                     alt=""
                     width={20}
