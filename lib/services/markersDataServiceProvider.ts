@@ -51,6 +51,14 @@ export class MarkersDataServiceProvider {
             images: mapMarkers.images,
             color_code: mapMarkers.color_code,
             tags: mapMarkers.tags,
+            name: mapMarkers.name,
+            position: mapMarkers.position,
+            host_organization: mapMarkers.host_organization,
+            lls_region: mapMarkers.lls_region,
+            phone: mapMarkers.phone,
+            email: mapMarkers.email,
+            location: mapMarkers.location,
+            post_code: mapMarkers.post_code,
             created_at: mapMarkers.created_at,
             updated_at: mapMarkers.updated_at
         })
