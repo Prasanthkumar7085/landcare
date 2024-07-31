@@ -93,9 +93,7 @@ const MarkerPopup = ({
               rows={3}
               onChange={handleInputChange}
             />
-            <ErrorMessagesComponent
-              errorMessage={errorMessages["position"]}
-            />
+            <ErrorMessagesComponent errorMessage={errorMessages["position"]} />
           </div>
           <div className="eachFeildGrp">
             <label>Host Organization</label>
@@ -135,9 +133,7 @@ const MarkerPopup = ({
               rows={3}
               onChange={handleInputChange}
             />
-            <ErrorMessagesComponent
-              errorMessage={errorMessages["phone"]}
-            />
+            <ErrorMessagesComponent errorMessage={errorMessages["phone"]} />
           </div>
           <div className="eachFeildGrp">
             <label>Email</label>
@@ -149,9 +145,7 @@ const MarkerPopup = ({
               rows={3}
               onChange={handleInputChange}
             />
-            <ErrorMessagesComponent
-              errorMessage={errorMessages["email"]}
-            />
+            <ErrorMessagesComponent errorMessage={errorMessages["email"]} />
           </div>
           <div className="eachFeildGrp">
             <label>Location</label>
@@ -163,9 +157,7 @@ const MarkerPopup = ({
               rows={3}
               onChange={handleInputChange}
             />
-            <ErrorMessagesComponent
-              errorMessage={errorMessages["location"]}
-            />
+            <ErrorMessagesComponent errorMessage={errorMessages["location"]} />
           </div>
           <div className="eachFeildGrp">
             <label>Postcode</label>
@@ -177,9 +169,7 @@ const MarkerPopup = ({
               rows={3}
               onChange={handleInputChange}
             />
-            <ErrorMessagesComponent
-              errorMessage={errorMessages["post_code"]}
-            />
+            <ErrorMessagesComponent errorMessage={errorMessages["post_code"]} />
           </div>
           {/* <div className="eachFeildGrp">
             <label>Marker Type</label>
@@ -196,7 +186,10 @@ const MarkerPopup = ({
             <Button onClick={handleCancel} disabled={loading ? true : false}>
               Cancel
             </Button>
-            <Button onClick={handleSave}>
+            <Button
+              onClick={handleSave}
+              disabled={popupFormData?.title ? false : true}
+            >
               {loading ? (
                 <CircularProgress
                   color="inherit"
