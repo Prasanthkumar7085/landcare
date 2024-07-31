@@ -260,6 +260,7 @@ const ViewGoogleMap = () => {
           markerData={markerData}
           setMarkerOption={setMarkerOption}
           markerOption={markerOption}
+          getData={getSingleMapMarkers}
         />
       )}
       <MarkerPopup

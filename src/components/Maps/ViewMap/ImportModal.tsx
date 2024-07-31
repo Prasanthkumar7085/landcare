@@ -6,12 +6,15 @@ import * as XLSX from "xlsx";
 import { importMapAPI } from "@/services/maps";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
+import { getImportedFilteredData } from "@/lib/helpers/mapsHelpers";
+import LoadingComponent from "@/components/Core/LoadingComponent";
 
 interface IImportModalProps {
   show: boolean;
   onClose: () => void;
   file: any;
   setFile: any;
+  getData: any;
 }
 
 const ImportModal: React.FC<IImportModalProps> = ({
@@ -19,6 +22,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
   onClose,
   file,
   setFile,
+  getData,
 }) => {
   const { id } = useParams();
 
@@ -51,15 +55,15 @@ const ImportModal: React.FC<IImportModalProps> = ({
   const handleFileUpload = () => {
     if (file) {
       const fileExtension = file.name.split(".").pop()?.toLowerCase();
-
+      console.log(fileExtension, "fdsppsdpdssd");
       if (fileExtension === "csv") {
         Papa.parse(file, {
-          complete: function (results: any) {
+          complete: async function (results: any) {
             // const filedata = processParsedData(results.data);
-            if (results.data) {
-              // handleUpload(filedata);
-              setFile(null);
-            }
+            let jsonData = results.data;
+            let markersData = await getImportedFilteredData({ jsonData });
+            await handleUpload(markersData);
+            setFile(null);
           },
           header: false,
         });
@@ -71,96 +75,15 @@ const ImportModal: React.FC<IImportModalProps> = ({
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-          const headers: any = jsonData[0];
-          const subHeadersMapping: any = {
-            Name: "name",
-            Phone: "phone",
-            Position: "position",
-            Location: "location",
-            Postcode: "post_code",
-            "Host Organisation": "host_organization",
-            "LLS Region": "lls_region",
-            Email: "email",
-          };
-          const rows: any = jsonData.slice(1);
-
-          const dataObjects = await Promise.allSettled(
-            rows.map(async (row: any) => {
-              let obj: any = {};
-              headers.forEach((headerName: any, i: any) => {
-                const mappedItem = subHeadersMapping[headerName];
-                obj[mappedItem] = row[i];
-              });
-              if (obj["location"]) {
-                const coords = await getCoordinates(obj["location"]);
-                obj["coordinates"] = coords;
-              }
-              return obj;
-            })
-          );
+          let markersData = await getImportedFilteredData({ jsonData });
+          await handleUpload(markersData);
           setFile(null);
-          const filteredDataObjects = dataObjects.filter((obj) => {
-            const values = Object.values(obj);
-            return !values.every(
-              (value) => value === undefined || value === "" || value === null
-            );
-          });
-          console.log(filteredDataObjects, "mpsdkkskd");
-          // await handleUpload(filteredDataObjects);
+          reader.readAsArrayBuffer(file);
         };
-
-        reader.readAsArrayBuffer(file);
       }
     } else {
       toast.error("Unsupported file format");
     }
-  };
-
-  const processParsedData = (parsedData: any) => {
-    const isEmpty = parsedData.every((row: any) =>
-      row.every((cell: any) => String(cell).trim() === "")
-    );
-
-    if (isEmpty) {
-      toast.error("File has empty data");
-      return false;
-    }
-
-    if (parsedData[0][0] === "title" && parsedData[0][11] === "coordinates") {
-      const updatedPlanData = parsedData.slice(1, 12).map((row: any) => ({
-        title: row[0],
-        description: row[1],
-        status: row[2],
-        type: row[3],
-        full_address: row[4],
-        state: row[5],
-        city: row[6],
-        zipcode: row[7],
-        tags: row[8],
-        social_links: row[9],
-        added_by: row[10],
-        coordinates: row[11],
-      }));
-      return updatedPlanData;
-    } else {
-      toast.error("File does not match the required format");
-      return false;
-    }
-  };
-
-  const getCoordinates = (locationName: any) => {
-    return new Promise((resolve, reject) => {
-      const geocoder = new google.maps.Geocoder();
-      geocoder.geocode({ address: locationName }, (results, status) => {
-        if (status === "OK" && results[0]) {
-          const { lat, lng } = results[0].geometry.location;
-          resolve([lat(), lng()]);
-        } else {
-          reject(`Error fetching coordinates for ${locationName}: ${status}`);
-        }
-      });
-    });
   };
 
   const handleUpload = async (filedata: any) => {
@@ -172,6 +95,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
 
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response.message);
+        getData({});
         onClose();
       } else if (response?.status === 422) {
         setErrorMessages(response?.errors);
@@ -239,6 +163,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
           Confirm Upload
         </button>
       </div>
+      <LoadingComponent loading={loading} />
     </div>
   );
 };
