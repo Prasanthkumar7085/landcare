@@ -72,7 +72,6 @@ const MapMarkersList = ({
         />
       </div>
       <div className="listContainer">
-
         {singleMarkers?.map((marker: any, index: any) => (
           <div
             className="eachListItem"

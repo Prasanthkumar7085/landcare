@@ -86,7 +86,7 @@ const ViewMapDetailsDrawer = ({
             setFile={setFile}
           />
           <IconButton className="iconBtn" onClick={handleClick}>
-            <Image src="/map/menu-with-bg.svg" alt="" height={25} width={25} />
+            <Image src="/map/menu-with-bg.svg" alt="" height={28} width={28} />
           </IconButton>
         </div>
       </header>
