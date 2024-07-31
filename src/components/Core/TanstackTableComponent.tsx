@@ -78,10 +78,11 @@ const TanstackTableComponent: FC<pageProps> = ({
         }
     };
     return (
-        <div
+
+        <div className="tableContainer"
             style={{ width: "100%", overflowX: "auto" }}
         >
-            <table style={{ width: "100%" }}>
+            <table className="table" style={{ width: "100%" }}>
                 <thead
                     className="thead"
                     style={{
@@ -105,8 +106,7 @@ const TanstackTableComponent: FC<pageProps> = ({
                                             style={{
                                                 minWidth: getWidth(header.id),
                                                 width: getWidth(header.id),
-                                                color: "#000",
-                                                background: "#F0EDFF",
+                                               
                                             }}
                                         >
                                             {header.isPlaceholder ? null : (
