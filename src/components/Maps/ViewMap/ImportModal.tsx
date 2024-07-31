@@ -1,11 +1,11 @@
-import { useState, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
 import styles from "./view-map.module.css";
 import Papa from "papaparse";
-import * as XLSX from 'xlsx';
-import { importMapAPI } from '@/services/maps';
-import { useParams } from 'next/navigation';
-import { toast } from 'sonner';
+import * as XLSX from "xlsx";
+import { importMapAPI } from "@/services/maps";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 interface IImportModalProps {
   show: boolean;
@@ -14,21 +14,31 @@ interface IImportModalProps {
   setFile: any;
 }
 
-const ImportModal: React.FC<IImportModalProps> = ({ show, onClose,file,setFile}) => {
-  const [loading,setLoading] = useState(false);
-  const [errorMessages,setErrorMessages] = useState<any>();
+const ImportModal: React.FC<IImportModalProps> = ({
+  show,
+  onClose,
+  file,
+  setFile,
+}) => {
   const { id } = useParams();
+
+  const [loading, setLoading] = useState(false);
+  const [errorMessages, setErrorMessages] = useState<any>();
+  const [coordinates, setCoordinates] = useState<any>([]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       setFile(acceptedFiles[0]);
     }
   }, []);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'text/csv': ['.csv'],
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']
+      "text/csv": [".csv"],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+        ".xlsx",
+      ],
     },
   });
 
@@ -37,56 +47,87 @@ const ImportModal: React.FC<IImportModalProps> = ({ show, onClose,file,setFile})
       setFile(e.target.files[0]);
     }
   };
+
   const handleFileUpload = () => {
     if (file) {
-      const fileExtension = file.name.split('.').pop()?.toLowerCase(); 
-  
-      if (fileExtension === 'csv') {
+      const fileExtension = file.name.split(".").pop()?.toLowerCase();
+
+      if (fileExtension === "csv") {
         Papa.parse(file, {
           complete: function (results: any) {
-            console.log(results.data,"results")
-            const filedata = processParsedData(results.data);
-            if (filedata) {
-              handleUpload(filedata);
+            // const filedata = processParsedData(results.data);
+            if (results.data) {
+              // handleUpload(filedata);
               setFile(null);
-              toast.success("File Uploaded Successfully");
             }
           },
           header: false,
         });
-      } else if (fileExtension === 'xlsx') {
+      } else if (fileExtension === "xlsx") {
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
           const data = new Uint8Array(e.target?.result as ArrayBuffer);
-          const workbook = XLSX.read(data, { type: 'array' });
+          const workbook = XLSX.read(data, { type: "array" });
           const sheetName = workbook.SheetNames[0];
-          const worksheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
-          console.log(worksheet);
-          const filedata = processParsedData(worksheet);
-          console.log(filedata);
-          if (filedata) {
-            handleUpload(filedata);
-            setFile(null);
-            toast.success("File Uploaded Successfully");
-          }
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+          const headers: any = jsonData[0];
+          const subHeadersMapping: any = {
+            Name: "name",
+            Phone: "phone",
+            Position: "position",
+            Location: "location",
+            Postcode: "post_code",
+            "Host Organisation": "host_organization",
+            "LLS Region": "lls_region",
+            Email: "email",
+          };
+          const rows: any = jsonData.slice(1);
+
+          const dataObjects = await Promise.all(
+            rows.map(async (row: any) => {
+              let obj: any = {};
+              headers.forEach((headerName: any, i: any) => {
+                const mappedItem = subHeadersMapping[headerName];
+                obj[mappedItem] = row[i];
+              });
+              if (obj["location"]) {
+                const coords = await getCoordinates(obj["location"]);
+                obj["coordinates"] = coords;
+              }
+              return obj;
+            })
+          );
+          setFile(null);
+          const filteredDataObjects = dataObjects.filter((obj) => {
+            const values = Object.values(obj);
+            return !values.every(
+              (value) => value === undefined || value === "" || value === null
+            );
+          });
+          console.log(filteredDataObjects, "mpsdkkskd");
+          // await handleUpload(filteredDataObjects);
         };
+
         reader.readAsArrayBuffer(file);
-      } else {
-        toast.error('Unsupported file format');
       }
+    } else {
+      toast.error("Unsupported file format");
     }
   };
-  
+
   const processParsedData = (parsedData: any) => {
-  
-    const isEmpty = parsedData.every((row: any)=> row.every((cell: any)=> String(cell).trim() === ''));
-    
+    const isEmpty = parsedData.every((row: any) =>
+      row.every((cell: any) => String(cell).trim() === "")
+    );
+
     if (isEmpty) {
-      toast.error('File has empty data');
-      return false; 
+      toast.error("File has empty data");
+      return false;
     }
-    
-    if (parsedData[0][0] === 'title' && parsedData[0][11] === 'coordinates') {
+
+    if (parsedData[0][0] === "title" && parsedData[0][11] === "coordinates") {
       const updatedPlanData = parsedData.slice(1, 12).map((row: any) => ({
         title: row[0],
         description: row[1],
@@ -101,20 +142,34 @@ const ImportModal: React.FC<IImportModalProps> = ({ show, onClose,file,setFile})
         added_by: row[10],
         coordinates: row[11],
       }));
-      console.log(updatedPlanData,"apipayload");
-      return updatedPlanData; 
+      return updatedPlanData;
     } else {
-      toast.error('File does not match the required format');
-      return false; 
+      toast.error("File does not match the required format");
+      return false;
     }
   };
+
+  const getCoordinates = (locationName: any) => {
+    return new Promise((resolve, reject) => {
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ address: locationName }, (results, status) => {
+        if (status === "OK" && results[0]) {
+          const { lat, lng } = results[0].geometry.location;
+          resolve([lat(), lng()]);
+        } else {
+          reject(`Error fetching coordinates for ${locationName}: ${status}`);
+        }
+      });
+    });
+  };
+
   const handleUpload = async (filedata: any) => {
-      setLoading(true);
-    
+    setLoading(true);
+
     try {
-      let body = filedata;      
+      let body = filedata;
       const response = await importMapAPI(id, body);
-        
+
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response.message);
         onClose();
@@ -129,7 +184,6 @@ const ImportModal: React.FC<IImportModalProps> = ({ show, onClose,file,setFile})
       setLoading(false);
     }
   };
-  
 
   if (!show) {
     return null;
@@ -138,14 +192,23 @@ const ImportModal: React.FC<IImportModalProps> = ({ show, onClose,file,setFile})
   return (
     <div className={styles.modal}>
       <div className={styles.modalContent}>
-        <span className={styles.close} onClick={onClose}>&times;</span>
+        <span className={styles.close} onClick={onClose}>
+          &times;
+        </span>
         <h2 className={styles.modalh2}>Import</h2>
         <div className={styles.instructions}>
-          <p>To import your markers, please ensure your CSV file contains the following columns:</p>
+          <p>
+            To import your markers, please ensure your CSV file contains the
+            following columns:
+          </p>
           <ol>
             <li>Marker Name: The name of the marker.</li>
-            <li>Marker Type: The type of place (e.g., Hospital, Restaurant).</li>
-            <li>Latitude Longitude: The geographical coordinates of the marker.</li>
+            <li>
+              Marker Type: The type of place (e.g., Hospital, Restaurant).
+            </li>
+            <li>
+              Latitude Longitude: The geographical coordinates of the marker.
+            </li>
             <li>Description: A brief description of the marker.</li>
           </ol>
           <p>Ensure all fields are correctly filled for a successful import.</p>
@@ -156,7 +219,9 @@ const ImportModal: React.FC<IImportModalProps> = ({ show, onClose,file,setFile})
             <p>Drop the file here ...</p>
           ) : (
             <>
-              <p><u>Click to upload</u> or drag and drop a CSV file here</p>
+              <p>
+                <u>Click to upload</u> or drag and drop a CSV file here
+              </p>
               <br />
               <div>
                 <span>Max Size: 50MB</span>
@@ -167,8 +232,12 @@ const ImportModal: React.FC<IImportModalProps> = ({ show, onClose,file,setFile})
         <div className={styles.fileUpload}>
           {file && <p>Selected file: {file.name}</p>}
         </div>
-        <button className={styles.cancelButton} onClick={onClose}>Cancel</button>
-        <button className={styles.uploadButton} onClick={handleFileUpload}>Confirm Upload</button>
+        <button className={styles.cancelButton} onClick={onClose}>
+          Cancel
+        </button>
+        <button className={styles.uploadButton} onClick={handleFileUpload}>
+          Confirm Upload
+        </button>
       </div>
     </div>
   );

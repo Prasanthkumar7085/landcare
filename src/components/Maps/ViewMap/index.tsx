@@ -103,22 +103,21 @@ const ViewGoogleMap = () => {
   };
 
   const renderAllMarkers = (markers1: any) => {
-    markers1.forEach((markerData: any) => {
+    markers1.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
-        markerData.coordinates[0],
-        markerData.coordinates[1]
+        markerData.coordinates[0] + index * 0.0001,
+        markerData.coordinates[1] + index * 0.0001
       );
       const markere = new google.maps.Marker({
         position: latLng,
         map: map,
-        title: markerData.title,
+        title: markerData.name,
         icon: {
-          url: mapTypeOptions?.find(
-            (item: any) => item?.title == markerData.type
-          )?.img as string,
+          url: "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
         animation: google.maps.Animation.DROP,
       });
+
       markere.setMap(map);
     });
   };

@@ -4,13 +4,16 @@ import {
   InputAdornment,
   TextField,
   Tooltip,
-  Typography
+  Typography,
 } from "@mui/material";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React from "react";
 import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
-import { mapTypeOptions, markerFilterOptions } from "@/lib/constants/mapConstants";
+import {
+  mapTypeOptions,
+  markerFilterOptions,
+} from "@/lib/constants/mapConstants";
 import { datePipe } from "@/lib/helpers/datePipe";
 import { getSingleMarkerAPI } from "@/services/maps";
 import styles from "./index.module.css";
@@ -84,15 +87,8 @@ const MapMarkersList = ({
           >
             <div className="markerHeader">
               <div className="location">
-                <Image
-                  alt=""
-                  src="/avatar@2x.png"
-                  width={20}
-                  height={20}
-                />
-                <span   >
-                  {marker.title}
-                </span>
+                <Image alt="" src="/avatar@2x.png" width={20} height={20} />
+                <span>{marker.title}</span>
               </div>
               <div className="locationType">
                 <Image
@@ -105,38 +101,46 @@ const MapMarkersList = ({
                   height={12}
                   alt="type"
                 />
-                <span >
-                  {marker.type}
-                </span>
+                <span>{marker.type}</span>
               </div>
             </div>
-            <Typography className="markerDesc">
-              {marker.description}
-            </Typography>
+            <Typography className="markerDesc">{marker.description}</Typography>
             <div className="markerFooter">
               <div className="latLang">
-                <Image src="/map/location-blue.svg" alt="" width={10} height={10} />
+                <Image
+                  src="/map/location-blue.svg"
+                  alt=""
+                  width={10}
+                  height={10}
+                />
                 <Tooltip
-                  title={marker.coordinates.map((coord: any) => coord).join(", ")}
+                  title={marker?.coordinates
+                    ?.map((coord: any) => coord)
+                    .join(", ")}
                 >
-                  <span>{marker.coordinates.map((coord: any) => coord.toFixed(3) + "...").join(", ")}</span>
+                  <span>
+                    {marker?.coordinates
+                      .map((coord: any) => coord.toFixed(3) + "...")
+                      .join(", ")}
+                  </span>
                 </Tooltip>
               </div>
               <div className="createdDate">
                 <Image src="/map/clock.svg" height={13} width={13} alt="" />
-                <span >
-                  {datePipe(marker.created_at)}
-                </span>
+                <span>{datePipe(marker.created_at)}</span>
               </div>
             </div>
-
           </div>
         ))}
       </div>
-      <div style={{textAlign:"end"}}>
-        <Button className="showAllBtn" variant="outlined" onClick={handleClickOpen}>
-            Show All markers
-          </Button>
+      <div style={{ textAlign: "end" }}>
+        <Button
+          className="showAllBtn"
+          variant="outlined"
+          onClick={handleClickOpen}
+        >
+          Show All markers
+        </Button>
       </div>
 
       <MapMarkersListDialog open={open} handleClose={handleClose} />
