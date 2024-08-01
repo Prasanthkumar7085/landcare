@@ -16,13 +16,13 @@ export const processImportedData = (parsedData: any) => {
   );
   let headers = [
     "Name",
-    "Phone",
     "Position",
-    "Location",
-    "Postcode",
     "Host Organisation",
     "LLS Region",
+    "Phone",
     "Email",
+    "Location",
+    "Postcode",
   ];
   const arraysEqual = (a: any, b: any) =>
     a.length === b.length &&
@@ -89,7 +89,8 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
       })
     );
   }
-  return [data, errorsData?.errors];
+  let filterData = data.map((item) => item.value);
+  return [filterData, errorsData?.errors];
 };
 
 const validationsForImportedData = ({ filteredDataObjects }: any) => {

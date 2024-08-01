@@ -12,6 +12,7 @@ import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 import ValidationsTable from "./ValidationsTable";
+import { Button } from "@mui/material";
 
 interface IImportModalProps {
   show: boolean;
@@ -34,6 +35,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
   const [errorMessages, setErrorMessages] = useState<any>();
   const [coordinates, setCoordinates] = useState<any>([]);
   const [validationsData, setValidationsData] = useState<any>([]);
+  const [success, setSuccess] = useState<any>(false);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -66,9 +68,8 @@ const ImportModal: React.FC<IImportModalProps> = ({
             let jsonData = results.data;
             if (processImportedData(results.data)) {
               let markersData = await getImportedFilteredData({ jsonData });
-              console.log(markersData, "sdkkdskdksakdskk");
-              setValidationsData(markersData[1]);
-              // await handleUpload(markersData[0]);
+              // setValidationsData(markersData[1]);
+              await handleUpload(markersData[0]);
             }
           },
           header: false,
@@ -83,8 +84,8 @@ const ImportModal: React.FC<IImportModalProps> = ({
           const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
           if (processImportedData(jsonData)) {
             let markersData = await getImportedFilteredData({ jsonData });
-            setValidationsData(markersData[1]);
-            // await handleUpload(markersData[0]);
+            // setValidationsData(markersData[1]);
+            await handleUpload(markersData[0]);
           }
           reader.readAsArrayBuffer(file);
         };
@@ -104,11 +105,13 @@ const ImportModal: React.FC<IImportModalProps> = ({
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response.message);
         if (validationsData?.length == 0) {
-          getData({});
+          await getData({});
           onClose();
           setFile(null);
+          setSuccess(true);
         } else {
-          getData({});
+          await getData({});
+          setSuccess(true);
         }
       } else if (response?.status === 422) {
         setErrorMessages(response?.errors);
@@ -140,18 +143,14 @@ const ImportModal: React.FC<IImportModalProps> = ({
           <Image src="/map/info-icon.svg" alt="" width={20} height={20} />
           <div className="content">
             <p>
-              To import your markers, please ensure your CSV file contains the
-              following columns:
+              To import your markers, please ensure your CSV or XLSX file
+              contains the following columns:
             </p>
             <ol>
-              <li>Marker Name: The name of the marker.</li>
               <li>
-                Marker Type: The type of place (e.g., Hospital, Restaurant).
+                [ Name, Position, Host Organisation, LLS Region, Phone, Email,
+                Location, Postcode,]
               </li>
-              <li>
-                Latitude Longitude: The geographical coordinates of the marker.
-              </li>
-              <li>Description: A brief description of the marker.</li>
             </ol>
             <p>
               Ensure all fields are correctly filled for a successful import.
@@ -172,7 +171,8 @@ const ImportModal: React.FC<IImportModalProps> = ({
               />
               <div>
                 <p>
-                  <u>Click to upload</u> or drag and drop a CSV file here
+                  <u>Click to upload</u> or drag and drop a CSV or XLSX file
+                  here
                 </p>
                 <p className="helperText">Max Size: 50MB</p>
               </div>
@@ -183,8 +183,13 @@ const ImportModal: React.FC<IImportModalProps> = ({
           {file && <p>Selected file: {file.name}</p>}
         </div>
         <div className="btnGrp">
-          <button onClick={onClose}>Cancel</button>
-          <button onClick={handleFileUpload}>Confirm Upload</button>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button
+            onClick={handleFileUpload}
+            disabled={file && !success ? false : true}
+          >
+            Confirm Upload
+          </Button>
         </div>
         {validationsData?.length > 0 ? (
           <ValidationsTable validationsData={validationsData} />

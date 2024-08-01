@@ -11,20 +11,15 @@ import ImportModal from "./ImportMarkers/ImportModal";
 
 const ViewMapDetailsDrawer = ({
   mapDetails,
-  markers,
-  paginationDetails,
-  getData,
-  setSearch,
-  search,
   singleMarkers,
   setSearchString,
   searchString,
   setSingleMarkerOpen,
-  singleMarkeropen,
   setMarkerData,
-  markerData,
   setMarkerOption,
   markerOption,
+  getData,
+  setSingleMarkerLoading,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -112,36 +107,16 @@ const ViewMapDetailsDrawer = ({
         <div className="markersBlock">
           <Typography className="blockHeading">Markers</Typography>
           <div className="markersContainer">
-            {markers?.length > 0 || singleMarkers?.length > 0 ? (
-              <MapMarkersList
-                markers={markers}
-                paginationDetails={paginationDetails}
-                getData={getData}
-                setSearch={setSearch}
-                search={search}
-                singleMarkers={singleMarkers}
-                setSearchString={setSearchString}
-                searchString={searchString}
-                setSingleMarkerOpen={setSingleMarkerOpen}
-                singleMarkeropen={singleMarkeropen}
-                setMarkerData={setMarkerData}
-                markerData={markerData}
-                setMarkerOption={setMarkerOption}
-                markerOption={markerOption}
-              />
-            ) : (
-              <div className="nodataGrp">
-                <Image
-                  src={"/no-markers.svg"}
-                  width={180}
-                  height={180}
-                  alt="no data"
-                />
-                <Typography className="nodataTxt">
-                  No markers added yet. Start placing markers on your map.
-                </Typography>
-              </div>
-            )}
+            <MapMarkersList
+              singleMarkers={singleMarkers}
+              setSearchString={setSearchString}
+              searchString={searchString}
+              setSingleMarkerOpen={setSingleMarkerOpen}
+              setMarkerData={setMarkerData}
+              setMarkerOption={setMarkerOption}
+              markerOption={markerOption}
+              setSingleMarkerLoading={setSingleMarkerLoading}
+            />
           </div>
         </div>
       </div>

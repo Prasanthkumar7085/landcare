@@ -92,7 +92,7 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
       search_string: search,
       type: selectType?.title,
     });
-  }, [search, selectType?.title]);
+  }, [search, selectType?.title, open]);
 
   const columns = [
     {

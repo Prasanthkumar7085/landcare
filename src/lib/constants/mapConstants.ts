@@ -52,21 +52,21 @@ export const markerFilterOptions = [
   {
     title: "asc",
     value: "name",
-    label: "Name (High to Low)",
+    label: "Name (A to Z)",
   },
   {
     title: "dsc",
     value: "name",
-    label: "Name (Low to High)",
+    label: "Name (Z to A)",
   },
   {
     title: "asc",
     value: "created_at",
-    label: "Created AT (High to Low)",
+    label: "Newest First",
   },
   {
     title: "dsc",
     value: "created_at",
-    label: "Created AT (Low to High)",
+    label: "Oldest (Low to High)",
   },
 ];
