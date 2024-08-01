@@ -51,13 +51,13 @@ export const mapTypeOptions = [
 export const markerFilterOptions = [
   {
     title: "asc",
-    value: "title",
-    label: "Title (High to Low)",
+    value: "name",
+    label: "Name (High to Low)",
   },
   {
     title: "dsc",
-    value: "title",
-    label: "Title (Low to High)",
+    value: "name",
+    label: "Name (Low to High)",
   },
   {
     title: "asc",
@@ -68,5 +68,5 @@ export const markerFilterOptions = [
     title: "dsc",
     value: "created_at",
     label: "Created AT (Low to High)",
-  }
-]
+  },
+];

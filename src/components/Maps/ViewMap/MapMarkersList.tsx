@@ -29,6 +29,7 @@ const MapMarkersList = ({
   markerData,
   setMarkerOption,
   markerOption,
+  getData,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);

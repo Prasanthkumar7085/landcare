@@ -42,9 +42,9 @@ const ViewGoogleMap = () => {
     state: "",
     city: "",
     zipcode: "",
-    images: "",
-    tags: "",
-    social_links: "",
+    images: [],
+    tags: [],
+    social_links: [],
     coordinates: [],
   });
 
@@ -260,6 +260,7 @@ const ViewGoogleMap = () => {
           markerData={markerData}
           setMarkerOption={setMarkerOption}
           markerOption={markerOption}
+          getData={getSingleMapMarkers}
         />
       )}
       <MarkerPopup

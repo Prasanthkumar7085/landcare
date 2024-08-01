@@ -23,15 +23,13 @@ const MarkerPopup = ({
   const [markerType, setMarkerType] = useState<any>(null);
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    setPopupFormData({ ...popupFormData, [name]: value });
+    const markerValue = value.replace(/^\s+/, '');
+    setPopupFormData({ ...popupFormData, [name]: markerValue });
   };
 
   const handleCancel = () => {
     removalMarker(0);
-    setPopupFormData({
-      title: "",
-      description: "",
-    });
+    setPopupFormData({});
     setMarkerType(null);
     setErrorMessages([]);
     setShowMarkerPopup(false);
@@ -42,7 +40,6 @@ const MarkerPopup = ({
     let body = {
       ...popupFormData,
       ...placeDetails,
-      type: markerType?.title,
     };
     try {
       const response = await addMarkerDeatilsAPI(id, body);
@@ -77,31 +74,105 @@ const MarkerPopup = ({
         <h3 className="dialogHeading">Add Marker</h3>
         <form>
           <div className="eachFeildGrp">
-            <label>Marker Name</label>
+            <label>Name</label>
             <TextField
               className="defaultTextFeild text"
-              placeholder="Enter Title"
-              value={popupFormData.title}
-              name="title"
+              placeholder="Enter Name"
+              value={popupFormData.name}
+              name="name"
               onChange={handleInputChange}
             />
-            <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
+            <ErrorMessagesComponent errorMessage={errorMessages["name"]} />
           </div>
           <div className="eachFeildGrp">
-            <label>Description</label>
+            <label>Position</label>
             <TextField
               className="defaultTextFeild multiline"
-              name="description"
-              placeholder="Enter Description"
-              value={popupFormData.description}
+              name="position"
+              placeholder="Enter Position"
+              value={popupFormData.position}
+              rows={3}
+              onChange={handleInputChange}
+            />
+            <ErrorMessagesComponent errorMessage={errorMessages["position"]} />
+          </div>
+          <div className="eachFeildGrp">
+            <label>Host Organization</label>
+            <TextField
+              className="defaultTextFeild multiline"
+              name="host_organization"
+              placeholder="Enter Host Organization"
+              value={popupFormData.host_organization}
               rows={3}
               onChange={handleInputChange}
             />
             <ErrorMessagesComponent
-              errorMessage={errorMessages["description"]}
+              errorMessage={errorMessages["host_organization"]}
             />
           </div>
           <div className="eachFeildGrp">
+            <label>LLS Region</label>
+            <TextField
+              className="defaultTextFeild multiline"
+              name="lls_region"
+              placeholder="Enter LLS Region"
+              value={popupFormData.lls_region}
+              rows={3}
+              onChange={handleInputChange}
+            />
+            <ErrorMessagesComponent
+              errorMessage={errorMessages["lls_region"]}
+            />
+          </div>
+          <div className="eachFeildGrp">
+            <label>Phone</label>
+            <TextField
+              className="defaultTextFeild multiline"
+              name="phone"
+              placeholder="Enter Phone"
+              value={popupFormData.phone}
+              rows={3}
+              onChange={handleInputChange}
+            />
+            <ErrorMessagesComponent errorMessage={errorMessages["phone"]} />
+          </div>
+          <div className="eachFeildGrp">
+            <label>Email</label>
+            <TextField
+              className="defaultTextFeild multiline"
+              name="email"
+              placeholder="Enter Email"
+              value={popupFormData.email}
+              rows={3}
+              onChange={handleInputChange}
+            />
+            <ErrorMessagesComponent errorMessage={errorMessages["email"]} />
+          </div>
+          <div className="eachFeildGrp">
+            <label>Location</label>
+            <TextField
+              className="defaultTextFeild multiline"
+              name="location"
+              placeholder="Enter Location"
+              value={popupFormData.location}
+              rows={3}
+              onChange={handleInputChange}
+            />
+            <ErrorMessagesComponent errorMessage={errorMessages["location"]} />
+          </div>
+          <div className="eachFeildGrp">
+            <label>Postcode</label>
+            <TextField
+              className="defaultTextFeild multiline"
+              name="post_code"
+              placeholder="Enter Postcode"
+              value={popupFormData.post_code}
+              rows={3}
+              onChange={handleInputChange}
+            />
+            <ErrorMessagesComponent errorMessage={errorMessages["post_code"]} />
+          </div>
+          {/* <div className="eachFeildGrp">
             <label>Marker Type</label>
             <AutoCompleteSearch
               data={mapTypeOptions}
@@ -110,13 +181,16 @@ const MarkerPopup = ({
               placeholder="Select Marker Type"
             />
             <ErrorMessagesComponent errorMessage={errorMessages["type"]} />
-          </div>
+          </div> */}
 
           <div className="actionBtnGrp">
             <Button onClick={handleCancel} disabled={loading ? true : false}>
               Cancel
             </Button>
-            <Button onClick={handleSave}>
+            <Button
+              onClick={handleSave}
+              disabled={popupFormData?.name ? false : true}
+            >
               {loading ? (
                 <CircularProgress
                   color="inherit"

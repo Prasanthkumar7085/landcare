@@ -74,16 +74,27 @@ const ViewMapDetailsDrawer = ({
   };
 
   return (
-    <div className="mapViewContainer"  >
+    <div className="mapViewContainer">
       <header className="header">
-        <Button className="backBtn" startIcon={<Image src="/map/map-backBtn.svg" alt="" height={15} width={15} />} onClick={() => router.push("/maps")}>Back</Button>
+        <Button
+          className="backBtn"
+          startIcon={
+            <Image src="/map/map-backBtn.svg" alt="" height={15} width={15} />
+          }
+          onClick={() => router.push("/maps")}
+        >
+          Back
+        </Button>
         <div className="actionGrp">
-          <Button onClick={openModal} className="importBtn">Import</Button>
+          <Button onClick={openModal} className="importBtn">
+            Import
+          </Button>
           <ImportModal
             show={showModal}
             onClose={closeModal}
             file={file}
             setFile={setFile}
+            getData={getData}
           />
           <IconButton className="iconBtn" onClick={handleClick}>
             <Image src="/map/menu-with-bg.svg" alt="" height={28} width={28} />
@@ -91,8 +102,8 @@ const ViewMapDetailsDrawer = ({
         </div>
       </header>
       <div className="viewContent">
-        <div className="mapDetails" >
-          <Typography className="mapTitle" >
+        <div className="mapDetails">
+          <Typography className="mapTitle">
             {mapDetails?.title ? mapDetails?.title : "--"}
           </Typography>
           <Typography className="mapCreated">
@@ -100,13 +111,11 @@ const ViewMapDetailsDrawer = ({
             {dayjs(mapDetails?.created_at).format("MM-DD-YYYY")}
           </Typography>
           <Typography className="mapDescription">
-            {mapDetails?.description ? mapDetails?.description : "--"}
+            {mapDetails?.description ? mapDetails?.description.slice() : "--"}
           </Typography>
         </div>
         <div className="markersBlock">
-          <Typography className="blockHeading">
-            Markers
-          </Typography>
+          <Typography className="blockHeading">Markers</Typography>
           <div className="markersContainer">
             {markers?.length > 0 || singleMarkers?.length > 0 ? (
               <MapMarkersList
@@ -125,9 +134,8 @@ const ViewMapDetailsDrawer = ({
                 setMarkerOption={setMarkerOption}
                 markerOption={markerOption}
               />
-
             ) : (
-              <div className="nodataGrp"              >
+              <div className="nodataGrp">
                 <Image
                   src={"/no-markers.svg"}
                   width={180}
@@ -135,8 +143,7 @@ const ViewMapDetailsDrawer = ({
                   alt="no data"
                 />
                 <Typography className="nodataTxt">
-                  No markers added yet.
-                  Start placing markers on your map.
+                  No markers added yet. Start placing markers on your map.
                 </Typography>
               </div>
             )}
@@ -144,7 +151,7 @@ const ViewMapDetailsDrawer = ({
         </div>
       </div>
       <Menu
-        sx={{mt:1}}
+        sx={{ mt: 1 }}
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
@@ -153,10 +160,14 @@ const ViewMapDetailsDrawer = ({
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem className="menuItem" onClick={() => router.push(`/update-map/${id}`)}>
+        <MenuItem
+          className="menuItem"
+          onClick={() => router.push(`/update-map/${id}`)}
+        >
           Edit
         </MenuItem>
-        <MenuItem className="menuItem"
+        <MenuItem
+          className="menuItem"
           onClick={() => {
             handleClickDeleteOpen();
             handleClose();
