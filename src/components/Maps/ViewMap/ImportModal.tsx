@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import styles from "./view-map.module.css";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { importMapAPI } from "@/services/maps";
@@ -115,7 +114,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
   }
 
   return (
-    <div className={styles.modal} id="importModal">
+    <div id="importModal">
       <div className="modalContent">
         <div className="modalHeader">
           <h2 className="modalHeading">Import</h2>
