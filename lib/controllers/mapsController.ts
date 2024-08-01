@@ -7,6 +7,7 @@ import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
 import { MarkersDataServiceProvider } from "../services/markersDataServiceProvider";
 import { makeSlug } from "../utils/app.utils";
 import axios from "axios";
+import { IMap } from "../interfaces/maps";
 
 const mapsDataServiceProvider = new MapsDataServiceProvider();
 const markersDataServiceProvider = new MarkersDataServiceProvider();
@@ -15,7 +16,7 @@ const markersDataServiceProvider = new MarkersDataServiceProvider();
 
 export class MapsController {
 
-    async addMap(reqData: any, res: NextResponse) {
+    async addMap(reqData: IMap, res: NextResponse) {
         try {
 
             reqData.slug = makeSlug(reqData.title);
