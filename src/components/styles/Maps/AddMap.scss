@@ -486,3 +486,54 @@
     }
   }
 }
+
+#importModal {
+  .modalContent {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 1000px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    .modalHeader {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      .modalHeading {
+        color: #0d0d0d;
+        font-family: $fontPrimary;
+        font-size: $font_24;
+        font-weight: $fw_500;
+        margin: 0;
+      }
+      img {
+        cursor: pointer;
+      }
+    }
+    .instructions {
+      background-color: #ffa80066;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ffeeba;
+      text-align: left;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      ol {
+        margin: 0;
+        padding-inline-start: 13px;
+      }
+      p, li {
+        color: $blackColor;
+        font-family: $fontPrimary;
+        font-size: $font_14;
+        font-weight: $fw_400;
+        margin: 0;
+      }
+    }
+  }
+}

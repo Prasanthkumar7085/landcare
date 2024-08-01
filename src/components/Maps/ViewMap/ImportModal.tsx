@@ -8,6 +8,7 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { getImportedFilteredData } from "@/lib/helpers/mapsHelpers";
 import LoadingComponent from "@/components/Core/LoadingComponent";
+import Image from "next/image";
 
 interface IImportModalProps {
   show: boolean;
@@ -114,13 +115,17 @@ const ImportModal: React.FC<IImportModalProps> = ({
   }
 
   return (
-    <div className={styles.modal}>
-      <div className={styles.modalContent}>
-        <span className={styles.close} onClick={onClose}>
-          &times;
-        </span>
-        <h2 className={styles.modalh2}>Import</h2>
-        <div className={styles.instructions}>
+    <div className={styles.modal} id="importModal">
+      <div className="modalContent">
+        <div className="modalHeader">
+          <h2 className="modalHeading">Import</h2>
+
+          <Image src="/map/close-icon.svg" alt="" width={30} height={30} onClick={onClose} />
+        </div>
+        <div className="instructions">
+          <Image src="/map/info-icon.svg" alt="" width={20} height={20} />
+          <div className="content">
+
           <p>
             To import your markers, please ensure your CSV file contains the
             following columns:
@@ -136,6 +141,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
             <li>Description: A brief description of the marker.</li>
           </ol>
           <p>Ensure all fields are correctly filled for a successful import.</p>
+          </div>
         </div>
         <div {...getRootProps({ className: styles.dropzone })}>
           <input {...getInputProps()} onChange={handleFileChange} />
