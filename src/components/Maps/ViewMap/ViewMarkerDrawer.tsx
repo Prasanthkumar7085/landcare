@@ -8,29 +8,81 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
+import Image from "next/image";
 // import styles from "./view-map-block.module.css";
 
 const ViewMarkerDrawer = ({ data, setData, onClose }: any) => {
   return (
-    <div className="detailsslidebarfarmslist">
-      <Box sx={{ width: 300, p: 2 }}>
-        <IconButton
+    <div className="signleMarkerView">
+      <header className="header">
+        <Button
+          className="backBtn"
+          startIcon={
+            <Image src="/map/map-backBtn.svg" alt="" height={15} width={15} />
+          }
           onClick={() => {
             onClose(false);
             setData({});
-          }}
-        >
-          <ArrowBackIcon />
+          }}        >
+          Back
+        </Button>
+
+        <IconButton className="iconBtn" >
+          <Image src="/map/menu-with-bg.svg" alt="" height={28} width={28} />
         </IconButton>
-        <Box
-          sx={{
-            height: 150,
-            backgroundColor: "#f0f4f3",
-            mt: 1,
-            borderRadius: 1,
-          }}
-        ></Box>
-        <Typography variant="h6" sx={{ mt: 2 }}>
+      </header>
+      <Box className="viewContent">
+        <div className="imgBlock">
+          <Image className="mapImg" src="/map/marker-view.png" alt="" height={100}
+            width={100} />
+        </div>
+        <div className="headerDetails">
+          <Typography className="markerTitle">
+            John Doe
+          </Typography>
+          <Typography className="markerLocation">
+            <Image src="/map/location-blue.svg" alt="" width={10} height={10} />
+            <span>
+              Mudgee, New South Wales
+            </span>
+          </Typography>
+        </div>
+        <div className="eachMarkerDetail">
+          <Typography className="title">
+            Host Organization
+          </Typography>
+          <Typography className="value">
+            Goulburn Mulwaree Landcare Landscapes & Southern Highlands Landcare Network
+          </Typography>
+        </div>
+        <div className="eachMarkerDetail">
+          <Typography className="title">
+            Position
+          </Typography>
+          <Typography className="value">
+            Local Landcare Coordinator - Young adult
+          </Typography>
+        </div>
+        <div className="eachMarkerDetail">
+          <Typography className="title">
+            Postcode
+          </Typography>
+          <Typography className="value">
+            2794          </Typography>
+        </div>
+        <div className="headerDetails">
+          <Typography className="footerText">
+            <Image src="/map/email.svg" alt="" width={10} height={10} />
+            <span>
+              centraltablelandslandcare@gmail.com            </span>
+          </Typography>
+          <Typography className="footerText">
+            <Image src="/map/cell-icon.svg" alt="" width={10} height={10} />
+            <span>
+              0439 786 631            </span>
+          </Typography>
+        </div>
+        {/* <Typography variant="h6" sx={{ mt: 2 }}>
           {data ? data?.title : <Skeleton width="60%" />}
         </Typography>
         <Typography variant="body2" color="textSecondary">
@@ -51,7 +103,7 @@ const ViewMarkerDrawer = ({ data, setData, onClose }: any) => {
           <Typography variant="body2">
             {data ? datePipe(data?.created_at) : <Skeleton width="50%" />}
           </Typography>
-        </Box>
+        </Box> */}
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
           <Button
             variant="contained"
