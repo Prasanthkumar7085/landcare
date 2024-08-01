@@ -612,11 +612,12 @@
   }
 }
 .signleMarkerView {
-  width: 350px;
+  width: 330px;
   height: 100vh;
   background-color: $whiteColor;
   box-sizing: border-box;
   padding: 0.5rem 0.5rem 0;
+  overflow-y: auto;
   .header {
     display: flex;
     align-items: center;
@@ -644,7 +645,7 @@
     border-radius: 4px;
     background: #edf5e0;
     padding: 0.5rem;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     .imgBlock {
       height: 150px;
       border-radius: 4px;
@@ -683,6 +684,7 @@
         font-family: $font-secondary;
         font-size: $font_12;
         font-weight: $fw-400;
+        line-height: 100%;
       }
     }
     .eachMarkerDetail {
@@ -698,6 +700,28 @@
         font-family: $font-secondary;
         font-size: $font_14;
         font-weight: $fw_400;
+      }
+    }
+    .btnGrp {
+      width: 100%;
+      display: grid;
+      grid-template-columns: auto 13%;
+      grid-column-gap: 12px;
+      align-items: center;
+      margin-block: 1rem 0.3rem;
+      .navigateBtn {
+        border-radius: 4px;
+        background: #75a237;
+        text-transform: capitalize;
+        color: $whiteColor;
+        font-family: $font-urbanist;
+        font-size: $font_16;
+        font-weight: $fw_500;
+        padding-block: 3px;
+      }
+      .iconBtn {
+        border-radius: 4px;
+        background: #202124;
       }
     }
   }
