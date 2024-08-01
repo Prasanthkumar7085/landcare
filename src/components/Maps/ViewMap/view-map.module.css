@@ -38,7 +38,7 @@
 }
 
 /* dialog box */
-.modal {
+.modal { 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -83,7 +83,7 @@
   
   .instructions {
     background-color: #fff3cd;
-    padding: 10px;
+    padding: 4px;
     border-radius: 5px;
     border: 1px solid #ffeeba;
     text-align: left;

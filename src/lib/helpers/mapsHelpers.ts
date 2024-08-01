@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 export const calculatePolygonCentroid = (coordinates: any) => {
   let x = 0,
     y = 0;
@@ -12,30 +14,34 @@ export const processImportedData = (parsedData: any) => {
   const isEmpty = parsedData.every((row: any) =>
     row.every((cell: any) => String(cell).trim() === "")
   );
+  let headers = [
+    "Name",
+    "Phone",
+    "Position",
+    "Location",
+    "Postcode",
+    "Host Organisation",
+    "LLS Region",
+    "Email",
+  ];
+  const arraysEqual = (a: any, b: any) =>
+    a.length === b.length &&
+    a
+      .slice()
+      .sort()
+      .every((item: any, index: number) => item === b.slice().sort()[index]);
 
   if (isEmpty) {
+    toast.warning("File is empty!");
     return false;
-  }
-
-  if (parsedData[0][0] === "title" && parsedData[0][11] === "coordinates") {
-    const updatedPlanData = parsedData.slice(1, 12).map((row: any) => ({
-      title: row[0],
-      description: row[1],
-      status: row[2],
-      type: row[3],
-      full_address: row[4],
-      state: row[5],
-      city: row[6],
-      zipcode: row[7],
-      tags: row[8],
-      social_links: row[9],
-      added_by: row[10],
-      coordinates: row[11],
-    }));
-    return updatedPlanData;
+  } else if (arraysEqual(headers, parsedData[0]) == false) {
+    toast.warning("File is not in the correct format!");
+    return false;
+  } else if (parsedData?.length == 1) {
+    toast.warning("File contains empty data!");
+    return false;
   } else {
-    // toast.error("File does not match the required format");
-    return false;
+    return true;
   }
 };
 
@@ -54,28 +60,80 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
   };
   const rows: any = jsonData.slice(1);
 
-  const dataObjects = await Promise.allSettled(
-    rows.map(async (row: any) => {
-      let obj: any = {};
-      headers.forEach((headerName: any, i: any) => {
-        const mappedItem = subHeadersMapping[headerName];
-        obj[mappedItem] = row[i];
-      });
-      if (obj["location"]) {
-        const coords = await getCoordinates(obj["location"]);
-        obj["coordinates"] = coords;
-      }
-      return obj;
-    })
-  );
+  const dataObjects = rows.map((row: any) => {
+    let obj: any = {};
+    headers.forEach((headerName: any, i: any) => {
+      const mappedItem = subHeadersMapping[headerName];
+      obj[mappedItem] = row[i];
+    });
+    return obj;
+  });
+
   const filteredDataObjects = dataObjects.filter((obj: any) => {
-    const values = Object.values(obj.value);
+    const values = Object.values(obj);
     return !values.every(
       (value) => value === undefined || value === "" || value === null
     );
   });
-  let data = filteredDataObjects.map((item: any) => item.value);
-  return data;
+
+  let errorsData = validationsForImportedData({ filteredDataObjects });
+  let data = errorsData.validData;
+  if (data?.length > 0) {
+    data = await Promise.allSettled(
+      data.map(async (obj: any) => {
+        if (obj.location) {
+          const coords = await getCoordinates(obj.location);
+          return { ...obj, coordinates: coords };
+        }
+        return obj;
+      })
+    );
+  }
+  return [data, errorsData?.errors];
+};
+
+const validationsForImportedData = ({ filteredDataObjects }: any) => {
+  const validDataObjects: any[] = [];
+  const errorObjects: any[] = [];
+  filteredDataObjects.forEach((result: any) => {
+    const obj = { ...result };
+    const nameValue = obj.name;
+    const locationValue = obj.location;
+
+    if (
+      (nameValue === undefined || nameValue === "" || nameValue === null) &&
+      (locationValue === undefined ||
+        locationValue === "" ||
+        locationValue === null)
+    ) {
+      errorObjects.push({
+        ...obj,
+        error: "Name and Location are required",
+      });
+    } else if (
+      nameValue === undefined ||
+      nameValue === "" ||
+      nameValue === null
+    ) {
+      errorObjects.push({
+        ...obj,
+        error: "Name is required",
+      });
+    } else if (
+      locationValue === undefined ||
+      locationValue === "" ||
+      locationValue === null
+    ) {
+      errorObjects.push({
+        ...obj,
+        error: "Location is required",
+      });
+    } else {
+      validDataObjects.push(obj);
+    }
+  });
+
+  return { validData: validDataObjects, errors: errorObjects };
 };
 
 export const getCoordinates = (locationName: any) => {

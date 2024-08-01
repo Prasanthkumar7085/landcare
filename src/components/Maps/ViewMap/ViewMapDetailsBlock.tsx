@@ -7,7 +7,7 @@ import { toast, Toaster } from "sonner";
 import DeleteDialog from "@/components/Core/DeleteDialog";
 import { deleteMapAPI } from "@/services/maps";
 import MapMarkersList from "./MapMarkersList";
-import ImportModal from "./ImportModal";
+import ImportModal from "./ImportMarkers/ImportModal";
 
 const ViewMapDetailsDrawer = ({
   mapDetails,
@@ -184,7 +184,6 @@ const ViewMapDetailsDrawer = ({
         text="Are you sure want to delete map?"
         loading={loading}
       />
-      <Toaster richColors closeButton position="top-right" />
     </div>
   );
 };

@@ -10,7 +10,7 @@ import {
   Menu,
   MenuItem,
   Tooltip,
-  Typography
+  Typography,
 } from "@mui/material";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -39,7 +39,9 @@ const Maps = () => {
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
   );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -62,7 +64,7 @@ const Maps = () => {
     search_string = searchParams?.search_string,
     from_date = searchParams?.from_date,
     to_date = searchParams?.to_date,
-    status = searchParams?.status
+    status = searchParams?.status,
   }: Partial<ListMapsApiProps>) => {
     setLoading(true);
     try {
@@ -115,7 +117,7 @@ const Maps = () => {
       search_string: searchParams?.search_string,
       from_date: searchParams?.from_date,
       to_date: searchParams?.to_date,
-      status: searchParams?.status
+      status: searchParams?.status,
     });
   }, [searchParams]);
 
@@ -144,54 +146,71 @@ const Maps = () => {
             mapsData.map((item: any, index: number) => {
               return (
                 <Card className="eachListCard" key={index}>
-                  <div className="imgBlock" >
+                  <div className="imgBlock">
                     <Image
                       className="mapImg"
                       style={{
-                        objectFit: item?.image ? "cover" : "contain"
+                        objectFit: item?.image ? "cover" : "contain",
                       }}
                       src={item?.image ? item?.image : "/no-image.png"}
                       alt="map image"
                       width={100}
                       height={150}
                     />
-                    <IconButton className="iconBtn" onClick={(event) => {
-                      handleOpenUserMenu(event)
-                      setMapId(item?.id)
-                    }}>
-                      <Image src="/map/menu-icon.svg" alt="" height={30} width={30}/>
+                    <IconButton
+                      className="iconBtn"
+                      onClick={(event) => {
+                        handleOpenUserMenu(event);
+                        setMapId(item?.id);
+                      }}
+                    >
+                      <Image
+                        src="/map/menu-icon.svg"
+                        alt=""
+                        height={30}
+                        width={30}
+                      />
                     </IconButton>
                   </div>
-                  
+
                   <Menu
-                    sx={{ mt: '30px' }}
+                    sx={{ mt: "30px" }}
                     id="menu-appbar"
                     anchorEl={anchorElUser}
                     anchorOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
+                      vertical: "top",
+                      horizontal: "right",
                     }}
                     keepMounted
                     transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right',
+                      vertical: "top",
+                      horizontal: "right",
                     }}
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    <MenuItem className="menuItem" onClick={handleCloseUserMenu}>
+                    <MenuItem
+                      className="menuItem"
+                      onClick={handleCloseUserMenu}
+                    >
                       Open In New Tab
                     </MenuItem>
-                    <MenuItem className="menuItem" onClick={() => {
-                      copyURL(mapId);
-                      handleCloseUserMenu();
-                    }}>
+                    <MenuItem
+                      className="menuItem"
+                      onClick={() => {
+                        copyURL(mapId);
+                        handleCloseUserMenu();
+                      }}
+                    >
                       Copy
                     </MenuItem>
-                    <MenuItem className="menuItem" onClick={() => {
-                      handleCloseUserMenu();
-                      handleClickDeleteOpen();
-                    }}>
+                    <MenuItem
+                      className="menuItem"
+                      onClick={() => {
+                        handleCloseUserMenu();
+                        handleClickDeleteOpen();
+                      }}
+                    >
                       Delete
                     </MenuItem>
                   </Menu>
@@ -211,7 +230,9 @@ const Maps = () => {
                     <Typography className="cardDesc">
                       <Tooltip
                         title={
-                          item?.description?.length >= 50 ? item?.description : ""
+                          item?.description?.length >= 50
+                            ? item?.description
+                            : ""
                         }
                         placement="bottom"
                       >
@@ -226,7 +247,12 @@ const Maps = () => {
 
                   <div className="cardFooter">
                     <Typography className="createDate">
-                      <Image src="/map/clock.svg" height={13} width={13} alt="" />
+                      <Image
+                        src="/map/clock.svg"
+                        height={13}
+                        width={13}
+                        alt=""
+                      />
                       <span>
                         {item?.created_at ? datePipe(item?.created_at) : "--"}
                       </span>
@@ -251,17 +277,28 @@ const Maps = () => {
               );
             })
           ) : !loading ? (
-            <div style={{ margin: 'auto' }}>
-              {!mapsData?.length && (useParam?.get('from_date') || useParam?.get('to_date') || useParam?.get('search_string')) ? (
+            <div style={{ margin: "auto" }}>
+              {!mapsData?.length &&
+              (useParam?.get("from_date") ||
+                useParam?.get("to_date") ||
+                useParam?.get("search_string")) ? (
                 <>
-                  <Image src="/no-image-maps.svg" alt="" height={400} width={400} />
+                  <Image
+                    src="/no-image-maps.svg"
+                    alt=""
+                    height={400}
+                    width={400}
+                  />
                 </>
               ) : (
                 <>
-                  <Image src="/add-map-image.svg" alt="" height={300} width={300} />
-                  <p >
-                    {"No maps added yet. Click 'Add New' to start."}
-                  </p>
+                  <Image
+                    src="/add-map-image.svg"
+                    alt=""
+                    height={300}
+                    width={300}
+                  />
+                  <p>{"No maps added yet. Click 'Add New' to start."}</p>
                   <Button
                     variant="outlined"
                     onClick={() => router.push("/add-map")}
@@ -302,7 +339,6 @@ const Maps = () => {
         loading={showLoading}
       />
       <LoadingComponent loading={loading} />
-      <Toaster richColors closeButton position="top-right" />
     </div>
   );
 };

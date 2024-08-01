@@ -221,7 +221,6 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
         loading={loading}
       />
       <LoadingComponent loading={showLoading} />
-      <Toaster richColors closeButton position="top-right" />
     </BootstrapDialog>
   );
 };

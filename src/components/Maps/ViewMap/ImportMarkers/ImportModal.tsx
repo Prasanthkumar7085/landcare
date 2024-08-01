@@ -1,13 +1,17 @@
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import styles from "./view-map.module.css";
+import styles from "../view-map.module.css";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { importMapAPI } from "@/services/maps";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { getImportedFilteredData } from "@/lib/helpers/mapsHelpers";
+import {
+  getImportedFilteredData,
+  processImportedData,
+} from "@/lib/helpers/mapsHelpers";
 import LoadingComponent from "@/components/Core/LoadingComponent";
+import ValidationsTable from "./ValidationsTable";
 
 interface IImportModalProps {
   show: boolean;
@@ -29,6 +33,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState<any>();
   const [coordinates, setCoordinates] = useState<any>([]);
+  const [validationsData, setValidationsData] = useState<any>([]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -55,15 +60,17 @@ const ImportModal: React.FC<IImportModalProps> = ({
   const handleFileUpload = () => {
     if (file) {
       const fileExtension = file.name.split(".").pop()?.toLowerCase();
-      console.log(fileExtension, "fdsppsdpdssd");
       if (fileExtension === "csv") {
         Papa.parse(file, {
           complete: async function (results: any) {
-            // const filedata = processParsedData(results.data);
             let jsonData = results.data;
-            let markersData = await getImportedFilteredData({ jsonData });
-            await handleUpload(markersData);
-            setFile(null);
+            if (processImportedData(results.data)) {
+              let markersData = await getImportedFilteredData({ jsonData });
+              console.log(markersData, "sdkkdskdksakdskk");
+              setValidationsData(markersData[1]);
+              // await handleUpload(markersData[0]);
+              setFile(null);
+            }
           },
           header: false,
         });
@@ -75,9 +82,12 @@ const ImportModal: React.FC<IImportModalProps> = ({
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-          let markersData = await getImportedFilteredData({ jsonData });
-          await handleUpload(markersData);
-          setFile(null);
+          if (processImportedData(jsonData)) {
+            let markersData = await getImportedFilteredData({ jsonData });
+            setValidationsData(markersData[1]);
+            // await handleUpload(markersData[0]);
+            setFile(null);
+          }
           reader.readAsArrayBuffer(file);
         };
       }
@@ -162,6 +172,11 @@ const ImportModal: React.FC<IImportModalProps> = ({
         <button className={styles.uploadButton} onClick={handleFileUpload}>
           Confirm Upload
         </button>
+        {validationsData?.length > 0 ? (
+          <ValidationsTable validationsData={validationsData} />
+        ) : (
+          ""
+        )}
       </div>
       <LoadingComponent loading={loading} />
     </div>
