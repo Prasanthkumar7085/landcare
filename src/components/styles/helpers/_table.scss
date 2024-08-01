@@ -10,7 +10,7 @@
   padding-left: 15px !important;
 }
 
-$colorTableHeader: #CDEFF8;
+$colorTableHeader: #cdeff8;
 $headerTextColor: #545961;
 $bodyTextColor: #24282d;
 $bodyBorderColor: #edf2f7;
@@ -18,109 +18,110 @@ $backBtnCOlor: #e47078;
 $labelColor: #4f4f4f;
 $inputBorderColor: #9c9c9c;
 
-  .tableContainer {
-    height: calc(-160px + 100vh);
-    overflow: auto;
-    background: transparent;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.07);
+.tableContainer {
+  height: 65vh;
+  overflow: auto;
+  background: transparent;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.07);
 
-    .table {
-      border-collapse: collapse !important;
-      width: 100%;
+  .table {
+    border-collapse: collapse !important;
+    width: 100%;
 
-      .thead {
-        height: 32px;
-        position: sticky;
-        top: 0px;
-        z-index: 2;
+    .thead {
+      height: 34px;
+      position: sticky;
+      top: 0px;
+      z-index: 2;
+      background: $colorTableHeader !important;
+
+      .table-row {
         background: $colorTableHeader !important;
+        font-weight: $fw_600;
+        padding: 6px 12px;
 
-        .table-row {
-          background: $colorTableHeader !important;
+        .cell {
+          color: #545961;
+          font-size: $font_12;
           font-weight: $fw_600;
-          padding: 6px 12px;
+          text-transform: uppercase;
+          box-sizing: border-box;
+          padding: 0 12px;
+          border-inline: 1px solid $whiteColor;
 
-          .cell {
-            color: #545961;
-            font-size:$font_12;
-            font-weight: $fw_600;
-            text-transform: uppercase;
-            box-sizing: border-box;
-            padding: 0 12px;
-            border-right: 1px solid $whiteColor;
+          &:first-child {
+            background-color: $colorTableHeader;
+            overflow: hidden;
+            @include first-child-sticky;
+          }
 
-            &:first-child {
-              border-radius: 10px 0 0 0;
-              background-color: $colorTableHeader;
-              overflow: hidden;
-              @include first-child-sticky;
-            }
+          &:last-child {
+            background-color: $colorTableHeader;
+            overflow: hidden;
+            @include last-child-sticky;
+          }
 
-            &:last-child {
-              background-color: $colorTableHeader;
-              border-radius: 0 10px 0 0;
-              overflow: hidden;
-              @include last-child-sticky;
-            }
+          cursor: default !important;
 
-            cursor: default !important;
-
-            img {
-              cursor: pointer;
-            }
+          img {
+            cursor: pointer;
           }
         }
       }
+    }
 
-      .tbody {
-        .table-row {
-          .cell {
-            padding: 6px 12px !important;
-            font-size: clamp(12px, 0.72vw, 16px);
-            text-align: start;
-            box-shadow: none !important;
-            background-color: $whiteColor !important;
-            font-weight: $fw_400;
-            color: $blackColor;
+    .tbody {
+      .table-row {
+        .cell {
+          padding: 4px 12px !important;
+          font-size: $font_14;
+          text-align: start;
+          background-color: $whiteColor !important;
+          font-weight: $fw_400;
+          color: #24282d;
+          font-family: $fontPrimary;
+          border-bottom: 1px solid #edf2f7;
+          border-right: 1px solid #edf2f7;
 
-            &:first-child {
-              @include first-child-sticky;
-            }
-
-            &:last-child {
-              @include last-child-sticky();
-            }
-
-            input {
-              height: 16px;
-              width: 18px;
-              display: flex;
-              align-items: center;
-            }
+          &:first-child {
+            @include first-child-sticky;
           }
 
-          &:hover {
-            .cell {
-              background-color: $whiteColor !important;
-            }
+          &:last-child {
+            @include last-child-sticky();
+          }
+
+          input {
+            height: 16px;
+            width: 18px;
+            display: flex;
+            align-items: center;
+          }
+        }
+
+        &:hover {
+          .cell {
+            background-color: $whiteColor !important;
           }
         }
       }
     }
   }
+}
 
-  .MuiContainer-root {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
+.MuiContainer-root {
+  padding-left: 0;
+  padding-right: 0;
+}
 
 .tablePagenationBlock {
   padding: 0.625rem 0.625rem 0.625rem 0.9375rem !important;
   box-shadow: none !important;
   border: 1px solid #efefef !important;
+  max-width: 100% !important;
+  border-radius: 0 0 10px 10px !important;
 
   .tablePagination {
     display: flex !important;

@@ -146,7 +146,7 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
         zIndex: 1000,
         "& .MuiPaper-root": {
           margin: "0 auto!important",
-          maxWidth: "90% !important",
+          maxWidth: "90% ",
           maxHeight: "600px",
           borderRadius: "10px",
         },

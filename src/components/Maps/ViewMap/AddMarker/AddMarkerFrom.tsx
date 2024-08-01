@@ -76,7 +76,7 @@ const MarkerPopup = ({
           <div className="eachFeildGrp">
             <label>Name</label>
             <TextField
-              className="defaultTextFeild text"
+              className="defaultTextFeild text "
               placeholder="Enter Name"
               value={popupFormData.name}
               name="name"
@@ -87,11 +87,10 @@ const MarkerPopup = ({
           <div className="eachFeildGrp">
             <label>Position</label>
             <TextField
-              className="defaultTextFeild multiline"
+              className="defaultTextFeild text "
               name="position"
               placeholder="Enter Position"
               value={popupFormData.position}
-              rows={3}
               onChange={handleInputChange}
             />
             <ErrorMessagesComponent errorMessage={errorMessages["position"]} />
@@ -99,11 +98,10 @@ const MarkerPopup = ({
           <div className="eachFeildGrp">
             <label>Host Organization</label>
             <TextField
-              className="defaultTextFeild multiline"
+              className="defaultTextFeild text "
               name="host_organization"
               placeholder="Enter Host Organization"
               value={popupFormData.host_organization}
-              rows={3}
               onChange={handleInputChange}
             />
             <ErrorMessagesComponent
@@ -113,11 +111,10 @@ const MarkerPopup = ({
           <div className="eachFeildGrp">
             <label>LLS Region</label>
             <TextField
-              className="defaultTextFeild multiline"
+              className="defaultTextFeild text "
               name="lls_region"
               placeholder="Enter LLS Region"
               value={popupFormData.lls_region}
-              rows={3}
               onChange={handleInputChange}
             />
             <ErrorMessagesComponent
@@ -127,11 +124,10 @@ const MarkerPopup = ({
           <div className="eachFeildGrp">
             <label>Phone</label>
             <TextField
-              className="defaultTextFeild multiline"
+              className="defaultTextFeild text "
               name="phone"
               placeholder="Enter Phone"
               value={popupFormData.phone}
-              rows={3}
               onChange={handleInputChange}
             />
             <ErrorMessagesComponent errorMessage={errorMessages["phone"]} />
@@ -139,11 +135,10 @@ const MarkerPopup = ({
           <div className="eachFeildGrp">
             <label>Email</label>
             <TextField
-              className="defaultTextFeild multiline"
+              className="defaultTextFeild text "
               name="email"
               placeholder="Enter Email"
               value={popupFormData.email}
-              rows={3}
               onChange={handleInputChange}
             />
             <ErrorMessagesComponent errorMessage={errorMessages["email"]} />
@@ -151,11 +146,10 @@ const MarkerPopup = ({
           <div className="eachFeildGrp">
             <label>Location</label>
             <TextField
-              className="defaultTextFeild multiline"
+              className="defaultTextFeild text "
               name="location"
               placeholder="Enter Location"
               value={popupFormData.location}
-              rows={3}
               onChange={handleInputChange}
             />
             <ErrorMessagesComponent errorMessage={errorMessages["location"]} />
@@ -163,11 +157,10 @@ const MarkerPopup = ({
           <div className="eachFeildGrp">
             <label>Postcode</label>
             <TextField
-              className="defaultTextFeild multiline"
+              className="defaultTextFeild text "
               name="post_code"
               placeholder="Enter Postcode"
               value={popupFormData.post_code}
-              rows={3}
               onChange={handleInputChange}
             />
             <ErrorMessagesComponent errorMessage={errorMessages["post_code"]} />

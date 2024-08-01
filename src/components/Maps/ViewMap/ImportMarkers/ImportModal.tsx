@@ -1,16 +1,16 @@
-import { useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
-import styles from "../view-map.module.css";
-import Papa from "papaparse";
-import * as XLSX from "xlsx";
-import { importMapAPI } from "@/services/maps";
-import { useParams } from "next/navigation";
-import { toast } from "sonner";
+import LoadingComponent from "@/components/Core/LoadingComponent";
 import {
   getImportedFilteredData,
   processImportedData,
 } from "@/lib/helpers/mapsHelpers";
-import LoadingComponent from "@/components/Core/LoadingComponent";
+import { importMapAPI } from "@/services/maps";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import Papa from "papaparse";
+import { useCallback, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { toast } from "sonner";
+import * as XLSX from "xlsx";
 import ValidationsTable from "./ValidationsTable";
 
 interface IImportModalProps {
@@ -69,7 +69,6 @@ const ImportModal: React.FC<IImportModalProps> = ({
               console.log(markersData, "sdkkdskdksakdskk");
               setValidationsData(markersData[1]);
               // await handleUpload(markersData[0]);
-              setFile(null);
             }
           },
           header: false,
@@ -86,13 +85,12 @@ const ImportModal: React.FC<IImportModalProps> = ({
             let markersData = await getImportedFilteredData({ jsonData });
             setValidationsData(markersData[1]);
             // await handleUpload(markersData[0]);
-            setFile(null);
           }
           reader.readAsArrayBuffer(file);
         };
+      } else {
+        toast.error("Unsupported file format");
       }
-    } else {
-      toast.error("Unsupported file format");
     }
   };
 
@@ -105,8 +103,13 @@ const ImportModal: React.FC<IImportModalProps> = ({
 
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response.message);
-        getData({});
-        onClose();
+        if (validationsData?.length == 0) {
+          getData({});
+          onClose();
+          setFile(null);
+        } else {
+          getData({});
+        }
       } else if (response?.status === 422) {
         setErrorMessages(response?.errors);
         toast.error("Error: " + response?.message);
@@ -119,66 +122,77 @@ const ImportModal: React.FC<IImportModalProps> = ({
     }
   };
 
-  if (!show) {
-    return null;
-  }
-
   return (
-    <div className={styles.modal}>
-      <div className={styles.modalContent}>
-        <span className={styles.close} onClick={onClose}>
-          &times;
-        </span>
-        <h2 className={styles.modalh2}>Import</h2>
-        <div className={styles.instructions}>
-          <p>
-            To import your markers, please ensure your CSV file contains the
-            following columns:
-          </p>
-          <ol>
-            <li>Marker Name: The name of the marker.</li>
-            <li>
-              Marker Type: The type of place (e.g., Hospital, Restaurant).
-            </li>
-            <li>
-              Latitude Longitude: The geographical coordinates of the marker.
-            </li>
-            <li>Description: A brief description of the marker.</li>
-          </ol>
-          <p>Ensure all fields are correctly filled for a successful import.</p>
+    <div id="importModal">
+      <div className="modalContent">
+        <div className="modalHeader">
+          <h2 className="modalHeading">Import</h2>
+
+          <Image
+            src="/map/close-icon.svg"
+            alt=""
+            width={30}
+            height={30}
+            onClick={onClose}
+          />
         </div>
-        <div {...getRootProps({ className: styles.dropzone })}>
+        <div className="instructions">
+          <Image src="/map/info-icon.svg" alt="" width={20} height={20} />
+          <div className="content">
+            <p>
+              To import your markers, please ensure your CSV file contains the
+              following columns:
+            </p>
+            <ol>
+              <li>Marker Name: The name of the marker.</li>
+              <li>
+                Marker Type: The type of place (e.g., Hospital, Restaurant).
+              </li>
+              <li>
+                Latitude Longitude: The geographical coordinates of the marker.
+              </li>
+              <li>Description: A brief description of the marker.</li>
+            </ol>
+            <p>
+              Ensure all fields are correctly filled for a successful import.
+            </p>
+          </div>
+        </div>
+        <div {...getRootProps({ className: "dropzone " })}>
           <input {...getInputProps()} onChange={handleFileChange} />
           {isDragActive ? (
             <p>Drop the file here ...</p>
           ) : (
-            <>
-              <p>
-                <u>Click to upload</u> or drag and drop a CSV file here
-              </p>
-              <br />
+            <div>
+              <Image
+                src="/map/file-upload-icon.svg"
+                alt=""
+                width={50}
+                height={50}
+              />
               <div>
-                <span>Max Size: 50MB</span>
+                <p>
+                  <u>Click to upload</u> or drag and drop a CSV file here
+                </p>
+                <p className="helperText">Max Size: 50MB</p>
               </div>
-            </>
+            </div>
           )}
         </div>
-        <div className={styles.fileUpload}>
+        <div className="fileUpload">
           {file && <p>Selected file: {file.name}</p>}
         </div>
-        <button className={styles.cancelButton} onClick={onClose}>
-          Cancel
-        </button>
-        <button className={styles.uploadButton} onClick={handleFileUpload}>
-          Confirm Upload
-        </button>
+        <div className="btnGrp">
+          <button onClick={onClose}>Cancel</button>
+          <button onClick={handleFileUpload}>Confirm Upload</button>
+        </div>
         {validationsData?.length > 0 ? (
           <ValidationsTable validationsData={validationsData} />
         ) : (
           ""
         )}
+        <LoadingComponent loading={loading} />
       </div>
-      <LoadingComponent loading={loading} />
     </div>
   );
 };

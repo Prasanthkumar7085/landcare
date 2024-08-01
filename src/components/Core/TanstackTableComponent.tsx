@@ -122,8 +122,11 @@ const TanstackTableComponent: FC<pageProps> = ({
                                                         display: "flex",
                                                         gap: "10px",
                                                         cursor: "pointer",
+                                                        alignItems: "center",
+                                                        justifyContent:"space-between",
                                                         minWidth: getWidth(header.id),
                                                         width: getWidth(header.id),
+                                                        
                                                     }}
                                                 >
                                                     {flexRender(
@@ -134,24 +137,24 @@ const TanstackTableComponent: FC<pageProps> = ({
                                                         asc: (
                                                             <Image
                                                                 src="/sort-asc.svg"
-                                                                height={8}
-                                                                width={8}
+                                                                height={12}
+                                                                width={12}
                                                                 alt="image"
                                                             />
                                                         ),
                                                         desc: (
                                                             <Image
                                                                 src="/sort-desc.svg"
-                                                                height={8}
-                                                                width={8}
+                                                                height={12}
+                                                                width={12}
                                                                 alt="image"
                                                             />
                                                         ),
                                                     }[header.column.getIsSorted() as string] ?? (
                                                             <Image
                                                                 src="/un-sort.svg"
-                                                                height={8}
-                                                                width={8}
+                                                                height={12}
+                                                                width={12}
                                                                 alt="Unsorted"
                                                                 style={{
                                                                     display:
