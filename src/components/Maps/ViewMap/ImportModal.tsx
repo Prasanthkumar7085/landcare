@@ -125,7 +125,6 @@ const ImportModal: React.FC<IImportModalProps> = ({
         <div className="instructions">
           <Image src="/map/info-icon.svg" alt="" width={20} height={20} />
           <div className="content">
-
           <p>
             To import your markers, please ensure your CSV file contains the
             following columns:
@@ -143,31 +142,33 @@ const ImportModal: React.FC<IImportModalProps> = ({
           <p>Ensure all fields are correctly filled for a successful import.</p>
           </div>
         </div>
-        <div {...getRootProps({ className: styles.dropzone })}>
+        <div {...getRootProps({ className: "dropzone "})}>
           <input {...getInputProps()} onChange={handleFileChange} />
           {isDragActive ? (
             <p>Drop the file here ...</p>
           ) : (
-            <>
+              <div>
+                <Image src="/map/file-upload-icon.svg" alt="" width={50} height={50}/>
+                <div>
               <p>
                 <u>Click to upload</u> or drag and drop a CSV file here
               </p>
-              <br />
-              <div>
-                <span>Max Size: 50MB</span>
-              </div>
-            </>
+                <p className="helperText">Max Size: 50MB</p>
+                </div>
+            </div>
           )}
         </div>
-        <div className={styles.fileUpload}>
+        <div className="fileUpload">
           {file && <p>Selected file: {file.name}</p>}
         </div>
-        <button className={styles.cancelButton} onClick={onClose}>
+        <div className="btnGrp">
+        <button  onClick={onClose}>
           Cancel
         </button>
-        <button className={styles.uploadButton} onClick={handleFileUpload}>
+        <button onClick={handleFileUpload}>
           Confirm Upload
         </button>
+        </div>
       </div>
       <LoadingComponent loading={loading} />
     </div>
