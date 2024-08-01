@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DUPLICATED_MARKER_TITLE, MAP_NOT_FOUND, MARKER_CREATED, MARKER_DELETED, MARKER_FETCHED, MARKER_NOT_FOUND_WITH_MAP, MARKER_TITLE_EXISTS, MARKER_UPDATED, MARKERS_FETCHED, MARKERS_IMPORTED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
-import { ResourceAlreadyExistsError } from "../helpers/exceptions";
+import { MAP_NOT_FOUND, MARKER_CREATED, MARKER_DELETED, MARKER_FETCHED, MARKER_NOT_FOUND_WITH_MAP, MARKER_UPDATED, MARKERS_FETCHED, MARKERS_IMPORTED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
 import paginationHelper from "../helpers/paginationHelper";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";

@@ -4,6 +4,7 @@ import { ResponseHelper } from "../../../../../lib/helpers/reponseHelper";
 import { validate } from "../../../../../lib/middlewares/validationMiddlware";
 import { AddMapSchema } from "../../../../../lib/validations/maps/addMap";
 import { validateAccessToken} from "../../../../../lib/middlewares/authMiddleware";
+import { IMap } from "../../../../../lib/interfaces/maps";
 
 const mapsController = new MapsController();
 
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         return authResult
     }
     // Validate request
-    const reqData = await req.json();
+    const reqData:IMap = await req.json();
     const validationErrors = await validate(AddMapSchema, reqData);
     if (validationErrors) {
         return ResponseHelper.sendValidationErrorResponse(422, 'Validation Error', validationErrors);
