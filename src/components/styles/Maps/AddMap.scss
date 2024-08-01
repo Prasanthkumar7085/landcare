@@ -612,7 +612,7 @@
   }
 }
 .signleMarkerView {
-  width: 350px;
+  width: 330px;
   height: 100vh;
   background-color: $whiteColor;
   box-sizing: border-box;
@@ -698,6 +698,26 @@
         font-family: $font-secondary;
         font-size: $font_14;
         font-weight: $fw_400;
+      }
+    }
+    .btnGrp {
+      display: grid;
+      grid-template-columns: 80% 20%;
+      grid-column-gap: 12px;
+      align-items: center;
+      .navigateBtn {
+        border-radius: 4px;
+        background: #75a237;
+        text-transform: capitalize;
+        color: $whiteColor;
+        font-family: $font-urbanist;
+        font-size: $font_16;
+        font-weight: $fw_500;
+        padding-block: 4px;
+      }
+      .iconBtn {
+        border-radius: 4px;
+        background: #202124;
       }
     }
   }

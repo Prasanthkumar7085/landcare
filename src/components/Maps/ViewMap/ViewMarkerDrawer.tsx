@@ -74,7 +74,7 @@ const ViewMarkerDrawer = ({ data, setData, onClose }: any) => {
           <Typography className="footerText">
             <Image src="/map/email.svg" alt="" width={10} height={10} />
             <span>
-              centraltablelandslandcare@gmail.com            </span>
+              centrallandslandcare@gmail.com            </span>
           </Typography>
           <Typography className="footerText">
             <Image src="/map/cell-icon.svg" alt="" width={10} height={10} />
@@ -104,22 +104,22 @@ const ViewMarkerDrawer = ({ data, setData, onClose }: any) => {
             {data ? datePipe(data?.created_at) : <Skeleton width="50%" />}
           </Typography>
         </Box> */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+        <div className="btnGrp">
           <Button
+            className="navigateBtn"
             variant="contained"
-            color="success"
-            sx={{ flexGrow: 1, mr: 1 }}
+            endIcon={<Image src="/map/navigate.svg" alt="" width={15} height={15} />}
           >
             {data ? "Navigate" : <Skeleton width="100%" />}
           </Button>
-          <IconButton color="primary">
+          <IconButton className="iconBtn">
             {data ? (
-              <ShareIcon />
+             <Image src="/map/share-white.svg" alt="" width={20} height={20}/>
             ) : (
               <Skeleton variant="circular" width={40} height={40} />
             )}
           </IconButton>
-        </Box>
+        </div>
       </Box>
     </div>
   );
