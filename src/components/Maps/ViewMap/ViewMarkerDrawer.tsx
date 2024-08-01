@@ -72,12 +72,12 @@ const ViewMarkerDrawer = ({ data, setData, onClose }: any) => {
         </div>
         <div className="headerDetails">
           <Typography className="footerText">
-            <Image src="/map/email.svg" alt="" width={10} height={10} />
+            <Image src="/map/email.svg" alt="" width={12} height={12} />
             <span>
               centrallandslandcare@gmail.com            </span>
           </Typography>
           <Typography className="footerText">
-            <Image src="/map/cell-icon.svg" alt="" width={10} height={10} />
+            <Image src="/map/cell-icon.svg" alt="" width={12} height={12} />
             <span>
               0439 786 631            </span>
           </Typography>
@@ -114,7 +114,7 @@ const ViewMarkerDrawer = ({ data, setData, onClose }: any) => {
           </Button>
           <IconButton className="iconBtn">
             {data ? (
-             <Image src="/map/share-white.svg" alt="" width={20} height={20}/>
+             <Image src="/map/share-white.svg" alt="" width={13} height={13}/>
             ) : (
               <Skeleton variant="circular" width={40} height={40} />
             )}
