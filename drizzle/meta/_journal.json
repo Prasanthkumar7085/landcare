@@ -71,6 +71,13 @@
       "when": 1722574873388,
       "tag": "0009_rapid_goliath",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1722577419902,
+      "tag": "0010_bent_titania",
+      "breakpoints": true
     }
   ]
 }

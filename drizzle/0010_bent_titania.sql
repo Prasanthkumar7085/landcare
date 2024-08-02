@@ -1,0 +1,1 @@
+ALTER TABLE "map_markers" ALTER COLUMN "full_address" SET DEFAULT '';
