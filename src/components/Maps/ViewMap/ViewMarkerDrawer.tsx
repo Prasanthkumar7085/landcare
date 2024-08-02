@@ -24,12 +24,10 @@ import { toast } from "sonner";
 const ViewMarkerDrawer = ({
   onClose,
   getSingleMapMarkers,
-  currentBouncingMarkerRef,
   setShowMarkerPopup,
-  data,
-  setData,
-  currentBouncingMarker,
   markersRef,
+  setMarkerData,
+  markerData,
 }: any) => {
   const { id } = useParams();
   const pathname = usePathname();
@@ -38,6 +36,7 @@ const ViewMarkerDrawer = ({
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [data, setData] = useState<any>();
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -49,6 +48,7 @@ const ViewMarkerDrawer = ({
     try {
       const response = await getSingleMarkerAPI(id, markerID);
       setData(response?.data);
+      setMarkerData(response?.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -102,7 +102,7 @@ const ViewMarkerDrawer = ({
             onClose();
             setData({});
             router.replace(`${pathname}`);
-            markersRef.current.forEach((marker: any) => {
+            markersRef.current.forEach(({ marker }: any) => {
               if (marker.getAnimation() === google.maps.Animation.BOUNCE) {
                 marker.setAnimation(null);
               }

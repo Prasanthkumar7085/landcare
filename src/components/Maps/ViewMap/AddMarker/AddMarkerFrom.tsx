@@ -38,11 +38,19 @@ const MarkerPopup = ({
     }
   };
 
-  const getApiBasedOnParams = (id: any, body: any) => {
+  const getApiBasedOnParams = (id: any) => {
     let response;
     if (params?.get("marker_id")) {
+      let body = { ...popupFormData };
+      delete body?.id;
+      delete body?.created_at;
+      delete body?.updated_at;
       response = updateMarkerDeatilsAPI(id, body, params?.get("marker_id"));
     } else {
+      let body = {
+        ...popupFormData,
+        ...placeDetails,
+      };
       response = addMarkerDeatilsAPI(id, body);
     }
     return response;
@@ -50,14 +58,8 @@ const MarkerPopup = ({
 
   const handleSave = async () => {
     setLoading(true);
-    let body = {
-      ...popupFormData,
-    };
-    if (!params?.get("marker_id")) {
-      body = { ...placeDetails };
-    }
     try {
-      const response = await getApiBasedOnParams(id, body);
+      const response = await getApiBasedOnParams(id);
       if (response?.status == 200 || response?.status == 201) {
         toast.success(response?.message);
         handleCancel();

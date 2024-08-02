@@ -33,12 +33,10 @@ const MapMarkersList = ({
   markerOption,
   map,
   maps,
-  renderAllMarkers,
+  markersRef,
+  handleMarkerClick,
 }: any) => {
   const { id } = useParams();
-  const pathname = usePathname();
-  const router = useRouter();
-  const params = useSearchParams();
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -77,62 +75,75 @@ const MapMarkersList = ({
       {singleMarkers?.length > 0 ? (
         <div>
           <div className="listContainer">
-            {singleMarkers?.slice(0, 10)?.map((marker: any, index: any) => (
-              <div
-                className="eachListItem"
-                key={index}
-                onClick={() => {
-                  router.replace(`${pathname}?marker_id=${marker?.id}`);
-                  setSingleMarkerOpen(true);
-                  map.setCenter(
-                    new google.maps.LatLng(
-                      marker?.coordinates[0],
-                      marker?.coordinates[1]
-                    )
-                  );
-                  map.setZoom(15);
-                }}
-              >
-                <div className="markerHeader">
-                  <div className="location">
-                    <Image alt="" src="/avatar@2x.png" width={20} height={20} />
-                    <span>{marker?.name}</span>
+            {singleMarkers
+              ?.slice(0, 10)
+              ?.map((markerDetails: any, index: any) => (
+                <div
+                  className="eachListItem"
+                  key={index}
+                  onClick={() => {
+                    setSingleMarkerOpen(true);
+                    const markerEntry = markersRef.current.find(
+                      (entry: any) => entry.id === markerDetails?.id
+                    );
+                    if (markerEntry) {
+                      const { marker } = markerEntry;
+                      handleMarkerClick(markerDetails, marker);
+                    } else {
+                      console.error(`Marker with ID ${id} not found.`);
+                    }
+                  }}
+                >
+                  <div className="markerHeader">
+                    <div className="location">
+                      <Image
+                        alt=""
+                        src="/avatar@2x.png"
+                        width={20}
+                        height={20}
+                      />
+                      <span>{markerDetails?.name}</span>
+                    </div>
+                    <div className="locationType">
+                      <Image
+                        src={"/markers/marker-location-icon.svg"}
+                        width={12}
+                        height={12}
+                        alt="type"
+                      />
+                      <span>{markerDetails?.location}</span>
+                    </div>
                   </div>
-                  <div className="locationType">
-                    <Image
-                      src={"/markers/marker-location-icon.svg"}
-                      width={12}
-                      height={12}
-                      alt="type"
-                    />
-                    <span>{marker?.location}</span>
+                  <Typography className="markerDesc">
+                    {markerDetails?.lls_region}
+                  </Typography>
+
+                  <Typography className="markerDesc">
+                    {markerDetails?.host_organization}
+                  </Typography>
+
+                  <div className="markerFooter">
+                    <div className="latLang">
+                      <Image
+                        src="/map/location-blue.svg"
+                        alt=""
+                        width={10}
+                        height={10}
+                      />
+                      {markerDetails?.email}
+                    </div>
+                    <div className="createdDate">
+                      <Image
+                        src="/map/clock.svg"
+                        height={13}
+                        width={13}
+                        alt=""
+                      />
+                      <span>{markerDetails?.phone}</span>
+                    </div>
                   </div>
                 </div>
-                <Typography className="markerDesc">
-                  {marker?.lls_region}
-                </Typography>
-
-                <Typography className="markerDesc">
-                  {marker?.host_organization}
-                </Typography>
-
-                <div className="markerFooter">
-                  <div className="latLang">
-                    <Image
-                      src="/map/location-blue.svg"
-                      alt=""
-                      width={10}
-                      height={10}
-                    />
-                    {marker?.email}
-                  </div>
-                  <div className="createdDate">
-                    <Image src="/map/clock.svg" height={13} width={13} alt="" />
-                    <span>{marker?.phone}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
           <div style={{ textAlign: "end" }}>
             <Button

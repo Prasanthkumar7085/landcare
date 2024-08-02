@@ -20,8 +20,8 @@ const ViewMapDetailsDrawer = ({
   getData,
   map,
   maps,
-  renderAllMarkers,
-  markers,
+  markersRef,
+  handleMarkerClick,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -66,7 +66,6 @@ const ViewMapDetailsDrawer = ({
   };
 
   const closeModal = () => {
-    console.log(3243232);
     setShowModal(false);
     setFile(null);
   };
@@ -118,8 +117,8 @@ const ViewMapDetailsDrawer = ({
               markerOption={markerOption}
               map={map}
               maps={maps}
-              renderAllMarkers={renderAllMarkers}
-              markers={markers}
+              markersRef={markersRef}
+              handleMarkerClick={handleMarkerClick}
             />
           </div>
         </div>

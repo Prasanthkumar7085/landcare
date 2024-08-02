@@ -24,7 +24,7 @@ const ViewGoogleMap = () => {
   const pathName = usePathname();
   const router = useRouter();
   let currentBouncingMarker: any = null;
-  const markersRef = useRef<any>([]);
+  const markersRef = useRef<{ id: number; marker: google.maps.Marker }[]>([]);
 
   const [loading, setLoading] = useState(true);
   const [renderField, setRenderField] = useState(false);
@@ -124,30 +124,30 @@ const ViewGoogleMap = () => {
         icon: {
           url: "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
+        animation: google.maps.Animation.DROP,
       });
+      markersRef.current.push({ id: markerData.id, marker: markere });
       markere.addListener("click", () => {
-        router.replace(`${pathName}?marker_id=${markerData?.id}`);
-        setSingleMarkerOpen(true);
-        map.setCenter(
-          new google.maps.LatLng(
-            markerData?.coordinates[0],
-            markerData?.coordinates[1]
-          )
-        );
-        map.setZoom(15);
-
-        if (currentBouncingMarker) {
-          currentBouncingMarker.setAnimation(null);
-        }
-        if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
-          markere.setAnimation(null);
-        } else {
-          markere.setAnimation(google.maps.Animation.BOUNCE);
-        }
-        currentBouncingMarker = markere;
+        handleMarkerClick(markerData, markere);
       });
-      markersRef.current.push(markere);
     });
+  };
+  const handleMarkerClick = (markerData: any, markere: google.maps.Marker) => {
+    router.replace(`${pathName}?marker_id=${markerData?.id}`);
+    setSingleMarkerOpen(true);
+    map.setCenter(
+      new google.maps.LatLng(
+        markerData?.coordinates[0],
+        markerData?.coordinates[1]
+      )
+    );
+    map.setZoom(15);
+    if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
+      markere.setAnimation(null);
+    } else {
+      markere.setAnimation(google.maps.Animation.BOUNCE);
+    }
+    currentBouncingMarker = markere;
   };
 
   const OtherMapOptions = (map: any, maps: any) => {
@@ -257,52 +257,53 @@ const ViewGoogleMap = () => {
   }, [map, googleMaps, markers]);
 
   return (
-    <div
-      className={styles.markersPageWeb}
-      style={{ display: loading == false ? "" : "none" }}
-    >
-      <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
-        <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
-      </div>
+    <>
+      <div
+        className={styles.markersPageWeb}
+        style={{ display: loading == false ? "" : "none" }}
+      >
+        <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
+          <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
+        </div>
 
-      {singleMarkeropen == true || params?.get("marker_id") ? (
-        <ViewMarkerDrawer
-          onClose={setSingleMarkerOpen}
-          getSingleMapMarkers={getSingleMapMarkers}
+        {singleMarkeropen == true || params?.get("marker_id") ? (
+          <ViewMarkerDrawer
+            onClose={setSingleMarkerOpen}
+            getSingleMapMarkers={getSingleMapMarkers}
+            setShowMarkerPopup={setShowMarkerPopup}
+            currentBouncingMarker={currentBouncingMarker}
+            markersRef={markersRef}
+            setMarkerData={setMarkerData}
+            markerData={markerData}
+          />
+        ) : (
+          <ViewMapDetailsDrawer
+            mapDetails={mapDetails}
+            singleMarkers={singleMarkers}
+            setSearchString={setSearchString}
+            searchString={searchString}
+            setSingleMarkerOpen={setSingleMarkerOpen}
+            setMarkerOption={setMarkerOption}
+            markerOption={markerOption}
+            getData={getSingleMapMarkers}
+            map={map}
+            maps={googleMaps}
+            markersRef={markersRef}
+            handleMarkerClick={handleMarkerClick}
+          />
+        )}
+        <MarkerPopup
           setShowMarkerPopup={setShowMarkerPopup}
-          data={markerData}
-          setData={setMarkerData}
-          currentBouncingMarker={currentBouncingMarker}
-          markersRef={markersRef}
+          showMarkerPopup={showMarkerPopup}
+          placeDetails={placeDetails}
+          getSingleMapMarkers={getSingleMapMarkers}
+          removalMarker={removalMarker}
+          popupFormData={markerData}
+          setPopupFormData={setMarkerData}
         />
-      ) : (
-        <ViewMapDetailsDrawer
-          mapDetails={mapDetails}
-          singleMarkers={singleMarkers}
-          setSearchString={setSearchString}
-          searchString={searchString}
-          setSingleMarkerOpen={setSingleMarkerOpen}
-          setMarkerOption={setMarkerOption}
-          markerOption={markerOption}
-          getData={getSingleMapMarkers}
-          map={map}
-          maps={googleMaps}
-          renderAllMarkers={renderAllMarkers}
-          markers={markers}
-        />
-      )}
-      <MarkerPopup
-        setShowMarkerPopup={setShowMarkerPopup}
-        showMarkerPopup={showMarkerPopup}
-        placeDetails={placeDetails}
-        getSingleMapMarkers={getSingleMapMarkers}
-        removalMarker={removalMarker}
-        popupFormData={markerData}
-        setPopupFormData={setMarkerData}
-      />
-
+      </div>
       <LoadingComponent loading={loading} />
-    </div>
+    </>
   );
 };
 export default ViewGoogleMap;
