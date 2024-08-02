@@ -46,6 +46,12 @@ function getCustomErrorMessage(issue: any) {
         case 'array':
             return `Invalid ${key}`
         
+        case 'number':
+            return `Invalid ${key}`
+        
+        case 'string':
+            return `Invalid ${key}`
+        
         default:
             break
     }

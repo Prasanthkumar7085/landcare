@@ -11,7 +11,7 @@ export const users = pgTable("users", {
     name: varchar('name').notNull(),
     email: varchar('email').notNull(),
     password: varchar('password').notNull(),
-    phone: varchar('phone').default(''),
+    phone: varchar('phone'),
     user_type: userTypeEnum('user_type').default('user'),
     status: boolean('status').default(true),
     created_at: timestamp('created_at').notNull().defaultNow(),

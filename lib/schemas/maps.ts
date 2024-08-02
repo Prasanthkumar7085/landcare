@@ -11,7 +11,7 @@ export const maps :any= pgTable("maps", {
 
     title: varchar('title').notNull(),
     slug: varchar('slug').unique().notNull(),
-    description: text('description').default(''),
+    description: text('description'),
 
     status: statusEnum('status').default('draft'),
     published_on: timestamp('published_on'),
@@ -20,7 +20,7 @@ export const maps :any= pgTable("maps", {
     geo_type: varchar('geo_type').default('polygon'),
     geo_coordinates: jsonb('geo_coordinates').$type<number[]>().default([]),
     geo_zoom: integer('geo_zoom').default(0),
-    image:text('image').default(''),
+    image:text('image'),
 
     created_at: timestamp('created_at').notNull().defaultNow(),
     updated_at: timestamp("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`)

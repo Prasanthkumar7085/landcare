@@ -1,0 +1,20 @@
+ALTER TABLE "map_markers" ALTER COLUMN "title" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "description" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "type" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "color_code" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "full_address" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "state" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "city" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "zipcode" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "name" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "position" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "host_organization" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "lls_region" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "phone" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "email" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "location" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "post_code" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "added_by" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "maps" ALTER COLUMN "description" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "maps" ALTER COLUMN "image" DROP DEFAULT;--> statement-breakpoint
+ALTER TABLE "users" ALTER COLUMN "phone" DROP DEFAULT;
