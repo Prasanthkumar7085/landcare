@@ -1,5 +1,4 @@
 export const MapTypeOptions = (map: any, maps: any, setMapType: any) => {
-  //custom map type event
   const mapTypeControlEvent = () => {
     const controlDiv = document.createElement("div");
 
@@ -11,12 +10,11 @@ export const MapTypeOptions = (map: any, maps: any, setMapType: any) => {
     controlUI.style.borderRadius = "3px";
     controlUI.style.boxShadow = "0 2px 6px rgba(0,0,0,.3)";
     controlUI.style.cursor = "pointer";
-    controlUI.style.marginBottom = "10px";
+    controlUI.style.marginBottom = "22px";
     controlUI.style.textAlign = "center";
     controlUI.title = "Click to toggle map type";
     controlDiv.appendChild(controlUI);
 
-    // Create buttons for each map type
     const types = ["roadmap", "satellite", "hybrid"];
     types.forEach((type) => {
       const controlText = document.createElement("div");
@@ -29,8 +27,15 @@ export const MapTypeOptions = (map: any, maps: any, setMapType: any) => {
       controlText.innerHTML = type.charAt(0).toUpperCase() + type.slice(1);
       controlUI.appendChild(controlText);
 
+      if (type === "roadmap") {
+        controlText.style.backgroundColor = "#e8e8e8";
+      }
       controlText.addEventListener("click", () => {
         setMapType(type);
+        Array.from(controlUI.children).forEach((child: any) => {
+          child.style.backgroundColor = "#fff";
+        });
+        controlText.style.backgroundColor = "#e8e8e8";
       });
     });
 
@@ -42,4 +47,5 @@ export const MapTypeOptions = (map: any, maps: any, setMapType: any) => {
   mapTypeControlDiv.index = 1;
   map.controls[maps.ControlPosition.BOTTOM_CENTER].push(mapTypeControlDiv);
   mapTypeControlDiv.appendChild(mapTypeControl);
+  setMapType("roadmap");
 };

@@ -1,3 +1,12 @@
+import GoogleMapComponent from "@/components/Core/GoogleMap";
+import LoadingComponent from "@/components/Core/LoadingComponent";
+import ViewMarkerDrawer from "@/components/Maps/ViewMap/ViewMarkerDrawer";
+import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
+import {
+  getSingleMapDetailsAPI,
+  getSingleMapMarkersAPI,
+} from "@/services/maps";
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import {
   useParams,
   usePathname,
@@ -5,27 +14,23 @@ import {
   useSearchParams,
 } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import GoogleMapComponent from "@/components/Core/GoogleMap";
-import LoadingComponent from "@/components/Core/LoadingComponent";
-import ViewMarkerDrawer from "@/components/Maps/ViewMap/ViewMarkerDrawer";
-import { mapTypeOptions } from "@/lib/constants/mapConstants";
-import {
-  getSingleMapDetailsAPI,
-  getSingleMapMarkersAPI,
-} from "@/services/maps";
 import MarkerPopup from "./AddMarker/AddMarkerFrom";
 import styles from "./view-map.module.css";
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
+import { param } from "drizzle-orm";
 
 const ViewGoogleMap = () => {
   const { id } = useParams();
   const params = useSearchParams();
-  const drawingManagerRef = useRef(null);
+  const drawingManagerRef: any = useRef(null);
   const pathName = usePathname();
   const router = useRouter();
   let currentBouncingMarker: any = null;
-  const markersRef = useRef<{ id: number; marker: google.maps.Marker }[]>([]);
-
+  let markersRef = useRef<{ id: number; marker: google.maps.Marker }[]>([]);
+  const clusterRef: any = useRef(null);
+  const [searchParams, setSearchParams] = useState(
+    Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
+  );
   const [loading, setLoading] = useState(true);
   const [renderField, setRenderField] = useState(false);
   const [map, setMaps] = useState<any>(null);
@@ -35,8 +40,6 @@ const ViewGoogleMap = () => {
   const [markers, setMarkers] = useState<any[]>([]);
   const [mapRef, setMapRef] = useState<any>(null);
   const [singleMarkers, setSingleMarkers] = useState<any[]>([]);
-  const [paginationDetails, setPaginationDetails] = useState({});
-  const [search, setSearch] = useState("");
   const [searchString, setSearchString] = useState("");
   const [showMarkerPopup, setShowMarkerPopup] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
@@ -115,14 +118,18 @@ const ViewGoogleMap = () => {
     markersRef.current.forEach(({ marker }) => {
       marker.setMap(null);
     });
+    if (clusterRef.current) {
+      clusterRef.current.clearMarkers();
+      clusterRef.current = null;
+    }
     markersRef.current = [];
   };
   const renderAllMarkers = (markers1: any, map: any, maps: any) => {
     clearMarkers();
-    markers1.forEach((markerData: any, index: number) => {
+    markers1?.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
-        markerData.coordinates?.[0] + index * 0.0001,
-        markerData.coordinates?.[1] + index * 0.0001
+        markerData.coordinates?.[0],
+        markerData.coordinates?.[1]
       );
       const markere = new google.maps.Marker({
         position: latLng,
@@ -132,11 +139,26 @@ const ViewGoogleMap = () => {
           url: "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
         animation: google.maps.Animation.DROP,
+        draggable: true,
       });
       markersRef.current.push({ id: markerData.id, marker: markere });
+
       markere.addListener("click", () => {
         handleMarkerClick(markerData, markere);
       });
+
+      markere.addListener("dragstart", (event: google.maps.MouseEvent) => {});
+      markere.addListener("dragend", (event: google.maps.MouseEvent) => {
+        router.replace(`${pathName}?marker_id=${markerData?.id}`);
+        setShowMarkerPopup(true);
+        setPlaceDetails({
+          coordinates: [event.latLng?.lat(), event.latLng?.lng()],
+        });
+      });
+    });
+    clusterRef.current = new MarkerClusterer({
+      markers: markersRef.current.map(({ marker }) => marker),
+      map: map,
     });
   };
 
@@ -154,6 +176,9 @@ const ViewGoogleMap = () => {
       markere.setAnimation(null);
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
+    }
+    if (drawingManagerRef.current) {
+      drawingManagerRef.current.setOptions({ drawingControl: false });
     }
   };
 
@@ -230,10 +255,26 @@ const ViewGoogleMap = () => {
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
       setMarkers(data);
-      renderAllMarkers(data, map, googleMaps);
       setSingleMarkers(data);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const goTomarker = (data: any) => {
+    if (params.get("marker_id")) {
+      const markerEntry = markersRef.current.find(
+        (entry: any) => entry.id == params.get("marker_id")
+      );
+      let markerDetails = data?.find(
+        (item: any) => item.id == params.get("marker_id")
+      );
+      if (markerEntry) {
+        const { marker } = markerEntry;
+        handleMarkerClick(markerDetails, marker);
+      } else {
+        console.error(`Marker with ID ${id} not found.`);
+      }
     }
   };
 
@@ -253,21 +294,27 @@ const ViewGoogleMap = () => {
 
   useEffect(() => {
     if (map && googleMaps) {
-      const bounds = new google.maps.LatLngBounds();
-      polygonCoords.forEach((coord: any) => {
-        bounds.extend(new google.maps.LatLng(coord.lat, coord.lng));
-      });
-
-      map.fitBounds(bounds);
+      if (params?.get("marker_id")) {
+        goTomarker(markers);
+      } else {
+        boundToMapWithPolygon(polygonCoords, map);
+      }
       renderAllMarkers(markers, map, googleMaps);
     }
   }, [map, googleMaps, markers]);
+  useEffect(() => {
+    setSearchParams(
+      Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
+    );
+  }, [params]);
 
   return (
     <>
       <div
         className={styles.markersPageWeb}
-        style={{ display: loading == false ? "" : "none" }}
+        style={{
+          display: loading == false ? "" : "none",
+        }}
       >
         <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
           <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
@@ -284,6 +331,10 @@ const ViewGoogleMap = () => {
             markerData={markerData}
             data={singleMarkerdata}
             setData={setSingleMarkerData}
+            map={map}
+            polygonCoords={polygonCoords}
+            showMarkerPopup={showMarkerPopup}
+            drawingManagerRef={drawingManagerRef}
           />
         ) : (
           <ViewMapDetailsDrawer

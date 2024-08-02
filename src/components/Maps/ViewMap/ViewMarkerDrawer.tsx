@@ -1,10 +1,6 @@
 import DeleteDialog from "@/components/Core/DeleteDialog";
-import { datePipe } from "@/lib/helpers/datePipe";
+import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
 import { deleteMarkerAPI, getSingleMarkerAPI } from "@/services/maps";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import ShareIcon from "@mui/icons-material/Share";
 import { Menu, MenuItem } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -29,6 +25,10 @@ const ViewMarkerDrawer = ({
   setMarkerData,
   data,
   setData,
+  map,
+  polygonCoords,
+  showMarkerPopup,
+  drawingManagerRef,
 }: any) => {
   const { id } = useParams();
   const pathname = usePathname();
@@ -89,7 +89,7 @@ const ViewMarkerDrawer = ({
     if (params?.get("marker_id")) {
       getSingleMarker(params?.get("marker_id"));
     }
-  }, [params?.get("marker_id")]);
+  }, [params?.get("marker_id"), showMarkerPopup]);
   return (
     <div className="signleMarkerView">
       <header className="header">
@@ -107,6 +107,11 @@ const ViewMarkerDrawer = ({
                 marker.setAnimation(null);
               }
             });
+            boundToMapWithPolygon(polygonCoords, map);
+            if (drawingManagerRef.current && params?.get("marker_id")) {
+              drawingManagerRef.current.setOptions({ drawingControl: true });
+            }
+            setMarkerData({});
           }}
         >
           Back

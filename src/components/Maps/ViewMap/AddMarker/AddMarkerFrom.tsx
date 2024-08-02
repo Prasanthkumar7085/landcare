@@ -34,18 +34,27 @@ const MarkerPopup = ({
     setMarkerType(null);
     setErrorMessages([]);
     setShowMarkerPopup(false);
-    if (!params?.get("marker_id")) {
-      setPopupFormData({});
-    }
+    setPopupFormData({});
   };
 
   const getApiBasedOnParams = (id: any) => {
     let response;
     if (params?.get("marker_id")) {
-      let body = { ...popupFormData };
-      delete body?.id;
-      delete body?.created_at;
-      delete body?.updated_at;
+      let body = {
+        coordinates: placeDetails?.coordinates?.length
+          ? placeDetails?.coordinates
+          : popupFormData.coordinates,
+        email: popupFormData?.email || "",
+        host_organization: popupFormData?.host_organization || "",
+        lls_region: popupFormData?.lls_region || "",
+        location: popupFormData?.location || "",
+        map_id: popupFormData?.map_id,
+        name: popupFormData?.name || "",
+        phone: popupFormData?.phone || "",
+        position: popupFormData?.position || "",
+        post_code: popupFormData?.post_code || "",
+      };
+
       response = updateMarkerDeatilsAPI(id, body, params?.get("marker_id"));
     } else {
       let body = {
@@ -90,7 +99,9 @@ const MarkerPopup = ({
       }}
     >
       <div className="addMarkerDialog">
-        <h3 className="dialogHeading">Add Marker</h3>
+        <h3 className="dialogHeading">
+          {params?.get("marker_id") ? "Update Marker" : "Add Marker"}
+        </h3>
         <form>
           <div className="eachFeildGrp">
             <label>Name</label>
@@ -156,6 +167,7 @@ const MarkerPopup = ({
             <TextField
               className="defaultTextFeild text "
               name="email"
+              type="email"
               placeholder="Enter Email"
               value={popupFormData?.email}
               onChange={handleInputChange}
@@ -198,6 +210,8 @@ const MarkerPopup = ({
                   color="inherit"
                   sx={{ width: "10px", height: "10px" }}
                 />
+              ) : params?.get("marker_id") ? (
+                "Update"
               ) : (
                 "Save"
               )}

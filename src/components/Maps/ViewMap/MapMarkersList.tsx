@@ -102,7 +102,7 @@ const MapMarkersList = ({
                         width={20}
                         height={20}
                       />
-                      <span>{markerDetails?.name}</span>
+                      <span>{markerDetails?.name || "---"}</span>
                     </div>
                     <div className="locationType">
                       <Image
@@ -111,15 +111,15 @@ const MapMarkersList = ({
                         height={12}
                         alt="type"
                       />
-                      <span>{markerDetails?.location}</span>
+                      <span>{markerDetails?.location || "---"}</span>
                     </div>
                   </div>
                   <Typography className="markerDesc">
-                    {markerDetails?.lls_region}
+                    {markerDetails?.lls_region || "---"}
                   </Typography>
 
                   <Typography className="markerDesc">
-                    {markerDetails?.host_organization}
+                    {markerDetails?.host_organization || "---"}
                   </Typography>
 
                   <div className="markerFooter">
@@ -130,7 +130,7 @@ const MapMarkersList = ({
                         width={10}
                         height={10}
                       />
-                      {markerDetails?.email}
+                      {markerDetails?.email || "---"}
                     </div>
                     <div className="createdDate">
                       <Image
@@ -139,7 +139,7 @@ const MapMarkersList = ({
                         width={13}
                         alt=""
                       />
-                      <span>{markerDetails?.phone}</span>
+                      <span>{markerDetails?.phone || "---"}</span>
                     </div>
                   </div>
                 </div>
@@ -168,7 +168,12 @@ const MapMarkersList = ({
           </Typography>
         </div>
       )}
-      <MapMarkersListDialog open={open} handleClose={handleClose} />
+      <MapMarkersListDialog
+        open={open}
+        handleClose={handleClose}
+        markersRef={markersRef}
+        handleMarkerClick={handleMarkerClick}
+      />
     </div>
   );
 };

@@ -150,3 +150,12 @@ export const getCoordinates = (locationName: any) => {
     });
   });
 };
+
+export const boundToMapWithPolygon = (polygonCoords: any, map: any) => {
+  const bounds = new google.maps.LatLngBounds();
+  polygonCoords.forEach((coord: any) => {
+    bounds.extend(new google.maps.LatLng(coord.lat, coord.lng));
+  });
+
+  map.fitBounds(bounds);
+};

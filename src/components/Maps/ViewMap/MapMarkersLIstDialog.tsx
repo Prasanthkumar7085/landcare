@@ -26,7 +26,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-const MapMarkersListDialog = ({ open, handleClose }: any) => {
+const MapMarkersListDialog = ({
+  open,
+  handleClose,
+  markersRef,
+  handleMarkerClick,
+}: any) => {
   const { id } = useParams();
 
   const [markers, setMarkers] = useState<any[]>([]);
@@ -101,7 +106,23 @@ const MapMarkersListDialog = ({ open, handleClose }: any) => {
       id: "actions",
       cell: (info: any) => (
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <Image src="/map/table/view.svg" alt="" width={15} height={15} />
+          <IconButton
+            className="iconBtn"
+            onClick={() => {
+              handleClose();
+              const markerEntry = markersRef.current.find(
+                (entry: any) => entry.id === info?.row?.original?.id
+              );
+              if (markerEntry) {
+                const { marker } = markerEntry;
+                handleMarkerClick(info?.row?.original, marker);
+              } else {
+                console.error(`Marker with ID ${id} not found.`);
+              }
+            }}
+          >
+            <Image src="/map/table/view.svg" alt="" width={15} height={15} />
+          </IconButton>
           <Image src="/map/table/share.svg" alt="" width={15} height={15} />
           <Image src="/map/table/copy.svg" alt="" width={15} height={15} />
           <IconButton
