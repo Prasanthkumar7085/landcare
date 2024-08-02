@@ -7,24 +7,19 @@ import { toast, Toaster } from "sonner";
 import DeleteDialog from "@/components/Core/DeleteDialog";
 import { deleteMapAPI } from "@/services/maps";
 import MapMarkersList from "./MapMarkersList";
-import ImportModal from "./ImportModal";
+import ImportModal from "./ImportMarkers/ImportModal";
 
 const ViewMapDetailsDrawer = ({
   mapDetails,
-  markers,
-  paginationDetails,
-  getData,
-  setSearch,
-  search,
   singleMarkers,
   setSearchString,
   searchString,
   setSingleMarkerOpen,
-  singleMarkeropen,
   setMarkerData,
-  markerData,
   setMarkerOption,
   markerOption,
+  getData,
+  setSingleMarkerLoading,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -69,6 +64,7 @@ const ViewMapDetailsDrawer = ({
   };
 
   const closeModal = () => {
+    console.log(3243232);
     setShowModal(false);
     setFile(null);
   };
@@ -89,13 +85,7 @@ const ViewMapDetailsDrawer = ({
           <Button onClick={openModal} className="importBtn">
             Import
           </Button>
-          <ImportModal
-            show={showModal}
-            onClose={closeModal}
-            file={file}
-            setFile={setFile}
-            getData={getData}
-          />
+
           <IconButton className="iconBtn" onClick={handleClick}>
             <Image src="/map/menu-with-bg.svg" alt="" height={28} width={28} />
           </IconButton>
@@ -117,36 +107,16 @@ const ViewMapDetailsDrawer = ({
         <div className="markersBlock">
           <Typography className="blockHeading">Markers</Typography>
           <div className="markersContainer">
-            {markers?.length > 0 || singleMarkers?.length > 0 ? (
-              <MapMarkersList
-                markers={markers}
-                paginationDetails={paginationDetails}
-                getData={getData}
-                setSearch={setSearch}
-                search={search}
-                singleMarkers={singleMarkers}
-                setSearchString={setSearchString}
-                searchString={searchString}
-                setSingleMarkerOpen={setSingleMarkerOpen}
-                singleMarkeropen={singleMarkeropen}
-                setMarkerData={setMarkerData}
-                markerData={markerData}
-                setMarkerOption={setMarkerOption}
-                markerOption={markerOption}
-              />
-            ) : (
-              <div className="nodataGrp">
-                <Image
-                  src={"/no-markers.svg"}
-                  width={180}
-                  height={180}
-                  alt="no data"
-                />
-                <Typography className="nodataTxt">
-                  No markers added yet. Start placing markers on your map.
-                </Typography>
-              </div>
-            )}
+            <MapMarkersList
+              singleMarkers={singleMarkers}
+              setSearchString={setSearchString}
+              searchString={searchString}
+              setSingleMarkerOpen={setSingleMarkerOpen}
+              setMarkerData={setMarkerData}
+              setMarkerOption={setMarkerOption}
+              markerOption={markerOption}
+              setSingleMarkerLoading={setSingleMarkerLoading}
+            />
           </div>
         </div>
       </div>
@@ -184,7 +154,17 @@ const ViewMapDetailsDrawer = ({
         text="Are you sure want to delete map?"
         loading={loading}
       />
-      <Toaster richColors closeButton position="top-right" />
+      {showModal ? (
+        <ImportModal
+          show={showModal}
+          onClose={closeModal}
+          file={file}
+          setFile={setFile}
+          getData={getData}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 };

@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import {
   mapTypeOptions,
@@ -24,22 +24,23 @@ const MapMarkersList = ({
   setSearchString,
   searchString,
   setSingleMarkerOpen,
-  singleMarkeropen,
   setMarkerData,
-  markerData,
   setMarkerOption,
   markerOption,
-  getData,
+  setSingleMarkerLoading,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
 
   const getSingleMarker = async (marker_id: any) => {
+    setSingleMarkerLoading(true);
     try {
       const response = await getSingleMarkerAPI(id, marker_id);
       setMarkerData(response?.data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setSingleMarkerLoading(false);
     }
   };
 
@@ -76,65 +77,82 @@ const MapMarkersList = ({
           placeholder="Search Filter"
         />
       </div>
-      <div className="listContainer">
-        {singleMarkers?.map((marker: any, index: any) => (
-          <div
-            className="eachListItem"
-            key={index}
-            onClick={() => {
-              setSingleMarkerOpen(true);
-              getSingleMarker(marker?.id);
-            }}
-          >
-            <div className="markerHeader">
-              <div className="location">
-                <Image alt="" src="/avatar@2x.png" width={20} height={20} />
-                <span>{marker?.name}</span>
-              </div>
-              <div className="locationType">
-                <Image
-                  src={"/markers/marker-location-icon.svg"}
-                  width={12}
-                  height={12}
-                  alt="type"
-                />
-                <span>{marker?.location}</span>
-              </div>
-            </div>
-            <Typography className="markerDesc">{marker?.lls_region}</Typography>
+      {singleMarkers?.length > 0 ? (
+        <div>
+          <div className="listContainer">
+            {singleMarkers?.slice(0, 10)?.map((marker: any, index: any) => (
+              <div
+                className="eachListItem"
+                key={index}
+                onClick={() => {
+                  setSingleMarkerOpen(true);
+                  getSingleMarker(marker?.id);
+                }}
+              >
+                <div className="markerHeader">
+                  <div className="location">
+                    <Image alt="" src="/avatar@2x.png" width={20} height={20} />
+                    <span>{marker?.name}</span>
+                  </div>
+                  <div className="locationType">
+                    <Image
+                      src={"/markers/marker-location-icon.svg"}
+                      width={12}
+                      height={12}
+                      alt="type"
+                    />
+                    <span>{marker?.location}</span>
+                  </div>
+                </div>
+                <Typography className="markerDesc">
+                  {marker?.lls_region}
+                </Typography>
 
-            <Typography className="markerDesc">
-              {marker?.host_organization}
-            </Typography>
+                <Typography className="markerDesc">
+                  {marker?.host_organization}
+                </Typography>
 
-            <div className="markerFooter">
-              <div className="latLang">
-                <Image
-                  src="/map/location-blue.svg"
-                  alt=""
-                  width={10}
-                  height={10}
-                />
-                {marker?.email}
+                <div className="markerFooter">
+                  <div className="latLang">
+                    <Image
+                      src="/map/location-blue.svg"
+                      alt=""
+                      width={10}
+                      height={10}
+                    />
+                    {marker?.email}
+                  </div>
+                  <div className="createdDate">
+                    <Image src="/map/clock.svg" height={13} width={13} alt="" />
+                    <span>{marker?.phone}</span>
+                  </div>
+                </div>
               </div>
-              <div className="createdDate">
-                <Image src="/map/clock.svg" height={13} width={13} alt="" />
-                <span>{marker?.phone}</span>
-              </div>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div style={{ textAlign: "end" }}>
-        <Button
-          className="showAllBtn"
-          variant="outlined"
-          onClick={handleClickOpen}
-        >
-          Show All markers
-        </Button>
-      </div>
-
+          <div style={{ textAlign: "end" }}>
+            <Button
+              className="showAllBtn"
+              variant="outlined"
+              onClick={handleClickOpen}
+            >
+              Show All markers
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="nodataGrp">
+          <Image
+            src={"/no-markers.svg"}
+            width={180}
+            height={180}
+            alt="no data"
+          />
+          <Typography className="nodataTxt">
+            No markers added yet. Start placing markers on your map.
+          </Typography>
+        </div>
+      )}
       <MapMarkersListDialog open={open} handleClose={handleClose} />
     </div>
   );

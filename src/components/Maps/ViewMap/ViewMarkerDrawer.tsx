@@ -8,66 +8,129 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
+import Image from "next/image";
 // import styles from "./view-map-block.module.css";
 
-const ViewMarkerDrawer = ({ data, setData, onClose }: any) => {
+const ViewMarkerDrawer = ({
+  data,
+  setData,
+  onClose,
+  singleMarkerLoading,
+}: any) => {
   return (
-    <div className="detailsslidebarfarmslist">
-      <Box sx={{ width: 300, p: 2 }}>
-        <IconButton
+    <div className="signleMarkerView">
+      <header className="header">
+        <Button
+          className="backBtn"
+          startIcon={
+            <Image src="/map/map-backBtn.svg" alt="" height={15} width={15} />
+          }
           onClick={() => {
             onClose(false);
             setData({});
           }}
         >
-          <ArrowBackIcon />
+          Back
+        </Button>
+
+        <IconButton className="iconBtn">
+          <Image src="/map/menu-with-bg.svg" alt="" height={28} width={28} />
         </IconButton>
-        <Box
-          sx={{
-            height: 150,
-            backgroundColor: "#f0f4f3",
-            mt: 1,
-            borderRadius: 1,
-          }}
-        ></Box>
-        <Typography variant="h6" sx={{ mt: 2 }}>
-          {data ? data?.title : <Skeleton width="60%" />}
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          <LocationOnIcon sx={{ fontSize: 14 }} />{" "}
-          {data ? data.type : <Skeleton width="40%" />}
-        </Typography>
-        <Typography variant="body2" sx={{ mt: 1 }}>
-          {data ? data?.description : <Skeleton width="100%" />}
-        </Typography>
-        <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-          <LocationOnIcon sx={{ fontSize: 18, mr: 1 }} />
-          <Typography variant="body2">
-            {data ? data?.coordinates?.join(", ") : <Skeleton width="80%" />}
+      </header>
+      <Box className="viewContent">
+        <div className="imgBlock">
+          <Image
+            className="mapImg"
+            src="/map/marker-view.png"
+            alt=""
+            height={100}
+            width={100}
+          />
+        </div>
+        <div className="headerDetails">
+          {singleMarkerLoading ? (
+            <Skeleton width="60%" className="markerTitle" />
+          ) : (
+            <Typography className="markerTitle">
+              {data?.name || "---"}
+            </Typography>
+          )}
+
+          <Typography className="markerLocation">
+            <Image src="/map/location-blue.svg" alt="" width={10} height={10} />
+            {singleMarkerLoading ? (
+              <Skeleton width="60%" />
+            ) : (
+              <span>{data?.location || "---"}</span>
+            )}
           </Typography>
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-          <AccessTimeIcon sx={{ fontSize: 18, mr: 1 }} />
-          <Typography variant="body2">
-            {data ? datePipe(data?.created_at) : <Skeleton width="50%" />}
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
+        </div>
+        <div className="eachMarkerDetail">
+          <Typography className="title">Host Organization</Typography>
+          {singleMarkerLoading ? (
+            <Skeleton width="60%" />
+          ) : (
+            <Typography className="value">
+              {data?.host_organization || "---"}
+            </Typography>
+          )}
+        </div>
+        <div className="eachMarkerDetail">
+          <Typography className="title">Position</Typography>
+          {singleMarkerLoading ? (
+            <Skeleton width="60%" />
+          ) : (
+            <Typography className="value">{data?.position || "--"}</Typography>
+          )}
+        </div>
+
+        <div className="eachMarkerDetail">
+          <Typography className="title">Postcode</Typography>
+          {singleMarkerLoading ? (
+            <Skeleton width="60%" />
+          ) : (
+            <Typography className="value">
+              {data?.post_code || "---"}{" "}
+            </Typography>
+          )}
+        </div>
+
+        <div className="headerDetails">
+          {singleMarkerLoading ? (
+            <Skeleton width="60%" />
+          ) : (
+            <Typography className="footerText">
+              <Image src="/map/email.svg" alt="" width={12} height={12} />
+              <span>{data?.email || "---"} </span>
+            </Typography>
+          )}
+          {singleMarkerLoading ? (
+            <Skeleton width="30%" />
+          ) : (
+            <Typography className="footerText">
+              <Image src="/map/cell-icon.svg" alt="" width={12} height={12} />
+              <span>{data?.phone || "---"} </span>
+            </Typography>
+          )}
+        </div>
+        <div className="btnGrp">
           <Button
+            className="navigateBtn"
             variant="contained"
-            color="success"
-            sx={{ flexGrow: 1, mr: 1 }}
+            endIcon={
+              <Image src="/map/navigate.svg" alt="" width={15} height={15} />
+            }
           >
             {data ? "Navigate" : <Skeleton width="100%" />}
           </Button>
-          <IconButton color="primary">
+          <IconButton className="iconBtn">
             {data ? (
-              <ShareIcon />
+              <Image src="/map/share-white.svg" alt="" width={13} height={13} />
             ) : (
               <Skeleton variant="circular" width={40} height={40} />
             )}
           </IconButton>
-        </Box>
+        </div>
       </Box>
     </div>
   );

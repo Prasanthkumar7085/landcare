@@ -1,0 +1,1042 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif !important;
+}
+
+* {
+  /* Define a specific background color for autofilled inputs */
+  /* Maintain consistent style across different states */
+}
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background: transparent !important;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: -sharpa1a3a9;
+  border-radius: 3px;
+  border-radius: 10px;
+  background-color: #cac9cc;
+}
+*::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: transparent !important;
+}
+* input:-webkit-autofill {
+  background-color: white !important;
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #000 !important;
+  height: 0px !important;
+  padding: 12px;
+}
+* input:-webkit-autofill:hover,
+* input:-webkit-autofill:focus,
+* input:-webkit-autofill:active {
+  background-color: white !important;
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #000 !important;
+  height: 0px !important;
+}
+* input {
+  color: #000000 !important;
+}
+
+.tableContainer .thead .table-row .cell:first-child {
+  border-left: 0.633951px solid #e0e0e0 !important;
+  border-radius: 5px 0px 0px 5px !important;
+  position: sticky !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.12) !important;
+  left: 0 !important;
+  background: #f0edff !important;
+}
+
+.errorComponent {
+  color: #d94841;
+  font-size: clamp(11px, 0.69vw, 13px);
+  font-family: "Poppins", sans-serif;
+}
+
+button {
+  box-shadow: none !important;
+}
+
+.headnav {
+  width: 100%;
+  background-color: #ffffff;
+  max-width: 100%;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  border-bottom: 1px solid #d5d9dd;
+}
+.headnav .navContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 92%;
+  margin: 0 auto;
+}
+.headnav .navContainer .logoBlock img {
+  height: 100%;
+}
+.headnav .navContainer .pagetitle {
+  margin: 0;
+  color: #000;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(12px, 0.72vw, 15px);
+  font-weight: 500;
+  line-height: 100%;
+  white-space: nowrap;
+  cursor: pointer;
+  padding: 1.5rem 0;
+}
+.headnav .navContainer .pagetitleActive {
+  margin: 0;
+  color: #385642;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(12px, 0.72vw, 15px);
+  font-weight: 500;
+  line-height: 100%;
+  white-space: nowrap;
+  cursor: pointer;
+  border-bottom: 2px solid #385642;
+  padding: 1.5rem 0;
+}
+.headnav .navContainer .profileGrp {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-left: 0.5rem;
+}
+.headnav .navContainer .profileGrp .profileName {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 3px 0;
+  gap: 4px;
+}
+.headnav .navContainer .profileGrp .profileName .profile {
+  color: #252525;
+  letter-spacing: 0;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(12px, 0.72vw, 15px);
+  font-weight: 400;
+  line-height: 100%;
+  margin: 0;
+}
+.headnav .navContainer .profileGrp .profileName .designation {
+  color: #05a155;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(10px, 0.625vw, 14px);
+  font-weight: 400;
+  line-height: 100%;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.baseContainer {
+  width: 92%;
+  margin: 0 auto;
+}
+
+.menuItem {
+  font-size: clamp(0.75em, 0.72vw, 1.1em) !important;
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 400 !important;
+}
+
+.profileMenuBlock {
+  margin-top: 40px;
+}
+.profileMenuBlock .MuiPaper-root {
+  box-shadow: none;
+  border: 1px solid #cecece;
+  border-radius: 4px;
+  padding-inline: 1rem;
+}
+.profileMenuBlock .MuiPaper-root li {
+  padding: 0;
+}
+
+.tableContainer {
+  height: calc(-160px + 100vh);
+  overflow: auto;
+  background: transparent;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.07);
+}
+.tableContainer .table {
+  border-collapse: collapse !important;
+  width: 100%;
+}
+.tableContainer .table .thead {
+  height: 32px;
+  position: sticky;
+  top: 0px;
+  z-index: 2;
+  background: #CDEFF8 !important;
+}
+.tableContainer .table .thead .table-row {
+  background: #CDEFF8 !important;
+  font-weight: 600;
+  padding: 6px 12px;
+}
+.tableContainer .table .thead .table-row .cell {
+  color: #545961;
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-weight: 600;
+  text-transform: uppercase;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border-right: 1px solid #ffffff;
+  cursor: default !important;
+}
+.tableContainer .table .thead .table-row .cell:first-child {
+  border-radius: 10px 0 0 0;
+  background-color: #CDEFF8;
+  overflow: hidden;
+  position: sticky !important;
+  left: 0 !important;
+  padding-left: 15px !important;
+}
+.tableContainer .table .thead .table-row .cell:last-child {
+  background-color: #CDEFF8;
+  border-radius: 0 10px 0 0;
+  overflow: hidden;
+  position: sticky !important;
+  right: 0 !important;
+  padding-left: 15px !important;
+}
+.tableContainer .table .thead .table-row .cell img {
+  cursor: pointer;
+}
+.tableContainer .table .tbody .table-row .cell {
+  padding: 6px 12px !important;
+  font-size: clamp(12px, 0.72vw, 16px);
+  text-align: start;
+  box-shadow: none !important;
+  background-color: #ffffff !important;
+  font-weight: 400;
+  color: #000000;
+}
+.tableContainer .table .tbody .table-row .cell:first-child {
+  position: sticky !important;
+  left: 0 !important;
+  padding-left: 15px !important;
+}
+.tableContainer .table .tbody .table-row .cell:last-child {
+  position: sticky !important;
+  right: 0 !important;
+  padding-left: 15px !important;
+}
+.tableContainer .table .tbody .table-row .cell input {
+  height: 16px;
+  width: 18px;
+  display: flex;
+  align-items: center;
+}
+.tableContainer .table .tbody .table-row:hover .cell {
+  background-color: #ffffff !important;
+}
+
+.MuiContainer-root {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.tablePagenationBlock {
+  padding: 0.625rem 0.625rem 0.625rem 0.9375rem !important;
+  box-shadow: none !important;
+  border: 1px solid #efefef !important;
+}
+.tablePagenationBlock .tablePagination {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  color: #000000 !important;
+  border-radius: 0 !important;
+  width: 100% !important;
+}
+.tablePagenationBlock .tablePagination * {
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-family: "Poppins", sans-serif;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.tablePagenationBlock .tablePagination .label {
+  margin-right: 10px;
+}
+.tablePagenationBlock .tablePagination .rowPerPage {
+  display: flex;
+  align-items: center;
+}
+.tablePagenationBlock .tablePagination .rowPerPage .selectComponent {
+  font-family: "Poppins", sans-serif;
+  border: 1px solid #9c9c9c;
+}
+.tablePagenationBlock .tablePagination .rowPerPage .selectComponent:hover {
+  border-color: #9c9c9c;
+}
+.tablePagenationBlock .tablePagination .rowPerPage .selectComponent:focus-within {
+  border-color: #9c9c9c;
+}
+.tablePagenationBlock .tablePagination .rowPerPage .selectComponent.Mui-focused {
+  border-color: #9c9c9c;
+}
+.tablePagenationBlock .tablePagination .rowPerPage fieldset {
+  border: 0;
+}
+.tablePagenationBlock .tablePagination .totalCount {
+  font-size: clamp(12px, 0.625vw, 14px);
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  margin-top: 5px;
+  margin-right: 1rem;
+  white-space: pre-wrap;
+  color: #000000;
+}
+
+.loginPage {
+  background-color: #ffffff;
+  height: 100vh;
+  max-height: 100vh;
+  overflow-y: hidden;
+  display: flex;
+}
+.loginPage .loginContainer {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 60% 40%;
+  align-self: stretch;
+  align-items: flex-start;
+}
+.loginPage .loginContainer .leftContainer {
+  height: 100%;
+  background-color: #f6fff1;
+}
+.loginPage .loginContainer .leftContainer .loginImg {
+  width: 100%;
+  height: 100%;
+}
+.loginPage .loginContainer .rightContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loginPage .formContainer {
+  width: 57%;
+  margin: 8vh auto 0;
+}
+.loginPage .formContainer .logoBlock {
+  text-align: center;
+}
+.loginPage .formContainer .logoBlock .logoIcon {
+  margin-bottom: 8vh;
+}
+.loginPage .formContainer .formTitle {
+  color: #000000;
+  font-size: clamp(25px, 1.68vw, 35px);
+  font-weight: 400;
+  margin: 0.5rem 0 0;
+  line-height: 150%;
+  text-align: center;
+}
+.loginPage .formContainer .formSubTitle {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: clamp(13px, 0.83vw, 17px);
+  font-weight: 300;
+  margin-bottom: 0.3rem;
+  text-align: center;
+}
+.loginPage .formContainer .formsBlock {
+  margin-top: 2rem;
+}
+.loginPage .formContainer .formsBlock .InputFeild {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+.loginPage .formContainer .formsBlock .InputFeild .MuiInputBase-root {
+  background: #F0F4F7;
+  color: #000000;
+  font-weight: 400;
+  font-size: 12px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  height: 42px;
+  border: 1px solid #F0F4F7;
+  font-family: "Poppins", sans-serif;
+}
+.loginPage .formContainer .formsBlock .InputFeild .MuiInputBase-root fieldset {
+  border: 0 !important;
+}
+.loginPage .formContainer .formsBlock .InputFeild .formLabel {
+  color: #000000;
+  font-size: clamp(12px, 0.72vw, 15px);
+  font-weight: 400;
+  margin-bottom: 0.3rem;
+}
+.loginPage .formContainer .formsBlock .InputFeild .formLabel1 {
+  color: #000000;
+  font-size: clamp(10px, 0.72vw, 14px);
+  font-weight: 400;
+  margin-bottom: 0.2rem;
+  text-align: center;
+}
+.loginPage .formContainer .formsBlock .forgotBtnGrp {
+  text-align: right;
+  padding-top: 0.2rem;
+}
+.loginPage .formContainer .formsBlock .forgotBtnGrp .forgotBtn {
+  color: #d94841;
+  text-transform: capitalize;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(13px, 0.83vw, 16px);
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: 0;
+  padding: 0;
+}
+.loginPage .formContainer .formsBlock .forgotBtnGrp .forgotBtn:hover {
+  background: transparent;
+}
+.loginPage .formContainer .formsBlock .loginBtn {
+  border-radius: 6px;
+  background: #75A237;
+  text-transform: capitalize;
+  color: #ffffff;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(12px, 0.72vw, 15px);
+  font-weight: 500;
+  line-height: 100%;
+  padding-block: 0.8rem;
+  margin-top: 2rem;
+}
+
+.allMapsContainer .mapHeaderContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 0;
+}
+.allMapsContainer .mapHeaderContainer .tabsGrp {
+  min-height: inherit;
+}
+.allMapsContainer .mapHeaderContainer .tabsGrp .MuiTabs-flexContainer {
+  gap: 1.2rem;
+}
+.allMapsContainer .mapHeaderContainer .tabsGrp .tabBtn {
+  min-height: inherit;
+  padding: 4px 0;
+  text-transform: capitalize;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(13px, 0.83vw, 17px);
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.6);
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+}
+.allMapsContainer .mapHeaderContainer .filterGrp {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.allMapsContainer .mapHeaderContainer .filterGrp .defaultDatePicker {
+  width: 200px !important;
+}
+.allMapsContainer .mapHeaderContainer .filterGrp .defaultDatePicker .rs-input-group {
+  border-radius: 4px;
+}
+.allMapsContainer .mapHeaderContainer .filterGrp .defaultDatePicker input {
+  font-size: 11.5px;
+  padding: 5px 11px !important;
+}
+.allMapsContainer .mapHeaderContainer .filterGrp .defaultDatePicker .rs-input-group-addon {
+  padding: 7px 12px !important;
+}
+.allMapsContainer .mapHeaderContainer .filterGrp .defaultTextFeild .MuiInputBase-root {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 400;
+  font-size: 12px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  height: 30px;
+  border: 1.4px solid #e4e4e4;
+  font-family: "Poppins", sans-serif;
+  width: 200px;
+}
+.allMapsContainer .mapHeaderContainer .filterGrp .defaultTextFeild .MuiInputBase-root fieldset {
+  border: 0 !important;
+}
+.allMapsContainer .mapHeaderContainer .filterGrp .addNewBtn {
+  border-radius: 4px;
+  background: #75A237;
+  text-transform: capitalize;
+  color: #ffffff;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(12px, 0.72vw, 15px);
+  font-weight: 500;
+  padding: 4px 10px;
+}
+.allMapsContainer .mapListContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 1rem;
+  height: calc(100vh - 180px);
+  overflow-y: auto;
+  grid-auto-rows: min-content;
+}
+.allMapsContainer .mapListContainer .eachListCard {
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0px -4px 17px 0px rgba(0, 0, 0, 0.0392156863), 0px 6px 8px -6px rgba(24, 39, 75, 0.0588235294), 0px 8px 16px -6px rgba(24, 39, 75, 0.0196078431);
+  padding: 5px;
+}
+.allMapsContainer .mapListContainer .eachListCard .imgBlock {
+  background-color: #efefef;
+  width: 100%;
+  height: 150px;
+  border-radius: 8px 8px 0 0;
+  position: relative;
+}
+.allMapsContainer .mapListContainer .eachListCard .imgBlock .mapImg {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 8px 8px 0 0;
+}
+.allMapsContainer .mapListContainer .eachListCard .imgBlock .iconBtn {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  padding: 0;
+}
+.allMapsContainer .mapListContainer .eachListCard .imgBlock .iconBtn:hover {
+  background-color: transparent;
+}
+.allMapsContainer .mapListContainer .eachListCard .cardContent .cardTitle {
+  font-family: "Inter", sans-serif;
+  color: #000000;
+  font-size: clamp(13px, 0.83vw, 17px);
+  font-weight: 400;
+  margin: 0.5rem 0 0.2rem;
+}
+.allMapsContainer .mapListContainer .eachListCard .cardContent .cardDesc {
+  color: rgba(0, 0, 0, 0.7019607843);
+  font-family: "Inter", sans-serif;
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-weight: 400;
+}
+.allMapsContainer .mapListContainer .eachListCard .cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.allMapsContainer .mapListContainer .eachListCard .cardFooter .createDate {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(0, 0, 0, 0.7019607843);
+  font-family: "Inter", sans-serif;
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-weight: 400;
+  line-height: 100%;
+}
+.allMapsContainer .mapListContainer .eachListCard .cardFooter .previewBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #000000;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-weight: 400;
+  text-transform: capitalize;
+  letter-spacing: 0;
+}
+.allMapsContainer .mapListContainer .eachListCard .cardFooter .previewBtn:hover {
+  background-color: transparent;
+}
+
+.MuiMenu-paper {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.addMapDrawer {
+  z-index: 1300 !important;
+}
+.addMapDrawer .MuiBackdrop-root {
+  background: rgba(0, 0, 0, 0.1254901961);
+}
+.addMapDrawer .MuiPaper-root {
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+  border-radius: 8px 8px 0 0;
+  height: calc(100vh - 10px);
+  top: 10px;
+  right: 10px;
+  box-sizing: border-box;
+  padding: 0.5rem;
+}
+.addMapDrawer .dialogHedaer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 0.5rem 0;
+  border-bottom: 1px solid #dddddd;
+}
+.addMapDrawer .dialogHedaer .dialogHeading {
+  color: #000000;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(12px, 0.72vw, 15px);
+  font-weight: 400;
+}
+.addMapDrawer .dialogHedaer .iconBtn {
+  padding: 0;
+}
+.addMapDrawer .dialogHedaer .iconBtn:hover {
+  background-color: transparent;
+}
+.addMapDrawer .dialogBody {
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.addMapDrawer .dialogBody .eachFeildGrp {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.addMapDrawer .dialogBody .eachFeildGrp .label {
+  color: rgba(0, 0, 0, 0.6);
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-weight: 500;
+}
+.addMapDrawer .dialogBody .eachFeildGrp .defaultTextFeild.text .MuiInputBase-root {
+  height: 30px;
+}
+.addMapDrawer .dialogBody .eachFeildGrp .defaultTextFeild.multiline .MuiInputBase-root {
+  padding: 8px 14px;
+}
+.addMapDrawer .dialogBody .eachFeildGrp .defaultTextFeild .MuiInputBase-root {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 400;
+  font-size: 12px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1.4px solid #c8c7ce;
+  font-family: "Poppins", sans-serif;
+  width: 100%;
+}
+.addMapDrawer .dialogBody .eachFeildGrp .defaultTextFeild .MuiInputBase-root fieldset {
+  border: 0 !important;
+}
+.addMapDrawer .dialogBody .dialogActionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+.addMapDrawer .dialogBody .dialogActionBtn button {
+  text-transform: capitalize;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(12px, 0.72vw, 15px);
+  font-weight: 500;
+  padding: 6px 15px;
+}
+.addMapDrawer .dialogBody .dialogActionBtn button:first-child {
+  color: #75A237;
+}
+.addMapDrawer .dialogBody .dialogActionBtn button:first-child:hover {
+  background-color: transparent;
+}
+.addMapDrawer .dialogBody .dialogActionBtn button:last-child {
+  color: #ffffff;
+  background-color: #75A237;
+}
+
+.mapViewContainer {
+  width: 330px;
+  height: 100vh;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  padding: 0.5rem 0.5rem 0;
+}
+.mapViewContainer .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 0.5rem 0;
+  border-bottom: 1px solid #dddddd;
+}
+.mapViewContainer .header button {
+  text-transform: capitalize;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+}
+.mapViewContainer .header .backBtn {
+  font-size: clamp(12px, 0.72vw, 15px);
+  color: #000000;
+  padding: 0;
+}
+.mapViewContainer .header .actionGrp {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.mapViewContainer .header .actionGrp .importBtn {
+  border: 1px solid #3c4043;
+  padding: 2px 10px;
+  color: #ffffff;
+  font-size: clamp(11px, 0.62vw, 13px);
+  border-radius: 4px;
+  background: #3c4043;
+}
+.mapViewContainer .header .actionGrp .importBtn:hover {
+  background: #3c4043;
+}
+.mapViewContainer .header .actionGrp .iconBtn {
+  padding: 0;
+}
+.mapViewContainer .header .actionGrp .iconBtn:hover {
+  background: transparent;
+}
+.mapViewContainer .viewContent {
+  padding: 1rem 0 0;
+}
+.mapViewContainer .viewContent .mapDetails {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.mapViewContainer .viewContent .mapDetails .mapTitle {
+  color: rgba(0, 0, 0, 0.9019607843);
+  font-size: clamp(13px, 0.83vw, 17px);
+}
+.mapViewContainer .viewContent .mapDetails .mapCreated {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: clamp(11px, 0.62vw, 13px);
+}
+.mapViewContainer .viewContent .mapDetails .mapDescription {
+  color: rgba(0, 0, 0, 0.7019607843);
+  font-size: clamp(11px, 0.62vw, 13px);
+  margin-top: 0.5rem;
+}
+.mapViewContainer .viewContent .markersBlock {
+  margin-top: 1.5rem;
+}
+.mapViewContainer .viewContent .markersBlock .blockHeading {
+  color: #202124;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(13px, 0.83vw, 17px);
+  font-weight: 500;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList {
+  margin-top: 0.5rem;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .filterGrp {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 0.5rem;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .filterGrp .defaultTextFeild .MuiInputBase-root {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 500;
+  font-size: 12px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1.4px solid #c8c7ce;
+  background-color: #f2f2f2;
+  font-family: "Poppins", sans-serif;
+  width: 100%;
+  height: 30px;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .filterGrp .defaultTextFeild .MuiInputBase-root fieldset {
+  border: 0 !important;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .filterGrp .defaultAutoComplete {
+  width: 100%;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .filterGrp .defaultAutoComplete .MuiFormControl-root {
+  width: 100%;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .filterGrp .defaultAutoComplete .MuiInputBase-root {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 400;
+  font-size: 12px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1.4px solid #c8c7ce;
+  background-color: #f2f2f2;
+  font-family: "Poppins", sans-serif;
+  width: 100%;
+  height: 30px;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .filterGrp .defaultAutoComplete .MuiInputBase-root fieldset {
+  border: 0 !important;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .listContainer {
+  margin-top: 10px;
+  height: calc(100vh - 250px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .listContainer .eachListItem {
+  border-radius: 8px;
+  background: #edf5e0;
+  padding: 8px;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .listContainer .eachListItem .markerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .listContainer .eachListItem .markerHeader .location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #000000;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(12px, 0.72vw, 15px);
+  font-weight: 400;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .listContainer .eachListItem .markerHeader .locationType {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #000000;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-weight: 400;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .listContainer .eachListItem .markerDesc {
+  color: rgba(0, 0, 0, 0.8);
+  text-overflow: ellipsis;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-weight: 400;
+  line-height: 130%;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .listContainer .eachListItem .markerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .listContainer .eachListItem .markerFooter .latLang {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #034a75;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-weight: 400;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .listContainer .eachListItem .markerFooter .createdDate {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(0, 0, 0, 0.7019607843);
+  font-family: "Inter", sans-serif;
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-weight: 400;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .markersList .showAllBtn {
+  border-radius: 4px;
+  border: 1px solid #202124;
+  color: #202124;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-weight: 500;
+  text-transform: capitalize;
+  padding: 3px 12px;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .nodataGrp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 75vh;
+  width: 60%;
+  margin: 0 auto;
+}
+.mapViewContainer .viewContent .markersBlock .markersContainer .nodataGrp .nodataTxt {
+  color: #000000;
+  text-align: center;
+  font-family: "Inter", sans-serif;
+  font-size: clamp(12px, 0.72vw, 15px);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.addMarkerDialog {
+  padding: 0.8rem;
+}
+.addMarkerDialog .dialogHeading {
+  color: #000000;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(13px, 0.83vw, 17px);
+  font-weight: 500;
+  margin: 0 0 1rem 0;
+}
+.addMarkerDialog .eachFeildGrp {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+.addMarkerDialog .eachFeildGrp label {
+  margin-bottom: 5px;
+  color: rgba(0, 0, 0, 0.6);
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(11px, 0.62vw, 13px);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.addMarkerDialog .eachFeildGrp .defaultTextFeild.text .MuiInputBase-root {
+  height: 32px;
+}
+.addMarkerDialog .eachFeildGrp .defaultTextFeild .MuiInputBase-root {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 400;
+  font-size: 12px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1.4px solid #c8c7ce;
+  font-family: "Poppins", sans-serif;
+  width: 100%;
+}
+.addMarkerDialog .eachFeildGrp .defaultTextFeild .MuiInputBase-root fieldset {
+  border: 0 !important;
+}
+.addMarkerDialog .eachFeildGrp .defaultAutoComplete {
+  width: 100%;
+}
+.addMarkerDialog .eachFeildGrp .defaultAutoComplete .MuiFormControl-root {
+  width: 100%;
+}
+.addMarkerDialog .eachFeildGrp .defaultAutoComplete .MuiInputBase-root {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 400;
+  font-size: 12px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1.4px solid #c8c7ce;
+  font-family: "Poppins", sans-serif;
+  width: 100%;
+  height: 32px;
+}
+.addMarkerDialog .eachFeildGrp .defaultAutoComplete .MuiInputBase-root fieldset {
+  border: 0 !important;
+}
+.addMarkerDialog .actionBtnGrp {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.8rem;
+}
+.addMarkerDialog .actionBtnGrp button {
+  text-transform: capitalize;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(12px, 0.72vw, 15px);
+  font-weight: 500;
+}
+.addMarkerDialog .actionBtnGrp button:first-child {
+  color: #75A237;
+}
+.addMarkerDialog .actionBtnGrp button:first-child:hover {
+  background-color: transparent;
+}
+.addMarkerDialog .actionBtnGrp button:last-child {
+  background-color: #75A237;
+  color: #ffffff;
+  padding: 4px 20px;
+}
+
+.showAllMarkerDialog .dialogHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+}
+.showAllMarkerDialog .dialogHeader .dialogTitle {
+  color: #201c1c;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(13px, 0.83vw, 17px);
+  font-weight: 500;
+  letter-spacing: -0.25px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.showAllMarkerDialog .dialogHeader .filterGrp {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.showAllMarkerDialog .dialogHeader .filterGrp .defaultTextFeild .MuiInputBase-root {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 400;
+  font-size: 12px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1.4px solid #c8c7ce;
+  font-family: "Poppins", sans-serif;
+  width: 200px;
+  height: 30px;
+}
+.showAllMarkerDialog .dialogHeader .filterGrp .defaultTextFeild .MuiInputBase-root fieldset {
+  border: 0 !important;
+}
+.showAllMarkerDialog .dialogHeader .filterGrp .defaultAutoComplete {
+  width: 200px;
+}
+.showAllMarkerDialog .dialogHeader .filterGrp .defaultAutoComplete .MuiFormControl-root {
+  width: 100%;
+}
+.showAllMarkerDialog .dialogHeader .filterGrp .defaultAutoComplete .MuiInputBase-root {
+  background: #ffffff;
+  color: #000000;
+  font-weight: 400;
+  font-size: 12px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1.4px solid #c8c7ce;
+  font-family: "Poppins", sans-serif;
+  width: 100%;
+  height: 30px;
+}
+.showAllMarkerDialog .dialogHeader .filterGrp .defaultAutoComplete .MuiInputBase-root fieldset {
+  border: 0 !important;
+}
+.showAllMarkerDialog .dialogHeader .filterGrp .iconBtn {
+  padding: 0;
+}
+.showAllMarkerDialog .dialogHeader .filterGrp .iconBtn:hover {
+  background: transparent;
+}/*# sourceMappingURL=app.css.map */

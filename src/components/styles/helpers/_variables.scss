@@ -9,14 +9,16 @@ $textFeildStroke: #d2dff4;
 
 $fontPrimary: "Poppins", sans-serif;
 $font-secondary: "Inter", sans-serif;
+$font-urbanist:"Urbanist", sans-serif;
 
 //font sizes
 $font_12:clamp(11px, 0.62vw, 13px);
-$font_13:clamp(12px, 0.69vw, 14px);
+$font_13:clamp(11.5px, 0.69vw, 14px);
 $font_14:clamp(12px, 0.72vw, 15px);
 $font_16:clamp(13px, 0.83vw, 17px);
 $font_18:clamp(15px, 0.93vw, 19px);
 $font_20:clamp(18px, 1.04vw, 22px);
+$font_24:clamp(20px, 1.24vw, 26px);
 
 //font weights
 $fw_300:300;

@@ -35,7 +35,7 @@ const TablePaginationComponent = ({ paginationDetails, capturePageNum, captureRo
   );
 
   return (
-    <Card className="tablePagenationBlock">
+    <Card className="tablePagenationBlock" >
       <div className="tablePagination" >
         <div className="rowPerPage">
           <Typography className="label">

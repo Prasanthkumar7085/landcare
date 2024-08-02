@@ -37,6 +37,8 @@ const ViewGoogleMap = () => {
   const [singleMarkeropen, setSingleMarkerOpen] = useState(false);
   const [markerData, setMarkerData] = useState<any>();
   const [markerOption, setMarkerOption] = useState<any>();
+  const [singleMarkerLoading, setSingleMarkerLoading] = useState<any>(false);
+
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     state: "",
@@ -105,8 +107,8 @@ const ViewGoogleMap = () => {
   const renderAllMarkers = (markers1: any) => {
     markers1.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
-        markerData.coordinates[0] + index * 0.0001,
-        markerData.coordinates[1] + index * 0.0001
+        markerData.coordinates?.[0] + index * 0.0001,
+        markerData.coordinates?.[1] + index * 0.0001
       );
       const markere = new google.maps.Marker({
         position: latLng,
@@ -179,7 +181,7 @@ const ViewGoogleMap = () => {
 
   const getSingleMapMarkers = async ({
     page = 1,
-    limit = 5,
+    limit = 100,
     search_string = searchString,
     sort_by = markerOption?.value,
     sort_type = markerOption?.title,
@@ -205,7 +207,7 @@ const ViewGoogleMap = () => {
   useEffect(() => {
     getSingleMapMarkers({
       page: 1,
-      limit: 5,
+      limit: 100,
       search_string: searchString,
       sort_by: markerOption?.value,
       sort_type: markerOption?.title,
@@ -247,6 +249,7 @@ const ViewGoogleMap = () => {
           onClose={setSingleMarkerOpen}
           data={markerData}
           setData={setMarkerData}
+          singleMarkerLoading={singleMarkerLoading}
         />
       ) : (
         <ViewMapDetailsDrawer
@@ -255,12 +258,11 @@ const ViewGoogleMap = () => {
           setSearchString={setSearchString}
           searchString={searchString}
           setSingleMarkerOpen={setSingleMarkerOpen}
-          singleMarkeropen={singleMarkeropen}
           setMarkerData={setMarkerData}
-          markerData={markerData}
           setMarkerOption={setMarkerOption}
           markerOption={markerOption}
           getData={getSingleMapMarkers}
+          setSingleMarkerLoading={setSingleMarkerLoading}
         />
       )}
       <MarkerPopup
