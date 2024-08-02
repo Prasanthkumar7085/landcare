@@ -1,0 +1,23 @@
+ALTER TABLE "map_markers" ALTER COLUMN "title" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "description" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "type" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "coordinates" SET DEFAULT '[]'::jsonb;--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "color_code" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "state" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "city" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "zipcode" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "name" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "position" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "host_organization" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "lls_region" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "phone" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "email" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "location" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "post_code" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "map_markers" ALTER COLUMN "added_by" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "maps" ALTER COLUMN "description" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "maps" ALTER COLUMN "geo_type" SET DEFAULT 'polygon';--> statement-breakpoint
+ALTER TABLE "maps" ALTER COLUMN "geo_coordinates" SET DEFAULT '[]'::jsonb;--> statement-breakpoint
+ALTER TABLE "maps" ALTER COLUMN "geo_zoom" SET DEFAULT 0;--> statement-breakpoint
+ALTER TABLE "maps" ALTER COLUMN "image" SET DEFAULT '';--> statement-breakpoint
+ALTER TABLE "users" ALTER COLUMN "phone" SET DEFAULT '';
