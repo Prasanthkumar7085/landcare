@@ -33,7 +33,6 @@ const ImportModal: React.FC<IImportModalProps> = ({
 
   const [loading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState<any>();
-  const [coordinates, setCoordinates] = useState<any>([]);
   const [validationsData, setValidationsData] = useState<any>([]);
   const [success, setSuccess] = useState<any>(false);
 

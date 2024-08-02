@@ -45,6 +45,7 @@ const ViewGoogleMap = () => {
   const [singleMarkeropen, setSingleMarkerOpen] = useState(false);
   const [markerData, setMarkerData] = useState<any>({});
   const [markerOption, setMarkerOption] = useState<any>();
+  const [singleMarkerdata, setSingleMarkerData] = useState<any>();
 
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
@@ -110,8 +111,14 @@ const ViewGoogleMap = () => {
       }
     });
   };
-
+  const clearMarkers = () => {
+    markersRef.current.forEach(({ marker }) => {
+      marker.setMap(null);
+    });
+    markersRef.current = [];
+  };
   const renderAllMarkers = (markers1: any, map: any, maps: any) => {
+    clearMarkers();
     markers1.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
         markerData.coordinates?.[0] + index * 0.0001,
@@ -132,6 +139,7 @@ const ViewGoogleMap = () => {
       });
     });
   };
+
   const handleMarkerClick = (markerData: any, markere: google.maps.Marker) => {
     router.replace(`${pathName}?marker_id=${markerData?.id}`);
     setSingleMarkerOpen(true);
@@ -141,13 +149,12 @@ const ViewGoogleMap = () => {
         markerData?.coordinates[1]
       )
     );
-    map.setZoom(15);
+    map.setZoom(18);
     if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
       markere.setAnimation(null);
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
     }
-    currentBouncingMarker = markere;
   };
 
   const OtherMapOptions = (map: any, maps: any) => {
@@ -275,6 +282,8 @@ const ViewGoogleMap = () => {
             markersRef={markersRef}
             setMarkerData={setMarkerData}
             markerData={markerData}
+            data={singleMarkerdata}
+            setData={setSingleMarkerData}
           />
         ) : (
           <ViewMapDetailsDrawer
@@ -296,10 +305,11 @@ const ViewGoogleMap = () => {
           setShowMarkerPopup={setShowMarkerPopup}
           showMarkerPopup={showMarkerPopup}
           placeDetails={placeDetails}
-          getSingleMapMarkers={getSingleMapMarkers}
+          getSingleMapMarkers={getSingleMapDetails}
           removalMarker={removalMarker}
           popupFormData={markerData}
           setPopupFormData={setMarkerData}
+          setSingleMarkerData={setSingleMarkerData}
         />
       </div>
       <LoadingComponent loading={loading} />

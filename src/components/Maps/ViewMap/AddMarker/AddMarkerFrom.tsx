@@ -16,6 +16,7 @@ const MarkerPopup = ({
   removalMarker,
   popupFormData,
   setPopupFormData,
+  setSingleMarkerData,
 }: any) => {
   const { id } = useParams();
   const params = useSearchParams();
@@ -62,6 +63,7 @@ const MarkerPopup = ({
       const response = await getApiBasedOnParams(id);
       if (response?.status == 200 || response?.status == 201) {
         toast.success(response?.message);
+        setSingleMarkerData(response?.data);
         handleCancel();
         await getSingleMapMarkers({});
       } else if (response?.status == 422) {

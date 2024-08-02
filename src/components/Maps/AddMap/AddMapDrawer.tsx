@@ -94,7 +94,6 @@ const AddMapDrawer = ({
       geo_zoom: 14,
       image: mapImage,
     };
-    console.log(body, "Csdkkdksds");
     try {
       // if (!mapImage) {
       //   toast.warning("Error while getting map image!");

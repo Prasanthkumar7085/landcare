@@ -27,7 +27,8 @@ const ViewMarkerDrawer = ({
   setShowMarkerPopup,
   markersRef,
   setMarkerData,
-  markerData,
+  data,
+  setData,
 }: any) => {
   const { id } = useParams();
   const pathname = usePathname();
@@ -36,7 +37,6 @@ const ViewMarkerDrawer = ({
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const [data, setData] = useState<any>();
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -89,7 +89,7 @@ const ViewMarkerDrawer = ({
     if (params?.get("marker_id")) {
       getSingleMarker(params?.get("marker_id"));
     }
-  }, [params]);
+  }, [params?.get("marker_id")]);
   return (
     <div className="signleMarkerView">
       <header className="header">
