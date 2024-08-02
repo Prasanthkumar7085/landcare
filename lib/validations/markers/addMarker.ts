@@ -20,7 +20,7 @@ export const AddMarkerSchema = v.object({
     host_organization: v.optional(v.string()),
     lls_region: v.optional(v.string()),
     phone: v.optional(v.string()),
-    email: v.optional(v.string()),
+    email: v.optional(v.pipe(v.string(), v.email())),
     location: v.optional(v.string()),
     post_code: v.optional(v.string()),
 });

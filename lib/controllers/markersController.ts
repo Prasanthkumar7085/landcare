@@ -55,36 +55,12 @@ export class MarkersController {
                 return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
 
-            // const titles = reqData.map((marker: any) => marker.title);
-            // //Check for duplicated titles within reqData
-            // const titleCounts = titles.reduce((acc: any, title: string) => {
-            //     acc[title] = (acc[title] || 0) + 1;
-            //     return acc;
-            // }, {});
-
-            // const duplicatedTitles = Object.keys(titleCounts).filter(title => titleCounts[title] > 1);
-            // if (duplicatedTitles.length > 0) {
-            //     throw new ResourceAlreadyExistsError('title', `${DUPLICATED_MARKER_TITLE}: ${duplicatedTitles.join(', ')}`);
-            // }
-
-            // const existingMarkers = await markersDataServiceProvider.findByTitles(titles);
-            // if (existingMarkers.length > 0) {
-            //     // Extract existing titles
-            //     const existingTitles = existingMarkers.map(marker => marker.title);
-            //     if (existingTitles.length > 0) {
-            //         throw new ResourceAlreadyExistsError('title', `Titles already exist: ${existingTitles.join(', ')}`);
-            //     }
-            // }
-
             await markersDataServiceProvider.create(reqData);
 
             return ResponseHelper.sendSuccessResponse(200, MARKERS_IMPORTED);
 
         } catch (error: any) {
             console.log(error);
-            // if (error.validation_error) {
-            //     return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
-            // }
             return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
     }
@@ -118,10 +94,16 @@ export class MarkersController {
                 return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
 
-            const { page = 1, limit = 10, ...filteredQuery } = query;
+            let { page = 1, limit = 5, ...filteredQuery } = query;
+
+            let skip = (page - 1) * limit;
+            if (filteredQuery.get_all) {
+                limit = 0;
+                skip = 0
+            }
 
             const [markersData, markerCount]: any = await Promise.all([
-                markersDataServiceProvider.findAllByMapId(page, limit, mapId, filteredQuery),
+                markersDataServiceProvider.findAllByMapId(skip, limit, mapId, filteredQuery),
                 markersDataServiceProvider.findMarkersCount(filteredQuery, mapId)
             ])
 
@@ -165,7 +147,7 @@ export class MarkersController {
 
             const updatedData = await markersDataServiceProvider.update(markerId, reqData);
 
-            return ResponseHelper.sendSuccessResponse(200, MARKER_UPDATED,updatedData[0]);
+            return ResponseHelper.sendSuccessResponse(200, MARKER_UPDATED, updatedData[0]);
 
         } catch (error: any) {
             console.log(error);

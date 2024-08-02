@@ -40,7 +40,7 @@ export class MarkersDataServiceProvider {
         return markerData[0];
     }
 
-    async findAllByMapId(page: number, limit: number, mapId: number, filters: any) {
+    async findAllByMapId(skip: number, limit: number, mapId: number, filters: any) {
         let queryData: any = db.select({
             id: mapMarkers.id,
             name: mapMarkers.name,
@@ -58,7 +58,7 @@ export class MarkersDataServiceProvider {
             .from(mapMarkers)
             .where(eq(mapMarkers.map_id, mapId))
             .limit(limit)
-            .offset(limit * (page - 1))
+            .offset(skip)
              
         // Apply dynamic sorting
         if (filters.sort_by && filters.sort_type) {
