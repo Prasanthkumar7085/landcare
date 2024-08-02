@@ -1,14 +1,9 @@
 import * as v from 'valibot';
-
-enum Status{
-    true = 'true',
-    false = 'false'
-}
   
 export const AddMarkerSchema = v.object({
     title: v.optional(v.string()),
     description: v.optional(v.string()),
-    status: v.optional(v.enum(Status)),
+    status: v.optional(v.boolean()),
     type: v.optional(v.string()),
     full_address: v.optional(v.string()),
     state: v.optional(v.string()),
