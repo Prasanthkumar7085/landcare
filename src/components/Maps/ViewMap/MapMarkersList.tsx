@@ -7,8 +7,13 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import React, { useEffect, useState } from "react";
 import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import {
   mapTypeOptions,
@@ -24,25 +29,15 @@ const MapMarkersList = ({
   setSearchString,
   searchString,
   setSingleMarkerOpen,
-  setMarkerData,
   setMarkerOption,
   markerOption,
-  setSingleMarkerLoading,
+  map,
+  maps,
+  markersRef,
+  handleMarkerClick,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
-
-  const getSingleMarker = async (marker_id: any) => {
-    setSingleMarkerLoading(true);
-    try {
-      const response = await getSingleMarkerAPI(id, marker_id);
-      setMarkerData(response?.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSingleMarkerLoading(false);
-    }
-  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -80,55 +75,75 @@ const MapMarkersList = ({
       {singleMarkers?.length > 0 ? (
         <div>
           <div className="listContainer">
-            {singleMarkers?.slice(0, 10)?.map((marker: any, index: any) => (
-              <div
-                className="eachListItem"
-                key={index}
-                onClick={() => {
-                  setSingleMarkerOpen(true);
-                  getSingleMarker(marker?.id);
-                }}
-              >
-                <div className="markerHeader">
-                  <div className="location">
-                    <Image alt="" src="/avatar@2x.png" width={20} height={20} />
-                    <span>{marker?.name}</span>
+            {singleMarkers
+              ?.slice(0, 10)
+              ?.map((markerDetails: any, index: any) => (
+                <div
+                  className="eachListItem"
+                  key={index}
+                  onClick={() => {
+                    setSingleMarkerOpen(true);
+                    const markerEntry = markersRef.current.find(
+                      (entry: any) => entry.id === markerDetails?.id
+                    );
+                    if (markerEntry) {
+                      const { marker } = markerEntry;
+                      handleMarkerClick(markerDetails, marker);
+                    } else {
+                      console.error(`Marker with ID ${id} not found.`);
+                    }
+                  }}
+                >
+                  <div className="markerHeader">
+                    <div className="location">
+                      <Image
+                        alt=""
+                        src="/avatar@2x.png"
+                        width={20}
+                        height={20}
+                      />
+                      <span>{markerDetails?.name}</span>
+                    </div>
+                    <div className="locationType">
+                      <Image
+                        src={"/markers/marker-location-icon.svg"}
+                        width={12}
+                        height={12}
+                        alt="type"
+                      />
+                      <span>{markerDetails?.location}</span>
+                    </div>
                   </div>
-                  <div className="locationType">
-                    <Image
-                      src={"/markers/marker-location-icon.svg"}
-                      width={12}
-                      height={12}
-                      alt="type"
-                    />
-                    <span>{marker?.location}</span>
+                  <Typography className="markerDesc">
+                    {markerDetails?.lls_region}
+                  </Typography>
+
+                  <Typography className="markerDesc">
+                    {markerDetails?.host_organization}
+                  </Typography>
+
+                  <div className="markerFooter">
+                    <div className="latLang">
+                      <Image
+                        src="/map/location-blue.svg"
+                        alt=""
+                        width={10}
+                        height={10}
+                      />
+                      {markerDetails?.email}
+                    </div>
+                    <div className="createdDate">
+                      <Image
+                        src="/map/clock.svg"
+                        height={13}
+                        width={13}
+                        alt=""
+                      />
+                      <span>{markerDetails?.phone}</span>
+                    </div>
                   </div>
                 </div>
-                <Typography className="markerDesc">
-                  {marker?.lls_region}
-                </Typography>
-
-                <Typography className="markerDesc">
-                  {marker?.host_organization}
-                </Typography>
-
-                <div className="markerFooter">
-                  <div className="latLang">
-                    <Image
-                      src="/map/location-blue.svg"
-                      alt=""
-                      width={10}
-                      height={10}
-                    />
-                    {marker?.email}
-                  </div>
-                  <div className="createdDate">
-                    <Image src="/map/clock.svg" height={13} width={13} alt="" />
-                    <span>{marker?.phone}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
           <div style={{ textAlign: "end" }}>
             <Button

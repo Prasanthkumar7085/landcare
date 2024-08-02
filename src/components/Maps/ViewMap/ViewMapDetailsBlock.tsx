@@ -15,11 +15,13 @@ const ViewMapDetailsDrawer = ({
   setSearchString,
   searchString,
   setSingleMarkerOpen,
-  setMarkerData,
   setMarkerOption,
   markerOption,
   getData,
-  setSingleMarkerLoading,
+  map,
+  maps,
+  markersRef,
+  handleMarkerClick,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -64,7 +66,6 @@ const ViewMapDetailsDrawer = ({
   };
 
   const closeModal = () => {
-    console.log(3243232);
     setShowModal(false);
     setFile(null);
   };
@@ -112,10 +113,12 @@ const ViewMapDetailsDrawer = ({
               setSearchString={setSearchString}
               searchString={searchString}
               setSingleMarkerOpen={setSingleMarkerOpen}
-              setMarkerData={setMarkerData}
               setMarkerOption={setMarkerOption}
               markerOption={markerOption}
-              setSingleMarkerLoading={setSingleMarkerLoading}
+              map={map}
+              maps={maps}
+              markersRef={markersRef}
+              handleMarkerClick={handleMarkerClick}
             />
           </div>
         </div>

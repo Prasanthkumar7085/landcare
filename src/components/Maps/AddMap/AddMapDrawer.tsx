@@ -95,18 +95,16 @@ const AddMapDrawer = ({
       image: mapImage,
     };
     try {
-      if (!mapImage) {
-        toast.warning("Please add polygon!");
-        return;
-      } else {
-        const response = await getmapDetailsAPI(body);
-        if (response?.status == 200 || response?.status == 201) {
-          toast.success(response?.message);
-          dispatch(storeEditPolygonCoords([]));
-          router.push(`/add-markers/${response?.data?.id || id}`);
-        } else if (response?.status == 422) {
-          setErrorMessages(response?.error_data);
-        }
+      // if (!mapImage) {
+      //   toast.warning("Error while getting map image!");
+      // } else {
+      const response = await getmapDetailsAPI(body);
+      if (response?.status == 200 || response?.status == 201) {
+        toast.success(response?.message);
+        dispatch(storeEditPolygonCoords([]));
+        router.push(`/add-markers/${response?.data?.id || id}`);
+      } else if (response?.status == 422) {
+        setErrorMessages(response?.error_data);
       }
     } catch (err) {
       console.error(err);
@@ -116,12 +114,8 @@ const AddMapDrawer = ({
   };
   return (
     <div>
-      <Drawer
-        className="addMapDrawer"
-        open={addDrawerOpen}
-        anchor={"right"}
-      >
-        <div className="dialogHedaer"        >
+      <Drawer className="addMapDrawer" open={addDrawerOpen} anchor={"right"}>
+        <div className="dialogHedaer">
           <Typography className="dialogHeading">{"Add map"}</Typography>
           <IconButton
             className="iconBtn"
@@ -129,13 +123,12 @@ const AddMapDrawer = ({
               setAddDrawerOpen(false);
             }}
           >
-            <CloseIcon sx={{fontSize:"1rem"}} />
+            <CloseIcon sx={{ fontSize: "1rem" }} />
           </IconButton>
         </div>
-       
 
-        <div className="dialogBody" >
-          <div className="eachFeildGrp" >
+        <div className="dialogBody">
+          <div className="eachFeildGrp">
             <label className="label">Map Name</label>
             <TextField
               className="defaultTextFeild text"
@@ -146,7 +139,7 @@ const AddMapDrawer = ({
             />
             <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
           </div>
-          <div className="eachFeildGrp" >
+          <div className="eachFeildGrp">
             <label className="label">Map Description</label>
             <TextField
               className="defaultTextFeild multiline"
@@ -158,7 +151,7 @@ const AddMapDrawer = ({
               onChange={handleFieldValue}
             />
           </div>
-          <div className="dialogActionBtn"          >
+          <div className="dialogActionBtn">
             <Button
               disabled={loading ? true : false}
               onClick={() => {
@@ -168,9 +161,7 @@ const AddMapDrawer = ({
               Cancel
             </Button>
 
-            <Button
-              onClick={() => addMapWithCordinates()}
-            >
+            <Button onClick={() => addMapWithCordinates()}>
               {loading ? (
                 <CircularProgress
                   color="inherit"
