@@ -15,11 +15,13 @@ const ViewMapDetailsDrawer = ({
   setSearchString,
   searchString,
   setSingleMarkerOpen,
-  setMarkerData,
   setMarkerOption,
   markerOption,
   getData,
-  setSingleMarkerLoading,
+  map,
+  maps,
+  renderAllMarkers,
+  markers,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -112,10 +114,12 @@ const ViewMapDetailsDrawer = ({
               setSearchString={setSearchString}
               searchString={searchString}
               setSingleMarkerOpen={setSingleMarkerOpen}
-              setMarkerData={setMarkerData}
               setMarkerOption={setMarkerOption}
               markerOption={markerOption}
-              setSingleMarkerLoading={setSingleMarkerLoading}
+              map={map}
+              maps={maps}
+              renderAllMarkers={renderAllMarkers}
+              markers={markers}
             />
           </div>
         </div>

@@ -68,7 +68,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
             let jsonData = results.data;
             if (processImportedData(results.data)) {
               let markersData = await getImportedFilteredData({ jsonData });
-              // setValidationsData(markersData[1]);
+              setValidationsData(markersData[1]);
               await handleUpload(markersData[0]);
             }
           },
@@ -84,7 +84,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
           const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
           if (processImportedData(jsonData)) {
             let markersData = await getImportedFilteredData({ jsonData });
-            // setValidationsData(markersData[1]);
+            setValidationsData(markersData[1]);
             await handleUpload(markersData[0]);
           }
           reader.readAsArrayBuffer(file);

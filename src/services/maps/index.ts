@@ -63,6 +63,24 @@ export const addMarkerDeatilsAPI = async (id: any, body: any) => {
     throw err;
   }
 };
+export const updateMarkerDeatilsAPI = async (
+  id: any,
+  body: any,
+  markerID: any
+) => {
+  try {
+    const { success, data } = await $fetch.patch(
+      `/api/v1.0/maps/${id}/markers/${markerID}`,
+      body
+    );
+    if (!success) {
+      return handleAPIErrorResponse(data);
+    }
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
 
 export const getAllMapMarkersAPI = async (id: any, params: any) => {
   try {

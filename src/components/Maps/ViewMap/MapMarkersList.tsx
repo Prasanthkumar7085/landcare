@@ -7,8 +7,13 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import React, { useEffect, useState } from "react";
 import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import {
   mapTypeOptions,
@@ -24,25 +29,17 @@ const MapMarkersList = ({
   setSearchString,
   searchString,
   setSingleMarkerOpen,
-  setMarkerData,
   setMarkerOption,
   markerOption,
-  setSingleMarkerLoading,
+  map,
+  maps,
+  renderAllMarkers,
 }: any) => {
   const { id } = useParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const params = useSearchParams();
   const [open, setOpen] = React.useState(false);
-
-  const getSingleMarker = async (marker_id: any) => {
-    setSingleMarkerLoading(true);
-    try {
-      const response = await getSingleMarkerAPI(id, marker_id);
-      setMarkerData(response?.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSingleMarkerLoading(false);
-    }
-  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -85,8 +82,15 @@ const MapMarkersList = ({
                 className="eachListItem"
                 key={index}
                 onClick={() => {
+                  router.replace(`${pathname}?marker_id=${marker?.id}`);
                   setSingleMarkerOpen(true);
-                  getSingleMarker(marker?.id);
+                  map.setCenter(
+                    new google.maps.LatLng(
+                      marker?.coordinates[0],
+                      marker?.coordinates[1]
+                    )
+                  );
+                  map.setZoom(15);
                 }}
               >
                 <div className="markerHeader">

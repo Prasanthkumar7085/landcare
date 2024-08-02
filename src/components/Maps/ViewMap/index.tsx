@@ -1,4 +1,9 @@
-import { useParams, usePathname } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
@@ -14,9 +19,12 @@ import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
 
 const ViewGoogleMap = () => {
   const { id } = useParams();
-
+  const params = useSearchParams();
   const drawingManagerRef = useRef(null);
   const pathName = usePathname();
+  const router = useRouter();
+  let currentBouncingMarker: any = null;
+  const markersRef = useRef<any>([]);
 
   const [loading, setLoading] = useState(true);
   const [renderField, setRenderField] = useState(false);
@@ -35,9 +43,8 @@ const ViewGoogleMap = () => {
   const [localMarkers, setLocalMarkers] = useState<any>([]);
   const [overlays, setOverlays] = useState<any[]>([]);
   const [singleMarkeropen, setSingleMarkerOpen] = useState(false);
-  const [markerData, setMarkerData] = useState<any>();
+  const [markerData, setMarkerData] = useState<any>({});
   const [markerOption, setMarkerOption] = useState<any>();
-  const [singleMarkerLoading, setSingleMarkerLoading] = useState<any>(false);
 
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
@@ -104,7 +111,7 @@ const ViewGoogleMap = () => {
     });
   };
 
-  const renderAllMarkers = (markers1: any) => {
+  const renderAllMarkers = (markers1: any, map: any, maps: any) => {
     markers1.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
         markerData.coordinates?.[0] + index * 0.0001,
@@ -117,10 +124,29 @@ const ViewGoogleMap = () => {
         icon: {
           url: "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
-        animation: google.maps.Animation.DROP,
       });
+      markere.addListener("click", () => {
+        router.replace(`${pathName}?marker_id=${markerData?.id}`);
+        setSingleMarkerOpen(true);
+        map.setCenter(
+          new google.maps.LatLng(
+            markerData?.coordinates[0],
+            markerData?.coordinates[1]
+          )
+        );
+        map.setZoom(15);
 
-      markere.setMap(map);
+        if (currentBouncingMarker) {
+          currentBouncingMarker.setAnimation(null);
+        }
+        if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
+          markere.setAnimation(null);
+        } else {
+          markere.setAnimation(google.maps.Animation.BOUNCE);
+        }
+        currentBouncingMarker = markere;
+      });
+      markersRef.current.push(markere);
     });
   };
 
@@ -168,7 +194,7 @@ const ViewGoogleMap = () => {
         });
         await getSingleMapMarkers({
           page: 1,
-          limit: 5,
+          limit: 100,
         });
         setPolygonCoords(updatedArray);
       }
@@ -197,7 +223,7 @@ const ViewGoogleMap = () => {
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
       setMarkers(data);
-      renderAllMarkers(data);
+      renderAllMarkers(data, map, googleMaps);
       setSingleMarkers(data);
     } catch (err) {
       console.error(err);
@@ -226,14 +252,9 @@ const ViewGoogleMap = () => {
       });
 
       map.fitBounds(bounds);
+      renderAllMarkers(markers, map, googleMaps);
     }
   }, [map, googleMaps, markers]);
-
-  useEffect(() => {
-    if (markers?.length > 0 && map) {
-      renderAllMarkers(markers);
-    }
-  }, [markers, map]);
 
   return (
     <div
@@ -244,12 +265,15 @@ const ViewGoogleMap = () => {
         <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
       </div>
 
-      {singleMarkeropen == true ? (
+      {singleMarkeropen == true || params?.get("marker_id") ? (
         <ViewMarkerDrawer
           onClose={setSingleMarkerOpen}
+          getSingleMapMarkers={getSingleMapMarkers}
+          setShowMarkerPopup={setShowMarkerPopup}
           data={markerData}
           setData={setMarkerData}
-          singleMarkerLoading={singleMarkerLoading}
+          currentBouncingMarker={currentBouncingMarker}
+          markersRef={markersRef}
         />
       ) : (
         <ViewMapDetailsDrawer
@@ -258,11 +282,13 @@ const ViewGoogleMap = () => {
           setSearchString={setSearchString}
           searchString={searchString}
           setSingleMarkerOpen={setSingleMarkerOpen}
-          setMarkerData={setMarkerData}
           setMarkerOption={setMarkerOption}
           markerOption={markerOption}
           getData={getSingleMapMarkers}
-          setSingleMarkerLoading={setSingleMarkerLoading}
+          map={map}
+          maps={googleMaps}
+          renderAllMarkers={renderAllMarkers}
+          markers={markers}
         />
       )}
       <MarkerPopup
@@ -271,6 +297,8 @@ const ViewGoogleMap = () => {
         placeDetails={placeDetails}
         getSingleMapMarkers={getSingleMapMarkers}
         removalMarker={removalMarker}
+        popupFormData={markerData}
+        setPopupFormData={setMarkerData}
       />
 
       <LoadingComponent loading={loading} />

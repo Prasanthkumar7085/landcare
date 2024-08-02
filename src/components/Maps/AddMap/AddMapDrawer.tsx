@@ -94,6 +94,7 @@ const AddMapDrawer = ({
       geo_zoom: 14,
       image: mapImage,
     };
+    console.log(body, "Csdkkdksds");
     try {
       if (!mapImage) {
         toast.warning("Please add polygon!");
@@ -116,12 +117,8 @@ const AddMapDrawer = ({
   };
   return (
     <div>
-      <Drawer
-        className="addMapDrawer"
-        open={addDrawerOpen}
-        anchor={"right"}
-      >
-        <div className="dialogHedaer"        >
+      <Drawer className="addMapDrawer" open={addDrawerOpen} anchor={"right"}>
+        <div className="dialogHedaer">
           <Typography className="dialogHeading">{"Add map"}</Typography>
           <IconButton
             className="iconBtn"
@@ -129,13 +126,12 @@ const AddMapDrawer = ({
               setAddDrawerOpen(false);
             }}
           >
-            <CloseIcon sx={{fontSize:"1rem"}} />
+            <CloseIcon sx={{ fontSize: "1rem" }} />
           </IconButton>
         </div>
-       
 
-        <div className="dialogBody" >
-          <div className="eachFeildGrp" >
+        <div className="dialogBody">
+          <div className="eachFeildGrp">
             <label className="label">Map Name</label>
             <TextField
               className="defaultTextFeild text"
@@ -146,7 +142,7 @@ const AddMapDrawer = ({
             />
             <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
           </div>
-          <div className="eachFeildGrp" >
+          <div className="eachFeildGrp">
             <label className="label">Map Description</label>
             <TextField
               className="defaultTextFeild multiline"
@@ -158,7 +154,7 @@ const AddMapDrawer = ({
               onChange={handleFieldValue}
             />
           </div>
-          <div className="dialogActionBtn"          >
+          <div className="dialogActionBtn">
             <Button
               disabled={loading ? true : false}
               onClick={() => {
@@ -168,9 +164,7 @@ const AddMapDrawer = ({
               Cancel
             </Button>
 
-            <Button
-              onClick={() => addMapWithCordinates()}
-            >
+            <Button onClick={() => addMapWithCordinates()}>
               {loading ? (
                 <CircularProgress
                   color="inherit"

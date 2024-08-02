@@ -1,22 +1,95 @@
+import DeleteDialog from "@/components/Core/DeleteDialog";
 import { datePipe } from "@/lib/helpers/datePipe";
+import { deleteMarkerAPI, getSingleMarkerAPI } from "@/services/maps";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ShareIcon from "@mui/icons-material/Share";
+import { Menu, MenuItem } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-// import styles from "./view-map-block.module.css";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const ViewMarkerDrawer = ({
+  onClose,
+  getSingleMapMarkers,
+  currentBouncingMarkerRef,
+  setShowMarkerPopup,
   data,
   setData,
-  onClose,
-  singleMarkerLoading,
+  currentBouncingMarker,
+  markersRef,
 }: any) => {
+  const { id } = useParams();
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const router = useRouter();
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [singleMarkerLoading, setSingleMarkerLoading] = useState(false);
+
+  const getSingleMarker = async (marker_id: any) => {
+    setSingleMarkerLoading(true);
+    let markerID = marker_id;
+    try {
+      const response = await getSingleMarkerAPI(id, markerID);
+      setData(response?.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSingleMarkerLoading(false);
+    }
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClickDeleteOpen = () => {
+    setDeleteOpen(true);
+  };
+  const handleDeleteCose = () => {
+    setDeleteOpen(false);
+  };
+
+  const deleteMarker = async () => {
+    setLoading(true);
+    try {
+      const response = await deleteMarkerAPI(id, data?.id);
+      toast.success(response?.message);
+      onClose();
+      getSingleMapMarkers({});
+      handleDeleteCose();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (params?.get("marker_id")) {
+      getSingleMarker(params?.get("marker_id"));
+    }
+  }, [params]);
   return (
     <div className="signleMarkerView">
       <header className="header">
@@ -26,14 +99,20 @@ const ViewMarkerDrawer = ({
             <Image src="/map/map-backBtn.svg" alt="" height={15} width={15} />
           }
           onClick={() => {
-            onClose(false);
+            onClose();
             setData({});
+            router.replace(`${pathname}`);
+            markersRef.current.forEach((marker: any) => {
+              if (marker.getAnimation() === google.maps.Animation.BOUNCE) {
+                marker.setAnimation(null);
+              }
+            });
           }}
         >
           Back
         </Button>
 
-        <IconButton className="iconBtn">
+        <IconButton className="iconBtn" onClick={handleClick}>
           <Image src="/map/menu-with-bg.svg" alt="" height={28} width={28} />
         </IconButton>
       </header>
@@ -132,6 +211,43 @@ const ViewMarkerDrawer = ({
           </IconButton>
         </div>
       </Box>
+      <Menu
+        sx={{ mt: 1 }}
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+      >
+        <MenuItem
+          className="menuItem"
+          onClick={() => {
+            setShowMarkerPopup(true);
+            handleClose();
+          }}
+        >
+          Edit
+        </MenuItem>
+        <MenuItem
+          className="menuItem"
+          onClick={() => {
+            handleClickDeleteOpen();
+            handleClose();
+          }}
+        >
+          Delete
+        </MenuItem>
+      </Menu>
+      <DeleteDialog
+        deleteOpen={deleteOpen}
+        handleDeleteCose={handleDeleteCose}
+        deleteFunction={deleteMarker}
+        lable="Delete Marker"
+        text="Are you sure want to delete marker?"
+        loading={loading}
+      />
     </div>
   );
 };
