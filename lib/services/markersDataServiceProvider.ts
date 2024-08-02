@@ -99,7 +99,7 @@ export class MarkersDataServiceProvider {
         return await db
             .update(mapMarkers)
             .set(data)
-            .where(eq(mapMarkers.id, id))
+            .where(eq(mapMarkers.id, id)).returning()
     }
 
     async delete(id: number) {

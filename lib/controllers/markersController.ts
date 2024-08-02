@@ -163,9 +163,9 @@ export class MarkersController {
             //     throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
             // }
 
-            await markersDataServiceProvider.update(markerId, reqData);
+            const updatedData = await markersDataServiceProvider.update(markerId, reqData);
 
-            return ResponseHelper.sendSuccessResponse(200, MARKER_UPDATED);
+            return ResponseHelper.sendSuccessResponse(200, MARKER_UPDATED,updatedData[0]);
 
         } catch (error: any) {
             console.log(error);
