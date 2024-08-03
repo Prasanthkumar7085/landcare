@@ -78,19 +78,58 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
 
   let errorsData = validationsForImportedData({ filteredDataObjects });
   let data = errorsData.validData;
+
   if (data?.length > 0) {
-    data = await Promise.allSettled(
-      data.map(async (obj: any) => {
-        if (obj.location) {
-          const coords = await getCoordinates(obj.location);
-          return { ...obj, coordinates: coords };
+    const locationToCoordinatesMap: any = {};
+    const locationsToFetch: string[] = [];
+
+    data.forEach((obj: any) => {
+      if (obj.location && !locationToCoordinatesMap[obj.location]) {
+        locationsToFetch.push(obj.location);
+      }
+    });
+
+    const coordinatesPromises = locationsToFetch.map(
+      async (location: string) => {
+        try {
+          const coords = await getCoordinates(location);
+          return { location, coords, error: null };
+        } catch (error) {
+          return { location, coords: null, error };
         }
-        return obj;
-      })
+      }
     );
+
+    const coordinatesResults = await Promise.allSettled(coordinatesPromises);
+
+    coordinatesResults.forEach((result: any) => {
+      if (result.status === "fulfilled") {
+        const { location, coords, error } = result.value;
+        if (!error) {
+          locationToCoordinatesMap[location] = coords;
+        } else {
+          console.error(
+            `Failed to fetch coordinates for location: ${location}`,
+            error
+          );
+        }
+      } else {
+        console.error("Promise rejected:", result.reason);
+      }
+    });
+    const updatedData = data.map((obj: any) => {
+      if (obj.location) {
+        return {
+          ...obj,
+          coordinates: locationToCoordinatesMap[obj.location] || null,
+        };
+      }
+      return obj;
+    });
+
+    return [updatedData, errorsData?.errors];
   }
-  let filterData = data.map((item) => item.value);
-  return [filterData, errorsData?.errors];
+  return [filteredDataObjects, errorsData?.errors];
 };
 
 const validationsForImportedData = ({ filteredDataObjects }: any) => {

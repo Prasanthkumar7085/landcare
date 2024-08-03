@@ -17,13 +17,14 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
 import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
-import { copyURL } from "@/lib/helpers/copyURL";
+import { copyEmbededIframeUrl, copyURL } from "@/lib/helpers/copyURL";
 import { datePipe } from "@/lib/helpers/datePipe";
 import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
 import DeleteDialog from "../Core/DeleteDialog";
 import LoadingComponent from "../Core/LoadingComponent";
 import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
+import ShareLinkDialog from "../Core/ShareLinkDialog";
 
 const Maps = () => {
   const useParam = useSearchParams();
@@ -36,6 +37,9 @@ const Maps = () => {
   const [paginationDetails, setPaginationDetails] = useState({});
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [mapId, setMapId] = useState<any>();
+  const [singleMapDetails, setSingleMapDetails] = useState<any>({});
+  const [shareLinkDialogOpen, setShareDialogOpen] = useState<boolean>(false);
+  const [shareMenuOpen, setShareMenuOpen] = useState<any>(false);
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
   );
@@ -48,6 +52,7 @@ const Maps = () => {
   };
 
   const handleCloseUserMenu = () => {
+    setShareMenuOpen(false);
     setAnchorElUser(null);
   };
 
@@ -157,63 +162,47 @@ const Maps = () => {
                       width={100}
                       height={150}
                     />
-                    <IconButton
-                      className="iconBtn"
-                      onClick={(event) => {
-                        handleOpenUserMenu(event);
-                        setMapId(item?.id);
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
                       }}
                     >
-                      <Image
-                        src="/map/menu-icon.svg"
-                        alt=""
-                        height={30}
-                        width={30}
-                      />
-                    </IconButton>
+                      <IconButton
+                        className="iconBtn1"
+                        onClick={(event) => {
+                          setShareMenuOpen(true);
+                          handleOpenUserMenu(event);
+                          setMapId(item?.id);
+                          setSingleMapDetails(item);
+                        }}
+                      >
+                        <Image
+                          src="/map/redo-arrow-icon.svg"
+                          alt=""
+                          height={20}
+                          width={20}
+                        />
+                      </IconButton>
+                      <IconButton
+                        className="iconBtn2"
+                        onClick={(event) => {
+                          handleOpenUserMenu(event);
+                          setMapId(item?.id);
+                          setSingleMapDetails(item);
+                        }}
+                      >
+                        <Image
+                          src="/map/menu-icon.svg"
+                          alt=""
+                          height={30}
+                          width={30}
+                        />
+                      </IconButton>
+                    </div>
                   </div>
 
-                  <Menu
-                    sx={{ mt: "30px" }}
-                    id="menu-appbar"
-                    anchorEl={anchorElUser}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    open={Boolean(anchorElUser)}
-                    onClose={handleCloseUserMenu}
-                  >
-                    <MenuItem
-                      className="menuItem"
-                      onClick={handleCloseUserMenu}
-                    >
-                      Open In New Tab
-                    </MenuItem>
-                    <MenuItem
-                      className="menuItem"
-                      onClick={() => {
-                        copyURL(mapId);
-                        handleCloseUserMenu();
-                      }}
-                    >
-                      Copy
-                    </MenuItem>
-                    <MenuItem
-                      className="menuItem"
-                      onClick={() => {
-                        handleCloseUserMenu();
-                        handleClickDeleteOpen();
-                      }}
-                    >
-                      Delete
-                    </MenuItem>
-                  </Menu>
                   <div className="cardContent">
                     <Typography className="cardTitle">
                       <Tooltip
@@ -338,6 +327,84 @@ const Maps = () => {
         text="Are you sure want to delete map?"
         loading={showLoading}
       />
+      <ShareLinkDialog
+        open={shareLinkDialogOpen}
+        setShareDialogOpen={setShareDialogOpen}
+        mapDetails={singleMapDetails}
+      />
+
+      <Menu
+        sx={{ mt: "30px" }}
+        id="menu-appbar"
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
+      >
+        {!shareMenuOpen && Boolean(anchorElUser) ? (
+          <div>
+            <MenuItem
+              className="menuItem"
+              onClick={() => {
+                window.open(
+                  `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.id}`,
+                  "_blank"
+                );
+                handleCloseUserMenu();
+              }}
+            >
+              Open In New Tab
+            </MenuItem>
+
+            <MenuItem
+              className="menuItem"
+              onClick={() => {
+                copyURL(mapId);
+                handleCloseUserMenu();
+              }}
+            >
+              Copy
+            </MenuItem>
+            <MenuItem
+              className="menuItem"
+              onClick={() => {
+                handleCloseUserMenu();
+                handleClickDeleteOpen();
+              }}
+            >
+              Delete
+            </MenuItem>
+          </div>
+        ) : (
+          <div style={{ display: Boolean(anchorElUser) ? "" : "none" }}>
+            <MenuItem
+              className="menuItem"
+              onClick={() => {
+                handleCloseUserMenu();
+                setShareDialogOpen(true);
+              }}
+            >
+              Share Link
+            </MenuItem>
+            <MenuItem
+              className="menuItem"
+              onClick={() => {
+                copyEmbededIframeUrl(mapId);
+                handleCloseUserMenu();
+              }}
+            >
+              Copy Embeded Url
+            </MenuItem>
+          </div>
+        )}
+      </Menu>
       <LoadingComponent loading={loading} />
     </div>
   );

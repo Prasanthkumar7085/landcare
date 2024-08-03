@@ -1,3 +1,12 @@
+import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
+import { checkAllowedValidText } from "@/lib/helpers/inputCheckingFunctions";
+import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
+import {
+  addMapWithCordinatesAPI,
+  getStaticMapAPI,
+  updateMapWithCordinatesAPI,
+} from "@/services/maps";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Button,
   CircularProgress,
@@ -6,20 +15,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-import {
-  addMapWithCordinatesAPI,
-  getStaticMapAPI,
-  updateMapWithCordinatesAPI,
-} from "@/services/maps";
-import { useDispatch, useSelector } from "react-redux";
-import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
 import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
-import LoadingComponent from "@/components/Core/LoadingComponent";
-import { checkAllowedValidText } from "@/lib/helpers/inputCheckingFunctions";
 
 const AddMapDrawer = ({
   mapDetails,
@@ -30,6 +29,7 @@ const AddMapDrawer = ({
   closeDrawing,
   map,
   mapRef,
+  getSingleMapDetails,
 }: any) => {
   const { id } = useParams();
 
@@ -102,6 +102,7 @@ const AddMapDrawer = ({
       if (response?.status == 200 || response?.status == 201) {
         toast.success(response?.message);
         dispatch(storeEditPolygonCoords([]));
+        setErrorMessages([]);
         router.push(`/add-markers/${response?.data?.id || id}`);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
@@ -116,11 +117,15 @@ const AddMapDrawer = ({
     <div>
       <Drawer className="addMapDrawer" open={addDrawerOpen} anchor={"right"}>
         <div className="dialogHedaer">
-          <Typography className="dialogHeading">{"Add map"}</Typography>
+          <Typography className="dialogHeading">
+            {id ? "Update map" : "Add map"}
+          </Typography>
           <IconButton
             className="iconBtn"
             onClick={() => {
               setAddDrawerOpen(false);
+              getSingleMapDetails();
+              setErrorMessages([]);
             }}
           >
             <CloseIcon sx={{ fontSize: "1rem" }} />
@@ -156,17 +161,24 @@ const AddMapDrawer = ({
               disabled={loading ? true : false}
               onClick={() => {
                 setAddDrawerOpen(false);
+                getSingleMapDetails();
+                setErrorMessages([]);
               }}
             >
               Cancel
             </Button>
 
-            <Button onClick={() => addMapWithCordinates()}>
+            <Button
+              onClick={() => addMapWithCordinates()}
+              disabled={loading ? true : false}
+            >
               {loading ? (
                 <CircularProgress
                   color="inherit"
                   sx={{ width: "10px", height: "10px" }}
                 />
+              ) : id ? (
+                "Update Map"
               ) : (
                 "Save Map"
               )}

@@ -104,11 +104,21 @@
           height: 100% !important;
           border-radius: 8px 8px 0 0;
         }
-        .iconBtn {
+        .iconBtn2 {
           position: absolute;
           top: 0;
           right: 10px;
           padding: 0;
+          &:hover {
+            background-color: transparent;
+          }
+        }
+        .iconBtn1 {
+          position: absolute;
+          top: 0;
+          right: 45px;
+          padding: 0;
+          margin-top: 4px;
           &:hover {
             background-color: transparent;
           }
@@ -158,7 +168,7 @@
           font-weight: $fw-400;
           text-transform: capitalize;
           letter-spacing: 0;
-           &:hover {
+          &:hover {
             background-color: transparent;
           }
         }
@@ -167,4 +177,5 @@
   }
 }
 .MuiMenu-paper {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);}
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

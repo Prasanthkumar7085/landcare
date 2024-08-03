@@ -1,12 +1,15 @@
+import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
-import ViewMarkerDrawer from "@/components/Maps/ViewMap/ViewMarkerDrawer";
+import { markerFilterOptions } from "@/lib/constants/mapConstants";
 import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
 import {
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
 } from "@/services/maps";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import { InputAdornment, TextField } from "@mui/material";
+import Image from "next/image";
 import {
   useParams,
   usePathname,
@@ -14,12 +17,10 @@ import {
   useSearchParams,
 } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import MarkerPopup from "./AddMarker/AddMarkerFrom";
-import styles from "./view-map.module.css";
-import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
-import { param } from "drizzle-orm";
+import styles from "../view-map.module.css";
+import ViewPublicMarkerDrawer from "./ViewPublicMarkerDrawer";
 
-const ViewGoogleMap = () => {
+const PublicMap = () => {
   const { id } = useParams();
   const params = useSearchParams();
   const drawingManagerRef: any = useRef(null);
@@ -32,13 +33,11 @@ const ViewGoogleMap = () => {
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
   );
   const [loading, setLoading] = useState(true);
-  const [renderField, setRenderField] = useState(false);
   const [map, setMaps] = useState<any>(null);
   const [googleMaps, setGoogleMaps] = useState<any>(null);
   const [mapDetails, setMapDetails] = useState<any>({});
   const [polygonCoords, setPolygonCoords] = useState<any>([]);
   const [markers, setMarkers] = useState<any[]>([]);
-  const [mapRef, setMapRef] = useState<any>(null);
   const [singleMarkers, setSingleMarkers] = useState<any[]>([]);
   const [searchString, setSearchString] = useState("");
   const [showMarkerPopup, setShowMarkerPopup] = useState(false);
@@ -50,7 +49,7 @@ const ViewGoogleMap = () => {
   const [markerOption, setMarkerOption] = useState<any>();
   const [singleMarkerdata, setSingleMarkerData] = useState<any>();
   const [singleMarkerLoading, setSingleMarkerLoading] = useState(false);
-
+  const [markersOpen, setMarkersOpen] = useState<any>(false);
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     state: "",
@@ -61,24 +60,6 @@ const ViewGoogleMap = () => {
     social_links: [],
     coordinates: [],
   });
-
-  const removalMarker = (markerIndex: number) => {
-    const marker = localMarkers[markerIndex];
-    if (marker) {
-      marker.setMap(null);
-      setLocalMarkers((prevMarkers: any) =>
-        prevMarkers.filter((_: any, i: any) => i !== markerIndex)
-      );
-    }
-    const overlay = overlays[markerIndex];
-    if (overlay) {
-      overlay.setMap(null);
-      setOverlays((prevOverlays: any) =>
-        prevOverlays.filter((_: any, i: any) => i !== markerIndex)
-      );
-    }
-    renderAllMarkers(markers, map, googleMaps);
-  };
 
   const addMarkerEVent = (event: any, map: any, maps: any) => {
     const marker = new google.maps.Marker({
@@ -141,7 +122,6 @@ const ViewGoogleMap = () => {
           url: "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
         animation: google.maps.Animation.DROP,
-        draggable: true,
       });
       markersRef.current.push({ id: markerData.id, marker: markere });
 
@@ -188,7 +168,7 @@ const ViewGoogleMap = () => {
     setMaps(map);
     setGoogleMaps(maps);
     const drawingManager = new maps.drawing.DrawingManager({
-      drawingControl: true,
+      drawingControl: false,
       drawingControlOptions: {
         position: maps.ControlPosition.LEFT_CENTER,
         drawingModes: [google.maps.drawing.OverlayType.MARKER],
@@ -320,10 +300,59 @@ const ViewGoogleMap = () => {
       >
         <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
           <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
+          <div
+            className={styles.filterGrp}
+            style={{
+              position: "absolute",
+              top: "0",
+              left: "22%",
+            }}
+          >
+            <TextField
+              variant="outlined"
+              size="small"
+              type="search"
+              placeholder="Search on name"
+              value={searchString}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  border: "1.4px solid #c8c7ce",
+                  backgroundColor: "#f2f2f2",
+                  width: " 100%",
+                  height: "38px",
+                  background: "#ffffff",
+                  color: "black",
+                  fontWeight: 500,
+                  fontSize: "12px",
+                  padding: "8px 13px",
+                  boxSizing: " border-box",
+                  borderRadius: "8px",
+                },
+              }}
+              onChange={(e) => setSearchString(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Image
+                      src="/search-icon.svg"
+                      alt=""
+                      width={15}
+                      height={15}
+                    />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <AutoCompleteSearch
+              data={markerFilterOptions}
+              setSelectValue={setMarkerOption}
+              selectedValue={markerOption}
+              placeholder="Search Filter"
+            />
+          </div>
         </div>
-
         {singleMarkeropen == true || params?.get("marker_id") ? (
-          <ViewMarkerDrawer
+          <ViewPublicMarkerDrawer
             onClose={setSingleMarkerOpen}
             getSingleMapMarkers={getSingleMapMarkers}
             setShowMarkerPopup={setShowMarkerPopup}
@@ -339,36 +368,14 @@ const ViewGoogleMap = () => {
             drawingManagerRef={drawingManagerRef}
             setSingleMarkerLoading={setSingleMarkerLoading}
             singleMarkerLoading={singleMarkerLoading}
+            setMarkersOpen={setMarkersOpen}
           />
         ) : (
-          <ViewMapDetailsDrawer
-            mapDetails={mapDetails}
-            singleMarkers={singleMarkers}
-            setSearchString={setSearchString}
-            searchString={searchString}
-            setSingleMarkerOpen={setSingleMarkerOpen}
-            setMarkerOption={setMarkerOption}
-            markerOption={markerOption}
-            getData={getSingleMapMarkers}
-            map={map}
-            maps={googleMaps}
-            markersRef={markersRef}
-            handleMarkerClick={handleMarkerClick}
-          />
+          ""
         )}
-        <MarkerPopup
-          setShowMarkerPopup={setShowMarkerPopup}
-          showMarkerPopup={showMarkerPopup}
-          placeDetails={placeDetails}
-          getSingleMapMarkers={getSingleMapDetails}
-          removalMarker={removalMarker}
-          popupFormData={markerData}
-          setPopupFormData={setMarkerData}
-          setSingleMarkerData={setSingleMarkerData}
-        />
       </div>
       <LoadingComponent loading={loading || singleMarkerLoading} />
     </>
   );
 };
-export default ViewGoogleMap;
+export default PublicMap;

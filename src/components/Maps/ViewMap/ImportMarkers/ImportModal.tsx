@@ -68,7 +68,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
             if (processImportedData(results.data)) {
               let markersData = await getImportedFilteredData({ jsonData });
               setValidationsData(markersData[1]);
-              await handleUpload(markersData[0]);
+              await handleUpload(markersData);
             }
           },
           header: false,
@@ -84,7 +84,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
           if (processImportedData(jsonData)) {
             let markersData = await getImportedFilteredData({ jsonData });
             setValidationsData(markersData[1]);
-            await handleUpload(markersData[0]);
+            await handleUpload(markersData);
           }
           reader.readAsArrayBuffer(file);
         };
@@ -98,12 +98,12 @@ const ImportModal: React.FC<IImportModalProps> = ({
     setLoading(true);
 
     try {
-      let body = filedata;
+      let body = filedata[0];
       const response = await importMapAPI(id, body);
 
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response.message);
-        if (validationsData?.length == 0) {
+        if (filedata?.[0]?.length == 0) {
           await getData({});
           onClose();
           setFile(null);

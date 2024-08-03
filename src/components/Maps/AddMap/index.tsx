@@ -228,7 +228,7 @@ const AddPolygon = () => {
         map.fitBounds(bounds);
       }
     }
-  }, [map, googleMaps]);
+  }, [map, googleMaps, polygonCoords]);
 
   return (
     <div className={styles.markersPageWeb}>
@@ -314,6 +314,7 @@ const AddPolygon = () => {
         closeDrawing={closeDrawing}
         map={map}
         mapRef={mapRef}
+        getSingleMapDetails={getSingleMapDetails}
       />
     </div>
   );

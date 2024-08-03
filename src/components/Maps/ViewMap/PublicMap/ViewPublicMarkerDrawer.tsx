@@ -17,7 +17,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const ViewMarkerDrawer = ({
+const ViewPublicMarkerDrawer = ({
   onClose,
   getSingleMapMarkers,
   setShowMarkerPopup,
@@ -31,6 +31,7 @@ const ViewMarkerDrawer = ({
   drawingManagerRef,
   setSingleMarkerLoading,
   singleMarkerLoading,
+  setMarkersOpen,
 }: any) => {
   const { id } = useParams();
   const pathname = usePathname();
@@ -102,6 +103,7 @@ const ViewMarkerDrawer = ({
           onClick={() => {
             onClose();
             setData({});
+            setMarkersOpen(true);
             router.replace(`${pathname}`);
             markersRef.current.forEach(({ marker }: any) => {
               if (marker.getAnimation() === google.maps.Animation.BOUNCE) {
@@ -109,9 +111,6 @@ const ViewMarkerDrawer = ({
               }
             });
             boundToMapWithPolygon(polygonCoords, map);
-            if (drawingManagerRef.current && params?.get("marker_id")) {
-              drawingManagerRef.current.setOptions({ drawingControl: true });
-            }
             setMarkerData({});
           }}
         >
@@ -258,4 +257,4 @@ const ViewMarkerDrawer = ({
   );
 };
 
-export default ViewMarkerDrawer;
+export default ViewPublicMarkerDrawer;

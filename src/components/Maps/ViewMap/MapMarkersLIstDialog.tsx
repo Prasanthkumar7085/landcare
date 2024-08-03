@@ -16,6 +16,8 @@ import LoadingComponent from "@/components/Core/LoadingComponent";
 import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import { ListMarkersColumns } from "./ListMarkersColumns";
 import Image from "next/image";
+import { copyURL } from "@/lib/helpers/copyURL";
+import ShareLinkDialog from "@/components/Core/ShareLinkDialog";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -42,6 +44,8 @@ const MapMarkersListDialog = ({
   const [loading, setLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [shareLinkDialogOpen, setShareDialogOpen] = useState<boolean>(false);
+  const [singleMapDetails, setSingleMapDetails] = useState<any>({});
 
   const handleClickDeleteOpen = (id: any) => {
     setDeleteOpen(true);
@@ -123,8 +127,25 @@ const MapMarkersListDialog = ({
           >
             <Image src="/map/table/view.svg" alt="" width={15} height={15} />
           </IconButton>
-          <Image src="/map/table/share.svg" alt="" width={15} height={15} />
-          <Image src="/map/table/copy.svg" alt="" width={15} height={15} />
+
+          <IconButton
+            className="iconBtn"
+            onClick={() => {
+              setShareDialogOpen(true);
+              setSingleMapDetails(info?.row?.original);
+            }}
+          >
+            <Image src="/map/table/share.svg" alt="" width={15} height={15} />
+          </IconButton>
+
+          <IconButton
+            className="iconBtn"
+            onClick={() => {
+              copyURL(info?.row?.original?.id);
+            }}
+          >
+            <Image src="/map/table/copy.svg" alt="" width={15} height={15} />
+          </IconButton>
           <IconButton
             className="iconBtn"
             onClick={() => {
@@ -240,6 +261,11 @@ const MapMarkersListDialog = ({
         lable="Delete Marker"
         text="Are you sure want to delete marker?"
         loading={loading}
+      />
+      <ShareLinkDialog
+        open={shareLinkDialogOpen}
+        setShareDialogOpen={setShareDialogOpen}
+        mapDetails={singleMapDetails}
       />
       <LoadingComponent loading={showLoading} />
     </BootstrapDialog>
