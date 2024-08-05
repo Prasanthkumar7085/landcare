@@ -35,6 +35,7 @@ const MapMarkersList = ({
   maps,
   markersRef,
   handleMarkerClick,
+  getSingleMapMarkers,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
@@ -173,6 +174,7 @@ const MapMarkersList = ({
         handleClose={handleClose}
         markersRef={markersRef}
         handleMarkerClick={handleMarkerClick}
+        getSingleMapMarkers={getSingleMapMarkers}
       />
     </div>
   );

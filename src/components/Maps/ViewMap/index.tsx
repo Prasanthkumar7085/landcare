@@ -354,6 +354,7 @@ const ViewGoogleMap = () => {
             maps={googleMaps}
             markersRef={markersRef}
             handleMarkerClick={handleMarkerClick}
+            getSingleMapMarkers={getSingleMapMarkers}
           />
         )}
         <MarkerPopup
