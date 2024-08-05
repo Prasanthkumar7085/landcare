@@ -21,6 +21,15 @@ export class MapsDataServiceProvider {
         return mapData[0];
     }
 
+    async findMapBySlug(slug: string) {
+        const mapData = await db.select()
+            .from(maps)
+            .where(and(
+                eq(lower(maps.slug), slug.toLowerCase()),
+            ));
+        return mapData[0];
+    }
+
     async findById(id: number) {
         const mapData = await db.select().from(maps).where(eq(maps.id, id));
         return mapData[0];
