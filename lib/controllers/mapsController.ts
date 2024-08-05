@@ -26,6 +26,11 @@ export class MapsController {
                 throw new ResourceAlreadyExistsError('title', MAP_TITLE_EXISTS);
             }
 
+            const existedSlug = await mapsDataServiceProvider.findMapBySlug(reqData.slug);
+            if (existedSlug) {
+                reqData.slug = reqData.slug + '-' + Date.now();
+            }
+    
             const reponseData = await mapsDataServiceProvider.create(reqData);
             return ResponseHelper.sendSuccessResponse(200, MAP_CREATED, reponseData[0]);
 
@@ -103,7 +108,7 @@ export class MapsController {
 
             const existedSlug = await mapsDataServiceProvider.findMapBySlugAndId(slug, params.id);
             if (existedSlug) {
-                reqData.slug = slug + '' + Date.now();
+                reqData.slug = slug + '-' + Date.now();
             } else {
                 reqData.slug = slug;
             }
