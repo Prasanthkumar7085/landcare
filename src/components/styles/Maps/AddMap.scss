@@ -228,7 +228,7 @@
           }
           .listContainer {
             margin-top: 10px;
-            height: calc(100vh - 250px);
+            height: calc(100vh - 255px);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -779,3 +779,11 @@
     }
   }
 }
+
+// .gmnoprint {
+//   margin: 5px;
+//     z-index: 10;
+//     position: absolute;
+//     left: 2rem;
+//     top: 5rem;
+// }
