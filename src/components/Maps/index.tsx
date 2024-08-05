@@ -1,5 +1,9 @@
 "use client";
-import { deleteMapAPI, getAllListMapsAPI } from "@/services/maps";
+import {
+  changeStatusOfMapAPI,
+  deleteMapAPI,
+  getAllListMapsAPI,
+} from "@/services/maps";
 import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
@@ -106,6 +110,22 @@ const Maps = () => {
       console.error(err);
     } finally {
       setShowLoading(false);
+    }
+  };
+  const changeStatusOfMap = async (changedStatus: string) => {
+    setLoading(true);
+    let body = {
+      status: changedStatus,
+    };
+    try {
+      const response = await changeStatusOfMapAPI(mapId, body);
+      toast.success(response?.message);
+      getAllMaps({});
+      handleDeleteCose();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -380,6 +400,19 @@ const Maps = () => {
               }}
             >
               Delete
+            </MenuItem>
+            <MenuItem
+              className="menuItem"
+              onClick={() => {
+                let changedStatus =
+                  singleMapDetails?.status == "draft" ? "publish" : "draft";
+                changeStatusOfMap(changedStatus);
+                handleCloseUserMenu();
+              }}
+            >
+              {singleMapDetails?.status == "draft"
+                ? "Move to published"
+                : "Move to draft"}
             </MenuItem>
           </div>
         ) : (

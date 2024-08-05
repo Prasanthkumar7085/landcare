@@ -67,6 +67,6 @@ export const markerFilterOptions = [
   {
     title: "dsc",
     value: "created_at",
-    label: "Oldest (Low to High)",
+    label: "Oldest First",
   },
 ];

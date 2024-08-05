@@ -228,7 +228,7 @@
           }
           .listContainer {
             margin-top: 10px;
-            height: calc(100vh - 250px);
+            height: calc(100vh - 255px);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -500,7 +500,7 @@
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: #00000066;
   .modalContent {
     background-color: #fff;
     padding: 24px;
@@ -510,6 +510,10 @@
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-height: calc(100vh - 20px);
+    margin: auto;
+    box-sizing: border-box;
+    overflow-y: auto;
     .modalHeader {
       display: flex;
       align-items: center;
@@ -589,7 +593,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      margin-top: 4.5rem;
+      margin-top: 3rem;
       gap: 1rem;
       button {
         text-align: center;
@@ -606,6 +610,55 @@
         &:last-child {
           background: #75a237;
           color: $whiteColor;
+        }
+      }
+    }
+  }
+  .validationTableContainer {
+    margin-top: 1rem;
+    border-radius: 8px;
+    background: $whiteColor;
+    box-shadow: 0px -4px 17px 0px #0000000a, 0px 6px 8px -6px #18274b0f,
+      0px 8px 16px -6px #18274b05;
+    .validationHead {
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      h5 {
+        color: #201c1c;
+        font-family: $fontPrimary;
+        font-size: $font_16;
+        font-weight: $fw_500;
+        line-height: 100%;
+        letter-spacing: -0.25px;
+      }
+      .importInfo {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        p {
+          font-family: $fontPrimary;
+          font-size: $font_14;
+          font-weight: $fw_400;
+          line-height: 100%;
+          letter-spacing: -0.25px;
+          &.uploaded {
+            color: $primaryColor;
+            span {
+              border-radius: 4px;
+              background: #45a84533;
+              padding: 1px 12px;
+            }
+          }
+          &.failed {
+            color: $colorRed;
+            span {
+              border-radius: 4px;
+              background: #f1282e33;
+              padding: 1px 12px;
+            }
+          }
         }
       }
     }
@@ -726,3 +779,11 @@
     }
   }
 }
+
+// .gmnoprint {
+//   margin: 5px;
+//     z-index: 10;
+//     position: absolute;
+//     left: 2rem;
+//     top: 5rem;
+// }

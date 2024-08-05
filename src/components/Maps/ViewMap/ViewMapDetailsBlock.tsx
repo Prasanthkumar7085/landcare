@@ -22,6 +22,7 @@ const ViewMapDetailsDrawer = ({
   maps,
   markersRef,
   handleMarkerClick,
+  getSingleMapMarkers,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -119,6 +120,7 @@ const ViewMapDetailsDrawer = ({
               maps={maps}
               markersRef={markersRef}
               handleMarkerClick={handleMarkerClick}
+              getSingleMapMarkers={getSingleMapMarkers}
             />
           </div>
         </div>

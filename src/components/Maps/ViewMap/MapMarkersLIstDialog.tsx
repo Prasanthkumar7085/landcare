@@ -33,6 +33,7 @@ const MapMarkersListDialog = ({
   handleClose,
   markersRef,
   handleMarkerClick,
+  getSingleMapMarkers,
 }: any) => {
   const { id } = useParams();
 
@@ -86,6 +87,7 @@ const MapMarkersListDialog = ({
       const response = await deleteMarkerAPI(id, markerId);
       toast.success(response?.message);
       getAllMapMarkers({});
+      getSingleMapMarkers({});
       handleDeleteCose();
     } catch (err) {
       console.error(err);

@@ -77,6 +77,7 @@ const ViewMarkerDrawer = ({
       const response = await deleteMarkerAPI(id, data?.id);
       toast.success(response?.message);
       onClose();
+      router.replace(`/view-map/${id}`);
       getSingleMapMarkers({});
       handleDeleteCose();
     } catch (err) {

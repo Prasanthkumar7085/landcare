@@ -1,39 +1,81 @@
+import { Typography } from "@mui/material";
+
 const ValidationsTable = ({ validationsData }: any) => {
   return (
-    <div>
-      <h2>Uploaded (9)</h2>
-
-      <h2>Not Uploaded {validationsData?.length}</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Host Organisation</th>
-            <th>LLS Region</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Location</th>
-            <th>Postcode</th>
-            <th>Error</th>
-          </tr>
-        </thead>
-        <tbody>
-          {validationsData.map((error: any, index: any) => (
-            <tr key={index}>
-              <td>{error.name || "N/A"}</td>
-              <td>{error.position || "N/A"}</td>
-              <td>{error.host_organization || "N/A"}</td>
-              <td>{error.lls_region || "N/A"}</td>
-              <td>{error.phone || "N/A"}</td>
-              <td>{error.email.slice(0, 9) || "N/A"}</td>
-              <td>{error.location || "N/A"}</td>
-              <td>{error.post_code || "N/A"}</td>
-              <td>{error.error}</td>
+    <div className="validationTableContainer" id="validationTable">
+      <div className="validationHead">
+        <Typography variant="h5">Files</Typography>
+        <div className="importInfo">
+          <Typography className="uploaded">
+            Uploaded <span>{validationsData[0]?.length}</span>{" "}
+          </Typography>
+          <Typography className="failed">
+            Failed <span>{validationsData[1]?.length}</span>
+          </Typography>
+        </div>
+        <div></div>
+      </div>
+      <div className="tableContainer">
+        <table className="table">
+          <thead
+            className="thead"
+            style={{
+              height: "32px",
+              position: "sticky",
+              top: "0px",
+              zIndex: "2",
+              color: "white",
+            }}
+          >
+            <tr className="table-row">
+              <th className="cell" style={{ minWidth: "150px" }}>
+                Name
+              </th>
+              <th className="cell" style={{ minWidth: "200px" }}>
+                Position
+              </th>
+              <th className="cell" style={{ minWidth: "200px" }}>
+                Host Organisation
+              </th>
+              <th className="cell" style={{ minWidth: "150px" }}>
+                LLS Region
+              </th>
+              <th className="cell" style={{ minWidth: "120px" }}>
+                Phone
+              </th>
+              <th className="cell" style={{ minWidth: "180px" }}>
+                Email
+              </th>
+              <th className="cell" style={{ minWidth: "180px" }}>
+                Location
+              </th>
+              <th className="cell" style={{ minWidth: "100px" }}>
+                Postcode
+              </th>
+              <th className="cell" style={{ minWidth: "250px" }}>
+                Error
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="tbody">
+            {validationsData?.[1].map((error: any, index: any) => (
+              <tr className="table-row" key={index}>
+                <td className="cell">{error.name || "N/A"}</td>
+                <td className="cell">{error.position || "N/A"}</td>
+                <td className="cell">{error.host_organization || "N/A"}</td>
+                <td className="cell">{error.lls_region || "N/A"}</td>
+                <td className="cell">{error.phone || "N/A"}</td>
+                <td className="cell">{error.email.slice(0, 9) || "N/A"}</td>
+                <td className="cell">{error.location || "N/A"}</td>
+                <td className="cell">{error.post_code || "N/A"}</td>
+                <td className="cell" style={{ color: "red" }}>
+                  {error.error}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
