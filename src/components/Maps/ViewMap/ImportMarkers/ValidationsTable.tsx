@@ -60,14 +60,14 @@ const ValidationsTable = ({ validationsData }: any) => {
           <tbody className="tbody">
             {validationsData?.[1].map((error: any, index: any) => (
               <tr className="table-row" key={index}>
-                <td className="cell">{error.name || "N/A"}</td>
-                <td className="cell">{error.position || "N/A"}</td>
-                <td className="cell">{error.host_organization || "N/A"}</td>
-                <td className="cell">{error.lls_region || "N/A"}</td>
-                <td className="cell">{error.phone || "N/A"}</td>
-                <td className="cell">{error.email.slice(0, 9) || "N/A"}</td>
-                <td className="cell">{error.location || "N/A"}</td>
-                <td className="cell">{error.post_code || "N/A"}</td>
+                <td className="cell">{error?.name || "N/A"}</td>
+                <td className="cell">{error?.position || "N/A"}</td>
+                <td className="cell">{error?.host_organization || "N/A"}</td>
+                <td className="cell">{error?.lls_region || "N/A"}</td>
+                <td className="cell">{error?.phone || "N/A"}</td>
+                <td className="cell">{error?.email?.slice(0, 9) || "N/A"}</td>
+                <td className="cell">{error?.location || "N/A"}</td>
+                <td className="cell">{error?.post_code || "N/A"}</td>
                 <td className="cell" style={{ color: "red" }}>
                   {error.error}
                 </td>

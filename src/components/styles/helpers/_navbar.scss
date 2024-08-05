@@ -21,7 +21,7 @@
         height: 100%;
       }
     }
-  
+
     .pagetitle {
       margin: 0;
       color: #000;
@@ -45,7 +45,7 @@
       border-bottom: 2px solid #385642;
       padding: 1.5rem 0;
     }
-  
+
     .profileGrp {
       display: flex;
       flex-direction: row;
@@ -53,7 +53,7 @@
       justify-content: center;
       gap: 6px;
       margin-left: 0.5rem;
-  
+
       .profileName {
         display: flex;
         flex-direction: column;
@@ -61,7 +61,7 @@
         justify-content: flex-start;
         padding: 3px 0;
         gap: 4px;
-  
+
         .profile {
           color: #252525;
           letter-spacing: 0;
@@ -71,7 +71,7 @@
           line-height: 100%;
           margin: 0;
         }
-  
+
         .designation {
           color: $greenColor;
           font-family: $fontPrimary;
@@ -109,6 +109,4 @@
       padding: 0;
     }
   }
-}
-.maniContainer {
 }

@@ -304,8 +304,8 @@ const PublicMap = () => {
             className={styles.filterGrp}
             style={{
               position: "absolute",
-              top: "0",
-              left: "22%",
+              top: "20px",
+              left: "23%",
             }}
           >
             <TextField
@@ -319,7 +319,7 @@ const PublicMap = () => {
                   border: "1.4px solid #c8c7ce",
                   backgroundColor: "#f2f2f2",
                   width: " 100%",
-                  height: "38px",
+                  height: "40px",
                   background: "#ffffff",
                   color: "black",
                   fontWeight: 500,
@@ -347,7 +347,7 @@ const PublicMap = () => {
               data={markerFilterOptions}
               setSelectValue={setMarkerOption}
               selectedValue={markerOption}
-              placeholder="Search Filter"
+              placeholder="Sort Filter"
             />
           </div>
         </div>

@@ -11,6 +11,7 @@ export const calculatePolygonCentroid = (coordinates: any) => {
 };
 
 export const processImportedData = (parsedData: any) => {
+  console.log(parsedData, "dsakjsdakkds");
   const isEmpty = parsedData.every((row: any) =>
     row.every((cell: any) => String(cell).trim() === "")
   );
@@ -77,59 +78,68 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
   });
 
   let errorsData = validationsForImportedData({ filteredDataObjects });
-  let data = errorsData.validData;
+  let data = [...errorsData.validData];
 
-  if (data?.length > 0) {
-    const locationToCoordinatesMap: any = {};
-    const locationsToFetch: string[] = [];
+  const locationToCoordinatesMap: any = {};
+  const locationsToFetch: string[] = [];
+  console.log(data, "dsfakkdskfsdkkds");
+  data.forEach((obj: any) => {
+    if (obj.location && !locationToCoordinatesMap[obj.location] && obj.name) {
+      locationsToFetch.push(obj.location);
+    }
+  });
 
-    data.forEach((obj: any) => {
-      if (obj.location && !locationToCoordinatesMap[obj.location]) {
-        locationsToFetch.push(obj.location);
-      }
-    });
+  const coordinatesPromises = locationsToFetch.map(async (location: string) => {
+    try {
+      const coords = await getCoordinates(location);
+      return { location, coords, error: null };
+    } catch (error) {
+      return { location, coords: null, error };
+    }
+  });
 
-    const coordinatesPromises = locationsToFetch.map(
-      async (location: string) => {
-        try {
-          const coords = await getCoordinates(location);
-          return { location, coords, error: null };
-        } catch (error) {
-          return { location, coords: null, error };
-        }
-      }
-    );
+  const coordinatesResults = await Promise.allSettled(coordinatesPromises);
 
-    const coordinatesResults = await Promise.allSettled(coordinatesPromises);
+  const locationErrorsMap: { [key: string]: string } = {};
 
-    coordinatesResults.forEach((result: any) => {
-      if (result.status === "fulfilled") {
-        const { location, coords, error } = result.value;
-        if (!error) {
-          locationToCoordinatesMap[location] = coords;
-        } else {
-          console.error(
-            `Failed to fetch coordinates for location: ${location}`,
-            error
-          );
-        }
+  coordinatesResults.forEach((result: any) => {
+    if (result.status === "fulfilled") {
+      const { location, coords, error } = result.value;
+      if (!error) {
+        locationToCoordinatesMap[location] = coords;
       } else {
-        console.error("Promise rejected:", result.reason);
+        console.error(
+          `Failed to fetch coordinates for location: ${location}`,
+          error
+        );
+        locationErrorsMap[location] = "Failed to fetch coordinates";
       }
-    });
-    const updatedData = data.map((obj: any) => {
-      if (obj.location) {
-        return {
-          ...obj,
-          coordinates: locationToCoordinatesMap[obj.location] || null,
-        };
-      }
-      return obj;
-    });
+    } else {
+      console.error("Promise rejected:", result.reason);
+    }
+  });
 
-    return [updatedData, errorsData?.errors];
-  }
-  return [filteredDataObjects, errorsData?.errors];
+  const updatedData: any = [];
+  const coordinatesErrors: any = [];
+
+  filteredDataObjects.forEach((obj: any) => {
+    if (obj.location) {
+      const coords = locationToCoordinatesMap[obj.location] || null;
+      if (coords && obj?.name) {
+        updatedData.push({
+          ...obj,
+          coordinates: coords,
+        });
+      } else if (locationErrorsMap[obj.location]) {
+        coordinatesErrors.push({
+          ...obj,
+          error: locationErrorsMap[obj.location],
+        });
+      }
+    }
+  });
+
+  return [updatedData, [...errorsData.errors, ...coordinatesErrors]];
 };
 
 const validationsForImportedData = ({ filteredDataObjects }: any) => {

@@ -61,6 +61,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
   const handleFileUpload = () => {
     if (file) {
       const fileExtension = file.name.split(".").pop()?.toLowerCase();
+      console.log(fileExtension, "fdsakkskks");
       if (fileExtension === "csv") {
         Papa.parse(file, {
           complete: async function (results: any) {
@@ -73,7 +74,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
           },
           header: false,
         });
-      } else if (fileExtension === "xlsx") {
+      } else if (fileExtension == "xlsx") {
         const reader = new FileReader();
         reader.onload = async (e) => {
           const data = new Uint8Array(e.target?.result as ArrayBuffer);
@@ -86,8 +87,8 @@ const ImportModal: React.FC<IImportModalProps> = ({
             setValidationsData(markersData);
             await handleUpload(markersData);
           }
-          reader.readAsArrayBuffer(file);
         };
+        reader.readAsArrayBuffer(file);
       } else {
         toast.error("Unsupported file format");
       }
