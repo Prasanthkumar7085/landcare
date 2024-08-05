@@ -1,9 +1,10 @@
 const ValidationsTable = ({ validationsData }: any) => {
   return (
-    <div>
+    <div className="validationTableContainer">
       <h2>Uploaded (9)</h2>
 
       <h2>Not Uploaded {validationsData?.length}</h2>
+      <div className="tableContainer">
       <table>
         <thead>
           <tr>
@@ -34,6 +35,7 @@ const ValidationsTable = ({ validationsData }: any) => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };
