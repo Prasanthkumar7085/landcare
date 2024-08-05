@@ -50,7 +50,7 @@ $inputBorderColor: #9c9c9c;
           text-transform: uppercase;
           box-sizing: border-box;
           padding: 0 12px;
-          border-inline: 1px solid $whiteColor;
+          border-right: 1px solid $whiteColor;
 
           &:first-child {
             background-color: $colorTableHeader;
@@ -60,6 +60,8 @@ $inputBorderColor: #9c9c9c;
 
           &:last-child {
             background-color: $colorTableHeader;
+            border-left: 1px solid $whiteColor;
+            border-right: none;
             overflow: hidden;
             @include last-child-sticky;
           }
@@ -88,10 +90,13 @@ $inputBorderColor: #9c9c9c;
 
           &:first-child {
             @include first-child-sticky;
+            border-right: 1px solid #edf2f7;
           }
 
           &:last-child {
             @include last-child-sticky();
+            border-left: 1px solid #edf2f7;
+            border-right: none;
           }
 
           input {
@@ -106,6 +111,22 @@ $inputBorderColor: #9c9c9c;
           .cell {
             background-color: $whiteColor !important;
           }
+        }
+      }
+    }
+  }
+}
+#validationTable {
+  .tableContainer {
+    border-radius: 0 0 8px 8px;
+    height: auto !important;
+    max-height: 400px;
+  }
+  .table {
+    .thead {
+      .table-row {
+        .cell {
+          text-align: left !important;
         }
       }
     }
@@ -181,5 +202,4 @@ $inputBorderColor: #9c9c9c;
   }
 }
 .validationTableContainer {
-  
 }

@@ -2,7 +2,7 @@ import { Typography } from "@mui/material";
 
 const ValidationsTable = ({ validationsData }: any) => {
   return (
-    <div className="validationTableContainer">
+    <div className="validationTableContainer" id="validationTable">
       <div className="validationHead">
         <Typography variant="h5">Files</Typography>
         <div className="importInfo">
@@ -21,15 +21,15 @@ const ValidationsTable = ({ validationsData }: any) => {
             color: "white",
           }}>
             <tr className="table-row">
-              <th className="cell">Name</th>
-              <th className="cell">Position</th>
-              <th className="cell">Host Organisation</th>
-              <th className="cell">LLS Region</th>
-              <th className="cell">Phone</th>
-              <th className="cell">Email</th>
-              <th className="cell">Location</th>
-              <th className="cell">Postcode</th>
-              <th className="cell">Error</th>
+              <th className="cell" style={{minWidth:"150px"}}>Name</th>
+              <th className="cell" style={{ minWidth: "200px" }}>Position</th>
+              <th className="cell" style={{ minWidth: "200px" }}>Host Organisation</th>
+              <th className="cell" style={{ minWidth: "150px" }}>LLS Region</th>
+              <th className="cell" style={{ minWidth: "120px" }}>Phone</th>
+              <th className="cell" style={{ minWidth: "180px" }}>Email</th>
+              <th className="cell" style={{ minWidth: "180px" }}>Location</th>
+              <th className="cell" style={{ minWidth: "100px" }}>Postcode</th>
+              <th className="cell" style={{ minWidth: "250px" }}>Error</th>
             </tr>
           </thead>
           <tbody className="tbody">
