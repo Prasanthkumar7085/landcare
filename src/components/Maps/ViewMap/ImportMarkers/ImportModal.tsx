@@ -61,7 +61,6 @@ const ImportModal: React.FC<IImportModalProps> = ({
   const handleFileUpload = () => {
     if (file) {
       const fileExtension = file.name.split(".").pop()?.toLowerCase();
-      console.log(fileExtension, "fdsakkskks");
       if (fileExtension === "csv") {
         Papa.parse(file, {
           complete: async function (results: any) {

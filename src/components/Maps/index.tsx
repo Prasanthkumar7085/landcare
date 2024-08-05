@@ -286,7 +286,14 @@ const Maps = () => {
               );
             })
           ) : !loading ? (
-            <div style={{ margin: "auto" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               {!mapsData?.length &&
               (useParam?.get("from_date") ||
                 useParam?.get("to_date") ||
@@ -308,13 +315,6 @@ const Maps = () => {
                     width={300}
                   />
                   <p>{"No maps added yet. Click 'Add New' to start."}</p>
-                  <Button
-                    variant="outlined"
-                    onClick={() => router.push("/add-map")}
-                    endIcon={<AddIcon />}
-                  >
-                    Add New Map
-                  </Button>
                 </>
               )}
             </div>

@@ -11,7 +11,6 @@ export const calculatePolygonCentroid = (coordinates: any) => {
 };
 
 export const processImportedData = (parsedData: any) => {
-  console.log(parsedData, "dsakjsdakkds");
   const isEmpty = parsedData.every((row: any) =>
     row.every((cell: any) => String(cell).trim() === "")
   );
@@ -82,7 +81,6 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
 
   const locationToCoordinatesMap: any = {};
   const locationsToFetch: string[] = [];
-  console.log(data, "dsfakkdskfsdkkds");
   data.forEach((obj: any) => {
     if (obj.location && !locationToCoordinatesMap[obj.location] && obj.name) {
       locationsToFetch.push(obj.location);
