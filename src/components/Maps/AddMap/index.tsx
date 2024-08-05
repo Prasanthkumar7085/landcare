@@ -218,7 +218,7 @@ const AddPolygon = () => {
   }, []);
 
   useEffect(() => {
-    if (map && googleMaps) {
+    if (map && googleMaps && polygonCoords?.length) {
       if (id) {
         const bounds = new google.maps.LatLngBounds();
         polygonCoords.forEach((coord: any) => {

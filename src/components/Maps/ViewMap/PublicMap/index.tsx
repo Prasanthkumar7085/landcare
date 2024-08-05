@@ -369,6 +369,7 @@ const PublicMap = () => {
             setSingleMarkerLoading={setSingleMarkerLoading}
             singleMarkerLoading={singleMarkerLoading}
             setMarkersOpen={setMarkersOpen}
+            handleMarkerClick={handleMarkerClick}
           />
         ) : (
           ""

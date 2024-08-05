@@ -8,14 +8,19 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import EmailIcon from "@mui/icons-material/Email";
-import { copyURL } from "@/lib/helpers/copyURL";
+import { copyEmbededIframeUrl, copyURL } from "@/lib/helpers/copyURL";
 import Image from "next/image";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import { Tooltip } from "@mui/material";
+import { Tab, Tabs, Tooltip } from "@mui/material";
 
 const ShareLinkDialog = ({ open, setShareDialogOpen, mapDetails }: any) => {
   const linkToShare = `https://dev-landcare.vercel.app/view-map/${mapDetails?.id}`;
+  const linkToEmdeded = `<iframe src=https://dev-landcare.vercel.app/landcare-map/${mapDetails?.id} width="600" height="450" style="border:0;"
+       loading="lazy"
+       referrerpolicy="no-referrer-when-downgrade"
+     ></iframe>`;
+  const [tabValue, setTabValue] = React.useState(0);
 
   const openWhatsApp = () => {
     const url = `https://wa.me/?text=${encodeURIComponent(linkToShare)}`;
@@ -43,101 +48,132 @@ const ShareLinkDialog = ({ open, setShareDialogOpen, mapDetails }: any) => {
     window.open(url, "_blank");
   };
 
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
   return (
     <Dialog open={open}>
       <DialogTitle>{"Share"}</DialogTitle>
       <DialogContent>
-        <div id="shareLinkDialog">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "2rem",
-            }}
-          >
-            <Image
-              src={mapDetails?.image ? mapDetails?.image : "/no-image.png"}
-              alt="Seetharamalayam"
-              width={50}
-              height={50}
-              style={{ borderRadius: "8px" }}
-            />
+        <Tabs value={tabValue} onChange={handleTabChange} centered>
+          <Tab label="Share" />
+          <Tab label="Copy Embedded URL" />
+        </Tabs>
+        {tabValue === 0 && (
+          <div id="shareLinkDialog">
             <div
               style={{
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "2rem",
               }}
             >
-              <p>{mapDetails?.title}</p>
-              <p>
-                {" "}
-                <Tooltip
-                  title={
-                    mapDetails?.description?.length >= 50
-                      ? mapDetails?.description
-                      : ""
-                  }
-                  placement="bottom"
-                >
-                  {mapDetails?.description
-                    ? mapDetails?.description?.length >= 50
-                      ? `${mapDetails?.description.slice(0, 30)}....`
-                      : mapDetails?.description
-                    : "--"}
-                </Tooltip>
-              </p>
+              <Image
+                src={mapDetails?.image ? mapDetails?.image : "/no-image.png"}
+                alt="Seetharamalayam"
+                width={50}
+                height={50}
+                style={{ borderRadius: "8px" }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <p>{mapDetails?.title}</p>
+                <p>
+                  {" "}
+                  <Tooltip
+                    title={
+                      mapDetails?.description?.length >= 50
+                        ? mapDetails?.description
+                        : ""
+                    }
+                    placement="bottom"
+                  >
+                    {mapDetails?.description
+                      ? mapDetails?.description?.length >= 50
+                        ? `${mapDetails?.description.slice(0, 30)}....`
+                        : mapDetails?.description
+                      : "--"}
+                  </Tooltip>
+                </p>
+              </div>
+            </div>
+            <div className="link">
+              <TextField
+                value={linkToShare}
+                size="small"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <Button
+                onClick={() => copyURL(mapDetails?.id)}
+                variant="contained"
+                color="primary"
+                sx={{ width: "30%" }}
+              >
+                Copy
+              </Button>
+            </div>
+            <div className="share-icons">
+              <IconButton
+                className={"icon"}
+                aria-label="whatsapp"
+                onClick={openWhatsApp}
+              >
+                <WhatsAppIcon />
+              </IconButton>
+              <IconButton
+                className={"icon"}
+                aria-label="email"
+                onClick={openEmail}
+              >
+                <EmailIcon />
+              </IconButton>
+              <IconButton
+                className={"icon"}
+                aria-label="twitter"
+                onClick={openTwitter}
+              >
+                <TwitterIcon />
+              </IconButton>
+              <IconButton
+                className={"icon"}
+                aria-label="facebook"
+                onClick={openFacebook}
+              >
+                <FacebookIcon />
+              </IconButton>
             </div>
           </div>
-          <div className="link">
+        )}
+
+        {tabValue === 1 && (
+          <div className="copy-url">
             <TextField
-              value={linkToShare}
+              value={linkToEmdeded}
               size="small"
               InputProps={{
                 readOnly: true,
               }}
+              fullWidth
             />
             <Button
-              onClick={() => copyURL(mapDetails?.id)}
+              onClick={() => copyEmbededIframeUrl(mapDetails?.id)}
               variant="contained"
               color="primary"
-              sx={{ width: "30%" }}
+              sx={{ width: "100%", marginTop: "1rem" }}
             >
               Copy
             </Button>
           </div>
-          <div className="share-icons">
-            <IconButton
-              className={"icon"}
-              aria-label="whatsapp"
-              onClick={openWhatsApp}
-            >
-              <WhatsAppIcon />
-            </IconButton>
-            <IconButton
-              className={"icon"}
-              aria-label="email"
-              onClick={openEmail}
-            >
-              <EmailIcon />
-            </IconButton>
-            <IconButton
-              className={"icon"}
-              aria-label="twitter"
-              onClick={openTwitter}
-            >
-              <TwitterIcon />
-            </IconButton>
-            <IconButton
-              className={"icon"}
-              aria-label="facebook"
-              onClick={openFacebook}
-            >
-              <FacebookIcon />
-            </IconButton>
-          </div>
-        </div>
+        )}
       </DialogContent>
       <DialogActions>
         <Button

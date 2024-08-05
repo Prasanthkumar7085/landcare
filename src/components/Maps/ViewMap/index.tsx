@@ -339,6 +339,7 @@ const ViewGoogleMap = () => {
             drawingManagerRef={drawingManagerRef}
             setSingleMarkerLoading={setSingleMarkerLoading}
             singleMarkerLoading={singleMarkerLoading}
+            handleMarkerClick={handleMarkerClick}
           />
         ) : (
           <ViewMapDetailsDrawer
