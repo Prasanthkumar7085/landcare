@@ -1,4 +1,5 @@
 import DeleteDialog from "@/components/Core/DeleteDialog";
+import ShareLinkDialog from "@/components/Core/ShareLinkDialog";
 import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
 import { deleteMarkerAPI, getSingleMarkerAPI } from "@/services/maps";
 import { Menu, MenuItem } from "@mui/material";
@@ -32,12 +33,13 @@ const ViewPublicMarkerDrawer = ({
   setSingleMarkerLoading,
   singleMarkerLoading,
   setMarkersOpen,
+  handleMarkerClick,
 }: any) => {
   const { id } = useParams();
   const pathname = usePathname();
   const params = useSearchParams();
   const router = useRouter();
-
+  const [shareLinkDialogOpen, setShareDialogOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -204,14 +206,30 @@ const ViewPublicMarkerDrawer = ({
             endIcon={
               <Image src="/map/navigate.svg" alt="" width={15} height={15} />
             }
+            onClick={() => {
+              const markerEntry = markersRef.current.find(
+                (entry: any) => entry.id === data?.id
+              );
+              if (markerEntry) {
+                const { marker } = markerEntry;
+                handleMarkerClick(data, marker);
+              } else {
+                console.error(`Marker with ID ${id} not found.`);
+              }
+            }}
           >
             {data ? "Navigate" : <Skeleton width="100%" />}
           </Button>
-          <IconButton className="iconBtn">
+          <IconButton
+            className="iconBtn"
+            onClick={() => {
+              setShareDialogOpen(true);
+            }}
+          >
             {data ? (
               <Image src="/map/share-white.svg" alt="" width={13} height={13} />
             ) : (
-              <Skeleton variant="circular" width={40} height={40} />
+              <Skeleton variant="circular" width={13} height={13} />
             )}
           </IconButton>
         </div>
@@ -245,6 +263,11 @@ const ViewPublicMarkerDrawer = ({
           Delete
         </MenuItem>
       </Menu>
+      <ShareLinkDialog
+        open={shareLinkDialogOpen}
+        setShareDialogOpen={setShareDialogOpen}
+        mapDetails={data}
+      />
       <DeleteDialog
         deleteOpen={deleteOpen}
         handleDeleteCose={handleDeleteCose}
