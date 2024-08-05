@@ -2,20 +2,21 @@ import GoogleMapComponent from "@/components/Core/GoogleMap";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
 import { getSingleMapDetailsAPI } from "@/services/maps";
 import { Button, Tooltip } from "@mui/material";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddMapDrawer from "./AddMapDrawer";
 import AddPolygonDialog from "./AddPolygonDialog";
 import styles from "./google-map.module.css";
 import Image from "next/image";
+import LoadingComponent from "@/components/Core/LoadingComponent";
 
 const AddPolygon = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const drawingManagerRef = React.useRef(null);
   const mapRef: any = useRef(null);
-
+  const router = useRouter();
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
   const [addPolygonOpen, setAddPolygonOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -173,10 +174,6 @@ const AddPolygon = () => {
     if (googleMaps && polygon) {
       dispatch(storeEditPolygonCoords([]));
       polygon.setPath([]);
-      setRenderField(true);
-      setTimeout(() => {
-        setRenderField(false);
-      }, 100);
     }
 
     const drawingManager: any = drawingManagerRef.current;
@@ -203,6 +200,7 @@ const AddPolygon = () => {
             lng: item[1],
           };
         });
+
         dispatch(storeEditPolygonCoords(updatedArray));
       }
     } catch (err) {
@@ -214,6 +212,8 @@ const AddPolygon = () => {
   useEffect(() => {
     if (id) {
       getSingleMapDetails();
+    } else {
+      dispatch(storeEditPolygonCoords([]));
     }
   }, []);
 
@@ -228,14 +228,43 @@ const AddPolygon = () => {
         map.fitBounds(bounds);
       }
     }
-  }, [map, googleMaps, polygonCoords]);
+  }, [map, googleMaps, polygonCoords, id]);
 
   return (
     <div className={styles.markersPageWeb}>
-      {renderField == false ? (
+      {renderField == false && loading == false ? (
         <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
           <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
-
+          <div
+            className={styles.updateFarmButtonGrp}
+            style={{
+              position: "absolute",
+              top: "0",
+              right: "2%",
+            }}
+          >
+            <Button
+              sx={{
+                backgroundColor: "#75a237 !important",
+                color: "black",
+                marginTop: "2rem",
+              }}
+              startIcon={
+                <Image
+                  src="/map/map-backBtn.svg"
+                  alt=""
+                  height={15}
+                  width={15}
+                />
+              }
+              onClick={() => {
+                router.back();
+                dispatch(storeEditPolygonCoords([]));
+              }}
+            >
+              Back
+            </Button>
+          </div>
           {polygonCoords?.length === 0 ? (
             ""
           ) : (
@@ -316,6 +345,7 @@ const AddPolygon = () => {
         mapRef={mapRef}
         getSingleMapDetails={getSingleMapDetails}
       />
+      <LoadingComponent loading={loading} />
     </div>
   );
 };

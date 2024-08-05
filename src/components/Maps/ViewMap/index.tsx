@@ -17,7 +17,6 @@ import { useEffect, useRef, useState } from "react";
 import MarkerPopup from "./AddMarker/AddMarkerFrom";
 import styles from "./view-map.module.css";
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
-import { param } from "drizzle-orm";
 
 const ViewGoogleMap = () => {
   const { id } = useParams();

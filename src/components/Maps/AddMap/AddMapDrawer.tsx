@@ -81,10 +81,10 @@ const AddMapDrawer = ({
   };
 
   const addMapWithCordinates = async () => {
+    setLoading(true);
     let mapImage;
     mapImage = await getStaticMap();
 
-    setLoading(true);
     let body = {
       title: mapDetails?.title ? mapDetails?.title : "",
       description: mapDetails?.description ? mapDetails?.description : "",
