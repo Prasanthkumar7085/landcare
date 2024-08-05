@@ -25,12 +25,7 @@ export async function POST(req: NextRequest, { params }: any) {
 }   
 
 export async function GET(req: NextRequest, { params }: any) {
-    //Check authorization
-    const authResult: any = await validateAccessToken(req);
-    if (authResult.status === 403) {
-        return authResult
-    }
-    
+       
     const { searchParams } = new URL(req.url);
     const query = Object.fromEntries(new URLSearchParams(Array.from(searchParams.entries())));
     
