@@ -80,9 +80,9 @@ const TanstackTableComponent: FC<pageProps> = ({
     return (
 
         <div className="tableContainer"
-            style={{ width: "100%", overflowX: "auto" }}
+           
         >
-            <table className="table" style={{ width: "100%" }}>
+            <table className="table" >
                 <thead
                     className="thead"
                     style={{

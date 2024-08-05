@@ -146,7 +146,7 @@ const MapMarkersList = ({
                 </div>
               ))}
           </div>
-          <div style={{ textAlign: "end" }}>
+          <div style={{ textAlign: "end",marginTop:"0.5rem" }}>
             <Button
               className="showAllBtn"
               variant="outlined"
