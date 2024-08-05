@@ -2,6 +2,7 @@ import { eq, sql, and, ne, desc } from "drizzle-orm";
 import { db } from "../database";
 import { lower, maps } from "../schemas/maps";
 import filterHelper from "../helpers/filterHelper";
+import { users } from "../schemas/users";
 
 
 export class MapsDataServiceProvider {
@@ -35,10 +36,12 @@ export class MapsDataServiceProvider {
             image: maps.image,
             published_on: maps.published_on,
             published_by: maps.published_by,
+            published_by_name: users.name,
             created_at: maps.created_at,
             updated_at: maps.updated_at
         })
             .from(maps)
+            .leftJoin(users, eq(maps.published_by, users.id))
             .orderBy(desc(maps.created_at))
             .limit(limit)
             .offset(limit * (page - 1));
