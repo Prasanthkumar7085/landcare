@@ -45,7 +45,10 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
     });
   };
 
-  const handleStatusChange = (event: React.SyntheticEvent, newValue: string) => {
+  const handleStatusChange = (
+    event: React.SyntheticEvent,
+    newValue: string
+  ) => {
     setStatus(newValue);
     getAllMaps({
       ...searchParams,
@@ -117,6 +120,10 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
           disabledDate={(date) => {
             return date.getTime() >= new Date().getTime();
           }}
+          defaultCalendarValue={[
+            new Date("2024-07-01 00:00:00"),
+            new Date("2024-08-01 23:59:59"),
+          ]}
           placement="bottomEnd"
         />
         <TextField
