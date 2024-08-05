@@ -15,7 +15,6 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import { Tooltip } from "@mui/material";
 
 const ShareLinkDialog = ({ open, setShareDialogOpen, mapDetails }: any) => {
-  console.log(mapDetails, "Fsdafjjdsjjds");
   const linkToShare = `https://dev-landcare.vercel.app/view-map/${mapDetails?.id}`;
 
   const openWhatsApp = () => {
