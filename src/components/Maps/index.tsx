@@ -1,11 +1,13 @@
 "use client";
+import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
+import { copyEmbededIframeUrl, copyURL } from "@/lib/helpers/copyURL";
+import { datePipe } from "@/lib/helpers/datePipe";
+import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
 import {
   changeStatusOfMapAPI,
   deleteMapAPI,
   getAllListMapsAPI,
 } from "@/services/maps";
-import AddIcon from "@mui/icons-material/Add";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   Box,
   Button,
@@ -19,16 +21,12 @@ import {
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { toast, Toaster } from "sonner";
-import { ListMapsApiProps } from "@/interfaces/listMapsAPITypes";
-import { copyEmbededIframeUrl, copyURL } from "@/lib/helpers/copyURL";
-import { datePipe } from "@/lib/helpers/datePipe";
-import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
+import { toast } from "sonner";
 import DeleteDialog from "../Core/DeleteDialog";
 import LoadingComponent from "../Core/LoadingComponent";
+import ShareLinkDialog from "../Core/ShareLinkDialog";
 import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
-import ShareLinkDialog from "../Core/ShareLinkDialog";
 
 const Maps = () => {
   const useParam = useSearchParams();
@@ -351,6 +349,7 @@ const Maps = () => {
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={singleMapDetails}
+        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.id}`}
       />
 
       <Menu
@@ -386,7 +385,9 @@ const Maps = () => {
             <MenuItem
               className="menuItem"
               onClick={() => {
-                copyURL(mapId);
+                copyURL(
+                  `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.id}`
+                );
                 handleCloseUserMenu();
               }}
             >

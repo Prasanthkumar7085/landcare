@@ -294,7 +294,7 @@ const ViewGoogleMap = () => {
   }, []);
 
   useEffect(() => {
-    if (map && googleMaps && markers?.length) {
+    if (map && googleMaps) {
       if (params?.get("marker_id")) {
         goTomarker(markers);
       } else {

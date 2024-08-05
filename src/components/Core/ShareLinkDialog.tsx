@@ -14,9 +14,13 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { Tab, Tabs, Tooltip } from "@mui/material";
 
-const ShareLinkDialog = ({ open, setShareDialogOpen, mapDetails }: any) => {
-  const linkToShare = `https://dev-landcare.vercel.app/view-map/${mapDetails?.id}`;
-  const linkToEmdeded = `<iframe src=https://dev-landcare.vercel.app/landcare-map/${mapDetails?.id} width="600" height="450" style="border:0;"
+const ShareLinkDialog = ({
+  open,
+  setShareDialogOpen,
+  mapDetails,
+  linkToShare,
+}: any) => {
+  const linkToEmdeded = `<iframe src=${linkToShare} width="600" height="450" style="border:0;"
        loading="lazy"
        referrerpolicy="no-referrer-when-downgrade"
      ></iframe>`;
@@ -64,7 +68,7 @@ const ShareLinkDialog = ({ open, setShareDialogOpen, mapDetails }: any) => {
           <div id="shareLinkDialog">
             <div
               style={{
-                display: "flex",
+                display: mapDetails?.title ? "flex" : "none",
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "center",
@@ -113,7 +117,7 @@ const ShareLinkDialog = ({ open, setShareDialogOpen, mapDetails }: any) => {
                 }}
               />
               <Button
-                onClick={() => copyURL(mapDetails?.id)}
+                onClick={() => copyURL(linkToShare)}
                 variant="contained"
                 color="primary"
                 sx={{ width: "30%" }}
@@ -165,7 +169,7 @@ const ShareLinkDialog = ({ open, setShareDialogOpen, mapDetails }: any) => {
               fullWidth
             />
             <Button
-              onClick={() => copyEmbededIframeUrl(mapDetails?.id)}
+              onClick={() => copyEmbededIframeUrl(linkToEmdeded)}
               variant="contained"
               color="primary"
               sx={{ width: "100%", marginTop: "1rem" }}

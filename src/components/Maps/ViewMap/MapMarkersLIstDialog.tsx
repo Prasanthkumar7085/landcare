@@ -143,7 +143,9 @@ const MapMarkersListDialog = ({
           <IconButton
             className="iconBtn"
             onClick={() => {
-              copyURL(info?.row?.original?.id);
+              copyURL(
+                `https://dev-landcare.vercel.app/landcare-map/${id}?marker_id=${singleMapDetails?.id}`
+              );
             }}
           >
             <Image src="/map/table/copy.svg" alt="" width={15} height={15} />
@@ -268,6 +270,7 @@ const MapMarkersListDialog = ({
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={singleMapDetails}
+        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${id}?marker_id=${singleMapDetails?.id}`}
       />
       <LoadingComponent loading={showLoading} />
     </BootstrapDialog>

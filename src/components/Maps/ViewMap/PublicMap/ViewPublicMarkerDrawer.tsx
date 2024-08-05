@@ -267,6 +267,9 @@ const ViewPublicMarkerDrawer = ({
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={data}
+        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${
+          data?.id
+        }?marker_id=${params?.get("marker_id")}`}
       />
       <DeleteDialog
         deleteOpen={deleteOpen}
