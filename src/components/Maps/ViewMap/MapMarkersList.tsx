@@ -70,7 +70,7 @@ const MapMarkersList = ({
           data={markerFilterOptions}
           setSelectValue={setMarkerOption}
           selectedValue={markerOption}
-          placeholder="Search Filter"
+          placeholder="Sort Filter"
         />
       </div>
       {singleMarkers?.length > 0 ? (
@@ -107,7 +107,7 @@ const MapMarkersList = ({
                     </div>
                     <div className="locationType">
                       <Image
-                        src={"/markers/marker-location-icon.svg"}
+                        src={"/map/location-blue.svg"}
                         width={12}
                         height={12}
                         alt="type"
@@ -115,27 +115,25 @@ const MapMarkersList = ({
                       <span>{markerDetails?.location || "---"}</span>
                     </div>
                   </div>
-                  <Typography className="markerDesc">
-                    {markerDetails?.lls_region || "---"}
-                  </Typography>
-
-                  <Typography className="markerDesc">
-                    {markerDetails?.host_organization || "---"}
-                  </Typography>
 
                   <div className="markerFooter">
                     <div className="latLang">
                       <Image
-                        src="/map/location-blue.svg"
+                        src="/map/email.svg"
                         alt=""
                         width={10}
                         height={10}
                       />
                       {markerDetails?.email || "---"}
                     </div>
+                  </div>
+                  <div className="markerFooter">
+                    <div className="createdDate">
+                      <span>{markerDetails?.position || "---"}</span>
+                    </div>
                     <div className="createdDate">
                       <Image
-                        src="/map/clock.svg"
+                        src="/map/cell-icon.svg"
                         height={13}
                         width={13}
                         alt=""
@@ -146,7 +144,7 @@ const MapMarkersList = ({
                 </div>
               ))}
           </div>
-          <div style={{ textAlign: "end",marginTop:"0.5rem" }}>
+          <div style={{ textAlign: "end", marginTop: "0.5rem" }}>
             <Button
               className="showAllBtn"
               variant="outlined"

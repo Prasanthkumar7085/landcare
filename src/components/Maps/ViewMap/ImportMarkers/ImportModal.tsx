@@ -67,7 +67,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
             let jsonData = results.data;
             if (processImportedData(results.data)) {
               let markersData = await getImportedFilteredData({ jsonData });
-              setValidationsData(markersData[1]);
+              setValidationsData(markersData);
               await handleUpload(markersData);
             }
           },
@@ -83,7 +83,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
           const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
           if (processImportedData(jsonData)) {
             let markersData = await getImportedFilteredData({ jsonData });
-            setValidationsData(markersData[1]);
+            setValidationsData(markersData);
             await handleUpload(markersData);
           }
           reader.readAsArrayBuffer(file);
@@ -128,7 +128,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
     <div id="importModal">
       <div className="modalContent">
         <div className="modalHeader">
-          <h2 className="modalHeading">Import</h2>
+          <h2 className="modalHeading">Import Markers</h2>
 
           <Image
             src="/map/close-icon.svg"
@@ -148,7 +148,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
             <ol>
               <li>
                 [ Name, Position, Host Organisation, LLS Region, Phone, Email,
-                Location, Postcode,]
+                Location, Postcode]
               </li>
             </ol>
             <p>
@@ -182,7 +182,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
           {file && <p>Selected file: {file.name}</p>}
         </div>
         <div className="btnGrp">
-          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={onClose}>Close</Button>
           <Button
             onClick={handleFileUpload}
             disabled={file && !success ? false : true}
