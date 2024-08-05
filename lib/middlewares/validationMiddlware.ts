@@ -29,10 +29,10 @@ function getCustomErrorMessage(issue: any) {
             return `Invalid ${key}`
         
         case 'min_length':
-            return `${key} should be ${issue.expected} characters`
+            return `${key} must be atleast ${issue.requirement} characters`
         
         case 'max_length':
-            return `${key} should be ${issue.expected} characters`
+            return `${key} should not exceed ${issue.requirement} characters.`
         
         case 'regex':
             return `Invalid ${key}`
