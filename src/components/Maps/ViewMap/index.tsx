@@ -196,6 +196,17 @@ const ViewGoogleMap = () => {
 
     drawingManager.setMap(map);
     drawingManagerRef.current = drawingManager;
+    const newPolygon = new maps.Polygon({
+      paths: [],
+      strokeColor: "#282628",
+      strokeOpacity: 0.8,
+      strokeWeight: 4,
+      fillOpacity: 0,
+      editable: false,
+      draggable: false,
+      map: map,
+    });
+    newPolygon.setMap(map);
 
     maps.event.addListener(drawingManager, "overlaycomplete", (event: any) => {
       addMarkerEVent(event, map, maps);

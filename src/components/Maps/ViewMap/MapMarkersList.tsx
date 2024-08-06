@@ -97,9 +97,13 @@ const MapMarkersList = ({
                 >
                   <div className="markerHeader">
                     <div className="location">
-                      <Image
-                        alt=""
-                        src="/avatar@2x.png"
+                      <img
+                        alt="avtar"
+                        src={
+                          markerDetails?.images?.length
+                            ? markerDetails?.images?.[0]
+                            : "/no-images.jpg"
+                        }
                         width={20}
                         height={20}
                       />

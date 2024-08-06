@@ -708,6 +708,17 @@
         object-fit: cover;
         border-radius: 4px;
       }
+      .navButton {
+        position: absolute;
+        top: 18%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border: none;
+        padding: 1px;
+        cursor: pointer;
+        z-index: 1;
+      }
     }
     .headerDetails {
       display: flex;
