@@ -38,7 +38,7 @@ class FilterHelper {
 
 
     async markers(query: any,filters:any,mapId:number) {
-        const conditions: any = [];
+        const conditions: any = []
 
         if (filters && filters.search_string) {
             const searchString = `%${filters.search_string}%`;
