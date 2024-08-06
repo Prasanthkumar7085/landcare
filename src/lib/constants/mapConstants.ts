@@ -70,3 +70,72 @@ export const markerFilterOptions = [
     label: "Oldest First",
   },
 ];
+export const mapOptions = {
+  styles: [
+    {
+      elementType: "geometry",
+      stylers: [
+        {
+          color: "#f5f5f5",
+        },
+      ],
+    },
+
+    {
+      elementType: "labels.text.fill",
+      stylers: [
+        {
+          color: "#616161",
+        },
+      ],
+    },
+    {
+      featureType: "landscape",
+      elementType: "geometry",
+      stylers: [
+        {
+          color: "#e4e3df",
+        },
+      ],
+    },
+    {
+      featureType: "water",
+      elementType: "geometry",
+      stylers: [
+        {
+          color: "#9fd3d4",
+        },
+      ],
+    },
+    {
+      featureType: "administrative.country",
+      elementType: "geometry.stroke",
+      stylers: [
+        {
+          color: "#ffeb3b",
+        },
+      ],
+    },
+    // {
+    //   featureType: "landscape.natural",
+    //   elementType: "geometry",
+    //   stylers: [
+    //     {
+    //       color: "#a2b08c",
+    //     },
+    //   ],
+    // },
+    {
+      featureType: "poi.park",
+      elementType: "geometry",
+      stylers: [
+        {
+          color: "#4caf50",
+        },
+      ],
+    },
+  ],
+  fullscreenControl: false,
+  rotateControl: true,
+  streetViewControl: true,
+};

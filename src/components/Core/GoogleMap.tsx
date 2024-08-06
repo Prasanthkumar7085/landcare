@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { addCustomControl } from "../Maps/AddMap/CustomControls/NavigationOnMaps";
 import { MapTypeOptions } from "../Maps/AddMap/CustomControls/MapTypeOptions";
 import { SearchAutoComplete } from "../Maps/AddMap/CustomControls/SearchAutoComplete";
+import { mapOptions } from "@/lib/constants/mapConstants";
 
 const GoogleMapComponent = ({ OtherMapOptions }: any) => {
   const mapRef: any = useRef(null);
@@ -39,12 +40,7 @@ const GoogleMapComponent = ({ OtherMapOptions }: any) => {
         lat: -25.1198163,
         lng: 135.9791755,
       }}
-      options={{
-        mapTypeId: mapType,
-        fullscreenControl: false,
-        rotateControl: true,
-        streetViewControl: true,
-      }}
+      options={{ ...mapOptions, mapTypeId: mapType }}
       defaultZoom={6}
       yesIWantToUseGoogleMapApiInternals
       onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
