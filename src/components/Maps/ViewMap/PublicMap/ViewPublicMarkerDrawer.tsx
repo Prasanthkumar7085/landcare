@@ -45,6 +45,19 @@ const ViewPublicMarkerDrawer = ({
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === data?.images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? data?.images.length - 1 : prevIndex - 1
+    );
+  };
 
   const getSingleMarker = async (marker_id: any) => {
     setSingleMarkerLoading(true);
@@ -124,7 +137,7 @@ const ViewPublicMarkerDrawer = ({
         </IconButton>
       </header>
       <Box className="viewContent">
-        <div className="imgBlock">
+        {/* <div className="imgBlock">
           <Image
             className="mapImg"
             src="/map/marker-view.png"
@@ -132,6 +145,35 @@ const ViewPublicMarkerDrawer = ({
             height={100}
             width={100}
           />
+        </div> */}
+        <div className="imgBlock">
+          {data?.images?.length > 0 ? (
+            <>
+              <button onClick={prevSlide} className="navButton">
+                &#10094;
+              </button>
+              <img
+                className="mapImg"
+                src={data?.images[currentIndex]}
+                alt={`Slide ${currentIndex}`}
+                height={100}
+                width={100}
+                style={{ objectFit: "cover" }}
+              />
+              <button onClick={nextSlide} className="navButton">
+                &#10095;
+              </button>
+            </>
+          ) : (
+            <img
+              className="mapImg"
+              src="/no-images.jpg"
+              alt="Fallback"
+              height={100}
+              width={100}
+              style={{ objectFit: "cover" }}
+            />
+          )}
         </div>
         <div className="headerDetails">
           {singleMarkerLoading ? (
