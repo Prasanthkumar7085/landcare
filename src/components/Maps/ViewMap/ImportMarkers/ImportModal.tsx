@@ -3,7 +3,11 @@ import {
   getImportedFilteredData,
   processImportedData,
 } from "@/lib/helpers/mapsHelpers";
-import { importMapAPI } from "@/services/maps";
+import {
+  getStaticMapAPI,
+  importMapAPI,
+  updateMapWithCordinatesAPI,
+} from "@/services/maps";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import Papa from "papaparse";
@@ -20,6 +24,7 @@ interface IImportModalProps {
   file: any;
   setFile: any;
   getData: any;
+  mapDetails: any;
 }
 
 const ImportModal: React.FC<IImportModalProps> = ({
@@ -28,6 +33,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
   file,
   setFile,
   getData,
+  mapDetails,
 }) => {
   const { id } = useParams();
 
@@ -94,6 +100,49 @@ const ImportModal: React.FC<IImportModalProps> = ({
     }
   };
 
+  const getStaticMap = async (filedata: any) => {
+    let polygonCoords = mapDetails?.geo_coordinates.map((item: any) => {
+      return {
+        lat: item[0],
+        lng: item[1],
+      };
+    });
+    let body = {
+      coordinates: [...polygonCoords, polygonCoords[0]],
+      markers: filedata[0]?.map((item: any) => item?.coordinates),
+    };
+    try {
+      const response = await getStaticMapAPI(body);
+      if (response?.status == 200 || response?.status == 201) {
+        return response?.data;
+      } else {
+        toast.error(response?.error_data.coordinates);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const addMapWithCordinates = async (filedata: any) => {
+    let mapImage;
+    mapImage = await getStaticMap(filedata);
+
+    let body = {
+      title: mapDetails?.title ? mapDetails?.title : "",
+      description: mapDetails?.description ? mapDetails?.description : "",
+      status: mapDetails?.status,
+      geo_type: "polygon",
+      geo_coordinates: mapDetails?.geo_coordinates,
+      geo_zoom: 14,
+      image: mapImage,
+    };
+    try {
+      const response = await updateMapWithCordinatesAPI(body, id);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleUpload = async (filedata: any) => {
     setLoading(true);
 
@@ -105,11 +154,13 @@ const ImportModal: React.FC<IImportModalProps> = ({
         toast.success(response.message);
         if (filedata?.[0]?.length == 0) {
           await getData({});
+          await addMapWithCordinates(filedata);
           onClose();
           setFile(null);
           setSuccess(true);
         } else {
           await getData({});
+          await addMapWithCordinates(filedata);
           setSuccess(true);
         }
       } else if (response?.status === 422) {

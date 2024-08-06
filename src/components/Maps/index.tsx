@@ -430,7 +430,11 @@ const Maps = () => {
             <MenuItem
               className="menuItem"
               onClick={() => {
-                copyEmbededIframeUrl(mapId);
+                const linkToEmdeded = `<iframe src=https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.id} width="600" height="450" style="border:0;"
+       loading="lazy"
+       referrerpolicy="no-referrer-when-downgrade"
+     ></iframe>`;
+                copyEmbededIframeUrl(linkToEmdeded);
                 handleCloseUserMenu();
               }}
             >

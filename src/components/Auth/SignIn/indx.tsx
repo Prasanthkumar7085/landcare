@@ -70,23 +70,23 @@ const LoginPage = () => {
     <div className="loginPage">
       <div className="loginContainer">
         <div className="leftContainer">
-            <img className="loginImg" alt="" src="/login/login-image.png" />
+          <img className="loginImg" alt="" src="/login/login-image.png" />
         </div>
         <form onSubmit={signIn}>
           <div className="rightContainer">
             <div className="formContainer">
               <div className="logoBlock">
-              <Image
-                className="logoIcon"
-                alt=""
-                src="/logo.svg"
-                height={100}
-                width={130}
-              />
+                <Image
+                  className="logoIcon"
+                  alt=""
+                  src="/logo.svg"
+                  height={100}
+                  width={130}
+                />
               </div>
               <p className="formTitle">Welcome back</p>
               <label className="formSubTitle">
-                Enter your email an password to access your account
+                Enter email and password to access your account
               </label>
               <div className="formsBlock">
                 <div className="InputFeild">
@@ -128,10 +128,19 @@ const LoginPage = () => {
                             edge="end"
                           >
                             {showPassword ? (
-                              <Image src="/login/view-icon.svg" alt="" height={16} width={16} />
-
+                              <Image
+                                src="/login/view-icon.svg"
+                                alt=""
+                                height={16}
+                                width={16}
+                              />
                             ) : (
-                                <Image src="/login/hide-icon.svg" alt="" height={16} width={16}/>
+                              <Image
+                                src="/login/hide-icon.svg"
+                                alt=""
+                                height={16}
+                                width={16}
+                              />
                             )}
                           </IconButton>
                         </InputAdornment>

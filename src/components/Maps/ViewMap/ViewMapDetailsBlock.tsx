@@ -166,6 +166,7 @@ const ViewMapDetailsDrawer = ({
           file={file}
           setFile={setFile}
           getData={getData}
+          mapDetails={mapDetails}
         />
       ) : (
         ""

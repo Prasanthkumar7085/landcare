@@ -67,6 +67,7 @@ const AddMapDrawer = ({
   const getStaticMap = async () => {
     let body = {
       coordinates: [...polygonCoords, polygonCoords[0]],
+      markers: [],
     };
     try {
       const response = await getStaticMapAPI(body);
@@ -88,7 +89,7 @@ const AddMapDrawer = ({
     let body = {
       title: mapDetails?.title ? mapDetails?.title : "",
       description: mapDetails?.description ? mapDetails?.description : "",
-      status: "draft",
+      status: mapDetails?.status ? mapDetails?.status : "draft",
       geo_type: "polygon",
       geo_coordinates: polygonCoords.map((obj: any) => Object.values(obj)),
       geo_zoom: 14,

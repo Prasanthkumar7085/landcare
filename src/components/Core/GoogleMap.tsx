@@ -33,7 +33,7 @@ const GoogleMapComponent = ({ OtherMapOptions }: any) => {
     <GoogleMapReact
       bootstrapURLKeys={{
         key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
-        libraries: ["drawing", "places"],
+        libraries: ["drawing", "places", "geometry"],
       }}
       defaultCenter={{
         lat: -25.1198163,
