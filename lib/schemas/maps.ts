@@ -17,6 +17,7 @@ export const maps :any= pgTable("maps", {
     published_on: timestamp('published_on'),
     published_by: integer('published_by').references(() => users.id),
 
+    //TODO: Need to remove geo type and coordinates fields
     geo_type: varchar('geo_type').default('polygon'),
     geo_coordinates: jsonb('geo_coordinates').$type<number[]>().default([]),
     geo_zoom: integer('geo_zoom').default(0),

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { MAP_NOT_FOUND, MARKER_CREATED, MARKER_DELETED, MARKER_FETCHED, MARKER_NOT_FOUND_WITH_MAP, MARKER_UPDATED, MARKERS_FETCHED, MARKERS_IMPORTED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
+import { MAP_NOT_FOUND, MARKER_CREATED, MARKER_DELETED, MARKER_FETCHED, MARKER_NOT_FOUND_WITH_MAP, MARKER_TITLE_EXISTS, MARKER_UPDATED, MARKERS_FETCHED, MARKERS_IMPORTED, SOMETHING_WENT_WRONG } from "../constants/appMessages";
 import paginationHelper from "../helpers/paginationHelper";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
 import { MarkersDataServiceProvider } from "../services/markersDataServiceProvider";
+import { ResourceAlreadyExistsError } from "../helpers/exceptions";
 
 const markersDataServiceProvider = new MarkersDataServiceProvider();
 const mapsDataServiceProvider = new MapsDataServiceProvider();
@@ -24,10 +25,10 @@ export class MarkersController {
                 return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
 
-            // const existedMarker = await markersDataServiceProvider.findByTitleAndMapId(reqData.title, params.id);
-            // if (existedMarker) {
-            //     throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
-            // }
+            const existedMarker = await markersDataServiceProvider.findByTitleAndMapId(reqData.title, params.id);
+            if (existedMarker) {
+                throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
+            }
 
             const reponseData = await markersDataServiceProvider.create(reqData);
             return ResponseHelper.sendSuccessResponse(200, MARKER_CREATED, reponseData[0]);
@@ -140,10 +141,10 @@ export class MarkersController {
                 return ResponseHelper.sendErrorResponse(400, MARKER_NOT_FOUND_WITH_MAP);
             }
 
-            // const existedMarker = await markersDataServiceProvider.findByTitleAndId(reqData.title, markerId, mapId);
-            // if (existedMarker) {
-            //     throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
-            // }
+            const existedMarker = await markersDataServiceProvider.findByTitleAndId(reqData.title, markerId, mapId);
+            if (existedMarker) {
+                throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
+            }
 
             const updatedData = await markersDataServiceProvider.update(markerId, reqData);
 
