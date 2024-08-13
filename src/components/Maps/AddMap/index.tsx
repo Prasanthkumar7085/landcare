@@ -25,7 +25,7 @@ const AddPolygon = () => {
   const [googleMaps, setGoogleMaps] = useState<any>(null);
   const [drawingOpen, setDrawingOpen] = useState<boolean>(false);
   const [polygon, setPolygon] = useState<any>(null);
-  const [addDrawerOpen, setAddDrawerOpen] = useState<any>();
+  const [addDrawerOpen, setAddDrawerOpen] = useState<any>(true);
   const [mapDetails, setMapDetails] = useState<any>({});
 
   const setPolygonDrawingMode = () => {

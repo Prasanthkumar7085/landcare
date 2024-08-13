@@ -139,3 +139,39 @@ export const mapOptions = {
   rotateControl: true,
   streetViewControl: true,
 };
+
+export const subHeadersMappingConstants: any = {
+  Title: "title",
+  Description: "description",
+  "Organisation Type": "organisation_type",
+  "Postal Address": "postal_address",
+  Images: "images",
+  "Street Address": "street_address",
+  Town: "town",
+  Postcode: "postcode",
+  "Phone number": "phone",
+  Fax: "fax",
+  Email: "email",
+  Website: "website",
+  Contact: "contact",
+  Tags: "tags",
+  Location: "coordinates",
+};
+
+export const SheetHeaders = [
+  "Title",
+  "Description",
+  "Organisation Type",
+  "Postal Address",
+  "Images",
+  "Street Address",
+  "Town",
+  "Postcode",
+  "Phone number",
+  "Fax",
+  "Email",
+  "Website",
+  "Contact",
+  "Tags",
+  "Location",
+];

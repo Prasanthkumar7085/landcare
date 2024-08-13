@@ -197,7 +197,7 @@ const ViewGoogleMap = () => {
     drawingManager.setMap(map);
     drawingManagerRef.current = drawingManager;
     const newPolygon = new maps.Polygon({
-      paths: [],
+      paths: polygonCoords,
       strokeColor: "#282628",
       strokeOpacity: 0.8,
       strokeWeight: 4,
@@ -255,6 +255,7 @@ const ViewGoogleMap = () => {
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
+      console.log(data, "ppppeewppe");
       setMarkers(data);
       setSingleMarkers(data);
     } catch (err) {
