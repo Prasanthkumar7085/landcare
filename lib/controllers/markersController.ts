@@ -36,7 +36,7 @@ export class MarkersController {
         } catch (error: any) {
             console.log(error);
             if (error.validation_error) {
-                return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
+                return ResponseHelper.sendErrorResponse(409, error.message, error.errors);
             }
             return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
@@ -153,7 +153,7 @@ export class MarkersController {
         } catch (error: any) {
             console.log(error);
             if (error.validation_error) {
-                return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
+                return ResponseHelper.sendErrorResponse(409, error.message, error.errors);
             }
             return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }

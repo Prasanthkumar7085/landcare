@@ -42,25 +42,13 @@ export class MapsController {
       }
 
       const reponseData = await mapsDataServiceProvider.create(reqData);
-      return ResponseHelper.sendSuccessResponse(
-        200,
-        MAP_CREATED,
-        reponseData[0]
-      );
+      return ResponseHelper.sendSuccessResponse(200,MAP_CREATED,reponseData[0]);
     } catch (error: any) {
       console.log(error);
       if (error.validation_error) {
-        return ResponseHelper.sendErrorResponse(
-          422,
-          error.message,
-          error.errors
-        );
+        return ResponseHelper.sendErrorResponse(409,error.message,error.errors);
       }
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
     }
   }
 
@@ -74,11 +62,7 @@ export class MapsController {
       return ResponseHelper.sendSuccessResponse(200, MAP_FETCHED, mapData);
     } catch (error: any) {
       console.log(error);
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
     }
   }
 
@@ -86,16 +70,8 @@ export class MapsController {
     try {
       const { page = 1, limit = 10, ...filters } = query;
 
-      if (
-        filters.status &&
-        filters.status != "active" &&
-        filters.status != "publish" &&
-        filters.status != "draft"
-      ) {
-        return ResponseHelper.sendErrorResponse(
-          400,
-          "Invalid status provided in query"
-        );
+      if (filters.status && filters.status != "active" && filters.status != "publish" && filters.status != "draft") {
+        return ResponseHelper.sendErrorResponse(400, "Invalid status provided in query");
       }
 
       const [mapsData, mapsCount]: any = await Promise.all([
@@ -116,11 +92,7 @@ export class MapsController {
       return NextResponse.json(responseData);
     } catch (error: any) {
       console.log(error);
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
@@ -157,17 +129,9 @@ export class MapsController {
     } catch (error: any) {
       console.log(error);
       if (error.validation_error) {
-        return ResponseHelper.sendErrorResponse(
-          422,
-          error.message,
-          error.errors
-        );
+        return ResponseHelper.sendErrorResponse(409, error.message, error.errors);
       }
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
@@ -184,11 +148,7 @@ export class MapsController {
       return ResponseHelper.sendSuccessResponse(200, MAP_DELETED);
     } catch (error: any) {
       console.log(error);
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
@@ -209,11 +169,7 @@ export class MapsController {
       return ResponseHelper.sendSuccessResponse(200, MAP_STATUS_UPDATED);
     } catch (error: any) {
       console.log(error);
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
@@ -236,18 +192,11 @@ export class MapsController {
         "base64"
       );
 
-      return ResponseHelper.sendSuccessResponse(
-        200,
-        "Map image fetched",
-        `data:image/png;base64,${base64Image}`
+      return ResponseHelper.sendSuccessResponse(200, "Map image fetched", `data:image/png;base64,${base64Image}`
       );
     } catch (error: any) {
       console.log(error);
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 }
