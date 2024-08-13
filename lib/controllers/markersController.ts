@@ -95,7 +95,7 @@ export class MarkersController {
                 return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
             }
 
-            let { page = 1, limit = 5, ...filteredQuery } = query;
+            let { page = 1, limit = 10, ...filteredQuery } = query;
 
             let skip = (page - 1) * limit;
             if (filteredQuery.get_all) {
