@@ -8,6 +8,7 @@ import DeleteDialog from "@/components/Core/DeleteDialog";
 import { deleteMapAPI } from "@/services/maps";
 import MapMarkersList from "./MapMarkersList";
 import ImportModal from "./ImportMarkers/ImportModal";
+import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
 
 const ViewMapDetailsDrawer = ({
   mapDetails,
@@ -70,6 +71,12 @@ const ViewMapDetailsDrawer = ({
     setShowModal(false);
     setFile(null);
   };
+  const coordinates = [
+    { lat: 37.7749, lng: -122.4194 },
+    { lat: 37.8049, lng: -122.2711 },
+    { lat: 37.7749, lng: -122.2711 },
+    { lat: 37.8049, lng: -122.4194 },
+  ];
 
   return (
     <div className="mapViewContainer">
@@ -98,6 +105,9 @@ const ViewMapDetailsDrawer = ({
           <Typography className="mapTitle">
             {mapDetails?.title ? mapDetails?.title : "--"}
           </Typography>
+          <Button onClick={() => getPolygonWithMarkers(coordinates)}>
+            Get
+          </Button>
           <Typography className="mapCreated">
             <Image src="/map/clock.svg" height={13} width={13} alt="" />
             {dayjs(mapDetails?.created_at).format("MM-DD-YYYY")}

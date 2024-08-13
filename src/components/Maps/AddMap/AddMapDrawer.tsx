@@ -83,8 +83,8 @@ const AddMapDrawer = ({
 
   const addMapWithCordinates = async () => {
     setLoading(true);
-    let mapImage;
-    mapImage = await getStaticMap();
+    // let mapImage;
+    // mapImage = await getStaticMap();
 
     let body = {
       title: mapDetails?.title ? mapDetails?.title : "",
@@ -93,7 +93,6 @@ const AddMapDrawer = ({
       geo_type: "polygon",
       geo_coordinates: polygonCoords.map((obj: any) => Object.values(obj)),
       geo_zoom: 14,
-      image: mapImage,
     };
     try {
       // if (!mapImage) {
