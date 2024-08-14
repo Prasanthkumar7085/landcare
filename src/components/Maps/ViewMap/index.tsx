@@ -3,6 +3,7 @@ import LoadingComponent from "@/components/Core/LoadingComponent";
 import ViewMarkerDrawer from "@/components/Maps/ViewMap/ViewMarkerDrawer";
 import {
   boundToMapWithPolygon,
+  getLocationAddress,
   getMarkersImagesBasedOnOrganizationType,
   getPolygonWithMarkers,
 } from "@/lib/helpers/mapsHelpers";
@@ -49,7 +50,7 @@ const ViewGoogleMap = () => {
   const [localMarkers, setLocalMarkers] = useState<any>([]);
   const [overlays, setOverlays] = useState<any[]>([]);
   const [singleMarkeropen, setSingleMarkerOpen] = useState(false);
-  const [markerData, setMarkerData] = useState<any>({});
+  const [markerData, setMarkerData] = useState<any>({ images: [], tags: [] });
   const [markerOption, setMarkerOption] = useState<any>();
   const [singleMarkerdata, setSingleMarkerData] = useState<any>();
   const [singleMarkerLoading, setSingleMarkerLoading] = useState(false);
@@ -103,23 +104,12 @@ const ViewGoogleMap = () => {
     const markerPosition: any = marker.getPosition();
     const latitude = markerPosition.lat();
     const longitude = markerPosition.lng();
-
-    const geocoder = new google.maps.Geocoder();
-    const latlng = { lat: latitude, lng: longitude };
-    geocoder.geocode({ location: latlng }, (results: any, status) => {
-      if (status === google.maps.GeocoderStatus.OK) {
-        if (results[0]) {
-          const locationName = results[0].formatted_address;
-          setPlaceDetails({
-            full_address: locationName,
-            coordinates: [latitude, longitude],
-          });
-        } else {
-          console.log("No results found");
-        }
-      } else {
-        console.log("Geocoder failed due to: " + status);
-      }
+    getLocationAddress({
+      latitude,
+      longitude,
+      setMarkerData,
+      setPlaceDetails,
+      markerData,
     });
   };
   const clearMarkers = () => {
@@ -163,8 +153,14 @@ const ViewGoogleMap = () => {
       markere.addListener("dragend", (event: google.maps.MouseEvent) => {
         router.replace(`${pathName}?marker_id=${markerData?.id}`);
         setShowMarkerPopup(true);
-        setPlaceDetails({
-          coordinates: [event.latLng?.lat(), event.latLng?.lng()],
+        const latitude = event.latLng?.lat();
+        const longitude = event.latLng?.lng();
+        getLocationAddress({
+          latitude,
+          longitude,
+          setMarkerData,
+          setPlaceDetails,
+          markerData,
         });
       });
     });

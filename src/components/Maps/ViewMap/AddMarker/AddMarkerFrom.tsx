@@ -10,7 +10,8 @@ import {
 import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import DeleteIcon from "@mui/icons-material/Delete";
+import ImagesAddingComponent from "./ImagesAddingComponent";
+import TagsAddingComponent from "./TagsAddingComponent";
 
 const MarkerPopup = ({
   setShowMarkerPopup,
@@ -28,7 +29,7 @@ const MarkerPopup = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [markerType, setMarkerType] = useState<any>(null);
   const [imageInput, setImageInput] = useState<any>("");
-
+  const [tagsInput, setTagsInput] = useState<any>("");
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     const markerValue = value.replace(/^\s+/, "");
@@ -51,15 +52,21 @@ const MarkerPopup = ({
           ? placeDetails?.coordinates
           : popupFormData.coordinates,
         email: popupFormData?.email || "",
-        host_organization: popupFormData?.host_organization || "",
-        lls_region: popupFormData?.lls_region || "",
+        organization_type: popupFormData?.organization_type || "",
         location: popupFormData?.location || "",
         map_id: popupFormData?.map_id,
-        name: popupFormData?.name || "",
+        title: popupFormData?.title || "",
         phone: popupFormData?.phone || "",
-        position: popupFormData?.position || "",
         post_code: popupFormData?.post_code || "",
         images: popupFormData?.images,
+        tags: popupFormData?.tags,
+        town: popupFormData?.town || "",
+        street_address: popupFormData.street_address || "",
+        description: popupFormData?.description || "",
+        website: popupFormData?.website || "",
+        contact: popupFormData?.contact || "",
+        fax: popupFormData?.fax || "",
+        postal_address: popupFormData?.postal_address || "",
       };
 
       response = updateMarkerDeatilsAPI(id, body, params?.get("marker_id"));
@@ -92,40 +99,6 @@ const MarkerPopup = ({
     }
   };
 
-  const handleImageInputChange = (event: any) => {
-    setImageInput(event.target.value);
-  };
-
-  const handleAddImage = () => {
-    if (!imageInput) {
-      setErrorMessages({ images: "Image link cannot be empty." });
-      return;
-    }
-
-    if (!popupFormData.images?.includes(imageInput)) {
-      setPopupFormData({
-        ...popupFormData,
-        ["images"]: [...popupFormData.images, imageInput],
-      });
-      setImageInput("");
-    } else {
-      setErrorMessages({ images: "This link is already in the list." });
-    }
-  };
-
-  const handleKeyPress = (event: any) => {
-    if (event.key === "Enter") {
-      handleAddImage();
-    }
-  };
-
-  const handleRemoveImage = (index: number) => {
-    const updatedImages = popupFormData.images.filter(
-      (_: any, i: number) => i !== index
-    );
-    setPopupFormData({ ...popupFormData, images: updatedImages });
-  };
-
   return (
     <Dialog
       open={showMarkerPopup}
@@ -133,7 +106,7 @@ const MarkerPopup = ({
         zIndex: "1300 !important",
         "& .MuiPaper-root": {
           width: "100%",
-          maxWidth: "500px",
+          maxWidth: "800px",
           margin: "0 auto",
           borderRadius: "8px",
         },
@@ -155,83 +128,59 @@ const MarkerPopup = ({
           >
             <div>
               <div className="eachFeildGrp">
-                <label>Name</label>
+                <label>Title</label>
                 <TextField
                   className="defaultTextFeild text "
-                  placeholder="Enter Name"
-                  value={popupFormData?.name}
-                  name="name"
+                  placeholder="Enter Title"
+                  value={popupFormData?.title}
+                  name="title"
                   onChange={handleInputChange}
                 />
-                <ErrorMessagesComponent errorMessage={errorMessages["name"]} />
+                <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
               </div>
+
               <div className="eachFeildGrp">
-                <label>Position</label>
+                <label>Organization Type</label>
                 <TextField
                   className="defaultTextFeild text "
-                  name="position"
-                  placeholder="Enter Position"
-                  value={popupFormData?.position}
+                  name="organisation_type"
+                  placeholder="Enter Organization"
+                  value={popupFormData?.organisation_type}
                   onChange={handleInputChange}
                 />
                 <ErrorMessagesComponent
-                  errorMessage={errorMessages["position"]}
+                  errorMessage={errorMessages["organisation_type"]}
                 />
               </div>
               <div className="eachFeildGrp">
-                <label>Host Organization</label>
+                <label>Contact</label>
                 <TextField
                   className="defaultTextFeild text "
-                  name="host_organization"
-                  placeholder="Enter Host Organization"
-                  value={popupFormData?.host_organization}
+                  name="contact"
+                  placeholder="Enter Contact"
+                  value={popupFormData?.contact}
                   onChange={handleInputChange}
                 />
                 <ErrorMessagesComponent
-                  errorMessage={errorMessages["host_organization"]}
+                  errorMessage={errorMessages["contact"]}
                 />
               </div>
               <div className="eachFeildGrp">
-                <label>LLS Region</label>
+                <label>Website</label>
                 <TextField
                   className="defaultTextFeild text "
-                  name="lls_region"
-                  placeholder="Enter LLS Region"
-                  value={popupFormData?.lls_region}
+                  name="website"
+                  placeholder="Enter Website link"
+                  value={popupFormData?.website}
                   onChange={handleInputChange}
                 />
                 <ErrorMessagesComponent
-                  errorMessage={errorMessages["lls_region"]}
+                  errorMessage={errorMessages["website"]}
                 />
               </div>
             </div>
+
             <div>
-              <div className="eachFeildGrp">
-                <label>Location</label>
-                <TextField
-                  className="defaultTextFeild text "
-                  name="location"
-                  placeholder="Enter Location"
-                  value={popupFormData?.location}
-                  onChange={handleInputChange}
-                />
-                <ErrorMessagesComponent
-                  errorMessage={errorMessages["location"]}
-                />
-              </div>
-              <div className="eachFeildGrp">
-                <label>Postcode</label>
-                <TextField
-                  className="defaultTextFeild text "
-                  name="post_code"
-                  placeholder="Enter Postcode"
-                  value={popupFormData?.post_code}
-                  onChange={handleInputChange}
-                />
-                <ErrorMessagesComponent
-                  errorMessage={errorMessages["post_code"]}
-                />
-              </div>
               <div className="eachFeildGrp">
                 <label>Phone</label>
                 <TextField
@@ -255,46 +204,110 @@ const MarkerPopup = ({
                 />
                 <ErrorMessagesComponent errorMessage={errorMessages["email"]} />
               </div>
+              <div className="eachFeildGrp">
+                <label>Fax</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="fax"
+                  placeholder="Enter Fax"
+                  value={popupFormData?.fax}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent errorMessage={errorMessages["fax"]} />
+              </div>
+            </div>
+
+            <div>
+              <div className="eachFeildGrp">
+                <label>Postal Address</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="postal_address"
+                  placeholder="Enter Postal Address"
+                  value={popupFormData?.postal_address}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["postal_address"]}
+                />
+              </div>
+              <div className="eachFeildGrp">
+                <label>Street Address</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="street_address"
+                  placeholder="Enter Street Address"
+                  value={popupFormData?.street_address}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["street_address"]}
+                />
+              </div>
+              <div className="eachFeildGrp">
+                <label>Postcode</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="postcode"
+                  placeholder="Enter Postcode"
+                  value={popupFormData?.postcode}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["postcode"]}
+                />
+              </div>
+              <div className="eachFeildGrp">
+                <label>Town</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="town"
+                  placeholder="Enter Town"
+                  value={popupFormData?.town}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent errorMessage={errorMessages["town"]} />
+              </div>
             </div>
           </div>
+
           <div className="eachFeildGrp">
-            <label>Images</label>
+            <label>Description</label>
             <TextField
-              name="images"
-              placeholder="Enter Images links"
-              value={imageInput}
-              onChange={handleImageInputChange}
-              onKeyDown={handleKeyPress}
+              className="defaultTextFeild text "
+              name="description"
+              rows={5}
+              placeholder="Enter description"
+              value={popupFormData?.description}
+              onChange={handleInputChange}
             />
-            <Button onClick={handleAddImage}>Add</Button>
-            <div className="imageList">
-              {popupFormData?.images?.length > 0 ? (
-                <ul>
-                  {popupFormData.images.map((url: any, index: any) => (
-                    <li key={index}>
-                      <span>{url.slice(0, 40) + "...."}</span>
-                      <IconButton
-                        onClick={() => handleRemoveImage(index)}
-                        aria-label="delete"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No images added.</p>
-              )}
-            </div>
-            <ErrorMessagesComponent errorMessage={errorMessages["images"]} />
+            <ErrorMessagesComponent
+              errorMessage={errorMessages["description"]}
+            />
           </div>
+          <ImagesAddingComponent
+            setImageInput={setImageInput}
+            setErrorMessages={setErrorMessages}
+            popupFormData={popupFormData}
+            imageInput={imageInput}
+            setPopupFormData={setPopupFormData}
+            errorMessages={errorMessages}
+          />
+          <TagsAddingComponent
+            setTagsInput={setTagsInput}
+            setErrorMessages={setErrorMessages}
+            popupFormData={popupFormData}
+            tagsInput={tagsInput}
+            setPopupFormData={setPopupFormData}
+            errorMessages={errorMessages}
+          />
           <div className="actionBtnGrp">
             <Button onClick={handleCancel} disabled={loading ? true : false}>
               Cancel
             </Button>
             <Button
               onClick={handleSave}
-              disabled={popupFormData?.name ? false : true}
+              disabled={popupFormData?.title ? false : true}
             >
               {loading ? (
                 <CircularProgress

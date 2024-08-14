@@ -328,3 +328,54 @@ export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
 
   return OrganizationMarkersImages;
 };
+
+export const getLocationAddress = ({
+  latitude,
+  longitude,
+  setMarkerData,
+  setPlaceDetails,
+  markerData,
+}: any) => {
+  const geocoder = new google.maps.Geocoder();
+  const latlng = { lat: latitude, lng: longitude };
+  geocoder.geocode({ location: latlng }, (results: any, status) => {
+    if (status === google.maps.GeocoderStatus.OK) {
+      if (results[0]) {
+        let postalAddress = "";
+        let postcode = "";
+        let streetAddress = "";
+        let town = "";
+        const locationName = results[0].formatted_address;
+        const addressComponents = results[0].address_components;
+        addressComponents.forEach((component: any) => {
+          const types = component.types;
+          if (types.includes("street_number") || types.includes("route")) {
+            streetAddress += (streetAddress ? " " : "") + component.long_name;
+          } else if (types.includes("locality")) {
+            town = component.long_name;
+          } else if (types.includes("postal_code")) {
+            postcode = component.long_name;
+          }
+        });
+        postalAddress = [streetAddress, town, postcode]
+          .filter(Boolean)
+          .join(", ");
+        setMarkerData({
+          ...markerData,
+          postal_address: postalAddress,
+          postcode: postcode,
+          street_address: streetAddress,
+          town: town,
+        });
+        setPlaceDetails({
+          full_address: locationName,
+          coordinates: [latitude, longitude],
+        });
+      } else {
+        console.log("No results found");
+      }
+    } else {
+      console.log("Geocoder failed due to: " + status);
+    }
+  });
+};

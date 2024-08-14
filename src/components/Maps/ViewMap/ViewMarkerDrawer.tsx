@@ -209,6 +209,33 @@ const ViewMarkerDrawer = ({
             )}
           </Typography>
         </div>
+
+        <div className="eachMarkerDetail">
+          <Typography className="title">Description</Typography>
+          {singleMarkerLoading ? (
+            <Skeleton width="60%" />
+          ) : (
+            <Typography
+              className="value"
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Tooltip
+                title={
+                  data?.description && data?.description > 200
+                    ? data?.description
+                    : ""
+                }
+              >
+                <p>{truncateText(data?.description, 200) || "---"}</p>
+              </Tooltip>
+            </Typography>
+          )}
+        </div>
+
         <div className="eachMarkerDetail">
           <Typography className="title">Organization Type</Typography>
           {singleMarkerLoading ? (
