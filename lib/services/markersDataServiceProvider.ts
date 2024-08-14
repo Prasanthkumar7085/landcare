@@ -78,6 +78,32 @@ export class MarkersDataServiceProvider {
 
     }
 
+    async findAllByMapIdWithCoordinates(mapId: number, lat: number, lng: number) {
+       
+       return await db.select({
+            id: mapMarkers.id,
+            title: mapMarkers.title,
+            description: mapMarkers.description,
+            coordinates: mapMarkers.coordinates,
+            contact: mapMarkers.contact,
+            organisation_type: mapMarkers.organisation_type,
+            phone: mapMarkers.phone,
+            email: mapMarkers.email,
+            postal_address: mapMarkers.postal_address,
+            street_address: mapMarkers.street_address,
+            town: mapMarkers.town,
+            postcode: mapMarkers.postcode,
+            website: mapMarkers.website,
+            created_at: mapMarkers.created_at,
+            updated_at: mapMarkers.updated_at
+        })
+            .from(mapMarkers)
+            .where(and(
+                eq(mapMarkers.map_id, mapId),
+                eq(mapMarkers.coordinates, [lat,lng])
+            ))
+    }
+
     async findMarkersCount(query: any, mapId: number) {
         let countQuery: any = db.select({ count: sql`COUNT(*)` })
             .from(mapMarkers)
