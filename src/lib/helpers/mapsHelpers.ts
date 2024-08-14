@@ -295,3 +295,36 @@ export const getPolygonWithMarkers = (points: any) => {
   lower.pop();
   return lower.concat(upper);
 };
+
+export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
+  let organizationTypes: any = markersData?.map((item: any) => {
+    return item.organisation_type;
+  });
+  const uniqueOrganizationTypes = organizationTypes.filter(
+    (value: any, index: any, self: any) => {
+      return (
+        value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        self.indexOf(value) === index
+      );
+    }
+  );
+  const markersImages = [
+    "https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png",
+    "https://maps.gstatic.com/mapfiles/ms2/micons/green-dot.png",
+    "https://maps.gstatic.com/mapfiles/ms2/micons/ltblue-dot.png",
+    "https://maps.gstatic.com/mapfiles/ms2/micons/yellow-dot.png",
+    "https://maps.gstatic.com/mapfiles/ms2/micons/purple-dot.png",
+    "https://maps.gstatic.com/mapfiles/ms2/micons/pink-dot.png",
+  ];
+  const OrganizationMarkersImages: Record<string, string> =
+    uniqueOrganizationTypes
+      .filter((type: any) => type !== "")
+      .reduce((acc: any, type: any, index: any) => {
+        acc[type] = markersImages[index];
+        return acc;
+      }, {} as Record<string, string>);
+
+  return OrganizationMarkersImages;
+};

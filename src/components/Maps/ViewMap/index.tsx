@@ -3,6 +3,7 @@ import LoadingComponent from "@/components/Core/LoadingComponent";
 import ViewMarkerDrawer from "@/components/Maps/ViewMap/ViewMarkerDrawer";
 import {
   boundToMapWithPolygon,
+  getMarkersImagesBasedOnOrganizationType,
   getPolygonWithMarkers,
 } from "@/lib/helpers/mapsHelpers";
 import {
@@ -52,7 +53,10 @@ const ViewGoogleMap = () => {
   const [markerOption, setMarkerOption] = useState<any>();
   const [singleMarkerdata, setSingleMarkerData] = useState<any>();
   const [singleMarkerLoading, setSingleMarkerLoading] = useState(false);
-
+  const [
+    markersImagesWithOrganizationType,
+    setMarkersImagesWithOrganizationType,
+  ] = useState<any>({});
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     state: "",
@@ -130,6 +134,8 @@ const ViewGoogleMap = () => {
   };
   const renderAllMarkers = (markers1: any, map: any, maps: any) => {
     clearMarkers();
+    let markersImages = getMarkersImagesBasedOnOrganizationType(markers1);
+    setMarkersImagesWithOrganizationType(markersImages);
     markers1?.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
         markerData.coordinates?.[0],
@@ -140,7 +146,9 @@ const ViewGoogleMap = () => {
         map: map,
         title: markerData.title,
         icon: {
-          url: "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
+          url: markersImages[markerData?.organisation_type]
+            ? markersImages[markerData?.organisation_type]
+            : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
         animation: google.maps.Animation.DROP,
         draggable: true,
@@ -336,6 +344,9 @@ const ViewGoogleMap = () => {
             setSingleMarkerLoading={setSingleMarkerLoading}
             singleMarkerLoading={singleMarkerLoading}
             handleMarkerClick={handleMarkerClick}
+            markersImagesWithOrganizationType={
+              markersImagesWithOrganizationType
+            }
           />
         ) : (
           <ViewMapDetailsDrawer
@@ -352,6 +363,9 @@ const ViewGoogleMap = () => {
             markersRef={markersRef}
             handleMarkerClick={handleMarkerClick}
             getSingleMapMarkers={getSingleMapMarkers}
+            markersImagesWithOrganizationType={
+              markersImagesWithOrganizationType
+            }
           />
         )}
         <MarkerPopup

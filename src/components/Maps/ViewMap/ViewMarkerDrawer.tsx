@@ -38,6 +38,7 @@ const ViewMarkerDrawer = ({
   setSingleMarkerLoading,
   singleMarkerLoading,
   handleMarkerClick,
+  markersImagesWithOrganizationType,
 }: any) => {
   const { id } = useParams();
   const pathname = usePathname();
@@ -113,6 +114,7 @@ const ViewMarkerDrawer = ({
       getSingleMarker(params?.get("marker_id"));
     }
   }, [params?.get("marker_id"), showMarkerPopup]);
+
   return (
     <div className="signleMarkerView">
       <header className="header">
@@ -147,8 +149,19 @@ const ViewMarkerDrawer = ({
       <Box className="viewContent">
         <div className="imgBlock">
           {data?.images?.length > 0 ? (
-            <div style={{ minWidth: "100%", width: "100%" }}>
-              <button onClick={prevSlide} className="navButton">
+            <div
+              style={{
+                minWidth: "100%",
+                width: "100%",
+                minHeight: "100%",
+                border: "1px solid black",
+              }}
+            >
+              <button
+                onClick={prevSlide}
+                className="navButton"
+                style={{ display: data?.images?.length == 1 ? "none" : "" }}
+              >
                 &#10094;
               </button>
               <img
@@ -159,7 +172,11 @@ const ViewMarkerDrawer = ({
                 width={100}
                 style={{ objectFit: "cover" }}
               />
-              <button onClick={nextSlide} className="navButton">
+              <button
+                onClick={nextSlide}
+                className="navButton"
+                style={{ display: data?.images?.length == 1 ? "none" : "" }}
+              >
                 &#10095;
               </button>
             </div>
@@ -188,7 +205,7 @@ const ViewMarkerDrawer = ({
             {singleMarkerLoading ? (
               <Skeleton width="60%" />
             ) : (
-              <span>{data?.town || "---"}</span>
+              <span>{data?.town?.split(" ")[0] || "---"}</span>
             )}
           </Typography>
         </div>
@@ -197,8 +214,25 @@ const ViewMarkerDrawer = ({
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
-            <Typography className="value">
-              {data?.organization_type || "---"}
+            <Typography
+              className="value"
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <img
+                width={15}
+                height={15}
+                src={
+                  data?.organisation_type
+                    ? markersImagesWithOrganizationType[data?.organisation_type]
+                    : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
+                }
+                alt={data?.organisation_type}
+              />
+              {data?.organisation_type || "---"}
             </Typography>
           )}
         </div>

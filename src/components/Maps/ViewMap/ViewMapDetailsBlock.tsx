@@ -24,6 +24,7 @@ const ViewMapDetailsDrawer = ({
   markersRef,
   handleMarkerClick,
   getSingleMapMarkers,
+  markersImagesWithOrganizationType,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -123,6 +124,9 @@ const ViewMapDetailsDrawer = ({
               markersRef={markersRef}
               handleMarkerClick={handleMarkerClick}
               getSingleMapMarkers={getSingleMapMarkers}
+              markersImagesWithOrganizationType={
+                markersImagesWithOrganizationType
+              }
             />
           </div>
         </div>

@@ -23,6 +23,7 @@ import { datePipe } from "@/lib/helpers/datePipe";
 import { getSingleMarkerAPI } from "@/services/maps";
 import styles from "./index.module.css";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
+import { getMarkersImagesBasedOnOrganizationType } from "@/lib/helpers/mapsHelpers";
 
 const MapMarkersList = ({
   singleMarkers,
@@ -36,6 +37,7 @@ const MapMarkersList = ({
   markersRef,
   handleMarkerClick,
   getSingleMapMarkers,
+  markersImagesWithOrganizationType,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
@@ -116,7 +118,7 @@ const MapMarkersList = ({
                         height={12}
                         alt="type"
                       />
-                      <span>{markerDetails?.town || "---"}</span>
+                      <span>{markerDetails?.town?.split(" ")[0] || "---"}</span>
                     </div>
                   </div>
 
@@ -133,7 +135,27 @@ const MapMarkersList = ({
                   </div>
                   <div className="markerFooter">
                     <div className="createdDate">
-                      <span>{markerDetails?.orgination_type || "---"}</span>
+                      <span
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img
+                          width={15}
+                          height={15}
+                          src={
+                            markerDetails?.organisation_type
+                              ? markersImagesWithOrganizationType[
+                                  markerDetails?.organisation_type
+                                ]
+                              : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
+                          }
+                          alt={markerDetails?.organisation_type}
+                        />
+                        {markerDetails?.organisation_type || "---"}
+                      </span>
                     </div>
                     <div className="createdDate">
                       <Image
