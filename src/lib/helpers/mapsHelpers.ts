@@ -14,6 +14,14 @@ export const calculatePolygonCentroid = (coordinates: any) => {
   return { lat: x / coordinates?.length, lng: y / coordinates?.length };
 };
 
+export const checkSheetHeaders = (headers: any) => {
+  if (headers?.length == SheetHeaders?.length) {
+    if (headers?.every((header: any) => SheetHeaders?.includes(header))) {
+      return true;
+    }
+  }
+  return false;
+};
 export const processImportedData = (parsedData: any) => {
   const isEmpty = parsedData.every((row: any) =>
     row.every((cell: any) => String(cell).trim() === "")
@@ -93,7 +101,7 @@ const updateDataWithCoordinates = (
   const updatedData: any = [];
   const coordinatesErrors: any = [];
   filteredDataObjects.forEach((obj: any) => {
-    if (obj.coordinates.length) {
+    if (isValidCoordinates(obj.coordinates)) {
       const coords = obj.coordinates;
       if (coords && obj?.title) {
         updatedData.push({
@@ -101,7 +109,7 @@ const updateDataWithCoordinates = (
           coordinates: coords,
         });
       }
-    } else if (obj.town) {
+    } else if (obj.town && isValidCoordinates(obj.coordinates) == false) {
       const coords = locationToCoordinatesMap[obj.town] || null;
       if (coords && obj?.title) {
         updatedData.push({
@@ -134,11 +142,11 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
 
   let errorsData = validationsForImportedData({ filteredDataObjects });
   let data = [...errorsData.validData];
-  const locationToCoordinatesMap: any = {};
-  const townsToFetch: string[] = [];
+  let locationToCoordinatesMap: any = {};
+  let townsToFetch: any = [];
   data.forEach((obj: any) => {
     if (
-      obj.coordinates.length == 0 &&
+      isValidCoordinates(obj.coordinates) == false &&
       obj.town &&
       !townsToFetch.includes(obj.town)
     ) {
@@ -148,7 +156,8 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
 
   const townCoordinatesResults = await fetchTownCoordinates(townsToFetch);
 
-  const locationErrorsMap: { [key: string]: string } = {};
+  let locationErrorsMap: { [key: string]: string } = {};
+
   townCoordinatesResults.forEach((result: any) => {
     if (result.status === "fulfilled") {
       const { town, coords, error } = result.value;
