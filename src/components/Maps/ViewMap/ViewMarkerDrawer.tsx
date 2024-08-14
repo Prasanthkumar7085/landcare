@@ -2,7 +2,7 @@ import DeleteDialog from "@/components/Core/DeleteDialog";
 import ShareLinkDialog from "@/components/Core/ShareLinkDialog";
 import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
 import { deleteMarkerAPI, getSingleMarkerAPI } from "@/services/maps";
-import { Menu, MenuItem } from "@mui/material";
+import { Menu, MenuItem, Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -20,6 +20,8 @@ import { toast } from "sonner";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Link from "next/link";
+import { truncateText } from "@/lib/helpers/nameFormate";
 
 const ViewMarkerDrawer = ({
   onClose,
@@ -143,29 +145,16 @@ const ViewMarkerDrawer = ({
         </IconButton>
       </header>
       <Box className="viewContent">
-        {/* <div className="imgBlock">
-          <img
-            className="mapImg"
-            src={
-              data?.images?.length > 0
-                ? data?.images[0]
-                : "/map/marker-view.png"
-            }
-            alt=""
-            height={100}
-            width={100}
-          />
-        </div> */}
         <div className="imgBlock">
           {data?.images?.length > 0 ? (
-            <>
+            <div style={{ minWidth: "100%", width: "100%" }}>
               <button onClick={prevSlide} className="navButton">
                 &#10094;
               </button>
               <img
                 className="mapImg"
                 src={data?.images[currentIndex]}
-                alt={`Slide ${currentIndex}`}
+                alt={`images ${currentIndex}`}
                 height={100}
                 width={100}
                 style={{ objectFit: "cover" }}
@@ -173,7 +162,7 @@ const ViewMarkerDrawer = ({
               <button onClick={nextSlide} className="navButton">
                 &#10095;
               </button>
-            </>
+            </div>
           ) : (
             <img
               className="mapImg"
@@ -190,7 +179,7 @@ const ViewMarkerDrawer = ({
             <Skeleton width="60%" className="markerTitle" />
           ) : (
             <Typography className="markerTitle">
-              {data?.name || "---"}
+              {data?.title || "---"}
             </Typography>
           )}
 
@@ -199,26 +188,34 @@ const ViewMarkerDrawer = ({
             {singleMarkerLoading ? (
               <Skeleton width="60%" />
             ) : (
-              <span>{data?.location || "---"}</span>
+              <span>{data?.town || "---"}</span>
             )}
           </Typography>
         </div>
         <div className="eachMarkerDetail">
-          <Typography className="title">Host Organization</Typography>
+          <Typography className="title">Organization Type</Typography>
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
             <Typography className="value">
-              {data?.host_organization || "---"}
+              {data?.organization_type || "---"}
             </Typography>
           )}
         </div>
         <div className="eachMarkerDetail">
-          <Typography className="title">Position</Typography>
+          <Typography className="title">website</Typography>
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
+          ) : data?.website ? (
+            <Tooltip
+              title={data?.website && data?.website > 70 ? data?.website : ""}
+            >
+              <Link href={data?.website} target="_blank" className="value">
+                {truncateText(data?.website, 70) || "---"}
+              </Link>
+            </Tooltip>
           ) : (
-            <Typography className="value">{data?.position || "--"}</Typography>
+            "---"
           )}
         </div>
         <div className="eachMarkerDetail">
@@ -227,7 +224,7 @@ const ViewMarkerDrawer = ({
             <Skeleton width="60%" />
           ) : (
             <Typography className="value">
-              {data?.post_code || "---"}{" "}
+              {data?.postcode || "---"}{" "}
             </Typography>
           )}
         </div>

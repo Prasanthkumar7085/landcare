@@ -1,7 +1,10 @@
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
 import ViewMarkerDrawer from "@/components/Maps/ViewMap/ViewMarkerDrawer";
-import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
+import {
+  boundToMapWithPolygon,
+  getPolygonWithMarkers,
+} from "@/lib/helpers/mapsHelpers";
 import {
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
@@ -135,7 +138,7 @@ const ViewGoogleMap = () => {
       const markere = new google.maps.Marker({
         position: latLng,
         map: map,
-        title: markerData.name,
+        title: markerData.title,
         icon: {
           url: "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
@@ -212,24 +215,14 @@ const ViewGoogleMap = () => {
       addMarkerEVent(event, map, maps);
     });
   };
-
   const getSingleMapDetails = async () => {
     setLoading(true);
+
     try {
       const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
-        let updatedArray = response?.data?.geo_coordinates.map((item: any) => {
-          return {
-            lat: item[0],
-            lng: item[1],
-          };
-        });
-        await getSingleMapMarkers({
-          page: 1,
-          limit: 100,
-        });
-        setPolygonCoords(updatedArray);
+        await getSingleMapMarkers({});
       }
     } catch (err) {
       console.error(err);
@@ -239,25 +232,30 @@ const ViewGoogleMap = () => {
   };
 
   const getSingleMapMarkers = async ({
-    page = 1,
-    limit = 100,
     search_string = searchString,
     sort_by = markerOption?.value,
     sort_type = markerOption?.title,
   }) => {
     try {
       let queryParams: any = {
-        page: page,
-        limit: limit,
         search_string: search_string,
         sort_by: sort_by,
         sort_type: sort_type,
+        get_all: true,
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
-      console.log(data, "ppppeewppe");
       setMarkers(data);
       setSingleMarkers(data);
+      let updatedCoords = data?.map((item: any) => item.coordinates);
+      let newCoords = updatedCoords.map((item: any) => {
+        return {
+          lat: item[0],
+          lng: item[1],
+        };
+      });
+      let coords = getPolygonWithMarkers(newCoords);
+      setPolygonCoords(coords);
     } catch (err) {
       console.error(err);
     }
@@ -282,8 +280,6 @@ const ViewGoogleMap = () => {
 
   useEffect(() => {
     getSingleMapMarkers({
-      page: 1,
-      limit: 100,
       search_string: searchString,
       sort_by: markerOption?.value,
       sort_type: markerOption?.title,

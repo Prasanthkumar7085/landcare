@@ -107,7 +107,7 @@ const MapMarkersList = ({
                         width={20}
                         height={20}
                       />
-                      <span>{markerDetails?.name || "---"}</span>
+                      <span>{markerDetails?.title || "---"}</span>
                     </div>
                     <div className="locationType">
                       <Image
@@ -116,7 +116,7 @@ const MapMarkersList = ({
                         height={12}
                         alt="type"
                       />
-                      <span>{markerDetails?.location || "---"}</span>
+                      <span>{markerDetails?.town || "---"}</span>
                     </div>
                   </div>
 
@@ -133,7 +133,7 @@ const MapMarkersList = ({
                   </div>
                   <div className="markerFooter">
                     <div className="createdDate">
-                      <span>{markerDetails?.position || "---"}</span>
+                      <span>{markerDetails?.orgination_type || "---"}</span>
                     </div>
                     <div className="createdDate">
                       <Image

@@ -50,6 +50,8 @@ const parseField = (value: any, type: string) => {
       return value.split(",").map((coord: string) => parseFloat(coord.trim()));
     case "postcode":
       return value.toString();
+    case "town":
+      return value ? value + " " + "Australia" : "";
     case "tags":
     case "images":
       return value.split(",").map((item: string) => item.trim());
@@ -90,7 +92,6 @@ const updateDataWithCoordinates = (
 ) => {
   const updatedData: any = [];
   const coordinatesErrors: any = [];
-  console.log(updatedData, "fdasiiwqe");
   filteredDataObjects.forEach((obj: any) => {
     if (obj.coordinates.length) {
       const coords = obj.coordinates;
@@ -115,7 +116,6 @@ const updateDataWithCoordinates = (
       }
     }
   });
-  console.log([updatedData, coordinatesErrors], "okkkk");
   return [updatedData, coordinatesErrors];
 };
 
@@ -136,15 +136,12 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
   let data = [...errorsData.validData];
   const locationToCoordinatesMap: any = {};
   const townsToFetch: string[] = [];
-  console.log(townsToFetch, "032oo32o32");
-  console.log(locationToCoordinatesMap, "dsjajdasjasj");
   data.forEach((obj: any) => {
     if (
-      !obj.coordinates.length &&
+      obj.coordinates.length == 0 &&
       obj.town &&
       !townsToFetch.includes(obj.town)
     ) {
-      console.log(obj, "oowoowqoqwoq owq");
       townsToFetch.push(obj.town);
     }
   });
@@ -166,54 +163,73 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
   });
 
   const [updatedData, coordinatesErrors] = updateDataWithCoordinates(
-    filteredDataObjects,
+    data,
     locationToCoordinatesMap,
     locationErrorsMap
   );
   return [updatedData, [...errorsData.errors, ...coordinatesErrors]];
 };
 
-const validationsForImportedData = ({ filteredDataObjects }: any) => {
-  const validDataObjects: any[] = [];
-  const errorObjects: any[] = [];
-  filteredDataObjects.forEach((result: any) => {
-    const obj = { ...result };
-    const nameValue = obj.title;
-    const locationValue = obj.coordinates;
+interface DataObject {
+  title?: string;
+  coordinates?: any;
+  town?: string;
+}
+
+const isValidCoordinates = (coords: any): boolean => {
+  if (!Array.isArray(coords)) return false;
+  if (coords.length === 0) return false;
+  return coords.every((coord) => typeof coord === "number" && !isNaN(coord));
+};
+
+const validationsForImportedData = ({
+  filteredDataObjects,
+}: {
+  filteredDataObjects: DataObject[];
+}) => {
+  const validDataObjects: DataObject[] = [];
+  const errorObjects: any = [];
+
+  filteredDataObjects.forEach((obj: DataObject) => {
+    const nameValue = obj.title?.trim();
+    let coordinates = obj.coordinates;
+    const townValue = obj.town?.trim();
+
+    if (coordinates) {
+      coordinates = Array.isArray(coordinates)
+        ? coordinates.map(Number)
+        : [Number(coordinates)];
+    }
 
     if (
-      (nameValue === undefined || nameValue === "" || nameValue === null) &&
-      (locationValue === undefined ||
-        locationValue === "" ||
-        locationValue === null)
+      (nameValue === undefined || nameValue === "") &&
+      (coordinates === undefined || !isValidCoordinates(coordinates))
     ) {
       errorObjects.push({
         ...obj,
         error: "Name and Location are required",
       });
-    } else if (
-      nameValue === undefined ||
-      nameValue === "" ||
-      nameValue === null
-    ) {
+    } else if (nameValue === undefined || nameValue === "") {
       errorObjects.push({
         ...obj,
         error: "Name is required",
       });
-    } else if (
-      locationValue === undefined ||
-      locationValue === "" ||
-      locationValue === null
-    ) {
-      errorObjects.push({
-        ...obj,
-        error: "Location is required",
-      });
+    } else if (coordinates === undefined || !isValidCoordinates(coordinates)) {
+      if (townValue === undefined || townValue === "") {
+        errorObjects.push({
+          ...obj,
+          error: "Town or coordinates are required",
+        });
+      } else {
+        validDataObjects.push({
+          ...obj,
+          coordinates,
+        });
+      }
     } else {
-      validDataObjects.push(obj);
+      validDataObjects.push({ ...obj, coordinates });
     }
   });
-
   return { validData: validDataObjects, errors: errorObjects };
 };
 
