@@ -36,7 +36,7 @@ export class MarkersController {
         } catch (error: any) {
             console.log(error);
             if (error.validation_error) {
-                return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
+                return ResponseHelper.sendErrorResponse(409, error.message, error.errors);
             }
             return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
@@ -153,7 +153,7 @@ export class MarkersController {
         } catch (error: any) {
             console.log(error);
             if (error.validation_error) {
-                return ResponseHelper.sendErrorResponse(422, error.message, error.errors);
+                return ResponseHelper.sendErrorResponse(409, error.message, error.errors);
             }
             return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
@@ -178,6 +178,27 @@ export class MarkersController {
             await markersDataServiceProvider.delete(markerId);
 
             return ResponseHelper.sendSuccessResponse(200, MARKER_DELETED);
+
+        } catch (error: any) {
+            console.log(error);
+            return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
+        }
+    }
+
+    async getMarkersByCoordinates(params: any) {
+        try {
+            const mapId = params.id;
+            const lat = +params.lat;
+            const lng = +params.lng;
+
+            const mapData = await mapsDataServiceProvider.findById(mapId);
+            if (!mapData) {
+                return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
+            }
+
+            const markersData = await markersDataServiceProvider.findAllByMapIdWithCoordinates(mapId, lat, lng);
+
+            return ResponseHelper.sendSuccessResponse(200, MARKERS_FETCHED, markersData);
 
         } catch (error: any) {
             console.log(error);

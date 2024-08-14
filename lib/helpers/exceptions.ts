@@ -4,7 +4,7 @@ export class ResourceAlreadyExistsError extends Error {
     constructor(key: string, message: string) {
         super(message);
         const err = new CustomError();
-        err.status = 422;
+        err.status = 409;
         err.message = "Validation failed";
         err.validation_error = true;
 
