@@ -1,6 +1,8 @@
 import LoadingComponent from "@/components/Core/LoadingComponent";
 import {
+  checkSheetHeaders,
   getImportedFilteredData,
+  getPolygonWithMarkers,
   processImportedData,
 } from "@/lib/helpers/mapsHelpers";
 import {
@@ -17,6 +19,7 @@ import { toast } from "sonner";
 import * as XLSX from "xlsx";
 import ValidationsTable from "./ValidationsTable";
 import { Button } from "@mui/material";
+import MappingScreen from "./MappingComponent";
 
 interface IImportModalProps {
   show: boolean;
@@ -41,7 +44,9 @@ const ImportModal: React.FC<IImportModalProps> = ({
   const [errorMessages, setErrorMessages] = useState<any>();
   const [validationsData, setValidationsData] = useState<any>([]);
   const [success, setSuccess] = useState<any>(false);
-
+  const [sheetHeaders, setSheetHeaders] = useState<any>([]);
+  const [checkMapping, setCheckMapping] = useState<any>(false);
+  const [sheetValues, setSheetValues] = useState<any>([]);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       setFile(acceptedFiles[0]);
@@ -71,10 +76,17 @@ const ImportModal: React.FC<IImportModalProps> = ({
         Papa.parse(file, {
           complete: async function (results: any) {
             let jsonData = results.data;
-            if (processImportedData(results.data)) {
-              let markersData = await getImportedFilteredData({ jsonData });
-              setValidationsData(markersData);
-              await handleUpload(markersData);
+            let checkMappingvalue = checkSheetHeaders(jsonData[0]);
+            if (!checkMappingvalue) {
+              setCheckMapping(true);
+              setSheetHeaders(jsonData[0]);
+              setSheetValues(jsonData);
+            } else {
+              if (processImportedData(results.data)) {
+                let markersData = await getImportedFilteredData({ jsonData });
+                setValidationsData(markersData);
+                await handleUpload(markersData);
+              }
             }
           },
           header: false,
@@ -86,11 +98,18 @@ const ImportModal: React.FC<IImportModalProps> = ({
           const workbook = XLSX.read(data, { type: "array" });
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-          if (processImportedData(jsonData)) {
-            let markersData = await getImportedFilteredData({ jsonData });
-            setValidationsData(markersData);
-            await handleUpload(markersData);
+          let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+          let checkMappingvalue = checkSheetHeaders(jsonData[0]);
+          if (!checkMappingvalue) {
+            setCheckMapping(true);
+            setSheetHeaders(jsonData[0]);
+            setSheetValues(jsonData);
+          } else {
+            if (processImportedData(jsonData)) {
+              let markersData = await getImportedFilteredData({ jsonData });
+              setValidationsData(markersData);
+              await handleUpload(markersData);
+            }
           }
         };
         reader.readAsArrayBuffer(file);
@@ -100,16 +119,10 @@ const ImportModal: React.FC<IImportModalProps> = ({
     }
   };
 
-  const getStaticMap = async (filedata: any) => {
-    let polygonCoords = mapDetails?.geo_coordinates.map((item: any) => {
-      return {
-        lat: item[0],
-        lng: item[1],
-      };
-    });
+  const getStaticMap = async (updatedCoords: any, coords: any) => {
     let body = {
-      coordinates: [...polygonCoords, polygonCoords[0]],
-      markers: filedata[0]?.map((item: any) => item?.coordinates),
+      coordinates: [...coords, coords[0]],
+      markers: updatedCoords,
     };
     try {
       const response = await getStaticMapAPI(body);
@@ -124,15 +137,24 @@ const ImportModal: React.FC<IImportModalProps> = ({
   };
 
   const addMapWithCordinates = async (filedata: any) => {
+    let updatedCoords = filedata[0]?.map((item: any) => item?.coordinates);
+    let newCoords = updatedCoords.map((item: any) => {
+      return {
+        lat: item[0],
+        lng: item[1],
+      };
+    });
+    let coords = getPolygonWithMarkers(newCoords);
+
     let mapImage;
-    mapImage = await getStaticMap(filedata);
+    mapImage = await getStaticMap(updatedCoords, coords);
 
     let body = {
       title: mapDetails?.title ? mapDetails?.title : "",
       description: mapDetails?.description ? mapDetails?.description : "",
       status: mapDetails?.status,
       geo_type: "polygon",
-      geo_coordinates: mapDetails?.geo_coordinates,
+      geo_coordinates: coords.map((item: any) => [item.lng, item.lat]),
       geo_zoom: 14,
       image: mapImage,
     };
@@ -207,6 +229,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
             </p>
           </div>
         </div>
+
         <div {...getRootProps({ className: "dropzone " })}>
           <input {...getInputProps()} onChange={handleFileChange} />
           {isDragActive ? (
@@ -232,16 +255,31 @@ const ImportModal: React.FC<IImportModalProps> = ({
         <div className="fileUpload">
           {file && <p>Selected file: {file.name}</p>}
         </div>
-        <div className="btnGrp">
-          <Button onClick={onClose}>Close</Button>
-          <Button
-            onClick={handleFileUpload}
-            disabled={file && !success ? false : true}
-          >
-            Confirm Upload
-          </Button>
-        </div>
-        {validationsData?.length > 0 ? (
+        {checkMapping ? (
+          <div>
+            <MappingScreen
+              sheetHeaders={sheetHeaders}
+              setSheetHeaders={setSheetHeaders}
+              jsonData={sheetValues}
+              setValidationsData={setValidationsData}
+              handleUpload={handleUpload}
+              onClose={onClose}
+              setCheckMapping={setCheckMapping}
+            />
+          </div>
+        ) : (
+          <div className="btnGrp">
+            <Button onClick={onClose}>Close</Button>
+            <Button
+              onClick={handleFileUpload}
+              disabled={file && !success ? false : true}
+            >
+              Confirm Upload
+            </Button>
+          </div>
+        )}
+
+        {validationsData?.length > 0 && !checkMapping ? (
           <ValidationsTable validationsData={validationsData} />
         ) : (
           ""

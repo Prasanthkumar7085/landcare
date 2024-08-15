@@ -2,7 +2,12 @@ import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
 import { markerFilterOptions } from "@/lib/constants/mapConstants";
-import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
+import {
+  boundToMapWithPolygon,
+  getLocationAddress,
+  getMarkersImagesBasedOnOrganizationType,
+  getPolygonWithMarkers,
+} from "@/lib/helpers/mapsHelpers";
 import {
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
@@ -60,6 +65,10 @@ const PublicMap = () => {
     social_links: [],
     coordinates: [],
   });
+  const [
+    markersImagesWithOrganizationType,
+    setMarkersImagesWithOrganizationType,
+  ] = useState<any>({});
 
   const addMarkerEVent = (event: any, map: any, maps: any) => {
     const marker = new google.maps.Marker({
@@ -90,10 +99,10 @@ const PublicMap = () => {
             coordinates: [latitude, longitude],
           });
         } else {
-          console.log("No results found");
+          console.error("No results found");
         }
       } else {
-        console.log("Geocoder failed due to: " + status);
+        console.error("Geocoder failed due to: " + status);
       }
     });
   };
@@ -109,6 +118,8 @@ const PublicMap = () => {
   };
   const renderAllMarkers = (markers1: any, map: any, maps: any) => {
     clearMarkers();
+    let markersImages = getMarkersImagesBasedOnOrganizationType(markers1);
+    setMarkersImagesWithOrganizationType(markersImages);
     markers1?.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
         markerData.coordinates?.[0],
@@ -117,11 +128,14 @@ const PublicMap = () => {
       const markere = new google.maps.Marker({
         position: latLng,
         map: map,
-        title: markerData.name,
+        title: markerData.title,
         icon: {
-          url: "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
+          url: markersImages[markerData?.organisation_type]
+            ? markersImages[markerData?.organisation_type]
+            : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
         animation: google.maps.Animation.DROP,
+        draggable: true,
       });
       markersRef.current.push({ id: markerData.id, marker: markere });
 
@@ -133,8 +147,14 @@ const PublicMap = () => {
       markere.addListener("dragend", (event: google.maps.MouseEvent) => {
         router.replace(`${pathName}?marker_id=${markerData?.id}`);
         setShowMarkerPopup(true);
-        setPlaceDetails({
-          coordinates: [event.latLng?.lat(), event.latLng?.lng()],
+        const latitude = event.latLng?.lat();
+        const longitude = event.latLng?.lng();
+        getLocationAddress({
+          latitude,
+          longitude,
+          setMarkerData,
+          setPlaceDetails,
+          markerData,
         });
       });
     });
@@ -200,17 +220,7 @@ const PublicMap = () => {
       const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
-        let updatedArray = response?.data?.geo_coordinates.map((item: any) => {
-          return {
-            lat: item[0],
-            lng: item[1],
-          };
-        });
-        await getSingleMapMarkers({
-          page: 1,
-          limit: 100,
-        });
-        setPolygonCoords(updatedArray);
+        await getSingleMapMarkers({});
       }
     } catch (err) {
       console.error(err);
@@ -220,16 +230,13 @@ const PublicMap = () => {
   };
 
   const getSingleMapMarkers = async ({
-    page = 1,
-    limit = 100,
     search_string = searchString,
     sort_by = markerOption?.value,
     sort_type = markerOption?.title,
   }) => {
     try {
       let queryParams: any = {
-        page: page,
-        limit: limit,
+        get_all: true,
         search_string: search_string,
         sort_by: sort_by,
         sort_type: sort_type,
@@ -238,6 +245,15 @@ const PublicMap = () => {
       const { data, ...rest } = response;
       setMarkers(data);
       setSingleMarkers(data);
+      let updatedCoords = data?.map((item: any) => item.coordinates);
+      let newCoords = updatedCoords.map((item: any) => {
+        return {
+          lat: item[0],
+          lng: item[1],
+        };
+      });
+      let coords = getPolygonWithMarkers(newCoords);
+      setPolygonCoords(coords);
     } catch (err) {
       console.error(err);
     }
@@ -262,8 +278,6 @@ const PublicMap = () => {
 
   useEffect(() => {
     getSingleMapMarkers({
-      page: 1,
-      limit: 100,
       search_string: searchString,
       sort_by: markerOption?.value,
       sort_type: markerOption?.title,
@@ -284,6 +298,7 @@ const PublicMap = () => {
       renderAllMarkers(markers, map, googleMaps);
     }
   }, [map, googleMaps, markers]);
+
   useEffect(() => {
     setSearchParams(
       Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
@@ -370,6 +385,9 @@ const PublicMap = () => {
             singleMarkerLoading={singleMarkerLoading}
             setMarkersOpen={setMarkersOpen}
             handleMarkerClick={handleMarkerClick}
+            markersImagesWithOrganizationType={
+              markersImagesWithOrganizationType
+            }
           />
         ) : (
           ""

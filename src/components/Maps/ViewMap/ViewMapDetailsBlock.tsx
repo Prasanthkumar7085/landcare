@@ -1,4 +1,11 @@
-import { Button, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -9,6 +16,7 @@ import { deleteMapAPI } from "@/services/maps";
 import MapMarkersList from "./MapMarkersList";
 import ImportModal from "./ImportMarkers/ImportModal";
 import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
+import { truncateText } from "@/lib/helpers/nameFormate";
 
 const ViewMapDetailsDrawer = ({
   mapDetails,
@@ -24,6 +32,7 @@ const ViewMapDetailsDrawer = ({
   markersRef,
   handleMarkerClick,
   getSingleMapMarkers,
+  markersImagesWithOrganizationType,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -71,12 +80,6 @@ const ViewMapDetailsDrawer = ({
     setShowModal(false);
     setFile(null);
   };
-  const coordinates = [
-    { lat: 37.7749, lng: -122.4194 },
-    { lat: 37.8049, lng: -122.2711 },
-    { lat: 37.7749, lng: -122.2711 },
-    { lat: 37.8049, lng: -122.4194 },
-  ];
 
   return (
     <div className="mapViewContainer">
@@ -105,16 +108,22 @@ const ViewMapDetailsDrawer = ({
           <Typography className="mapTitle">
             {mapDetails?.title ? mapDetails?.title : "--"}
           </Typography>
-          <Button onClick={() => getPolygonWithMarkers(coordinates)}>
-            Get
-          </Button>
+
           <Typography className="mapCreated">
             <Image src="/map/clock.svg" height={13} width={13} alt="" />
             {dayjs(mapDetails?.created_at).format("MM-DD-YYYY")}
           </Typography>
-          <Typography className="mapDescription">
-            {mapDetails?.description ? mapDetails?.description.slice() : "--"}
-          </Typography>
+          <Tooltip
+            title={
+              mapDetails?.description && mapDetails?.description?.length > 70
+                ? mapDetails?.description
+                : ""
+            }
+          >
+            <Typography className="mapDescription">
+              {truncateText(mapDetails?.description, 70) || "---"}
+            </Typography>
+          </Tooltip>
         </div>
         <div className="markersBlock">
           <Typography className="blockHeading">Markers</Typography>
@@ -131,6 +140,9 @@ const ViewMapDetailsDrawer = ({
               markersRef={markersRef}
               handleMarkerClick={handleMarkerClick}
               getSingleMapMarkers={getSingleMapMarkers}
+              markersImagesWithOrganizationType={
+                markersImagesWithOrganizationType
+              }
             />
           </div>
         </div>

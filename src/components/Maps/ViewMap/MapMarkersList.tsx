@@ -1,27 +1,9 @@
-import {
-  Button,
-  CardActions,
-  InputAdornment,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import Image from "next/image";
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
-import React, { useEffect, useState } from "react";
 import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
-import {
-  mapTypeOptions,
-  markerFilterOptions,
-} from "@/lib/constants/mapConstants";
-import { datePipe } from "@/lib/helpers/datePipe";
-import { getSingleMarkerAPI } from "@/services/maps";
-import styles from "./index.module.css";
+import { markerFilterOptions } from "@/lib/constants/mapConstants";
+import { Button, InputAdornment, TextField, Typography } from "@mui/material";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import React from "react";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
 
 const MapMarkersList = ({
@@ -36,6 +18,7 @@ const MapMarkersList = ({
   markersRef,
   handleMarkerClick,
   getSingleMapMarkers,
+  markersImagesWithOrganizationType,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
@@ -83,7 +66,6 @@ const MapMarkersList = ({
                   className="eachListItem"
                   key={index}
                   onClick={() => {
-                    setSingleMarkerOpen(true);
                     const markerEntry = markersRef.current.find(
                       (entry: any) => entry.id === markerDetails?.id
                     );
@@ -93,6 +75,8 @@ const MapMarkersList = ({
                     } else {
                       console.error(`Marker with ID ${id} not found.`);
                     }
+
+                    setSingleMarkerOpen(true);
                   }}
                 >
                   <div className="markerHeader">
@@ -107,7 +91,7 @@ const MapMarkersList = ({
                         width={20}
                         height={20}
                       />
-                      <span>{markerDetails?.name || "---"}</span>
+                      <span>{markerDetails?.title || "---"}</span>
                     </div>
                     <div className="locationType">
                       <Image
@@ -116,7 +100,7 @@ const MapMarkersList = ({
                         height={12}
                         alt="type"
                       />
-                      <span>{markerDetails?.location || "---"}</span>
+                      <span>{markerDetails?.town?.split(" ")[0] || "---"}</span>
                     </div>
                   </div>
 
@@ -133,7 +117,27 @@ const MapMarkersList = ({
                   </div>
                   <div className="markerFooter">
                     <div className="createdDate">
-                      <span>{markerDetails?.position || "---"}</span>
+                      <span
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img
+                          width={15}
+                          height={15}
+                          src={
+                            markerDetails?.organisation_type
+                              ? markersImagesWithOrganizationType[
+                                  markerDetails?.organisation_type
+                                ]
+                              : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
+                          }
+                          alt={markerDetails?.organisation_type}
+                        />
+                        {markerDetails?.organisation_type || "---"}
+                      </span>
                     </div>
                     <div className="createdDate">
                       <Image

@@ -1,7 +1,12 @@
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
 import ViewMarkerDrawer from "@/components/Maps/ViewMap/ViewMarkerDrawer";
-import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
+import {
+  boundToMapWithPolygon,
+  getLocationAddress,
+  getMarkersImagesBasedOnOrganizationType,
+  getPolygonWithMarkers,
+} from "@/lib/helpers/mapsHelpers";
 import {
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
@@ -45,11 +50,14 @@ const ViewGoogleMap = () => {
   const [localMarkers, setLocalMarkers] = useState<any>([]);
   const [overlays, setOverlays] = useState<any[]>([]);
   const [singleMarkeropen, setSingleMarkerOpen] = useState(false);
-  const [markerData, setMarkerData] = useState<any>({});
+  const [markerData, setMarkerData] = useState<any>({ images: [], tags: [] });
   const [markerOption, setMarkerOption] = useState<any>();
   const [singleMarkerdata, setSingleMarkerData] = useState<any>();
   const [singleMarkerLoading, setSingleMarkerLoading] = useState(false);
-
+  const [
+    markersImagesWithOrganizationType,
+    setMarkersImagesWithOrganizationType,
+  ] = useState<any>({});
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     state: "",
@@ -96,23 +104,12 @@ const ViewGoogleMap = () => {
     const markerPosition: any = marker.getPosition();
     const latitude = markerPosition.lat();
     const longitude = markerPosition.lng();
-
-    const geocoder = new google.maps.Geocoder();
-    const latlng = { lat: latitude, lng: longitude };
-    geocoder.geocode({ location: latlng }, (results: any, status) => {
-      if (status === google.maps.GeocoderStatus.OK) {
-        if (results[0]) {
-          const locationName = results[0].formatted_address;
-          setPlaceDetails({
-            full_address: locationName,
-            coordinates: [latitude, longitude],
-          });
-        } else {
-          console.log("No results found");
-        }
-      } else {
-        console.log("Geocoder failed due to: " + status);
-      }
+    getLocationAddress({
+      latitude,
+      longitude,
+      setMarkerData,
+      setPlaceDetails,
+      markerData,
     });
   };
   const clearMarkers = () => {
@@ -127,6 +124,8 @@ const ViewGoogleMap = () => {
   };
   const renderAllMarkers = (markers1: any, map: any, maps: any) => {
     clearMarkers();
+    let markersImages = getMarkersImagesBasedOnOrganizationType(markers1);
+    setMarkersImagesWithOrganizationType(markersImages);
     markers1?.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
         markerData.coordinates?.[0],
@@ -135,9 +134,11 @@ const ViewGoogleMap = () => {
       const markere = new google.maps.Marker({
         position: latLng,
         map: map,
-        title: markerData.name,
+        title: markerData.title,
         icon: {
-          url: "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
+          url: markersImages[markerData?.organisation_type]
+            ? markersImages[markerData?.organisation_type]
+            : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
         animation: google.maps.Animation.DROP,
         draggable: true,
@@ -152,8 +153,14 @@ const ViewGoogleMap = () => {
       markere.addListener("dragend", (event: google.maps.MouseEvent) => {
         router.replace(`${pathName}?marker_id=${markerData?.id}`);
         setShowMarkerPopup(true);
-        setPlaceDetails({
-          coordinates: [event.latLng?.lat(), event.latLng?.lng()],
+        const latitude = event.latLng?.lat();
+        const longitude = event.latLng?.lng();
+        getLocationAddress({
+          latitude,
+          longitude,
+          setMarkerData,
+          setPlaceDetails,
+          markerData,
         });
       });
     });
@@ -212,24 +219,14 @@ const ViewGoogleMap = () => {
       addMarkerEVent(event, map, maps);
     });
   };
-
   const getSingleMapDetails = async () => {
     setLoading(true);
+
     try {
       const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
-        let updatedArray = response?.data?.geo_coordinates.map((item: any) => {
-          return {
-            lat: item[0],
-            lng: item[1],
-          };
-        });
-        await getSingleMapMarkers({
-          page: 1,
-          limit: 100,
-        });
-        setPolygonCoords(updatedArray);
+        await getSingleMapMarkers({});
       }
     } catch (err) {
       console.error(err);
@@ -239,25 +236,30 @@ const ViewGoogleMap = () => {
   };
 
   const getSingleMapMarkers = async ({
-    page = 1,
-    limit = 100,
     search_string = searchString,
     sort_by = markerOption?.value,
     sort_type = markerOption?.title,
   }) => {
     try {
       let queryParams: any = {
-        page: page,
-        limit: limit,
         search_string: search_string,
         sort_by: sort_by,
         sort_type: sort_type,
+        get_all: true,
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
-      console.log(data, "ppppeewppe");
       setMarkers(data);
       setSingleMarkers(data);
+      let updatedCoords = data?.map((item: any) => item.coordinates);
+      let newCoords = updatedCoords.map((item: any) => {
+        return {
+          lat: item[0],
+          lng: item[1],
+        };
+      });
+      let coords = getPolygonWithMarkers(newCoords);
+      setPolygonCoords(coords);
     } catch (err) {
       console.error(err);
     }
@@ -282,8 +284,6 @@ const ViewGoogleMap = () => {
 
   useEffect(() => {
     getSingleMapMarkers({
-      page: 1,
-      limit: 100,
       search_string: searchString,
       sort_by: markerOption?.value,
       sort_type: markerOption?.title,
@@ -340,6 +340,9 @@ const ViewGoogleMap = () => {
             setSingleMarkerLoading={setSingleMarkerLoading}
             singleMarkerLoading={singleMarkerLoading}
             handleMarkerClick={handleMarkerClick}
+            markersImagesWithOrganizationType={
+              markersImagesWithOrganizationType
+            }
           />
         ) : (
           <ViewMapDetailsDrawer
@@ -356,6 +359,9 @@ const ViewGoogleMap = () => {
             markersRef={markersRef}
             handleMarkerClick={handleMarkerClick}
             getSingleMapMarkers={getSingleMapMarkers}
+            markersImagesWithOrganizationType={
+              markersImagesWithOrganizationType
+            }
           />
         )}
         <MarkerPopup

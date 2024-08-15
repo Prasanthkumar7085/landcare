@@ -105,67 +105,6 @@ const MapMarkersListDialog = ({
     });
   }, [search, selectType?.title, open]);
 
-  const columns = [
-    {
-      accessorFn: (row: any) => row,
-      sortDescFirst: false,
-      id: "actions",
-      cell: (info: any) => (
-        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <IconButton
-            className="iconBtn"
-            onClick={() => {
-              handleClose();
-              const markerEntry = markersRef.current.find(
-                (entry: any) => entry.id === info?.row?.original?.id
-              );
-              if (markerEntry) {
-                const { marker } = markerEntry;
-                handleMarkerClick(info?.row?.original, marker);
-              } else {
-                console.error(`Marker with ID ${id} not found.`);
-              }
-            }}
-          >
-            <Image src="/map/table/view.svg" alt="" width={15} height={15} />
-          </IconButton>
-
-          <IconButton
-            className="iconBtn"
-            onClick={() => {
-              setShareDialogOpen(true);
-              setSingleMapDetails(info?.row?.original);
-            }}
-          >
-            <Image src="/map/table/share.svg" alt="" width={15} height={15} />
-          </IconButton>
-
-          <IconButton
-            className="iconBtn"
-            onClick={() => {
-              copyURL(
-                `https://dev-landcare.vercel.app/landcare-map/${id}?marker_id=${singleMapDetails?.id}`
-              );
-            }}
-          >
-            <Image src="/map/table/copy.svg" alt="" width={15} height={15} />
-          </IconButton>
-          <IconButton
-            className="iconBtn"
-            onClick={() => {
-              handleClickDeleteOpen(info?.row?.original?.id);
-            }}
-          >
-            <Image src="/map/table/trash.svg" alt="" width={15} height={15} />
-          </IconButton>
-        </div>
-      ),
-      header: () => <span>ACTIONS</span>,
-      footer: (props: any) => props.column.id,
-      width: "110px",
-    },
-  ];
-
   const capturePageNum = (value: number) => {
     getAllMapMarkers({
       limit: 10,
@@ -244,7 +183,17 @@ const MapMarkersListDialog = ({
       <div>
         <TanstackTableComponent
           data={markers}
-          columns={[...ListMarkersColumns, ...columns]}
+          columns={ListMarkersColumns({
+            handleClose,
+            setShareDialogOpen,
+            setSingleMapDetails,
+            handleClickDeleteOpen,
+            singleMapDetails,
+            markersRef,
+            handleMarkerClick,
+            id,
+            markers,
+          })}
           loading={false}
         />
         {markers?.length ? (

@@ -14,6 +14,14 @@ export const calculatePolygonCentroid = (coordinates: any) => {
   return { lat: x / coordinates?.length, lng: y / coordinates?.length };
 };
 
+export const checkSheetHeaders = (headers: any) => {
+  if (headers?.length == SheetHeaders?.length) {
+    if (headers?.every((header: any) => SheetHeaders?.includes(header))) {
+      return true;
+    }
+  }
+  return false;
+};
 export const processImportedData = (parsedData: any) => {
   const isEmpty = parsedData.every((row: any) =>
     row.every((cell: any) => String(cell).trim() === "")
@@ -50,6 +58,8 @@ const parseField = (value: any, type: string) => {
       return value.split(",").map((coord: string) => parseFloat(coord.trim()));
     case "postcode":
       return value.toString();
+    case "town":
+      return value ? value + " " + "Australia" : "";
     case "tags":
     case "images":
       return value.split(",").map((item: string) => item.trim());
@@ -90,9 +100,8 @@ const updateDataWithCoordinates = (
 ) => {
   const updatedData: any = [];
   const coordinatesErrors: any = [];
-  console.log(updatedData, "fdasiiwqe");
   filteredDataObjects.forEach((obj: any) => {
-    if (obj.coordinates.length) {
+    if (isValidCoordinates(obj.coordinates)) {
       const coords = obj.coordinates;
       if (coords && obj?.title) {
         updatedData.push({
@@ -100,7 +109,7 @@ const updateDataWithCoordinates = (
           coordinates: coords,
         });
       }
-    } else if (obj.town) {
+    } else if (obj.town && isValidCoordinates(obj.coordinates) == false) {
       const coords = locationToCoordinatesMap[obj.town] || null;
       if (coords && obj?.title) {
         updatedData.push({
@@ -115,7 +124,6 @@ const updateDataWithCoordinates = (
       }
     }
   });
-  console.log([updatedData, coordinatesErrors], "okkkk");
   return [updatedData, coordinatesErrors];
 };
 
@@ -134,24 +142,22 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
 
   let errorsData = validationsForImportedData({ filteredDataObjects });
   let data = [...errorsData.validData];
-  const locationToCoordinatesMap: any = {};
-  const townsToFetch: string[] = [];
-  console.log(townsToFetch, "032oo32o32");
-  console.log(locationToCoordinatesMap, "dsjajdasjasj");
+  let locationToCoordinatesMap: any = {};
+  let townsToFetch: any = [];
   data.forEach((obj: any) => {
     if (
-      !obj.coordinates.length &&
+      isValidCoordinates(obj.coordinates) == false &&
       obj.town &&
       !townsToFetch.includes(obj.town)
     ) {
-      console.log(obj, "oowoowqoqwoq owq");
       townsToFetch.push(obj.town);
     }
   });
 
   const townCoordinatesResults = await fetchTownCoordinates(townsToFetch);
 
-  const locationErrorsMap: { [key: string]: string } = {};
+  let locationErrorsMap: { [key: string]: string } = {};
+
   townCoordinatesResults.forEach((result: any) => {
     if (result.status === "fulfilled") {
       const { town, coords, error } = result.value;
@@ -166,54 +172,73 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
   });
 
   const [updatedData, coordinatesErrors] = updateDataWithCoordinates(
-    filteredDataObjects,
+    data,
     locationToCoordinatesMap,
     locationErrorsMap
   );
   return [updatedData, [...errorsData.errors, ...coordinatesErrors]];
 };
 
-const validationsForImportedData = ({ filteredDataObjects }: any) => {
-  const validDataObjects: any[] = [];
-  const errorObjects: any[] = [];
-  filteredDataObjects.forEach((result: any) => {
-    const obj = { ...result };
-    const nameValue = obj.title;
-    const locationValue = obj.coordinates;
+interface DataObject {
+  title?: string;
+  coordinates?: any;
+  town?: string;
+}
+
+const isValidCoordinates = (coords: any): boolean => {
+  if (!Array.isArray(coords)) return false;
+  if (coords.length === 0) return false;
+  return coords.every((coord) => typeof coord === "number" && !isNaN(coord));
+};
+
+const validationsForImportedData = ({
+  filteredDataObjects,
+}: {
+  filteredDataObjects: DataObject[];
+}) => {
+  const validDataObjects: DataObject[] = [];
+  const errorObjects: any = [];
+
+  filteredDataObjects.forEach((obj: DataObject) => {
+    const nameValue = obj.title?.trim();
+    let coordinates = obj.coordinates;
+    const townValue = obj.town?.trim();
+
+    if (coordinates) {
+      coordinates = Array.isArray(coordinates)
+        ? coordinates.map(Number)
+        : [Number(coordinates)];
+    }
 
     if (
-      (nameValue === undefined || nameValue === "" || nameValue === null) &&
-      (locationValue === undefined ||
-        locationValue === "" ||
-        locationValue === null)
+      (nameValue === undefined || nameValue === "") &&
+      (coordinates === undefined || !isValidCoordinates(coordinates))
     ) {
       errorObjects.push({
         ...obj,
         error: "Name and Location are required",
       });
-    } else if (
-      nameValue === undefined ||
-      nameValue === "" ||
-      nameValue === null
-    ) {
+    } else if (nameValue === undefined || nameValue === "") {
       errorObjects.push({
         ...obj,
         error: "Name is required",
       });
-    } else if (
-      locationValue === undefined ||
-      locationValue === "" ||
-      locationValue === null
-    ) {
-      errorObjects.push({
-        ...obj,
-        error: "Location is required",
-      });
+    } else if (coordinates === undefined || !isValidCoordinates(coordinates)) {
+      if (townValue === undefined || townValue === "") {
+        errorObjects.push({
+          ...obj,
+          error: "Town or coordinates are required",
+        });
+      } else {
+        validDataObjects.push({
+          ...obj,
+          coordinates,
+        });
+      }
     } else {
-      validDataObjects.push(obj);
+      validDataObjects.push({ ...obj, coordinates });
     }
   });
-
   return { validData: validDataObjects, errors: errorObjects };
 };
 
@@ -278,4 +303,88 @@ export const getPolygonWithMarkers = (points: any) => {
   upper.pop();
   lower.pop();
   return lower.concat(upper);
+};
+
+export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
+  let organizationTypes: any = markersData?.map((item: any) => {
+    return item.organisation_type;
+  });
+  const uniqueOrganizationTypes = organizationTypes?.filter(
+    (value: any, index: any, self: any) => {
+      return (
+        value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        self.indexOf(value) === index
+      );
+    }
+  );
+  const markersImages = [
+    "https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png",
+    "https://maps.gstatic.com/mapfiles/ms2/micons/green-dot.png",
+    "https://maps.gstatic.com/mapfiles/ms2/micons/ltblue-dot.png",
+    "https://maps.gstatic.com/mapfiles/ms2/micons/yellow-dot.png",
+    "https://maps.gstatic.com/mapfiles/ms2/micons/purple-dot.png",
+    "https://maps.gstatic.com/mapfiles/ms2/micons/pink-dot.png",
+  ];
+  const OrganizationMarkersImages: Record<string, string> =
+    uniqueOrganizationTypes
+      ?.filter((type: any) => type !== "")
+      .reduce((acc: any, type: any, index: any) => {
+        acc[type] = markersImages[index];
+        return acc;
+      }, {} as Record<string, string>);
+
+  return OrganizationMarkersImages;
+};
+
+export const getLocationAddress = ({
+  latitude,
+  longitude,
+  setMarkerData,
+  setPlaceDetails,
+  markerData,
+}: any) => {
+  const geocoder = new google.maps.Geocoder();
+  const latlng = { lat: latitude, lng: longitude };
+  geocoder.geocode({ location: latlng }, (results: any, status) => {
+    if (status === google.maps.GeocoderStatus.OK) {
+      if (results[0]) {
+        let postalAddress = "";
+        let postcode = "";
+        let streetAddress = "";
+        let town = "";
+        const locationName = results[0].formatted_address;
+        const addressComponents = results[0].address_components;
+        addressComponents.forEach((component: any) => {
+          const types = component.types;
+          if (types.includes("street_number") || types.includes("route")) {
+            streetAddress += (streetAddress ? " " : "") + component.long_name;
+          } else if (types.includes("locality")) {
+            town = component.long_name;
+          } else if (types.includes("postal_code")) {
+            postcode = component.long_name;
+          }
+        });
+        postalAddress = [streetAddress, town, postcode]
+          .filter(Boolean)
+          .join(", ");
+        setMarkerData({
+          ...markerData,
+          postal_address: postalAddress,
+          postcode: postcode,
+          street_address: streetAddress,
+          town: town,
+        });
+        setPlaceDetails({
+          full_address: locationName,
+          coordinates: [latitude, longitude],
+        });
+      } else {
+        console.error("No results found");
+      }
+    } else {
+      console.error("Geocoder failed due to: " + status);
+    }
+  });
 };

@@ -1,14 +1,16 @@
 import DeleteDialog from "@/components/Core/DeleteDialog";
 import ShareLinkDialog from "@/components/Core/ShareLinkDialog";
 import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
+import { truncateText } from "@/lib/helpers/nameFormate";
 import { deleteMarkerAPI, getSingleMarkerAPI } from "@/services/maps";
-import { Menu, MenuItem } from "@mui/material";
+import { Menu, MenuItem, Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import Link from "next/link";
 import {
   useParams,
   usePathname,
@@ -17,9 +19,6 @@ import {
 } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 const ViewMarkerDrawer = ({
   onClose,
@@ -36,6 +35,7 @@ const ViewMarkerDrawer = ({
   setSingleMarkerLoading,
   singleMarkerLoading,
   handleMarkerClick,
+  markersImagesWithOrganizationType,
 }: any) => {
   const { id } = useParams();
   const pathname = usePathname();
@@ -111,6 +111,7 @@ const ViewMarkerDrawer = ({
       getSingleMarker(params?.get("marker_id"));
     }
   }, [params?.get("marker_id"), showMarkerPopup]);
+
   return (
     <div className="signleMarkerView">
       <header className="header">
@@ -120,8 +121,6 @@ const ViewMarkerDrawer = ({
             <Image src="/map/map-backBtn.svg" alt="" height={15} width={15} />
           }
           onClick={() => {
-            onClose();
-            setData({});
             router.replace(`${pathname}`);
             markersRef.current.forEach(({ marker }: any) => {
               if (marker.getAnimation() === google.maps.Animation.BOUNCE) {
@@ -132,7 +131,9 @@ const ViewMarkerDrawer = ({
             if (drawingManagerRef.current && params?.get("marker_id")) {
               drawingManagerRef.current.setOptions({ drawingControl: true });
             }
+            onClose();
             setMarkerData({});
+            setData({});
           }}
         >
           Back
@@ -143,37 +144,39 @@ const ViewMarkerDrawer = ({
         </IconButton>
       </header>
       <Box className="viewContent">
-        {/* <div className="imgBlock">
-          <img
-            className="mapImg"
-            src={
-              data?.images?.length > 0
-                ? data?.images[0]
-                : "/map/marker-view.png"
-            }
-            alt=""
-            height={100}
-            width={100}
-          />
-        </div> */}
         <div className="imgBlock">
           {data?.images?.length > 0 ? (
-            <>
-              <button onClick={prevSlide} className="navButton">
+            <div
+              style={{
+                minWidth: "100%",
+                width: "100%",
+                minHeight: "100%",
+                border: "1px solid black",
+              }}
+            >
+              <button
+                onClick={prevSlide}
+                className="navButton"
+                style={{ display: data?.images?.length == 1 ? "none" : "" }}
+              >
                 &#10094;
               </button>
               <img
                 className="mapImg"
                 src={data?.images[currentIndex]}
-                alt={`Slide ${currentIndex}`}
+                alt={`images ${currentIndex}`}
                 height={100}
                 width={100}
                 style={{ objectFit: "cover" }}
               />
-              <button onClick={nextSlide} className="navButton">
+              <button
+                onClick={nextSlide}
+                className="navButton"
+                style={{ display: data?.images?.length == 1 ? "none" : "" }}
+              >
                 &#10095;
               </button>
-            </>
+            </div>
           ) : (
             <img
               className="mapImg"
@@ -190,7 +193,7 @@ const ViewMarkerDrawer = ({
             <Skeleton width="60%" className="markerTitle" />
           ) : (
             <Typography className="markerTitle">
-              {data?.name || "---"}
+              {data?.title || "---"}
             </Typography>
           )}
 
@@ -199,26 +202,74 @@ const ViewMarkerDrawer = ({
             {singleMarkerLoading ? (
               <Skeleton width="60%" />
             ) : (
-              <span>{data?.location || "---"}</span>
+              <span>{data?.town?.split(" ")[0] || "---"}</span>
             )}
           </Typography>
         </div>
+
         <div className="eachMarkerDetail">
-          <Typography className="title">Host Organization</Typography>
+          <Typography className="title">Description</Typography>
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
-            <Typography className="value">
-              {data?.host_organization || "---"}
+            <Tooltip
+              title={
+                data?.description && data?.description?.length >= 200
+                  ? data?.description
+                  : ""
+              }
+            >
+              <Typography className="value">
+                {truncateText(data?.description, 200) || "---"}
+              </Typography>
+            </Tooltip>
+          )}
+        </div>
+
+        <div className="eachMarkerDetail">
+          <Typography className="title">Organization Type</Typography>
+          {singleMarkerLoading ? (
+            <Skeleton width="60%" />
+          ) : (
+            <Typography
+              className="value"
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <img
+                width={15}
+                height={15}
+                style={{ display: data?.organisation_type ? "" : "none" }}
+                src={
+                  data?.organisation_type
+                    ? markersImagesWithOrganizationType[data?.organisation_type]
+                    : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
+                }
+                alt={data?.organisation_type}
+              />
+              {data?.organisation_type || "---"}
             </Typography>
           )}
         </div>
         <div className="eachMarkerDetail">
-          <Typography className="title">Position</Typography>
+          <Typography className="title">website</Typography>
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
+          ) : data?.website ? (
+            <Tooltip
+              title={
+                data?.website && data?.website?.length > 70 ? data?.website : ""
+              }
+            >
+              <Link href={data?.website} target="_blank" className="value">
+                {truncateText(data?.website, 70) || "---"}
+              </Link>
+            </Tooltip>
           ) : (
-            <Typography className="value">{data?.position || "--"}</Typography>
+            "---"
           )}
         </div>
         <div className="eachMarkerDetail">
@@ -227,7 +278,7 @@ const ViewMarkerDrawer = ({
             <Skeleton width="60%" />
           ) : (
             <Typography className="value">
-              {data?.post_code || "---"}{" "}
+              {data?.postcode || "---"}{" "}
             </Typography>
           )}
         </div>
