@@ -21,14 +21,7 @@ const markersDataServiceProvider = new MarkersDataServiceProvider();
 const mapsDataServiceProvider = new MapsDataServiceProvider();
 
 export class MarkersController {
-  async addMarker(reqData: any, params: any) {
-    try {
-      reqData.map_id = params.id;
-
-      const mapData = await mapsDataServiceProvider.findById(params.id);
-      if (!mapData) {
-        return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
-      }
+    async addMarker(reqData: any, params: any) {
 
         try {
 
@@ -54,29 +47,7 @@ export class MarkersController {
             }
             return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
         }
-
-      const reponseData = await markersDataServiceProvider.create(reqData);
-      return ResponseHelper.sendSuccessResponse(
-        200,
-        MARKER_CREATED,
-        reponseData[0]
-      );
-    } catch (error: any) {
-      console.error(error);
-      if (error.validation_error) {
-        return ResponseHelper.sendErrorResponse(
-          409,
-          error.message,
-          error.errors
-        );
-      }
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
     }
-  }
 
   async addBulkMarkers(req: NextRequest, params: any) {
     try {
