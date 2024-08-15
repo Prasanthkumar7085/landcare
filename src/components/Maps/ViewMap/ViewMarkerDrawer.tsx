@@ -1,6 +1,7 @@
 import DeleteDialog from "@/components/Core/DeleteDialog";
 import ShareLinkDialog from "@/components/Core/ShareLinkDialog";
 import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
+import { truncateText } from "@/lib/helpers/nameFormate";
 import { deleteMarkerAPI, getSingleMarkerAPI } from "@/services/maps";
 import { Menu, MenuItem, Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -9,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import Link from "next/link";
 import {
   useParams,
   usePathname,
@@ -17,11 +19,6 @@ import {
 } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Link from "next/link";
-import { truncateText } from "@/lib/helpers/nameFormate";
 
 const ViewMarkerDrawer = ({
   onClose,
@@ -124,8 +121,6 @@ const ViewMarkerDrawer = ({
             <Image src="/map/map-backBtn.svg" alt="" height={15} width={15} />
           }
           onClick={() => {
-            onClose();
-            setData({});
             router.replace(`${pathname}`);
             markersRef.current.forEach(({ marker }: any) => {
               if (marker.getAnimation() === google.maps.Animation.BOUNCE) {
@@ -136,7 +131,9 @@ const ViewMarkerDrawer = ({
             if (drawingManagerRef.current && params?.get("marker_id")) {
               drawingManagerRef.current.setOptions({ drawingControl: true });
             }
+            onClose();
             setMarkerData({});
+            setData({});
           }}
         >
           Back
@@ -215,24 +212,17 @@ const ViewMarkerDrawer = ({
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
-            <Typography
-              className="value"
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
+            <Tooltip
+              title={
+                data?.description && data?.description?.length >= 200
+                  ? data?.description
+                  : ""
+              }
             >
-              <Tooltip
-                title={
-                  data?.description && data?.description > 200
-                    ? data?.description
-                    : ""
-                }
-              >
-                <p>{truncateText(data?.description, 200) || "---"}</p>
-              </Tooltip>
-            </Typography>
+              <Typography className="value">
+                {truncateText(data?.description, 200) || "---"}
+              </Typography>
+            </Tooltip>
           )}
         </div>
 
@@ -252,6 +242,7 @@ const ViewMarkerDrawer = ({
               <img
                 width={15}
                 height={15}
+                style={{ display: data?.organisation_type ? "" : "none" }}
                 src={
                   data?.organisation_type
                     ? markersImagesWithOrganizationType[data?.organisation_type]
@@ -269,7 +260,9 @@ const ViewMarkerDrawer = ({
             <Skeleton width="60%" />
           ) : data?.website ? (
             <Tooltip
-              title={data?.website && data?.website > 70 ? data?.website : ""}
+              title={
+                data?.website && data?.website?.length > 70 ? data?.website : ""
+              }
             >
               <Link href={data?.website} target="_blank" className="value">
                 {truncateText(data?.website, 70) || "---"}

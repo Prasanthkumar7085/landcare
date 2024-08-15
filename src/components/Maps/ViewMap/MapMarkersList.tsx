@@ -1,29 +1,10 @@
-import {
-  Button,
-  CardActions,
-  InputAdornment,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import Image from "next/image";
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
-import React, { useEffect, useState } from "react";
 import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
-import {
-  mapTypeOptions,
-  markerFilterOptions,
-} from "@/lib/constants/mapConstants";
-import { datePipe } from "@/lib/helpers/datePipe";
-import { getSingleMarkerAPI } from "@/services/maps";
-import styles from "./index.module.css";
+import { markerFilterOptions } from "@/lib/constants/mapConstants";
+import { Button, InputAdornment, TextField, Typography } from "@mui/material";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import React from "react";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
-import { getMarkersImagesBasedOnOrganizationType } from "@/lib/helpers/mapsHelpers";
 
 const MapMarkersList = ({
   singleMarkers,
@@ -85,7 +66,6 @@ const MapMarkersList = ({
                   className="eachListItem"
                   key={index}
                   onClick={() => {
-                    setSingleMarkerOpen(true);
                     const markerEntry = markersRef.current.find(
                       (entry: any) => entry.id === markerDetails?.id
                     );
@@ -95,6 +75,8 @@ const MapMarkersList = ({
                     } else {
                       console.error(`Marker with ID ${id} not found.`);
                     }
+
+                    setSingleMarkerOpen(true);
                   }}
                 >
                   <div className="markerHeader">

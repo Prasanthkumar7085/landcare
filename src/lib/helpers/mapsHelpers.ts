@@ -309,7 +309,7 @@ export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
   let organizationTypes: any = markersData?.map((item: any) => {
     return item.organisation_type;
   });
-  const uniqueOrganizationTypes = organizationTypes.filter(
+  const uniqueOrganizationTypes = organizationTypes?.filter(
     (value: any, index: any, self: any) => {
       return (
         value !== undefined &&
@@ -329,7 +329,7 @@ export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
   ];
   const OrganizationMarkersImages: Record<string, string> =
     uniqueOrganizationTypes
-      .filter((type: any) => type !== "")
+      ?.filter((type: any) => type !== "")
       .reduce((acc: any, type: any, index: any) => {
         acc[type] = markersImages[index];
         return acc;
@@ -381,10 +381,10 @@ export const getLocationAddress = ({
           coordinates: [latitude, longitude],
         });
       } else {
-        console.log("No results found");
+        console.error("No results found");
       }
     } else {
-      console.log("Geocoder failed due to: " + status);
+      console.error("Geocoder failed due to: " + status);
     }
   });
 };

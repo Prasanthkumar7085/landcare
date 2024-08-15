@@ -99,10 +99,10 @@ const PublicMap = () => {
             coordinates: [latitude, longitude],
           });
         } else {
-          console.log("No results found");
+          console.error("No results found");
         }
       } else {
-        console.log("Geocoder failed due to: " + status);
+        console.error("Geocoder failed due to: " + status);
       }
     });
   };
@@ -298,6 +298,7 @@ const PublicMap = () => {
       renderAllMarkers(markers, map, googleMaps);
     }
   }, [map, googleMaps, markers]);
+
   useEffect(() => {
     setSearchParams(
       Object.fromEntries(new URLSearchParams(Array.from(params.entries())))

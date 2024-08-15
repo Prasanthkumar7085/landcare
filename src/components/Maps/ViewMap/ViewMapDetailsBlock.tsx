@@ -1,4 +1,11 @@
-import { Button, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import dayjs from "dayjs";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -9,6 +16,7 @@ import { deleteMapAPI } from "@/services/maps";
 import MapMarkersList from "./MapMarkersList";
 import ImportModal from "./ImportMarkers/ImportModal";
 import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
+import { truncateText } from "@/lib/helpers/nameFormate";
 
 const ViewMapDetailsDrawer = ({
   mapDetails,
@@ -105,9 +113,17 @@ const ViewMapDetailsDrawer = ({
             <Image src="/map/clock.svg" height={13} width={13} alt="" />
             {dayjs(mapDetails?.created_at).format("MM-DD-YYYY")}
           </Typography>
-          <Typography className="mapDescription">
-            {mapDetails?.description ? mapDetails?.description.slice() : "--"}
-          </Typography>
+          <Tooltip
+            title={
+              mapDetails?.description && mapDetails?.description?.length > 70
+                ? mapDetails?.description
+                : ""
+            }
+          >
+            <Typography className="mapDescription">
+              {truncateText(mapDetails?.description, 70) || "---"}
+            </Typography>
+          </Tooltip>
         </div>
         <div className="markersBlock">
           <Typography className="blockHeading">Markers</Typography>

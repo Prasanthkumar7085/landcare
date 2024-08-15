@@ -154,7 +154,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
       description: mapDetails?.description ? mapDetails?.description : "",
       status: mapDetails?.status,
       geo_type: "polygon",
-      geo_coordinates: coords,
+      geo_coordinates: coords.map((item: any) => [item.lng, item.lat]),
       geo_zoom: 14,
       image: mapImage,
     };
