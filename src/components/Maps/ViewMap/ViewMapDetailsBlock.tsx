@@ -33,6 +33,7 @@ const ViewMapDetailsDrawer = ({
   handleMarkerClick,
   getSingleMapMarkers,
   markersImagesWithOrganizationType,
+  getSingleMarker,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();

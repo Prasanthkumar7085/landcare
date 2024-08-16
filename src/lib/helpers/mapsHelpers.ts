@@ -365,12 +365,20 @@ export const getLocationAddress = ({
           .join(", ");
         setMarkerData({
           ...markerData,
+          postal_address: postalAddress
+            ? postalAddress
+            : markerData?.postal_address,
+          postcode: postcode ? postcode : markerData?.postcode,
+          street_address: streetAddress
+            ? streetAddress
+            : markerData?.street_address,
+          town: town ? town : markerData?.town,
+        });
+        setPlaceDetails({
           postal_address: postalAddress,
           postcode: postcode,
           street_address: streetAddress,
           town: town,
-        });
-        setPlaceDetails({
           full_address: locationName,
           coordinates: [latitude, longitude],
         });

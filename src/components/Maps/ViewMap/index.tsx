@@ -10,6 +10,7 @@ import {
 import {
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
+  getSingleMarkerAPI,
 } from "@/services/maps";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import {
@@ -60,12 +61,6 @@ const ViewGoogleMap = () => {
   ] = useState<any>({});
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
-    state: "",
-    city: "",
-    zipcode: "",
-    images: [],
-    tags: [],
-    social_links: [],
     coordinates: [],
   });
 
@@ -112,6 +107,7 @@ const ViewGoogleMap = () => {
       markerData,
     });
   };
+
   const clearMarkers = () => {
     markersRef.current.forEach(({ marker }) => {
       marker.setMap(null);
@@ -150,9 +146,13 @@ const ViewGoogleMap = () => {
       });
 
       markere.addListener("dragstart", (event: google.maps.MouseEvent) => {});
-      markere.addListener("dragend", (event: google.maps.MouseEvent) => {
+      markere.addListener("dragend", async (event: google.maps.MouseEvent) => {
         router.replace(`${pathName}?marker_id=${markerData?.id}`);
+        await getSingleMarker(markerData?.id);
         setShowMarkerPopup(true);
+        if (drawingManagerRef.current) {
+          drawingManagerRef.current.setOptions({ drawingControl: false });
+        }
         const latitude = event.latLng?.lat();
         const longitude = event.latLng?.lng();
         getLocationAddress({
@@ -164,26 +164,7 @@ const ViewGoogleMap = () => {
         });
       });
     });
-    let clusterStyles: any = [
-      {
-        textColor: "white",
-        url: "path/to/smallclusterimage.png",
-        height: 50,
-        width: 50,
-      },
-      {
-        textColor: "white",
-        url: "path/to/mediumclusterimage.png",
-        height: 50,
-        width: 50,
-      },
-      {
-        textColor: "white",
-        url: "path/to/largeclusterimage.png",
-        height: 50,
-        width: 50,
-      },
-    ];
+
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
@@ -192,6 +173,7 @@ const ViewGoogleMap = () => {
 
   const handleMarkerClick = (markerData: any, markere: google.maps.Marker) => {
     router.replace(`${pathName}?marker_id=${markerData?.id}`);
+    getSingleMarker(markerData?.id);
     setSingleMarkerOpen(true);
     map.setCenter(
       new google.maps.LatLng(
@@ -210,6 +192,19 @@ const ViewGoogleMap = () => {
     }
   };
 
+  const getSingleMarker = async (marker_id: any) => {
+    setSingleMarkerLoading(true);
+    let markerID = marker_id;
+    try {
+      const response = await getSingleMarkerAPI(id, markerID);
+      setSingleMarkerData(response?.data);
+      setMarkerData(response?.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSingleMarkerLoading(false);
+    }
+  };
   const OtherMapOptions = (map: any, maps: any) => {
     setMaps(map);
     setGoogleMaps(maps);
@@ -363,6 +358,8 @@ const ViewGoogleMap = () => {
             markersImagesWithOrganizationType={
               markersImagesWithOrganizationType
             }
+            setPlaceDetails={setPlaceDetails}
+            getSingleMarker={getSingleMarker}
           />
         ) : (
           <ViewMapDetailsDrawer
@@ -373,7 +370,7 @@ const ViewGoogleMap = () => {
             setSingleMarkerOpen={setSingleMarkerOpen}
             setMarkerOption={setMarkerOption}
             markerOption={markerOption}
-            getData={getSingleMapMarkers}
+            getData={getSingleMapDetails}
             map={map}
             maps={googleMaps}
             markersRef={markersRef}

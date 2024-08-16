@@ -36,6 +36,8 @@ const ViewMarkerDrawer = ({
   singleMarkerLoading,
   handleMarkerClick,
   markersImagesWithOrganizationType,
+  setPlaceDetails,
+  getSingleMarker,
 }: any) => {
   const { id } = useParams();
   const pathname = usePathname();
@@ -60,20 +62,6 @@ const ViewMarkerDrawer = ({
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? data?.images.length - 1 : prevIndex - 1
     );
-  };
-
-  const getSingleMarker = async (marker_id: any) => {
-    setSingleMarkerLoading(true);
-    let markerID = marker_id;
-    try {
-      const response = await getSingleMarkerAPI(id, markerID);
-      setData(response?.data);
-      setMarkerData(response?.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSingleMarkerLoading(false);
-    }
   };
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -106,12 +94,6 @@ const ViewMarkerDrawer = ({
     }
   };
 
-  useEffect(() => {
-    if (params?.get("marker_id")) {
-      getSingleMarker(params?.get("marker_id"));
-    }
-  }, [params?.get("marker_id"), showMarkerPopup]);
-
   return (
     <div className="signleMarkerView">
       <header className="header">
@@ -121,6 +103,7 @@ const ViewMarkerDrawer = ({
             <Image src="/map/map-backBtn.svg" alt="" height={15} width={15} />
           }
           onClick={() => {
+            setMarkerData({});
             router.replace(`${pathname}`);
             markersRef.current.forEach(({ marker }: any) => {
               if (marker.getAnimation() === google.maps.Animation.BOUNCE) {
@@ -128,11 +111,10 @@ const ViewMarkerDrawer = ({
               }
             });
             boundToMapWithPolygon(polygonCoords, map);
-            if (drawingManagerRef.current && params?.get("marker_id")) {
+            if (drawingManagerRef.current) {
               drawingManagerRef.current.setOptions({ drawingControl: true });
             }
             onClose();
-            setMarkerData({});
             setData({});
           }}
         >
@@ -150,7 +132,7 @@ const ViewMarkerDrawer = ({
               style={{
                 minWidth: "100%",
                 width: "100%",
-                minHeight: "100%",
+                minHeight: "90%",
                 border: "1px solid black",
               }}
             >
@@ -165,7 +147,7 @@ const ViewMarkerDrawer = ({
                 className="mapImg"
                 src={data?.images[currentIndex]}
                 alt={`images ${currentIndex}`}
-                height={100}
+                height={90}
                 width={100}
                 style={{ objectFit: "cover" }}
               />
@@ -348,6 +330,7 @@ const ViewMarkerDrawer = ({
         <MenuItem
           className="menuItem"
           onClick={() => {
+            getSingleMarker(data?.id);
             setShowMarkerPopup(true);
             handleClose();
           }}
