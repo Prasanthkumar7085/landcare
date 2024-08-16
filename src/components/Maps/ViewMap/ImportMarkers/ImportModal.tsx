@@ -122,7 +122,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
   const getStaticMap = async (updatedCoords: any, coords: any) => {
     let body = {
       coordinates: [...coords, coords[0]],
-      markers: updatedCoords,
+      markers: updatedCoords.slice(0, 50),
     };
     try {
       const response = await getStaticMapAPI(body);
