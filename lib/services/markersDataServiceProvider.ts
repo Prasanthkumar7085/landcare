@@ -62,7 +62,7 @@ export class MarkersDataServiceProvider {
             .where(eq(mapMarkers.map_id, mapId))
             .limit(limit)
             .offset(skip)
-             
+
         // Apply dynamic sorting
         if (filters.sort_by && filters.sort_type) {
             const sortColumn = mapMarkers[filters.sort_by];
@@ -79,8 +79,8 @@ export class MarkersDataServiceProvider {
     }
 
     async findAllByMapIdWithCoordinates(mapId: number, lat: number, lng: number) {
-       
-       return await db.select({
+
+        return await db.select({
             id: mapMarkers.id,
             title: mapMarkers.title,
             description: mapMarkers.description,
@@ -94,13 +94,15 @@ export class MarkersDataServiceProvider {
             town: mapMarkers.town,
             postcode: mapMarkers.postcode,
             website: mapMarkers.website,
+            images: mapMarkers.images,
+            tags: mapMarkers.tags,
             created_at: mapMarkers.created_at,
             updated_at: mapMarkers.updated_at
         })
             .from(mapMarkers)
             .where(and(
                 eq(mapMarkers.map_id, mapId),
-                eq(mapMarkers.coordinates, [lat,lng])
+                eq(mapMarkers.coordinates, [lat, lng])
             ))
     }
 
