@@ -17,6 +17,7 @@ import MapMarkersList from "./MapMarkersList";
 import ImportModal from "./ImportMarkers/ImportModal";
 import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
 import { truncateText } from "@/lib/helpers/nameFormate";
+import AddMapDrawer from "../AddMap/AddMapDrawer";
 
 const ViewMapDetailsDrawer = ({
   mapDetails,
@@ -33,7 +34,8 @@ const ViewMapDetailsDrawer = ({
   handleMarkerClick,
   getSingleMapMarkers,
   markersImagesWithOrganizationType,
-  getSingleMarker,
+  setPolygonCoords,
+  setMapDetails,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -44,6 +46,7 @@ const ViewMapDetailsDrawer = ({
   const [file, setFile] = useState<File | any>(null);
   const open = Boolean(anchorEl);
   const [showModal, setShowModal] = useState<any>(false);
+  const [addMapDrawerOpen, setAddMapDrawerOpen] = useState<any>(true);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -160,7 +163,10 @@ const ViewMapDetailsDrawer = ({
       >
         <MenuItem
           className="menuItem"
-          onClick={() => router.push(`/update-map/${id}`)}
+          onClick={() => {
+            handleClose();
+            setAddMapDrawerOpen(true);
+          }}
         >
           Edit
         </MenuItem>
@@ -190,10 +196,18 @@ const ViewMapDetailsDrawer = ({
           setFile={setFile}
           getData={getData}
           mapDetails={mapDetails}
+          setPolygonCoords={setPolygonCoords}
         />
       ) : (
         ""
       )}
+      <AddMapDrawer
+        mapDetails={mapDetails}
+        setMapDetails={setMapDetails}
+        addMapDrawerOpen={addMapDrawerOpen}
+        setAddMapDrawerOpen={setAddMapDrawerOpen}
+        getSingleMapDetails={getData}
+      />
     </div>
   );
 };

@@ -28,6 +28,7 @@ interface IImportModalProps {
   setFile: any;
   getData: any;
   mapDetails: any;
+  setPolygonCoords: any;
 }
 
 const ImportModal: React.FC<IImportModalProps> = ({
@@ -37,6 +38,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
   setFile,
   getData,
   mapDetails,
+  setPolygonCoords,
 }) => {
   const { id } = useParams();
 
@@ -154,7 +156,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
       description: mapDetails?.description ? mapDetails?.description : "",
       status: mapDetails?.status,
       geo_type: "polygon",
-      geo_coordinates: coords.map((item: any) => [item.lng, item.lat]),
+      geo_coordinates: coords.map((item: any) => [item.lat, item.lng]),
       geo_zoom: 14,
       image: mapImage,
     };
@@ -162,6 +164,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
       const response = await updateMapWithCordinatesAPI(body, id);
       if (response?.status == 200 || response?.status == 201) {
         await getData({});
+        setPolygonCoords(coords.map((item: any) => [item.lat, item.lng]));
       }
     } catch (err) {
       console.error(err);
@@ -223,8 +226,9 @@ const ImportModal: React.FC<IImportModalProps> = ({
             </p>
             <ol>
               <li>
-                [ Name, Position, Host Organisation, LLS Region, Phone, Email,
-                Location, Postcode]
+                [ Title, Description, Organisation Type, Postal Address, Images,
+                Street Address, Town, Postcode, Phone number, Fax, Email,
+                Website, Contact, Tags, Location]
               </li>
             </ol>
             <p>

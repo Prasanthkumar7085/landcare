@@ -215,7 +215,6 @@ const ViewGoogleMap = () => {
         drawingModes: [google.maps.drawing.OverlayType.MARKER],
       },
     });
-
     drawingManager.setMap(map);
     drawingManagerRef.current = drawingManager;
     const newPolygon = new maps.Polygon({
@@ -274,6 +273,7 @@ const ViewGoogleMap = () => {
         };
       });
       let coords = getPolygonWithMarkers(newCoords);
+      console.log(coords, "dskfkasdkfkadskfkasd");
       setPolygonCoords(coords);
     } catch (err) {
       console.error(err);
@@ -379,6 +379,8 @@ const ViewGoogleMap = () => {
             markersImagesWithOrganizationType={
               markersImagesWithOrganizationType
             }
+            setPolygonCoords={setPolygonCoords}
+            setMapDetails={setMapDetails}
           />
         )}
         <MarkerPopup
