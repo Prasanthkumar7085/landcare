@@ -112,10 +112,10 @@ export const getSingleMapMarkersAPI = async (id: any, params: any) => {
   }
 };
 
-export const getSingleMarkerAPI = async (id: any, marker_id: any) => {
+export const getSingleMarkerAPI = async (id: any, lat: any, lag: any) => {
   try {
     const { success, data } = await $fetch.get(
-      `/api/v1.0/maps/${id}/markers/${marker_id}`
+      `/api/v1.0/maps/${id}/markers/coordinates/${lat}/${lag}`
     );
     if (!success) {
       return handleAPIErrorResponse(data);

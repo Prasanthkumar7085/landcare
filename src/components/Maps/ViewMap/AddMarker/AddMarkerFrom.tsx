@@ -23,6 +23,7 @@ const MarkerPopup = ({
   setPopupFormData,
   setSingleMarkerData,
 }: any) => {
+  console.log(popupFormData, "dsakkdsda");
   const { id } = useParams();
   const params = useSearchParams();
   const [errorMessages, setErrorMessages] = useState<any>([]);

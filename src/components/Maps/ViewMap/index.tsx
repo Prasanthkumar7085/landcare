@@ -53,7 +53,7 @@ const ViewGoogleMap = () => {
   const [singleMarkeropen, setSingleMarkerOpen] = useState(false);
   const [markerData, setMarkerData] = useState<any>({ images: [], tags: [] });
   const [markerOption, setMarkerOption] = useState<any>();
-  const [singleMarkerdata, setSingleMarkerData] = useState<any>();
+  const [singleMarkerdata, setSingleMarkerData] = useState<any>([]);
   const [singleMarkerLoading, setSingleMarkerLoading] = useState(false);
   const [
     markersImagesWithOrganizationType,
@@ -148,13 +148,14 @@ const ViewGoogleMap = () => {
       markere.addListener("dragstart", (event: google.maps.MouseEvent) => {});
       markere.addListener("dragend", async (event: google.maps.MouseEvent) => {
         router.replace(`${pathName}?marker_id=${markerData?.id}`);
-        await getSingleMarker(markerData?.id);
+        const latitude = event.latLng?.lat();
+        const longitude = event.latLng?.lng();
+        await getSingleMarker(markerData?.id, latitude, longitude);
         setShowMarkerPopup(true);
         if (drawingManagerRef.current) {
           drawingManagerRef.current.setOptions({ drawingControl: false });
         }
-        const latitude = event.latLng?.lat();
-        const longitude = event.latLng?.lng();
+
         getLocationAddress({
           latitude,
           longitude,
@@ -173,7 +174,11 @@ const ViewGoogleMap = () => {
 
   const handleMarkerClick = (markerData: any, markere: google.maps.Marker) => {
     router.replace(`${pathName}?marker_id=${markerData?.id}`);
-    getSingleMarker(markerData?.id);
+    getSingleMarker(
+      markerData?.id,
+      markerData?.coordinates[0],
+      markerData?.coordinates[1]
+    );
     setSingleMarkerOpen(true);
     map.setCenter(
       new google.maps.LatLng(
@@ -192,13 +197,16 @@ const ViewGoogleMap = () => {
     }
   };
 
-  const getSingleMarker = async (marker_id: any) => {
+  const getSingleMarker = async (marker_id: any, lat: any, lng: any) => {
     setSingleMarkerLoading(true);
     let markerID = marker_id;
     try {
-      const response = await getSingleMarkerAPI(id, markerID);
+      const response = await getSingleMarkerAPI(id, lat, lng);
+      let markerData = response?.data.find(
+        (item: any) => item?.id == marker_id
+      );
       setSingleMarkerData(response?.data);
-      setMarkerData(response?.data);
+      setMarkerData(markerData);
     } catch (err) {
       console.error(err);
     } finally {
@@ -273,7 +281,6 @@ const ViewGoogleMap = () => {
         };
       });
       let coords = getPolygonWithMarkers(newCoords);
-      console.log(coords, "dskfkasdkfkadskfkasd");
       setPolygonCoords(coords);
     } catch (err) {
       console.error(err);
