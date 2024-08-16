@@ -12,45 +12,26 @@ export async function validateAccessToken(req: NextRequest) {
     if (token) {
       const decodedToken: any = await jwt.decode(token);
       if (!decodedToken) {
-        return ResponseHelper.sendErrorResponse(
-          403,
-          "Access Denied - Invalid Token"
-        );
+        return ResponseHelper.sendErrorResponse(403,"Access Denied - Invalid Token");
       }
       const user = await userdataServiceProvider.findById(decodedToken.id);
       if (user) {
         await jwt.verify(token, configData.jwt.token_secret);
         return user;
       } else {
-        return ResponseHelper.sendErrorResponse(
-          403,
-          "Access Denied - Invalid User"
-        );
+        return ResponseHelper.sendErrorResponse(403,"Access Denied - Invalid User");
       }
     } else {
-      return ResponseHelper.sendErrorResponse(
-        403,
-        "Access Denied - No Token Provided"
-      );
+      return ResponseHelper.sendErrorResponse(403,"Access Denied - No Token Provided");
     }
   } catch (err: any) {
     console.error(err);
-    if (
-      err.name === "JsonWebTokenError" &&
-      err.message === "invalid signature"
+    if (err.name === "JsonWebTokenError" && err.message === "invalid signature"
     ) {
-      // Handle invalid signature exception here
-      return ResponseHelper.sendErrorResponse(
-        403,
-        "Access Denied - Invalid Token"
-      );
+      return ResponseHelper.sendErrorResponse(403,"Access Denied - Invalid Token");
     }
     if (err.name === "TokenExpiredError") {
-      // Handle token expire exception here
-      return ResponseHelper.sendErrorResponse(
-        403,
-        "Access Denied - Token is expired"
-      );
+      return ResponseHelper.sendErrorResponse(403,"Access Denied - Token is expired");
     }
 
     return ResponseHelper.sendErrorResponse(500, "Internal Server Error");
