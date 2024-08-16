@@ -398,6 +398,7 @@ const ViewGoogleMap = () => {
           popupFormData={markerData}
           setPopupFormData={setMarkerData}
           setSingleMarkerData={setSingleMarkerData}
+          getSingleMarker={getSingleMarker}
         />
       </div>
       <LoadingComponent loading={loading || singleMarkerLoading} />

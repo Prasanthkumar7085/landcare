@@ -22,6 +22,7 @@ const MarkerPopup = ({
   popupFormData,
   setPopupFormData,
   setSingleMarkerData,
+  getSingleMarker,
 }: any) => {
   const { id } = useParams();
   const params = useSearchParams();
@@ -90,9 +91,15 @@ const MarkerPopup = ({
       const response = await getApiBasedOnParams(id);
       if (response?.status == 200 || response?.status == 201) {
         toast.success(response?.message);
-        setSingleMarkerData(response?.data);
         handleCancel();
         await getSingleMapMarkers({});
+        if (params?.get("marker_id")) {
+          await getSingleMarker(
+            params?.get("marker_id"),
+            popupFormData?.coordinates[0],
+            popupFormData?.coordinates[1]
+          );
+        }
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
       }
