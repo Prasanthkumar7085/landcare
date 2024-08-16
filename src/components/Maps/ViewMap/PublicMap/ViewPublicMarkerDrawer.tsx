@@ -37,6 +37,8 @@ const ViewPublicMarkerDrawer = ({
   setMarkersOpen,
   handleMarkerClick,
   markersImagesWithOrganizationType,
+  setPlaceDetails,
+  getSingleMarker,
 }: any) => {
   const { id } = useParams();
   const pathname = usePathname();
@@ -45,6 +47,7 @@ const ViewPublicMarkerDrawer = ({
   const [shareLinkDialogOpen, setShareDialogOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const [selectedMarker, setSelectedMarker] = useState<any>({});
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -60,20 +63,6 @@ const ViewPublicMarkerDrawer = ({
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? data?.images.length - 1 : prevIndex - 1
     );
-  };
-
-  const getSingleMarker = async (marker_id: any) => {
-    setSingleMarkerLoading(true);
-    let markerID = marker_id;
-    try {
-      const response = await getSingleMarkerAPI(id, markerID);
-      setData(response?.data);
-      setMarkerData(response?.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSingleMarkerLoading(false);
-    }
   };
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -93,7 +82,7 @@ const ViewPublicMarkerDrawer = ({
   const deleteMarker = async () => {
     setLoading(true);
     try {
-      const response = await deleteMarkerAPI(id, data?.id);
+      const response = await deleteMarkerAPI(id, selectedMarker?.id);
       toast.success(response?.message);
       onClose();
       getSingleMapMarkers({});
@@ -105,11 +94,6 @@ const ViewPublicMarkerDrawer = ({
     }
   };
 
-  useEffect(() => {
-    if (params?.get("marker_id")) {
-      getSingleMarker(params?.get("marker_id"));
-    }
-  }, [params?.get("marker_id"), showMarkerPopup]);
   return (
     <div className="signleMarkerView">
       <header className="header">
@@ -119,8 +103,7 @@ const ViewPublicMarkerDrawer = ({
             <Image src="/map/map-backBtn.svg" alt="" height={15} width={15} />
           }
           onClick={() => {
-            onClose();
-            setData({});
+            setMarkerData({});
             router.replace(`${pathname}`);
             markersRef.current.forEach(({ marker }: any) => {
               if (marker.getAnimation() === google.maps.Animation.BOUNCE) {
@@ -128,10 +111,11 @@ const ViewPublicMarkerDrawer = ({
               }
             });
             boundToMapWithPolygon(polygonCoords, map);
-            if (drawingManagerRef.current && params?.get("marker_id")) {
+            if (drawingManagerRef.current) {
               drawingManagerRef.current.setOptions({ drawingControl: true });
             }
-            setMarkerData({});
+            onClose();
+            setData([]);
           }}
         >
           Back
@@ -141,202 +125,247 @@ const ViewPublicMarkerDrawer = ({
           <Image src="/map/menu-with-bg.svg" alt="" height={28} width={28} />
         </IconButton>
       </header>
-      <Box className="viewContent">
-        <div className="imgBlock">
-          {data?.images?.length > 0 ? (
+      {data?.map((item: any, index: any) => {
+        return (
+          <Box className="viewContent" key={index}>
             <div
               style={{
-                minWidth: "100%",
-                width: "100%",
-                minHeight: "100%",
-                border: "1px solid black",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                marginTop: "0px",
               }}
             >
-              <button
-                onClick={prevSlide}
-                className="navButton"
-                style={{ display: data?.images?.length == 1 ? "none" : "" }}
+              <IconButton
+                className="iconBtn"
+                onClick={(e) => {
+                  setSelectedMarker(item);
+                  handleClick(e);
+                }}
               >
-                &#10094;
-              </button>
-              <img
-                className="mapImg"
-                src={data?.images[currentIndex]}
-                alt={`images ${currentIndex}`}
-                height={100}
-                width={100}
-                style={{ objectFit: "cover" }}
-              />
-              <button
-                onClick={nextSlide}
-                className="navButton"
-                style={{ display: data?.images?.length == 1 ? "none" : "" }}
-              >
-                &#10095;
-              </button>
+                <Image
+                  src="/map/menu-with-bg.svg"
+                  alt=""
+                  height={28}
+                  width={28}
+                />
+              </IconButton>
             </div>
-          ) : (
-            <img
-              className="mapImg"
-              src="/no-images.jpg"
-              alt="Fallback"
-              height={100}
-              width={100}
-              style={{ objectFit: "cover" }}
-            />
-          )}
-        </div>
-        <div className="headerDetails">
-          {singleMarkerLoading ? (
-            <Skeleton width="60%" className="markerTitle" />
-          ) : (
-            <Typography className="markerTitle">
-              {data?.title || "---"}
-            </Typography>
-          )}
+            <div className="imgBlock">
+              {item?.images?.length > 0 ? (
+                <div
+                  style={{
+                    minWidth: "100%",
+                    width: "100%",
+                    minHeight: "90%",
+                    border: "1px solid black",
+                  }}
+                >
+                  <button
+                    onClick={prevSlide}
+                    className="navButton"
+                    style={{ display: item?.images?.length == 1 ? "none" : "" }}
+                  >
+                    &#10094;
+                  </button>
+                  <img
+                    className="mapImg"
+                    src={item?.images[currentIndex]}
+                    alt={`images ${currentIndex}`}
+                    height={90}
+                    width={100}
+                    style={{ objectFit: "cover" }}
+                  />
+                  <button
+                    onClick={nextSlide}
+                    className="navButton"
+                    style={{ display: item?.images?.length == 1 ? "none" : "" }}
+                  >
+                    &#10095;
+                  </button>
+                </div>
+              ) : (
+                <img
+                  className="mapImg"
+                  src="/no-images.jpg"
+                  alt="Fallback"
+                  height={100}
+                  width={100}
+                  style={{ objectFit: "cover" }}
+                />
+              )}
+            </div>
+            <div className="headerDetails">
+              {singleMarkerLoading ? (
+                <Skeleton width="60%" className="markerTitle" />
+              ) : (
+                <Typography className="markerTitle">
+                  {item?.title || "---"}
+                </Typography>
+              )}
 
-          <Typography className="markerLocation">
-            <Image src="/map/location-blue.svg" alt="" width={10} height={10} />
-            {singleMarkerLoading ? (
-              <Skeleton width="60%" />
-            ) : (
-              <span>{data?.town?.split(" ")[0] || "---"}</span>
-            )}
-          </Typography>
-        </div>
-
-        <div className="eachMarkerDetail">
-          <Typography className="title">Description</Typography>
-          {singleMarkerLoading ? (
-            <Skeleton width="60%" />
-          ) : (
-            <Typography
-              className="value"
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Tooltip
-                title={
-                  data?.description && data?.description > 200
-                    ? data?.description
-                    : ""
+              <Typography className="markerLocation">
+                <Image
+                  src="/map/location-blue.svg"
+                  alt=""
+                  width={10}
+                  height={10}
+                />
+                {singleMarkerLoading ? (
+                  <Skeleton width="60%" />
+                ) : (
+                  <span>{item?.town?.split(" ")[0] || "---"}</span>
+                )}
+              </Typography>
+            </div>
+            <div className="eachMarkerDetail">
+              <Typography className="title">Description</Typography>
+              {singleMarkerLoading ? (
+                <Skeleton width="60%" />
+              ) : (
+                <Tooltip
+                  title={
+                    item?.description && item?.description?.length >= 200
+                      ? item?.description
+                      : ""
+                  }
+                >
+                  <Typography className="value">
+                    {truncateText(item?.description, 200) || "---"}
+                  </Typography>
+                </Tooltip>
+              )}
+            </div>
+            <div className="eachMarkerDetail">
+              <Typography className="title">Organization Type</Typography>
+              {singleMarkerLoading ? (
+                <Skeleton width="60%" />
+              ) : (
+                <Typography
+                  className="value"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <img
+                    width={15}
+                    height={15}
+                    style={{ display: item?.organisation_type ? "" : "none" }}
+                    src={
+                      item?.organisation_type
+                        ? markersImagesWithOrganizationType[
+                            item?.organisation_type
+                          ]
+                        : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
+                    }
+                    alt={item?.organisation_type}
+                  />
+                  {item?.organisation_type || "---"}
+                </Typography>
+              )}
+            </div>
+            <div className="eachMarkerDetail">
+              <Typography className="title">website</Typography>
+              {singleMarkerLoading ? (
+                <Skeleton width="60%" />
+              ) : item?.website ? (
+                <Tooltip
+                  title={
+                    item?.website && item?.website?.length > 70
+                      ? item?.website
+                      : ""
+                  }
+                >
+                  <Link href={item?.website} target="_blank" className="value">
+                    {truncateText(item?.website, 70) || "---"}
+                  </Link>
+                </Tooltip>
+              ) : (
+                "---"
+              )}
+            </div>
+            <div className="eachMarkerDetail">
+              <Typography className="title">Postcode</Typography>
+              {singleMarkerLoading ? (
+                <Skeleton width="60%" />
+              ) : (
+                <Typography className="value">
+                  {item?.postcode || "---"}{" "}
+                </Typography>
+              )}
+            </div>
+            <div className="headerDetails">
+              {singleMarkerLoading ? (
+                <Skeleton width="60%" />
+              ) : (
+                <Typography className="footerText">
+                  <Image src="/map/email.svg" alt="" width={12} height={12} />
+                  <span>{item?.email || "---"} </span>
+                </Typography>
+              )}
+              {singleMarkerLoading ? (
+                <Skeleton width="30%" />
+              ) : (
+                <Typography className="footerText">
+                  <Image
+                    src="/map/cell-icon.svg"
+                    alt=""
+                    width={12}
+                    height={12}
+                  />
+                  <span>{item?.phone || "---"} </span>
+                </Typography>
+              )}
+            </div>
+            <div className="btnGrp">
+              <Button
+                className="navigateBtn"
+                variant="contained"
+                endIcon={
+                  <Image
+                    src="/map/navigate.svg"
+                    alt=""
+                    width={15}
+                    height={15}
+                  />
                 }
+                onClick={() => {
+                  const markerEntry = markersRef.current.find(
+                    (entry: any) => entry.id === item?.id
+                  );
+                  if (markerEntry) {
+                    const { marker } = markerEntry;
+                    handleMarkerClick(item, marker);
+                  } else {
+                    console.error(`Marker with ID ${id} not found.`);
+                  }
+                }}
               >
-                <p>{truncateText(data?.description, 200) || "---"}</p>
-              </Tooltip>
-            </Typography>
-          )}
-        </div>
-
-        <div className="eachMarkerDetail">
-          <Typography className="title">Organization Type</Typography>
-          {singleMarkerLoading ? (
-            <Skeleton width="60%" />
-          ) : (
-            <Typography
-              className="value"
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <img
-                width={15}
-                height={15}
-                src={
-                  data?.organisation_type
-                    ? markersImagesWithOrganizationType[data?.organisation_type]
-                    : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
-                }
-                alt={data?.organisation_type}
-              />
-              {data?.organisation_type || "---"}
-            </Typography>
-          )}
-        </div>
-        <div className="eachMarkerDetail">
-          <Typography className="title">website</Typography>
-          {singleMarkerLoading ? (
-            <Skeleton width="60%" />
-          ) : data?.website ? (
-            <Tooltip
-              title={data?.website && data?.website > 70 ? data?.website : ""}
-            >
-              <Link href={data?.website} target="_blank" className="value">
-                {truncateText(data?.website, 70) || "---"}
-              </Link>
-            </Tooltip>
-          ) : (
-            "---"
-          )}
-        </div>
-        <div className="eachMarkerDetail">
-          <Typography className="title">Postcode</Typography>
-          {singleMarkerLoading ? (
-            <Skeleton width="60%" />
-          ) : (
-            <Typography className="value">
-              {data?.postcode || "---"}{" "}
-            </Typography>
-          )}
-        </div>
-        <div className="headerDetails">
-          {singleMarkerLoading ? (
-            <Skeleton width="60%" />
-          ) : (
-            <Typography className="footerText">
-              <Image src="/map/email.svg" alt="" width={12} height={12} />
-              <span>{data?.email || "---"} </span>
-            </Typography>
-          )}
-          {singleMarkerLoading ? (
-            <Skeleton width="30%" />
-          ) : (
-            <Typography className="footerText">
-              <Image src="/map/cell-icon.svg" alt="" width={12} height={12} />
-              <span>{data?.phone || "---"} </span>
-            </Typography>
-          )}
-        </div>
-        <div className="btnGrp">
-          <Button
-            className="navigateBtn"
-            variant="contained"
-            endIcon={
-              <Image src="/map/navigate.svg" alt="" width={15} height={15} />
-            }
-            onClick={() => {
-              const markerEntry = markersRef.current.find(
-                (entry: any) => entry.id === data?.id
-              );
-              if (markerEntry) {
-                const { marker } = markerEntry;
-                handleMarkerClick(data, marker);
-              } else {
-                console.error(`Marker with ID ${id} not found.`);
-              }
-            }}
-          >
-            {data ? "Navigate" : <Skeleton width="100%" />}
-          </Button>
-          <IconButton
-            className="iconBtn"
-            onClick={() => {
-              setShareDialogOpen(true);
-            }}
-          >
-            {data ? (
-              <Image src="/map/share-white.svg" alt="" width={13} height={13} />
-            ) : (
-              <Skeleton variant="circular" width={13} height={13} />
-            )}
-          </IconButton>
-        </div>
-      </Box>
+                {item ? "Navigate" : <Skeleton width="100%" />}
+              </Button>
+              <IconButton
+                className="iconBtn"
+                onClick={() => {
+                  setShareDialogOpen(true);
+                }}
+              >
+                {item ? (
+                  <Image
+                    src="/map/share-white.svg"
+                    alt=""
+                    width={13}
+                    height={13}
+                  />
+                ) : (
+                  <Skeleton variant="circular" width={13} height={13} />
+                )}
+              </IconButton>
+            </div>
+          </Box>
+        );
+      })}
       <Menu
         sx={{ mt: 1 }}
         id="basic-menu"
@@ -350,6 +379,11 @@ const ViewPublicMarkerDrawer = ({
         <MenuItem
           className="menuItem"
           onClick={() => {
+            getSingleMarker(
+              selectedMarker?.id,
+              selectedMarker?.coordinates[0],
+              selectedMarker?.coordinates[1]
+            );
             setShowMarkerPopup(true);
             handleClose();
           }}
@@ -369,7 +403,7 @@ const ViewPublicMarkerDrawer = ({
       <ShareLinkDialog
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
-        mapDetails={data}
+        mapDetails={selectedMarker}
         linkToShare={`https://dev-landcare.vercel.app/landcare-map/${
           data?.id
         }?marker_id=${params?.get("marker_id")}`}

@@ -47,7 +47,6 @@ const ViewMarkerDrawer = ({
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [selectedMarker, setSelectedMarker] = useState<any>({});
-  console.log(selectedMarker, "sad8sad8s8a");
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -400,7 +399,7 @@ const ViewMarkerDrawer = ({
       <ShareLinkDialog
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
-        mapDetails={data}
+        mapDetails={selectedMarker}
         linkToShare={`https://dev-landcare.vercel.app/landcare-map/${id}?marker_id=${params?.get(
           "marker_id"
         )}`}

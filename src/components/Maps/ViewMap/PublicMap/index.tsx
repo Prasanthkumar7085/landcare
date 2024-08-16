@@ -11,6 +11,7 @@ import {
 import {
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
+  getSingleMarkerAPI,
 } from "@/services/maps";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { InputAdornment, TextField } from "@mui/material";
@@ -50,25 +51,19 @@ const PublicMap = () => {
   const [localMarkers, setLocalMarkers] = useState<any>([]);
   const [overlays, setOverlays] = useState<any[]>([]);
   const [singleMarkeropen, setSingleMarkerOpen] = useState(false);
-  const [markerData, setMarkerData] = useState<any>({});
   const [markerOption, setMarkerOption] = useState<any>();
   const [singleMarkerdata, setSingleMarkerData] = useState<any>();
   const [singleMarkerLoading, setSingleMarkerLoading] = useState(false);
   const [markersOpen, setMarkersOpen] = useState<any>(false);
-  const [placeDetails, setPlaceDetails] = useState<any>({
-    full_address: "",
-    state: "",
-    city: "",
-    zipcode: "",
-    images: [],
-    tags: [],
-    social_links: [],
-    coordinates: [],
-  });
+  const [markerData, setMarkerData] = useState<any>({ images: [], tags: [] });
   const [
     markersImagesWithOrganizationType,
     setMarkersImagesWithOrganizationType,
   ] = useState<any>({});
+  const [placeDetails, setPlaceDetails] = useState<any>({
+    full_address: "",
+    coordinates: [],
+  });
 
   const addMarkerEVent = (event: any, map: any, maps: any) => {
     const marker = new google.maps.Marker({
@@ -135,7 +130,7 @@ const PublicMap = () => {
             : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
         animation: google.maps.Animation.DROP,
-        draggable: true,
+        draggable: false,
       });
       markersRef.current.push({ id: markerData.id, marker: markere });
 
@@ -144,11 +139,16 @@ const PublicMap = () => {
       });
 
       markere.addListener("dragstart", (event: google.maps.MouseEvent) => {});
-      markere.addListener("dragend", (event: google.maps.MouseEvent) => {
+      markere.addListener("dragend", async (event: google.maps.MouseEvent) => {
         router.replace(`${pathName}?marker_id=${markerData?.id}`);
-        setShowMarkerPopup(true);
         const latitude = event.latLng?.lat();
         const longitude = event.latLng?.lng();
+        await getSingleMarker(markerData?.id, latitude, longitude);
+        setShowMarkerPopup(true);
+        if (drawingManagerRef.current) {
+          drawingManagerRef.current.setOptions({ drawingControl: false });
+        }
+
         getLocationAddress({
           latitude,
           longitude,
@@ -158,14 +158,38 @@ const PublicMap = () => {
         });
       });
     });
+
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
     });
   };
 
+  const getSingleMarker = async (marker_id: any, lat: any, lng: any) => {
+    setSingleMarkerLoading(true);
+    let markerID = marker_id;
+    try {
+      const response = await getSingleMarkerAPI(id, lat, lng);
+      let markerData = response?.data.find(
+        (item: any) => item?.id == marker_id
+      );
+      setSingleMarkerData(response?.data);
+      setMarkerData(markerData);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSingleMarkerLoading(false);
+    }
+  };
+
   const handleMarkerClick = (markerData: any, markere: google.maps.Marker) => {
     router.replace(`${pathName}?marker_id=${markerData?.id}`);
+    getSingleMarker(
+      markerData?.id,
+      markerData?.coordinates[0],
+      markerData?.coordinates[1]
+    );
+    setSingleMarkerOpen(true);
     setSingleMarkerOpen(true);
     map.setCenter(
       new google.maps.LatLng(
@@ -388,6 +412,8 @@ const PublicMap = () => {
             markersImagesWithOrganizationType={
               markersImagesWithOrganizationType
             }
+            setPlaceDetails={setPlaceDetails}
+            getSingleMarker={getSingleMarker}
           />
         ) : (
           ""
