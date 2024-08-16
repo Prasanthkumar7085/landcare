@@ -1,5 +1,6 @@
 import { toast } from "sonner";
 import {
+  markersImages,
   SheetHeaders,
   subHeadersMappingConstants,
 } from "../constants/mapConstants";
@@ -136,10 +137,10 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
   const filteredDataObjects = dataObjects.filter((obj: any) => {
     const values = Object.values(obj);
     return !values.every(
-      (value) => value === undefined || value === "" || value === null
+      (value) =>
+        value == undefined || value == "" || value == null || value == " "
     );
   });
-
   let errorsData = validationsForImportedData({ filteredDataObjects });
   let data = [...errorsData.validData];
   let locationToCoordinatesMap: any = {};
@@ -319,14 +320,7 @@ export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
       );
     }
   );
-  const markersImages = [
-    "https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png",
-    "https://maps.gstatic.com/mapfiles/ms2/micons/green-dot.png",
-    "https://maps.gstatic.com/mapfiles/ms2/micons/ltblue-dot.png",
-    "https://maps.gstatic.com/mapfiles/ms2/micons/yellow-dot.png",
-    "https://maps.gstatic.com/mapfiles/ms2/micons/purple-dot.png",
-    "https://maps.gstatic.com/mapfiles/ms2/micons/pink-dot.png",
-  ];
+
   const OrganizationMarkersImages: Record<string, string> =
     uniqueOrganizationTypes
       ?.filter((type: any) => type !== "")
@@ -371,12 +365,20 @@ export const getLocationAddress = ({
           .join(", ");
         setMarkerData({
           ...markerData,
+          postal_address: postalAddress
+            ? postalAddress
+            : markerData?.postal_address,
+          postcode: postcode ? postcode : markerData?.postcode,
+          street_address: streetAddress
+            ? streetAddress
+            : markerData?.street_address,
+          town: town ? town : markerData?.town,
+        });
+        setPlaceDetails({
           postal_address: postalAddress,
           postcode: postcode,
           street_address: streetAddress,
           town: town,
-        });
-        setPlaceDetails({
           full_address: locationName,
           coordinates: [latitude, longitude],
         });

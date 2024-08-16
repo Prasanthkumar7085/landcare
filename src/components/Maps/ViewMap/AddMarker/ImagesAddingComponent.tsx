@@ -1,6 +1,9 @@
-import { Button, IconButton, TextField } from "@mui/material";
+import { Button, IconButton, TextField, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
+import { useState } from "react";
+import { truncateText } from "@/lib/helpers/nameFormate";
 
 const ImagesAddingComponent = ({
   setImageInput,
@@ -10,6 +13,9 @@ const ImagesAddingComponent = ({
   setPopupFormData,
   errorMessages,
 }: any) => {
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [editInput, setEditInput] = useState<string>("");
+
   const handleImageInputChange = (event: any) => {
     setImageInput(event.target.value);
   };
@@ -45,6 +51,32 @@ const ImagesAddingComponent = ({
     );
     setPopupFormData({ ...popupFormData, images: updatedImages });
   };
+
+  const handleEditImage = (index: number) => {
+    setEditIndex(index);
+    setEditInput(popupFormData.images[index]);
+  };
+
+  const handleUpdateImage = () => {
+    if (!editInput) {
+      setErrorMessages({ images: "Image link cannot be empty." });
+      return;
+    }
+
+    if (popupFormData.images.includes(editInput)) {
+      setErrorMessages({ images: "This link is already in the list." });
+      return;
+    }
+
+    const updatedImages = [...popupFormData.images];
+    updatedImages[editIndex!] = editInput;
+
+    setPopupFormData({ ...popupFormData, images: updatedImages });
+    setEditIndex(null);
+    setEditInput("");
+    setErrorMessages({});
+  };
+
   return (
     <div className="eachFeildGrp">
       <label>Images</label>
@@ -59,23 +91,54 @@ const ImagesAddingComponent = ({
         <TextField
           className="defaultTextFeild text"
           name="images"
-          placeholder="Enter Images links"
+          placeholder="Enter Image link"
           sx={{ width: "100%" }}
-          value={imageInput}
-          onChange={handleImageInputChange}
+          value={editIndex !== null ? editInput : imageInput}
+          onChange={(e) =>
+            editIndex !== null
+              ? setEditInput(e.target.value)
+              : setImageInput(e.target.value)
+          }
           onKeyDown={handleKeyPress}
         />
-        <Button onClick={handleAddImage}>Add</Button>
+        {editIndex !== null ? (
+          <>
+            <Button onClick={handleUpdateImage}>Update</Button>
+            <Button
+              onClick={() => {
+                setEditIndex(null);
+                setEditInput("");
+              }}
+            >
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <Button onClick={handleAddImage}>Add</Button>
+        )}
       </div>
       <div className="imageList">
         {popupFormData?.images?.length > 0 ? (
           <ul>
             {popupFormData.images.map((url: any, index: any) => (
-              <li key={index}>
-                <span>{url.slice(0, 40) + "...."}</span>
+              <li
+                key={index}
+                style={{ color: index == editIndex ? "red" : "" }}
+              >
+                <Tooltip title={url && url?.length > 30 ? url : ""}>
+                  <span>{truncateText(url, 30)}</span>
+                </Tooltip>
+                <IconButton
+                  onClick={() => handleEditImage(index)}
+                  aria-label="edit"
+                  disabled={editIndex == index}
+                >
+                  <EditIcon />
+                </IconButton>
                 <IconButton
                   onClick={() => handleRemoveImage(index)}
                   aria-label="delete"
+                  disabled={editIndex == index}
                 >
                   <DeleteIcon />
                 </IconButton>

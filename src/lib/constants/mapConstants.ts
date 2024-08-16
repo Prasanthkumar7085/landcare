@@ -175,3 +175,19 @@ export const SheetHeaders = [
   "Tags",
   "Location",
 ];
+
+export const markersImages = [
+  "https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png",
+  "https://maps.gstatic.com/mapfiles/ms2/micons/green-dot.png",
+  "https://maps.gstatic.com/mapfiles/ms2/micons/ltblue-dot.png",
+  "https://maps.gstatic.com/mapfiles/ms2/micons/yellow-dot.png",
+  "https://maps.gstatic.com/mapfiles/ms2/micons/purple-dot.png",
+  "https://maps.gstatic.com/mapfiles/ms2/micons/pink-dot.png",
+  "/markers/pharmacies.svg",
+  "/markers/gasStation.svg",
+  "/markers/shopping.svg",
+  "/markers/policeStation.svg",
+  "/markers/libraries.svg",
+  "/markers/gyms.svg",
+  "/markers/cinemas.svg",
+];

@@ -122,7 +122,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
   const getStaticMap = async (updatedCoords: any, coords: any) => {
     let body = {
       coordinates: [...coords, coords[0]],
-      markers: updatedCoords,
+      markers: updatedCoords.slice(0, 50),
     };
     try {
       const response = await getStaticMapAPI(body);
@@ -160,6 +160,9 @@ const ImportModal: React.FC<IImportModalProps> = ({
     };
     try {
       const response = await updateMapWithCordinatesAPI(body, id);
+      if (response?.status == 200 || response?.status == 201) {
+        await getData({});
+      }
     } catch (err) {
       console.error(err);
     }
@@ -175,14 +178,14 @@ const ImportModal: React.FC<IImportModalProps> = ({
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response.message);
         if (filedata?.[0]?.length == 0) {
-          await getData({});
           await addMapWithCordinates(filedata);
+          await getData({});
           onClose();
           setFile(null);
           setSuccess(true);
         } else {
-          await getData({});
           await addMapWithCordinates(filedata);
+          await getData({});
           setSuccess(true);
         }
       } else if (response?.status === 422) {

@@ -43,7 +43,6 @@ const MarkerPopup = ({
     setShowMarkerPopup(false);
     setPopupFormData({});
   };
-
   const getApiBasedOnParams = (id: any) => {
     let response;
     if (params?.get("marker_id")) {
@@ -56,23 +55,29 @@ const MarkerPopup = ({
         map_id: popupFormData?.map_id,
         title: popupFormData?.title || "",
         phone: popupFormData?.phone || "",
-        postcode: popupFormData?.postcode || "",
+        postcode: placeDetails?.postcode
+          ? placeDetails?.postcode
+          : popupFormData?.postcode,
         images: popupFormData?.images,
         tags: popupFormData?.tags,
-        town: popupFormData?.town || "",
-        street_address: popupFormData.street_address || "",
+        town: placeDetails?.town ? placeDetails?.town : popupFormData?.town,
+        street_address: placeDetails?.street_address
+          ? placeDetails?.street_address
+          : popupFormData.street_address,
         description: popupFormData?.description || "",
         website: popupFormData?.website || "",
         contact: popupFormData?.contact || "",
         fax: popupFormData?.fax || "",
-        postal_address: popupFormData?.postal_address || "",
+        postal_address: placeDetails?.postal_address
+          ? placeDetails?.postal_address
+          : popupFormData?.postal_address,
       };
 
       response = updateMarkerDeatilsAPI(id, body, params?.get("marker_id"));
     } else {
       let body = {
-        ...popupFormData,
         ...placeDetails,
+        ...popupFormData,
       };
       response = addMarkerDeatilsAPI(id, body);
     }

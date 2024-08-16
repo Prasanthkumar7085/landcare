@@ -1,6 +1,9 @@
-import { Button, IconButton, TextField } from "@mui/material";
+import { Button, IconButton, TextField, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
+import { useState } from "react";
+import { truncateText } from "@/lib/helpers/nameFormate";
 
 const TagsAddingComponent = ({
   setTagsInput,
@@ -10,6 +13,9 @@ const TagsAddingComponent = ({
   setPopupFormData,
   errorMessages,
 }: any) => {
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [editInput, setEditInput] = useState<string>("");
+
   const handleTagsInputChange = (event: any) => {
     setTagsInput(event.target.value);
   };
@@ -17,14 +23,14 @@ const TagsAddingComponent = ({
   const handleAddTags = () => {
     setErrorMessages({});
     if (!tagsInput) {
-      setErrorMessages({ tags: "tags feild cannot be empty." });
+      setErrorMessages({ tags: "Tags field cannot be empty." });
       return;
     }
 
     if (!popupFormData.tags?.includes(tagsInput)) {
       setPopupFormData({
         ...popupFormData,
-        ["tags"]: [...popupFormData?.tags, tagsInput],
+        tags: [...popupFormData?.tags, tagsInput],
       });
       setTagsInput("");
     } else {
@@ -44,6 +50,32 @@ const TagsAddingComponent = ({
     );
     setPopupFormData({ ...popupFormData, tags: updatedTags });
   };
+
+  const handleEditTag = (index: number) => {
+    setEditIndex(index);
+    setEditInput(popupFormData.tags[index]);
+  };
+
+  const handleUpdateTag = () => {
+    if (!editInput) {
+      setErrorMessages({ tags: "Tags field cannot be empty." });
+      return;
+    }
+
+    if (popupFormData.tags.includes(editInput)) {
+      setErrorMessages({ tags: "This tag is already in the list." });
+      return;
+    }
+
+    const updatedTags = [...popupFormData.tags];
+    updatedTags[editIndex!] = editInput;
+
+    setPopupFormData({ ...popupFormData, tags: updatedTags });
+    setEditIndex(null);
+    setEditInput("");
+    setErrorMessages({});
+  };
+
   return (
     <div className="eachFeildGrp">
       <label>Tags</label>
@@ -57,24 +89,55 @@ const TagsAddingComponent = ({
       >
         <TextField
           className="defaultTextFeild text"
-          name="images"
+          name="tags"
           placeholder="Enter Tags"
           sx={{ width: "100%" }}
-          value={tagsInput}
-          onChange={handleTagsInputChange}
+          value={editIndex !== null ? editInput : tagsInput}
+          onChange={(e) =>
+            editIndex !== null
+              ? setEditInput(e.target.value)
+              : setTagsInput(e.target.value)
+          }
           onKeyDown={handleKeyPress}
         />
-        <Button onClick={handleAddTags}>Add</Button>
+        {editIndex !== null ? (
+          <>
+            <Button onClick={handleUpdateTag}>Update</Button>
+            <Button
+              onClick={() => {
+                setEditIndex(null);
+                setEditInput("");
+              }}
+            >
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <Button onClick={handleAddTags}>Add</Button>
+        )}
       </div>
-      <div className="imageList">
+      <div className="tagList">
         {popupFormData?.tags?.length > 0 ? (
           <ul>
-            {popupFormData.tags.map((url: any, index: any) => (
-              <li key={index}>
-                <span>{url.slice(0, 40) + "...."}</span>
+            {popupFormData.tags.map((tag: any, index: any) => (
+              <li
+                key={index}
+                style={{ color: index == editIndex ? "red" : "" }}
+              >
+                <Tooltip title={tag && tag?.length > 30 ? tag : ""}>
+                  <span>{truncateText(tag, 30)}</span>
+                </Tooltip>
+                <IconButton
+                  onClick={() => handleEditTag(index)}
+                  aria-label="edit"
+                  disabled={editIndex == index}
+                >
+                  <EditIcon />
+                </IconButton>
                 <IconButton
                   onClick={() => handleRemoveTags(index)}
                   aria-label="delete"
+                  disabled={editIndex == index}
                 >
                   <DeleteIcon />
                 </IconButton>
