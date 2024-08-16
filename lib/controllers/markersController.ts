@@ -5,65 +5,51 @@ import {
   MARKER_DELETED,
   MARKER_FETCHED,
   MARKER_NOT_FOUND_WITH_MAP,
-  MARKER_TITLE_EXISTS,
   MARKER_UPDATED,
   MARKERS_FETCHED,
   MARKERS_IMPORTED,
-  SOMETHING_WENT_WRONG,
+  SOMETHING_WENT_WRONG
 } from "../constants/appMessages";
 import paginationHelper from "../helpers/paginationHelper";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
 import { MarkersDataServiceProvider } from "../services/markersDataServiceProvider";
-import { ResourceAlreadyExistsError } from "../helpers/exceptions";
 
 const markersDataServiceProvider = new MarkersDataServiceProvider();
 const mapsDataServiceProvider = new MapsDataServiceProvider();
 
 export class MarkersController {
-  async addMarker(reqData: any, params: any) {
-    try {
-      reqData.map_id = params.id;
+    async addMarker(reqData: any, params: any) {
 
-      const mapData = await mapsDataServiceProvider.findById(params.id);
-      if (!mapData) {
-        return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
-      }
+        try {
 
-      const existedMarker =
-        await markersDataServiceProvider.findByTitleAndMapId(
-          reqData.title,
-          params.id
-        );
-      if (existedMarker) {
-        throw new ResourceAlreadyExistsError("title", MARKER_TITLE_EXISTS);
-      }
+            reqData.map_id = params.id;
 
-      const reponseData = await markersDataServiceProvider.create(reqData);
-      return ResponseHelper.sendSuccessResponse(
-        200,
-        MARKER_CREATED,
-        reponseData[0]
-      );
-    } catch (error: any) {
-      console.error(error);
-      if (error.validation_error) {
-        return ResponseHelper.sendErrorResponse(
-          409,
-          error.message,
-          error.errors
-        );
-      }
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+            const mapData = await mapsDataServiceProvider.findById(params.id);
+            if (!mapData) {
+                return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
+            }
+
+            // const existedMarker = await markersDataServiceProvider.findByTitleAndMapId(reqData.title, params.id);
+            // if (existedMarker) {
+            //     throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
+            // }
+
+            const reponseData = await markersDataServiceProvider.create(reqData);
+            return ResponseHelper.sendSuccessResponse(200, MARKER_CREATED, reponseData[0]);
+
+        } catch (error: any) {
+            console.log(error);
+            if (error.validation_error) {
+                return ResponseHelper.sendErrorResponse(409, error.message, error.errors);
+            }
+            return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
+        }
     }
-  }
 
   async addBulkMarkers(req: NextRequest, params: any) {
     try {
+
       let reqData = await req.json();
       reqData.map((map: any) => {
         map.map_id = params.id;
@@ -79,11 +65,7 @@ export class MarkersController {
       return ResponseHelper.sendSuccessResponse(200, MARKERS_IMPORTED);
     } catch (error: any) {
       console.error(error);
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
     }
   }
 
@@ -102,18 +84,10 @@ export class MarkersController {
         return ResponseHelper.sendErrorResponse(400, MARKER_NOT_FOUND_WITH_MAP);
       }
 
-      return ResponseHelper.sendSuccessResponse(
-        200,
-        MARKER_FETCHED,
-        markerData
-      );
+      return ResponseHelper.sendSuccessResponse(200,MARKER_FETCHED,markerData);
     } catch (error: any) {
       console.error(error);
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
     }
   }
 
@@ -134,12 +108,7 @@ export class MarkersController {
       }
 
       const [markersData, markerCount]: any = await Promise.all([
-        markersDataServiceProvider.findAllByMapId(
-          skip,
-          limit,
-          mapId,
-          filteredQuery
-        ),
+        markersDataServiceProvider.findAllByMapId(skip,limit,mapId,filteredQuery),
         markersDataServiceProvider.findMarkersCount(filteredQuery, mapId),
       ]);
 
@@ -156,11 +125,7 @@ export class MarkersController {
       return NextResponse.json(responseData);
     } catch (error: any) {
       console.error(error);
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
     }
   }
 
@@ -173,47 +138,17 @@ export class MarkersController {
         return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
       }
 
-      const markerData: any = await markersDataServiceProvider.findByIdAndMapId(
-        markerId,
-        mapId
-      );
+      const markerData: any = await markersDataServiceProvider.findByIdAndMapId(markerId,mapId);
       if (!markerData) {
         return ResponseHelper.sendErrorResponse(400, MARKER_NOT_FOUND_WITH_MAP);
       }
 
-      const existedMarker = await markersDataServiceProvider.findByTitleAndId(
-        reqData.title,
-        markerId,
-        mapId
-      );
-      if (existedMarker) {
-        throw new ResourceAlreadyExistsError("title", MARKER_TITLE_EXISTS);
-      }
+      const updatedData = await markersDataServiceProvider.update(markerId,reqData);
 
-      const updatedData = await markersDataServiceProvider.update(
-        markerId,
-        reqData
-      );
-
-      return ResponseHelper.sendSuccessResponse(
-        200,
-        MARKER_UPDATED,
-        updatedData[0]
-      );
+      return ResponseHelper.sendSuccessResponse(200,MARKER_UPDATED,updatedData[0]);
     } catch (error: any) {
       console.error(error);
-      if (error.validation_error) {
-        return ResponseHelper.sendErrorResponse(
-          409,
-          error.message,
-          error.errors
-        );
-      }
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
     }
   }
 
@@ -227,10 +162,7 @@ export class MarkersController {
         return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
       }
 
-      const markerData: any = await markersDataServiceProvider.findByIdAndMapId(
-        markerId,
-        mapId
-      );
+      const markerData: any = await markersDataServiceProvider.findByIdAndMapId(markerId,mapId);
       if (!markerData) {
         return ResponseHelper.sendErrorResponse(400, MARKER_NOT_FOUND_WITH_MAP);
       }
@@ -240,11 +172,7 @@ export class MarkersController {
       return ResponseHelper.sendSuccessResponse(200, MARKER_DELETED);
     } catch (error: any) {
       console.error(error);
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
     }
   }
 
@@ -259,25 +187,12 @@ export class MarkersController {
         return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
       }
 
-      const markersData =
-        await markersDataServiceProvider.findAllByMapIdWithCoordinates(
-          mapId,
-          lat,
-          lng
-        );
+      const markersData = await markersDataServiceProvider.findAllByMapIdWithCoordinates(mapId,lat,lng);
 
-      return ResponseHelper.sendSuccessResponse(
-        200,
-        MARKERS_FETCHED,
-        markersData
-      );
+      return ResponseHelper.sendSuccessResponse(200,MARKERS_FETCHED,markersData);
     } catch (error: any) {
       console.error(error);
-      return ResponseHelper.sendErrorResponse(
-        500,
-        error.message || SOMETHING_WENT_WRONG,
-        error
-      );
+      return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
     }
   }
 }

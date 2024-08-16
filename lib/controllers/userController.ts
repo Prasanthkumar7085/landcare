@@ -20,9 +20,7 @@ export class UserController {
     try {
       const reqData = await req.json();
 
-      const userData: any = await userDataServiceProvider.findUserByEmail(
-        reqData.email
-      );
+      const userData: any = await userDataServiceProvider.findUserByEmail(reqData.email);
       if (userData) {
         throw new ResourceAlreadyExistsError("email", USER_ALREADY_EXISTS);
       }
@@ -30,11 +28,7 @@ export class UserController {
       const reponseData: any = await userDataServiceProvider.create(reqData);
       delete reponseData[0].password;
 
-      return ResponseHelper.sendSuccessResponse(
-        200,
-        USER_CREATED,
-        reponseData[0]
-      );
+      return ResponseHelper.sendSuccessResponse(200,USER_CREATED,reponseData[0]);
     } catch (error: any) {
       console.error(error);
       if (error.validation_error) {
@@ -45,19 +39,15 @@ export class UserController {
   }
 
   async signIn(reqData: any, res: NextResponse) {
+
     try {
-      const userData: any = await userDataServiceProvider.findUserByEmail(
-        reqData.email
-      );
+
+      const userData: any = await userDataServiceProvider.findUserByEmail(reqData.email);
       if (!userData) {
         return ResponseHelper.sendErrorResponse(401, INVALID_CREDENTIALS);
       }
 
-      const matchPassword = await hashHelper.comparePassword(
-        reqData.password,
-        userData.password
-      );
-
+      const matchPassword = await hashHelper.comparePassword(reqData.password, userData.password);
       if (!matchPassword) {
         return ResponseHelper.sendErrorResponse(401, INVALID_CREDENTIALS);
       }
