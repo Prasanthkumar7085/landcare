@@ -32,7 +32,7 @@ const ViewGoogleMap = () => {
   const router = useRouter();
   let currentBouncingMarker: any = null;
   let markersRef = useRef<{ id: number; marker: google.maps.Marker }[]>([]);
-  const clusterRef: any = useRef(null);
+  const clusterRef: any = useRef<any>(null);
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
   );
@@ -113,7 +113,7 @@ const ViewGoogleMap = () => {
       marker.setMap(null);
     });
     if (clusterRef.current) {
-      clusterRef.current?.clearMarkers();
+      clusterRef.current.clearMarkers();
       clusterRef.current = null;
     }
     markersRef.current = [];
@@ -165,7 +165,6 @@ const ViewGoogleMap = () => {
         });
       });
     });
-
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
@@ -377,7 +376,7 @@ const ViewGoogleMap = () => {
             setSingleMarkerOpen={setSingleMarkerOpen}
             setMarkerOption={setMarkerOption}
             markerOption={markerOption}
-            getData={getSingleMapDetails}
+            getData={getSingleMapMarkers}
             map={map}
             maps={googleMaps}
             markersRef={markersRef}

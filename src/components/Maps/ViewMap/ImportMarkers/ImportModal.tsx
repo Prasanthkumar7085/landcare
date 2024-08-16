@@ -162,10 +162,6 @@ const ImportModal: React.FC<IImportModalProps> = ({
     };
     try {
       const response = await updateMapWithCordinatesAPI(body, id);
-      if (response?.status == 200 || response?.status == 201) {
-        await getData({});
-        setPolygonCoords(coords.map((item: any) => [item.lat, item.lng]));
-      }
     } catch (err) {
       console.error(err);
     }
@@ -181,14 +177,14 @@ const ImportModal: React.FC<IImportModalProps> = ({
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response.message);
         if (filedata?.[0]?.length == 0) {
-          await addMapWithCordinates(filedata);
           await getData({});
+          await addMapWithCordinates(filedata);
           onClose();
           setFile(null);
           setSuccess(true);
         } else {
-          await addMapWithCordinates(filedata);
           await getData({});
+          await addMapWithCordinates(filedata);
           setSuccess(true);
         }
       } else if (response?.status === 422) {
