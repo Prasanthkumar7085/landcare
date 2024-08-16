@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.css";
 import dayjs from "dayjs";
+import AddMapDrawer from "./AddMap/AddMapDrawer";
+import { getSingleMapDetailsAPI } from "@/services/maps";
 
 const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   const router = useRouter();
@@ -34,7 +36,8 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
   );
-
+  const [addMapDrawerOpen, setAddMapDrawerOpen] = useState<any>(true);
+  const [mapDetails, setMapDetails] = useState<any>({});
   const handleSearchChange = (event: any) => {
     const newSearchString = event.target.value;
     setSearchString(newSearchString);
@@ -87,6 +90,23 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
     }
   };
 
+  const getSingleMapDetails = async () => {
+    try {
+      const response = await getSingleMapDetailsAPI(param.id);
+      if (response?.status == 200 || response?.status == 201) {
+        setMapDetails(response?.data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+    }
+  };
+  useEffect(() => {
+    if (param.id) {
+      getSingleMapDetails();
+    }
+  }, []);
+
   useEffect(() => {
     setSearchParams(
       Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
@@ -94,68 +114,77 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   }, [params]);
 
   return (
-    <div className="mapHeaderContainer">
-      <Tabs
-        className="tabsGrp"
-        textColor="secondary"
-        indicatorColor="secondary"
-        aria-label="secondary tabs example"
-        value={searchParams?.status ? searchParams?.status : ""}
-        onChange={handleStatusChange}
-      >
-        <Tab className="tabBtn" value="" label="All" />
-        <Tab className="tabBtn" value="draft" label="Draft" />
-        <Tab className="tabBtn" value="publish" label="Published" />
-      </Tabs>
-      <div className="filterGrp">
-        <DateRangePicker
-          className="defaultDatePicker"
-          value={
-            fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
-          }
-          editable={false}
-          onChange={handleDateRangeChange}
-          placeholder="Start Date - End Date"
-          style={{ width: 250 }}
-          disabledDate={(date) => {
-            return date.getTime() >= new Date().getTime();
-          }}
-          defaultCalendarValue={[
-            new Date("2024-07-01 00:00:00"),
-            new Date("2024-08-01 23:59:59"),
-          ]}
-          placement="bottomEnd"
-        />
-        <TextField
-          className="defaultTextFeild"
-          variant="outlined"
-          type="search"
-          size="small"
-          value={searchString}
-          onChange={handleSearchChange}
-          placeholder="Search"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Image src="/search-icon.svg" alt="" width={15} height={15} />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button
-          className="addNewBtn"
-          variant="contained"
-          onClick={() => {
-            router.push("/add-map");
-          }}
-          endIcon={
-            <Image src="/map/add-icon.svg" alt="" height={13} width={13} />
-          }
+    <>
+      <div className="mapHeaderContainer">
+        <Tabs
+          className="tabsGrp"
+          textColor="secondary"
+          indicatorColor="secondary"
+          aria-label="secondary tabs example"
+          value={searchParams?.status ? searchParams?.status : ""}
+          onChange={handleStatusChange}
         >
-          Create New Map
-        </Button>
+          <Tab className="tabBtn" value="" label="All" />
+          <Tab className="tabBtn" value="draft" label="Draft" />
+          <Tab className="tabBtn" value="publish" label="Published" />
+        </Tabs>
+        <div className="filterGrp">
+          <DateRangePicker
+            className="defaultDatePicker"
+            value={
+              fromDate && toDate ? [new Date(fromDate), new Date(toDate)] : null
+            }
+            editable={false}
+            onChange={handleDateRangeChange}
+            placeholder="Start Date - End Date"
+            style={{ width: 250 }}
+            disabledDate={(date) => {
+              return date.getTime() >= new Date().getTime();
+            }}
+            defaultCalendarValue={[
+              new Date("2024-07-01 00:00:00"),
+              new Date("2024-08-01 23:59:59"),
+            ]}
+            placement="bottomEnd"
+          />
+          <TextField
+            className="defaultTextFeild"
+            variant="outlined"
+            type="search"
+            size="small"
+            value={searchString}
+            onChange={handleSearchChange}
+            placeholder="Search"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Image src="/search-icon.svg" alt="" width={15} height={15} />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            className="addNewBtn"
+            variant="contained"
+            onClick={() => {
+              setAddMapDrawerOpen(true);
+            }}
+            endIcon={
+              <Image src="/map/add-icon.svg" alt="" height={13} width={13} />
+            }
+          >
+            Create New Map
+          </Button>
+        </div>
       </div>
-    </div>
+      <AddMapDrawer
+        mapDetails={mapDetails}
+        setMapDetails={setMapDetails}
+        addMapDrawerOpen={addMapDrawerOpen}
+        setAddMapDrawerOpen={setAddMapDrawerOpen}
+        getSingleMapDetails={getSingleMapDetails}
+      />
+    </>
   );
 };
 

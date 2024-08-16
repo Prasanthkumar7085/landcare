@@ -3,14 +3,13 @@ import { checkAllowedValidText } from "@/lib/helpers/inputCheckingFunctions";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
 import {
   addMapWithCordinatesAPI,
-  getStaticMapAPI,
   updateMapWithCordinatesAPI,
 } from "@/services/maps";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Button,
   CircularProgress,
-  Drawer,
+  Dialog,
   IconButton,
   TextField,
   Typography,
@@ -23,12 +22,8 @@ import { toast } from "sonner";
 const AddMapDrawer = ({
   mapDetails,
   setMapDetails,
-  addDrawerOpen,
-  setAddDrawerOpen,
-  clearAllPoints,
-  closeDrawing,
-  map,
-  mapRef,
+  addMapDrawerOpen,
+  setAddMapDrawerOpen,
   getSingleMapDetails,
 }: any) => {
   const { id } = useParams();
@@ -64,27 +59,8 @@ const AddMapDrawer = ({
     return responseData;
   };
 
-  const getStaticMap = async () => {
-    let body = {
-      coordinates: [...polygonCoords, polygonCoords[0]],
-      markers: [],
-    };
-    try {
-      const response = await getStaticMapAPI(body);
-      if (response?.status == 200 || response?.status == 201) {
-        return response?.data;
-      } else {
-        toast.error(response?.error_data.coordinates);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const addMapWithCordinates = async () => {
     setLoading(true);
-    // let mapImage;
-    // mapImage = await getStaticMap();
 
     let body = {
       title: mapDetails?.title ? mapDetails?.title : "",
@@ -95,12 +71,10 @@ const AddMapDrawer = ({
       geo_zoom: 14,
     };
     try {
-      // if (!mapImage) {
-      //   toast.warning("Error while getting map image!");
-      // } else {
       const response = await getmapDetailsAPI(body);
       if (response?.status == 200 || response?.status == 201) {
         toast.success(response?.message);
+        setAddMapDrawerOpen(false);
         dispatch(storeEditPolygonCoords([]));
         setErrorMessages([]);
         router.push(`/add-markers/${response?.data?.id || id}`);
@@ -115,7 +89,7 @@ const AddMapDrawer = ({
   };
   return (
     <div>
-      <Drawer className="addMapDrawer" open={addDrawerOpen} anchor={"right"}>
+      <Dialog className="addMapDrawer" open={addMapDrawerOpen}>
         <div className="dialogHedaer">
           <Typography className="dialogHeading">
             {id ? "Update map" : "Add map"}
@@ -123,7 +97,7 @@ const AddMapDrawer = ({
           <IconButton
             className="iconBtn"
             onClick={() => {
-              setAddDrawerOpen(false);
+              setAddMapDrawerOpen(false);
               getSingleMapDetails();
               setErrorMessages([]);
             }}
@@ -151,7 +125,7 @@ const AddMapDrawer = ({
               multiline
               placeholder="Enter Map Description"
               value={mapDetails?.description}
-              rows={4}
+              rows={9}
               name="description"
               onChange={handleFieldValue}
             />
@@ -160,7 +134,7 @@ const AddMapDrawer = ({
             <Button
               disabled={loading ? true : false}
               onClick={() => {
-                setAddDrawerOpen(false);
+                setAddMapDrawerOpen(false);
                 getSingleMapDetails();
                 setErrorMessages([]);
               }}
@@ -185,7 +159,7 @@ const AddMapDrawer = ({
             </Button>
           </div>
         </div>
-      </Drawer>
+      </Dialog>
     </div>
   );
 };
