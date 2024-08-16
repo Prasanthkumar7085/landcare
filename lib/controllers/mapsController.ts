@@ -103,6 +103,7 @@ export class MapsController {
 
   async updateOne(reqData: any, params: any) {
     try {
+
       let slug = makeSlug(reqData.title);
 
       const mapData: any = await mapsDataServiceProvider.findById(params.id);
@@ -110,7 +111,7 @@ export class MapsController {
         return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
       }
 
-      const existedMap: any = await mapsDataServiceProvider.findMapByTitleAndId(reqData.title,params.i);
+      const existedMap: any = await mapsDataServiceProvider.findMapByTitleAndId(reqData.title, params.id);
       if (existedMap) {
         throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
       }
