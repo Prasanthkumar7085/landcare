@@ -31,3 +31,12 @@ export async function GET(req: NextRequest, { params }: any) {
     
     return markersController.listMarkers(query, params);
 }
+
+export async function DELETE(req: NextRequest, { params }: any) {
+    const authResult: any = await validateAccessToken(req);
+    if (authResult.status === 403) {
+        return authResult
+    }
+    
+    return markersController.deleteMarkersByMapId(params);
+}

@@ -32,3 +32,4 @@ export const MARKER_TITLE_EXISTS = "Marker title already exists";
 export const MARKER_NOT_FOUND_WITH_MAP = "Marker not found with map";
 export const DUPLICATED_MARKER_TITLE = "Duplicate marker titles detected";
 export const MARKERS_IMPORTED = "Markers imported successfully";
+export const MARKERS_DELETED = "Markers deleted successfully";

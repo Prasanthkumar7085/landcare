@@ -6,6 +6,7 @@ import {
   MARKER_FETCHED,
   MARKER_NOT_FOUND_WITH_MAP,
   MARKER_UPDATED,
+  MARKERS_DELETED,
   MARKERS_FETCHED,
   MARKERS_IMPORTED,
   SOMETHING_WENT_WRONG
@@ -170,6 +171,24 @@ export class MarkersController {
       await markersDataServiceProvider.delete(markerId);
 
       return ResponseHelper.sendSuccessResponse(200, MARKER_DELETED);
+    } catch (error: any) {
+      console.error(error);
+      return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
+    }
+  }
+
+  async deleteMarkersByMapId(params: any) {
+    try {
+      const mapId = params.id;
+
+      const mapData: any = await mapsDataServiceProvider.findById(mapId);
+      if (!mapData) {
+        return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
+      }
+
+      await markersDataServiceProvider.deleteByMapId(mapId);
+
+      return ResponseHelper.sendSuccessResponse(200, MARKERS_DELETED);
     } catch (error: any) {
       console.error(error);
       return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
