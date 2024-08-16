@@ -113,7 +113,7 @@ const ViewGoogleMap = () => {
       marker.setMap(null);
     });
     if (clusterRef.current) {
-      clusterRef.current.clearMarkers();
+      clusterRef.current?.clearMarkers();
       clusterRef.current = null;
     }
     markersRef.current = [];
