@@ -226,7 +226,7 @@ const ViewGoogleMap = () => {
     drawingManager.setMap(map);
     drawingManagerRef.current = drawingManager;
     const newPolygon = new maps.Polygon({
-      paths: polygonCoords,
+      paths: [],
       strokeColor: "#282628",
       strokeOpacity: 0.8,
       strokeWeight: 4,
