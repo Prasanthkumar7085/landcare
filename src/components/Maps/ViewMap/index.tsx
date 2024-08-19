@@ -121,8 +121,7 @@ const ViewGoogleMap = () => {
   };
   const renderAllMarkers = (markers1: any, map: any, maps: any) => {
     clearMarkers();
-    let markersImages = getMarkersImagesBasedOnOrganizationType(markers1);
-    setMarkersImagesWithOrganizationType(markersImages);
+
     markers1?.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
         markerData.coordinates?.[0],
@@ -133,8 +132,8 @@ const ViewGoogleMap = () => {
         map: map,
         title: markerData.title,
         icon: {
-          url: markersImages[markerData?.organisation_type]
-            ? markersImages[markerData?.organisation_type]
+          url: markersImagesWithOrganizationType[markerData?.organisation_type]
+            ? markersImagesWithOrganizationType[markerData?.organisation_type]
             : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
         animation: google.maps.Animation.DROP,
@@ -247,17 +246,29 @@ const ViewGoogleMap = () => {
   };
   const getSingleMapDetails = async () => {
     setLoading(true);
-
     try {
       const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
+        await getSingleMapMarkersForOrginazations();
         await getSingleMapMarkers({});
       }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getSingleMapMarkersForOrginazations = async () => {
+    try {
+      let queryParams: any = { get_all: true };
+      const response = await getSingleMapMarkersAPI(id, queryParams);
+      const { data, ...rest } = response;
+      let markersImages = getMarkersImagesBasedOnOrganizationType(data);
+      setMarkersImagesWithOrganizationType(markersImages);
+    } catch (err) {
+      console.error(err);
     }
   };
 
