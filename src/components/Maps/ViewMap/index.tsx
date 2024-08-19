@@ -250,7 +250,7 @@ const ViewGoogleMap = () => {
       const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
-        await getSingleMapMarkersForOrginazations();
+        await getSingleMapMarkersForOrginazations({ id: response?.data?.id });
         await getSingleMapMarkers({});
       }
     } catch (err) {
@@ -260,7 +260,7 @@ const ViewGoogleMap = () => {
     }
   };
 
-  const getSingleMapMarkersForOrginazations = async () => {
+  const getSingleMapMarkersForOrginazations = async ({ id }: any) => {
     try {
       let queryParams: any = { get_all: true };
       const response = await getSingleMapMarkersAPI(id, queryParams);
@@ -341,14 +341,14 @@ const ViewGoogleMap = () => {
 
   useEffect(() => {
     if (map && googleMaps) {
-      if (params?.get("marker_id")) {
+      if (params?.get("marker_id") || searchParams?.marker_id) {
         goTomarker(markers);
       } else {
         boundToMapWithPolygon(polygonCoords, map);
       }
       renderAllMarkers(markers, map, googleMaps);
     }
-  }, [map, googleMaps, markers]);
+  }, [map, googleMaps, markers, searchParams]);
   useEffect(() => {
     setSearchParams(
       Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
@@ -414,6 +414,9 @@ const ViewGoogleMap = () => {
             setMapDetails={setMapDetails}
             selectedOrginazation={selectedOrginazation}
             setSelectedOrginazation={setSelectedOrginazation}
+            getSingleMapMarkersForOrginazations={
+              getSingleMapMarkersForOrginazations
+            }
           />
         )}
         <MarkerPopup

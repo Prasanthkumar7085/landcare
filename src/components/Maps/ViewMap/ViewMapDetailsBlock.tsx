@@ -38,6 +38,7 @@ const ViewMapDetailsDrawer = ({
   setMapDetails,
   selectedOrginazation,
   setSelectedOrginazation,
+  getSingleMapMarkersForOrginazations,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -235,6 +236,9 @@ const ViewMapDetailsDrawer = ({
           getData={getData}
           mapDetails={mapDetails}
           setPolygonCoords={setPolygonCoords}
+          getSingleMapMarkersForOrginazations={
+            getSingleMapMarkersForOrginazations
+          }
         />
       ) : (
         ""

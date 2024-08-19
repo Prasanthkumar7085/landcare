@@ -29,6 +29,7 @@ interface IImportModalProps {
   getData: any;
   mapDetails: any;
   setPolygonCoords: any;
+  getSingleMapMarkersForOrginazations: any;
 }
 
 const ImportModal: React.FC<IImportModalProps> = ({
@@ -39,6 +40,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
   getData,
   mapDetails,
   setPolygonCoords,
+  getSingleMapMarkersForOrginazations,
 }) => {
   const { id } = useParams();
 
@@ -177,12 +179,14 @@ const ImportModal: React.FC<IImportModalProps> = ({
       if (response?.status === 200 || response?.status === 201) {
         toast.success(response.message);
         if (filedata?.[0]?.length == 0) {
+          await getSingleMapMarkersForOrginazations({ id: id });
           await getData({});
           await addMapWithCordinates(filedata);
           onClose();
           setFile(null);
           setSuccess(true);
         } else {
+          await getSingleMapMarkersForOrginazations({ id: id });
           await getData({});
           await addMapWithCordinates(filedata);
           setSuccess(true);
