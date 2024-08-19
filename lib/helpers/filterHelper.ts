@@ -49,7 +49,10 @@ class FilterHelper {
         }
 
         if (filters && filters.organisation_type) {
-            conditions.push(eq(mapMarkers.organisation_type, `${filters.organisation_type}`));
+            conditions.push(and(
+                eq(mapMarkers.map_id, mapId),
+                eq(mapMarkers.organisation_type, `${filters.organisation_type}`)
+            ));
         }
 
         if(conditions.length > 0) {
