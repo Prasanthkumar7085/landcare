@@ -202,4 +202,20 @@ export class MapsController {
       return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
     }
   }
+
+  async getMapBySlug(params: any) {
+
+    try {
+      const mapData: any = await mapsDataServiceProvider.findMapBySlug(params.slug);
+      if (!mapData) {
+        return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
+      }
+
+      return ResponseHelper.sendSuccessResponse(200, MAP_FETCHED, mapData);
+    } catch (error: any) {
+      console.error(error);
+      return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
+    }
+  }
+
 }
