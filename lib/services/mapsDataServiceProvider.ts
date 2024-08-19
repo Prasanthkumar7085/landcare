@@ -40,6 +40,7 @@ export class MapsDataServiceProvider {
         let queryData:any = db.select({
             id: maps.id,
             title: maps.title,
+            slug: maps.slug,
             description: maps.description,
             status: maps.status,
             image: maps.image,
