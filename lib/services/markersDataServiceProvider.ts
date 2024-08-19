@@ -55,6 +55,8 @@ export class MarkersDataServiceProvider {
             town: mapMarkers.town,
             postcode: mapMarkers.postcode,
             website: mapMarkers.website,
+            images: mapMarkers.images,
+            tags: mapMarkers.tags,
             created_at: mapMarkers.created_at,
             updated_at: mapMarkers.updated_at
         })

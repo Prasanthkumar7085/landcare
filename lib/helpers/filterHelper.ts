@@ -48,6 +48,10 @@ class FilterHelper {
             ));
         }
 
+        if (filters && filters.organisation_type) {
+            conditions.push(eq(mapMarkers.organisation_type, `${filters.organisation_type}`));
+        }
+
         if(conditions.length > 0) {
             query = query.where(and(...conditions));     
         }
