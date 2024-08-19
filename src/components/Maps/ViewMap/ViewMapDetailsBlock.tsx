@@ -12,7 +12,7 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast, Toaster } from "sonner";
 import DeleteDialog from "@/components/Core/DeleteDialog";
-import { deleteMapAPI } from "@/services/maps";
+import { deleteAllMarkersAPI, deleteMapAPI } from "@/services/maps";
 import MapMarkersList from "./MapMarkersList";
 import ImportModal from "./ImportMarkers/ImportModal";
 import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
@@ -49,6 +49,7 @@ const ViewMapDetailsDrawer = ({
   const open = Boolean(anchorEl);
   const [showModal, setShowModal] = useState<any>(false);
   const [addMapDrawerOpen, setAddMapDrawerOpen] = useState<any>(false);
+  const [deleteAllMarkersOpen, setDeleteAllMarkersOpen] = useState<any>(false);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -71,6 +72,20 @@ const ViewMapDetailsDrawer = ({
       toast.success(response?.message);
       router.push("/maps");
       handleDeleteCose();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteAllMarkers = async () => {
+    setLoading(true);
+    try {
+      const response = await deleteAllMarkersAPI(id);
+      toast.success(response?.message);
+      handleDeleteCose();
+      await getData({ get_all: true });
     } catch (err) {
       console.error(err);
     } finally {
@@ -173,7 +188,7 @@ const ViewMapDetailsDrawer = ({
             setAddMapDrawerOpen(true);
           }}
         >
-          Edit
+          Edit map
         </MenuItem>
         <MenuItem
           className="menuItem"
@@ -182,7 +197,17 @@ const ViewMapDetailsDrawer = ({
             handleClose();
           }}
         >
-          Delete
+          Delete map
+        </MenuItem>
+        <MenuItem
+          className="menuItem"
+          onClick={() => {
+            setDeleteAllMarkersOpen(true);
+            handleClickDeleteOpen();
+            handleClose();
+          }}
+        >
+          Clear all Markers
         </MenuItem>
       </Menu>
       <DeleteDialog
@@ -191,6 +216,14 @@ const ViewMapDetailsDrawer = ({
         deleteFunction={deleteMap}
         lable="Delete Map"
         text="Are you sure want to delete map?"
+        loading={loading}
+      />
+      <DeleteDialog
+        deleteOpen={deleteOpen && deleteAllMarkersOpen}
+        handleDeleteCose={handleDeleteCose}
+        deleteFunction={deleteAllMarkers}
+        lable="Delete markers"
+        text="Are you sure want to delete all markers?"
         loading={loading}
       />
       {showModal ? (
