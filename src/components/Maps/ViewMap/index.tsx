@@ -59,6 +59,7 @@ const ViewGoogleMap = () => {
     markersImagesWithOrganizationType,
     setMarkersImagesWithOrganizationType,
   ] = useState<any>({});
+  const [selectedOrginazation, setSelectedOrginazation] = useState<any>(null);
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     coordinates: [],
@@ -264,6 +265,7 @@ const ViewGoogleMap = () => {
     search_string = searchString,
     sort_by = markerOption?.value,
     sort_type = markerOption?.title,
+    type = selectedOrginazation?.title,
   }) => {
     try {
       let queryParams: any = {
@@ -271,6 +273,7 @@ const ViewGoogleMap = () => {
         sort_by: sort_by,
         sort_type: sort_type,
         get_all: true,
+        organisation_type: type ? type : "",
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
@@ -312,8 +315,14 @@ const ViewGoogleMap = () => {
       search_string: searchString,
       sort_by: markerOption?.value,
       sort_type: markerOption?.title,
+      type: selectedOrginazation?.title,
     });
-  }, [searchString, markerOption?.value, markerOption?.title]);
+  }, [
+    searchString,
+    markerOption?.value,
+    markerOption?.title,
+    selectedOrginazation?.title,
+  ]);
 
   useEffect(() => {
     getSingleMapDetails();
@@ -392,6 +401,8 @@ const ViewGoogleMap = () => {
             }
             setPolygonCoords={setPolygonCoords}
             setMapDetails={setMapDetails}
+            selectedOrginazation={selectedOrginazation}
+            setSelectedOrginazation={setSelectedOrginazation}
           />
         )}
         <MarkerPopup

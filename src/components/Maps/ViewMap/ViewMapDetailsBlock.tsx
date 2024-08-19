@@ -36,6 +36,8 @@ const ViewMapDetailsDrawer = ({
   markersImagesWithOrganizationType,
   setPolygonCoords,
   setMapDetails,
+  selectedOrginazation,
+  setSelectedOrginazation,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -148,6 +150,8 @@ const ViewMapDetailsDrawer = ({
                 markersImagesWithOrganizationType
               }
               mapDetails={mapDetails}
+              selectedOrginazation={selectedOrginazation}
+              setSelectedOrginazation={setSelectedOrginazation}
             />
           </div>
         </div>

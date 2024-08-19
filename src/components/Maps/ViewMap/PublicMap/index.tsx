@@ -61,6 +61,8 @@ const PublicMap = () => {
     markersImagesWithOrganizationType,
     setMarkersImagesWithOrganizationType,
   ] = useState<any>({});
+  const [selectedOrginazation, setSelectedOrginazation] = useState<any>(null);
+
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     coordinates: [],
@@ -259,6 +261,7 @@ const PublicMap = () => {
     sort_by = markerOption?.value,
     sort_type = markerOption?.title,
     id = mapDetails?.id,
+    type = selectedOrginazation?.type,
   }) => {
     try {
       let queryParams: any = {
@@ -266,6 +269,7 @@ const PublicMap = () => {
         search_string: search_string,
         sort_by: sort_by,
         sort_type: sort_type,
+        organisation_type: type ? type : "",
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
@@ -302,6 +306,18 @@ const PublicMap = () => {
     }
   };
 
+  const getOrginazationTypes = () => {
+    let orginisationTypesOptions: any = Object.keys(
+      markersImagesWithOrganizationType
+    ).map((key: any) => ({
+      title: key,
+      label: key,
+      img: markersImagesWithOrganizationType[key],
+    }));
+
+    return orginisationTypesOptions;
+  };
+
   useEffect(() => {
     if (mapDetails?.id) {
       getSingleMapMarkers({
@@ -309,9 +325,16 @@ const PublicMap = () => {
         sort_by: markerOption?.value,
         sort_type: markerOption?.title,
         id: mapDetails?.id,
+        type: selectedOrginazation?.title,
       });
     }
-  }, [searchString, markerOption?.value, markerOption?.title, mapDetails?.id]);
+  }, [
+    searchString,
+    markerOption?.value,
+    markerOption?.title,
+    mapDetails?.id,
+    selectedOrginazation?.title,
+  ]);
 
   useEffect(() => {
     getSingleMapDetails();
@@ -388,11 +411,18 @@ const PublicMap = () => {
               }}
             />
             <AutoCompleteSearch
+              data={getOrginazationTypes() || []}
+              setSelectValue={setSelectedOrginazation}
+              selectedValue={selectedOrginazation}
+              placeholder="Select Organization Type"
+            />
+            {/* 
+            <AutoCompleteSearch
               data={markerFilterOptions}
               setSelectValue={setMarkerOption}
               selectedValue={markerOption}
               placeholder="Sort Filter"
-            />
+            /> */}
           </div>
         </div>
         {singleMarkeropen == true || params?.get("marker_id") ? (

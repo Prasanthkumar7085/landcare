@@ -54,7 +54,7 @@ const AutoCompleteSearch = ({
               }}
             >
               {option.img ? (
-                <Image src={option?.img} width={12} height={12} alt="type" />
+                <img src={option?.img} width={12} height={12} alt="type" />
               ) : (
                 ""
               )}
@@ -75,11 +75,7 @@ const AutoCompleteSearch = ({
         },
       }}
       renderInput={(params: any) => (
-        <TextField
-          {...params}
-          placeholder={placeholder}
-          size="small"
-        />
+        <TextField {...params} placeholder={placeholder} size="small" />
       )}
     />
   );

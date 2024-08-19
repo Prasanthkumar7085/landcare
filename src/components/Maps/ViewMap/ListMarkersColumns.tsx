@@ -17,6 +17,7 @@ export const ListMarkersColumns = ({
   id,
   markers,
   mapDetails,
+  markersImagesWithOrganizationType,
 }: any) => {
   return [
     {
@@ -62,7 +63,7 @@ export const ListMarkersColumns = ({
               height={15}
               src={
                 info.getValue()
-                  ? markersImages[info.getValue()]
+                  ? markersImagesWithOrganizationType[info.getValue()]
                   : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
               }
               alt={info.getValue()}

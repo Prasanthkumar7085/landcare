@@ -18,6 +18,7 @@ import { ListMarkersColumns } from "./ListMarkersColumns";
 import Image from "next/image";
 import { copyURL } from "@/lib/helpers/copyURL";
 import ShareLinkDialog from "@/components/Core/ShareLinkDialog";
+import { getMarkersImagesBasedOnOrganizationType } from "@/lib/helpers/mapsHelpers";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -48,7 +49,13 @@ const MapMarkersListDialog = ({
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [shareLinkDialogOpen, setShareDialogOpen] = useState<boolean>(false);
   const [singleMapDetails, setSingleMapDetails] = useState<any>({});
-
+  const [
+    markersImagesWithOrganizationType,
+    setMarkersImagesWithOrganizationType,
+  ] = useState<any>({});
+  const [orginisationTypesOptions, setOrginisationTypesOptions] = useState<any>(
+    []
+  );
   const handleClickDeleteOpen = (id: any) => {
     setDeleteOpen(true);
     setMarkerId(id);
@@ -69,7 +76,7 @@ const MapMarkersListDialog = ({
         search_string: search_string ? search_string : "",
         page: page,
         limit: limit,
-        type: type ? type : "",
+        organisation_type: type ? type : "",
       };
       const response = await getAllMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
@@ -81,7 +88,30 @@ const MapMarkersListDialog = ({
       setShowLoading(false);
     }
   };
-
+  const getAllMapMarkersForOrginazations = async ({
+    search_string = search,
+    type = selectType?.title,
+  }) => {
+    setShowLoading(true);
+    try {
+      let queryParams: any = {
+        get_all: true,
+      };
+      const response = await getAllMapMarkersAPI(id, queryParams);
+      let markersImages: any = getMarkersImagesBasedOnOrganizationType(
+        response?.data
+      );
+      let orginisationTypesOptions: any = Object.keys(markersImages).map(
+        (key: any) => ({ title: key, label: key, img: markersImages[key] })
+      );
+      setOrginisationTypesOptions(orginisationTypesOptions);
+      setMarkersImagesWithOrganizationType(markersImages);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setShowLoading(false);
+    }
+  };
   const deleteMarker = async () => {
     setLoading(true);
     try {
@@ -101,6 +131,10 @@ const MapMarkersListDialog = ({
     getAllMapMarkers({
       page: 1,
       limit: 8,
+      search_string: search,
+      type: selectType?.title,
+    });
+    getAllMapMarkersForOrginazations({
       search_string: search,
       type: selectType?.title,
     });
@@ -160,6 +194,12 @@ const MapMarkersListDialog = ({
               ),
             }}
           />
+          <AutoCompleteSearch
+            data={orginisationTypesOptions || []}
+            setSelectValue={setSelectType}
+            selectedValue={selectType}
+            placeholder="Select Organization Type"
+          />
           <IconButton
             className="iconBtn"
             aria-label="close"
@@ -189,6 +229,7 @@ const MapMarkersListDialog = ({
             id,
             markers,
             mapDetails,
+            markersImagesWithOrganizationType,
           })}
           loading={false}
         />

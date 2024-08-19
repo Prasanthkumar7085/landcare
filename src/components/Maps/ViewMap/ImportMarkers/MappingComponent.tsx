@@ -47,7 +47,7 @@ const MappingScreen = ({
       if (SheetHeaders.includes(item)) {
         acc[item] = item;
       } else {
-        acc[item] = ""; // Set to empty if not found in SheetHeaders
+        acc[item] = "";
       }
       return acc;
     }, {});
