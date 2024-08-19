@@ -38,6 +38,7 @@ const ViewMarkerDrawer = ({
   markersImagesWithOrganizationType,
   setPlaceDetails,
   getSingleMarker,
+  mapDetails,
 }: any) => {
   const { id } = useParams();
   const pathname = usePathname();
@@ -51,15 +52,15 @@ const ViewMarkerDrawer = ({
   const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextSlide = () => {
+  const nextSlide = (marker: any) => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === data?.images.length - 1 ? 0 : prevIndex + 1
+      prevIndex === marker?.images.length - 1 ? 0 : prevIndex + 1
     );
   };
 
-  const prevSlide = () => {
+  const prevSlide = (marker: any) => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? data?.images.length - 1 : prevIndex - 1
+      prevIndex === 0 ? marker?.images.length - 1 : prevIndex - 1
     );
   };
 
@@ -157,7 +158,7 @@ const ViewMarkerDrawer = ({
                   }}
                 >
                   <button
-                    onClick={prevSlide}
+                    onClick={() => prevSlide(item)}
                     className="navButton"
                     style={{ display: item?.images?.length == 1 ? "none" : "" }}
                   >
@@ -172,7 +173,7 @@ const ViewMarkerDrawer = ({
                     style={{ objectFit: "cover" }}
                   />
                   <button
-                    onClick={nextSlide}
+                    onClick={() => nextSlide(item)}
                     className="navButton"
                     style={{ display: item?.images?.length == 1 ? "none" : "" }}
                   >
@@ -232,6 +233,16 @@ const ViewMarkerDrawer = ({
               )}
             </div>
             <div className="eachMarkerDetail">
+              <Typography className="title">Tags</Typography>
+              {singleMarkerLoading ? (
+                <Skeleton width="60%" />
+              ) : (
+                <Typography className="value">
+                  {item?.tags?.join(", ") || "---"}
+                </Typography>
+              )}
+            </div>
+            <div className="eachMarkerDetail">
               <Typography className="title">Organization Type</Typography>
               {singleMarkerLoading ? (
                 <Skeleton width="60%" />
@@ -262,7 +273,7 @@ const ViewMarkerDrawer = ({
               )}
             </div>
             <div className="eachMarkerDetail">
-              <Typography className="title">website</Typography>
+              <Typography className="title">Website</Typography>
               {singleMarkerLoading ? (
                 <Skeleton width="60%" />
               ) : item?.website ? (
@@ -279,6 +290,14 @@ const ViewMarkerDrawer = ({
                 </Tooltip>
               ) : (
                 "---"
+              )}
+            </div>
+            <div className="eachMarkerDetail">
+              <Typography className="title">Contact</Typography>
+              {singleMarkerLoading ? (
+                <Skeleton width="60%" />
+              ) : (
+                item?.contact || "---"
               )}
             </div>
             <div className="eachMarkerDetail">
@@ -400,9 +419,9 @@ const ViewMarkerDrawer = ({
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={selectedMarker}
-        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${id}?marker_id=${params?.get(
-          "marker_id"
-        )}`}
+        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${
+          mapDetails?.slug
+        }?marker_id=${params?.get("marker_id")}`}
       />
       <DeleteDialog
         deleteOpen={deleteOpen}

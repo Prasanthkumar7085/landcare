@@ -10,6 +10,7 @@ import {
 } from "@/lib/helpers/mapsHelpers";
 import {
   getSingleMapDetailsAPI,
+  getSingleMapDetailsBySlugAPI,
   getSingleMapMarkersAPI,
   getSingleMarkerAPI,
 } from "@/services/maps";
@@ -27,7 +28,7 @@ import styles from "../view-map.module.css";
 import ViewPublicMarkerDrawer from "./ViewPublicMarkerDrawer";
 
 const PublicMap = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const params = useSearchParams();
   const drawingManagerRef: any = useRef(null);
   const pathName = usePathname();
@@ -169,7 +170,7 @@ const PublicMap = () => {
     setSingleMarkerLoading(true);
     let markerID = marker_id;
     try {
-      const response = await getSingleMarkerAPI(id, lat, lng);
+      const response = await getSingleMarkerAPI(mapDetails?.id, lat, lng);
       let markerData = response?.data.find(
         (item: any) => item?.id == marker_id
       );
@@ -241,10 +242,10 @@ const PublicMap = () => {
   const getSingleMapDetails = async () => {
     setLoading(true);
     try {
-      const response = await getSingleMapDetailsAPI(id);
+      const response = await getSingleMapDetailsBySlugAPI(slug);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
-        await getSingleMapMarkers({});
+        await getSingleMapMarkers({ id: response?.data?.id });
       }
     } catch (err) {
       console.error(err);
@@ -257,6 +258,7 @@ const PublicMap = () => {
     search_string = searchString,
     sort_by = markerOption?.value,
     sort_type = markerOption?.title,
+    id = mapDetails?.id,
   }) => {
     try {
       let queryParams: any = {
@@ -295,18 +297,21 @@ const PublicMap = () => {
         const { marker } = markerEntry;
         handleMarkerClick(markerDetails, marker);
       } else {
-        console.error(`Marker with ID ${id} not found.`);
+        console.error(`Marker with ID ${mapDetails?.id} not found.`);
       }
     }
   };
 
   useEffect(() => {
-    getSingleMapMarkers({
-      search_string: searchString,
-      sort_by: markerOption?.value,
-      sort_type: markerOption?.title,
-    });
-  }, [searchString, markerOption?.value, markerOption?.title]);
+    if (mapDetails?.id) {
+      getSingleMapMarkers({
+        search_string: searchString,
+        sort_by: markerOption?.value,
+        sort_type: markerOption?.title,
+        id: mapDetails?.id,
+      });
+    }
+  }, [searchString, markerOption?.value, markerOption?.title, mapDetails?.id]);
 
   useEffect(() => {
     getSingleMapDetails();
@@ -414,6 +419,7 @@ const PublicMap = () => {
             }
             setPlaceDetails={setPlaceDetails}
             getSingleMarker={getSingleMarker}
+            mapDetails={mapDetails}
           />
         ) : (
           ""
