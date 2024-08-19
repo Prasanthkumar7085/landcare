@@ -13,6 +13,7 @@ const ImagesAddingComponent = ({
   setPopupFormData,
   errorMessages,
 }: any) => {
+  console.log(popupFormData, "popupFormData");
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editInput, setEditInput] = useState<string>("");
 

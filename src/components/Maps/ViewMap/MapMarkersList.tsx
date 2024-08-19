@@ -19,6 +19,7 @@ const MapMarkersList = ({
   handleMarkerClick,
   getSingleMapMarkers,
   markersImagesWithOrganizationType,
+  mapDetails,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
@@ -84,7 +85,7 @@ const MapMarkersList = ({
                       <img
                         alt="avtar"
                         src={
-                          markerDetails?.images?.length
+                          markerDetails?.images?.length > 0
                             ? markerDetails?.images?.[0]
                             : "/no-images.jpg"
                         }
@@ -181,6 +182,7 @@ const MapMarkersList = ({
         markersRef={markersRef}
         handleMarkerClick={handleMarkerClick}
         getSingleMapMarkers={getSingleMapMarkers}
+        mapDetails={mapDetails}
       />
     </div>
   );

@@ -34,6 +34,7 @@ const MapMarkersListDialog = ({
   markersRef,
   handleMarkerClick,
   getSingleMapMarkers,
+  mapDetails,
 }: any) => {
   const { id } = useParams();
 
@@ -159,12 +160,6 @@ const MapMarkersListDialog = ({
               ),
             }}
           />
-          {/* <AutoCompleteSearch
-                        data={mapTypeOptions}
-                        setSelectValue={setSelectType}
-                        selectedValue={selectType}
-                        placeholder="Select Marker Type"
-                    /> */}
           <IconButton
             className="iconBtn"
             aria-label="close"
@@ -193,6 +188,7 @@ const MapMarkersListDialog = ({
             handleMarkerClick,
             id,
             markers,
+            mapDetails,
           })}
           loading={false}
         />
@@ -219,7 +215,7 @@ const MapMarkersListDialog = ({
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={singleMapDetails}
-        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${id}?marker_id=${singleMapDetails?.id}`}
+        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${mapDetails?.slug}?marker_id=${singleMapDetails?.id}`}
       />
       <LoadingComponent loading={showLoading} />
     </BootstrapDialog>

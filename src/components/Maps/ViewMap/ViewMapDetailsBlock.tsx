@@ -147,6 +147,7 @@ const ViewMapDetailsDrawer = ({
               markersImagesWithOrganizationType={
                 markersImagesWithOrganizationType
               }
+              mapDetails={mapDetails}
             />
           </div>
         </div>

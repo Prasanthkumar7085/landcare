@@ -2,7 +2,7 @@ import DeleteDialog from "@/components/Core/DeleteDialog";
 import ShareLinkDialog from "@/components/Core/ShareLinkDialog";
 import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
 import { truncateText } from "@/lib/helpers/nameFormate";
-import { deleteMarkerAPI, getSingleMarkerAPI } from "@/services/maps";
+import { deleteMarkerAPI } from "@/services/maps";
 import { Menu, MenuItem, Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -17,7 +17,7 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 const ViewPublicMarkerDrawer = ({
@@ -39,8 +39,9 @@ const ViewPublicMarkerDrawer = ({
   markersImagesWithOrganizationType,
   setPlaceDetails,
   getSingleMarker,
+  mapDetails,
 }: any) => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const pathname = usePathname();
   const params = useSearchParams();
   const router = useRouter();
@@ -53,15 +54,15 @@ const ViewPublicMarkerDrawer = ({
   const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextSlide = () => {
+  const nextSlide = (marker: any) => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === data?.images.length - 1 ? 0 : prevIndex + 1
+      prevIndex === marker?.images.length - 1 ? 0 : prevIndex + 1
     );
   };
 
-  const prevSlide = () => {
+  const prevSlide = (marker: any) => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? data?.images.length - 1 : prevIndex - 1
+      prevIndex === 0 ? marker?.images.length - 1 : prevIndex - 1
     );
   };
 
@@ -82,10 +83,14 @@ const ViewPublicMarkerDrawer = ({
   const deleteMarker = async () => {
     setLoading(true);
     try {
-      const response = await deleteMarkerAPI(id, selectedMarker?.id);
+      const response = await deleteMarkerAPI(
+        mapDetails?.id,
+        selectedMarker?.id
+      );
       toast.success(response?.message);
       onClose();
       getSingleMapMarkers({});
+      router.replace(`/landcare-map/${mapDetails?.slug}`);
       handleDeleteCose();
     } catch (err) {
       console.error(err);
@@ -162,7 +167,7 @@ const ViewPublicMarkerDrawer = ({
                   }}
                 >
                   <button
-                    onClick={prevSlide}
+                    onClick={() => prevSlide(item)}
                     className="navButton"
                     style={{ display: item?.images?.length == 1 ? "none" : "" }}
                   >
@@ -177,7 +182,7 @@ const ViewPublicMarkerDrawer = ({
                     style={{ objectFit: "cover" }}
                   />
                   <button
-                    onClick={nextSlide}
+                    onClick={() => nextSlide(item)}
                     className="navButton"
                     style={{ display: item?.images?.length == 1 ? "none" : "" }}
                   >
@@ -237,6 +242,16 @@ const ViewPublicMarkerDrawer = ({
               )}
             </div>
             <div className="eachMarkerDetail">
+              <Typography className="title">Tags</Typography>
+              {singleMarkerLoading ? (
+                <Skeleton width="60%" />
+              ) : (
+                <Typography className="value">
+                  {item?.tags?.join(", ") || "---"}
+                </Typography>
+              )}
+            </div>
+            <div className="eachMarkerDetail">
               <Typography className="title">Organization Type</Typography>
               {singleMarkerLoading ? (
                 <Skeleton width="60%" />
@@ -284,6 +299,14 @@ const ViewPublicMarkerDrawer = ({
                 </Tooltip>
               ) : (
                 "---"
+              )}
+            </div>
+            <div className="eachMarkerDetail">
+              <Typography className="title">Contact</Typography>
+              {singleMarkerLoading ? (
+                <Skeleton width="60%" />
+              ) : (
+                item?.contact || "---"
               )}
             </div>
             <div className="eachMarkerDetail">
@@ -339,7 +362,7 @@ const ViewPublicMarkerDrawer = ({
                     const { marker } = markerEntry;
                     handleMarkerClick(item, marker);
                   } else {
-                    console.error(`Marker with ID ${id} not found.`);
+                    console.error(`Marker with ID ${slug} not found.`);
                   }
                 }}
               >
@@ -405,7 +428,7 @@ const ViewPublicMarkerDrawer = ({
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={selectedMarker}
         linkToShare={`https://dev-landcare.vercel.app/landcare-map/${
-          data?.id
+          mapDetails?.slug
         }?marker_id=${params?.get("marker_id")}`}
       />
       <DeleteDialog

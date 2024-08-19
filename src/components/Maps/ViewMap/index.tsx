@@ -150,7 +150,11 @@ const ViewGoogleMap = () => {
         router.replace(`${pathName}?marker_id=${markerData?.id}`);
         const latitude = event.latLng?.lat();
         const longitude = event.latLng?.lng();
-        await getSingleMarker(markerData?.id, latitude, longitude);
+        await getSingleMarker(
+          markerData?.id,
+          markerData?.coordinates[0],
+          markerData?.coordinates[1]
+        );
         setShowMarkerPopup(true);
         if (drawingManagerRef.current) {
           drawingManagerRef.current.setOptions({ drawingControl: false });
@@ -366,6 +370,7 @@ const ViewGoogleMap = () => {
             }
             setPlaceDetails={setPlaceDetails}
             getSingleMarker={getSingleMarker}
+            mapDetails={mapDetails}
           />
         ) : (
           <ViewMapDetailsDrawer

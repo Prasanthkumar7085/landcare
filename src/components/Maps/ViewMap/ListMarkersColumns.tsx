@@ -16,6 +16,7 @@ export const ListMarkersColumns = ({
   handleMarkerClick,
   id,
   markers,
+  mapDetails,
 }: any) => {
   return [
     {
@@ -107,6 +108,17 @@ export const ListMarkersColumns = ({
         );
       },
       header: () => <span>Website</span>,
+      footer: (props: any) => props.column.id,
+      width: "150px",
+    },
+    {
+      accessorFn: (row: any) => row.contact,
+      id: "contact",
+      sortDescFirst: false,
+      cell: (info: any) => (
+        <span>{info.getValue() ? info.getValue() : "--"}</span>
+      ),
+      header: () => <span>Contact</span>,
       footer: (props: any) => props.column.id,
       width: "150px",
     },
@@ -214,7 +226,7 @@ export const ListMarkersColumns = ({
             className="iconBtn"
             onClick={() => {
               copyURL(
-                `https://dev-landcare.vercel.app/landcare-map/${id}?marker_id=${singleMapDetails?.id}`
+                `https://dev-landcare.vercel.app/landcare-map/${mapDetails?.slug}?marker_id=${singleMapDetails?.id}`
               );
             }}
           >
