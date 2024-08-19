@@ -227,7 +227,7 @@ export const ListMarkersColumns = ({
             className="iconBtn"
             onClick={() => {
               copyURL(
-                `https://dev-landcare.vercel.app/landcare-map/${mapDetails?.slug}?marker_id=${singleMapDetails?.id}`
+                `https://dev-landcare.vercel.app/landcare-map/${mapDetails?.slug}?marker_id=${info?.row?.original?.id}`
               );
             }}
           >

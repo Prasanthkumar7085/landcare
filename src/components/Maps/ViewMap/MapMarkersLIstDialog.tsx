@@ -102,7 +102,11 @@ const MapMarkersListDialog = ({
         response?.data
       );
       let orginisationTypesOptions: any = Object.keys(markersImages).map(
-        (key: any) => ({ title: key, label: key, img: markersImages[key] })
+        (key: any) => ({
+          title: key,
+          label: key?.toUpperCase(),
+          img: markersImages[key],
+        })
       );
       setOrginisationTypesOptions(orginisationTypesOptions);
       setMarkersImagesWithOrganizationType(markersImages);
@@ -112,6 +116,7 @@ const MapMarkersListDialog = ({
       setShowLoading(false);
     }
   };
+
   const deleteMarker = async () => {
     setLoading(true);
     try {

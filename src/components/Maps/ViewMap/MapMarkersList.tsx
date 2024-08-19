@@ -38,7 +38,7 @@ const MapMarkersList = ({
       markersImagesWithOrganizationType
     ).map((key: any) => ({
       title: key,
-      label: key,
+      label: key?.toUpperCase(),
       img: markersImagesWithOrganizationType[key],
     }));
 

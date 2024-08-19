@@ -321,7 +321,7 @@ const PublicMap = () => {
       markersImagesWithOrganizationType
     ).map((key: any) => ({
       title: key,
-      label: key,
+      label: key?.toUpperCase(),
       img: markersImagesWithOrganizationType[key],
     }));
 
@@ -352,14 +352,14 @@ const PublicMap = () => {
 
   useEffect(() => {
     if (map && googleMaps) {
-      if (params?.get("marker_id")) {
+      if (params?.get("marker_id") || searchParams?.marker_id) {
         goTomarker(markers);
       } else {
         boundToMapWithPolygon(polygonCoords, map);
       }
       renderAllMarkers(markers, map, googleMaps);
     }
-  }, [map, googleMaps, markers]);
+  }, [map, googleMaps, markers, searchParams]);
 
   useEffect(() => {
     setSearchParams(
