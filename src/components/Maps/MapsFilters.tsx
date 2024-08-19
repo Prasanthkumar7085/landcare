@@ -36,7 +36,7 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
   );
-  const [addMapDrawerOpen, setAddMapDrawerOpen] = useState<any>(true);
+  const [addMapDrawerOpen, setAddMapDrawerOpen] = useState<any>(false);
   const [mapDetails, setMapDetails] = useState<any>({});
   const handleSearchChange = (event: any) => {
     const newSearchString = event.target.value;

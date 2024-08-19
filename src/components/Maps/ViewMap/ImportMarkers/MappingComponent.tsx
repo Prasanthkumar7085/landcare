@@ -25,7 +25,6 @@ const MappingScreen = ({
   const [mappedValues, setMappedValues] = useState<any>({});
   const [autocompleteSuggestions, setAutocompleteSuggestions] =
     useState<any>(SheetHeaders);
-
   useEffect(() => {
     const remainingSuggestions = SheetHeaders.filter(
       (item: any) => !Object.values(mappedValues).includes(item)
@@ -33,13 +32,27 @@ const MappingScreen = ({
     setAutocompleteSuggestions(remainingSuggestions);
   }, [mappedValues]);
 
+  useEffect(() => {
+    matchHeaders();
+  }, [sheetHeaders]);
+
   const handleInputChange = (field: any, value: any) => {
     setMappedValues((prevState: any) => ({
       ...prevState,
       [field]: value,
     }));
   };
-
+  const matchHeaders = () => {
+    const newMappedValues = sheetHeaders.reduce((acc: any, item: any) => {
+      if (SheetHeaders.includes(item)) {
+        acc[item] = item;
+      } else {
+        acc[item] = ""; // Set to empty if not found in SheetHeaders
+      }
+      return acc;
+    }, {});
+    setMappedValues(newMappedValues);
+  };
   return (
     <div className="mapping-screen">
       <Typography variant="h6">Headers are not Macthed </Typography>
@@ -49,6 +62,7 @@ const MappingScreen = ({
       <Button variant="contained" onClick={exampleImportMarkersFile}>
         Download Template
       </Button>
+      <Button onClick={matchHeaders}>Match Headers</Button>
       <div className="table">
         <table>
           <thead>

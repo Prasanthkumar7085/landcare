@@ -32,7 +32,7 @@ const ViewGoogleMap = () => {
   const router = useRouter();
   let currentBouncingMarker: any = null;
   let markersRef = useRef<{ id: number; marker: google.maps.Marker }[]>([]);
-  const clusterRef: any = useRef(null);
+  const clusterRef: any = useRef<any>(null);
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
   );
@@ -53,7 +53,7 @@ const ViewGoogleMap = () => {
   const [singleMarkeropen, setSingleMarkerOpen] = useState(false);
   const [markerData, setMarkerData] = useState<any>({ images: [], tags: [] });
   const [markerOption, setMarkerOption] = useState<any>();
-  const [singleMarkerdata, setSingleMarkerData] = useState<any>();
+  const [singleMarkerdata, setSingleMarkerData] = useState<any>([]);
   const [singleMarkerLoading, setSingleMarkerLoading] = useState(false);
   const [
     markersImagesWithOrganizationType,
@@ -148,13 +148,14 @@ const ViewGoogleMap = () => {
       markere.addListener("dragstart", (event: google.maps.MouseEvent) => {});
       markere.addListener("dragend", async (event: google.maps.MouseEvent) => {
         router.replace(`${pathName}?marker_id=${markerData?.id}`);
-        await getSingleMarker(markerData?.id);
+        const latitude = event.latLng?.lat();
+        const longitude = event.latLng?.lng();
+        await getSingleMarker(markerData?.id, latitude, longitude);
         setShowMarkerPopup(true);
         if (drawingManagerRef.current) {
           drawingManagerRef.current.setOptions({ drawingControl: false });
         }
-        const latitude = event.latLng?.lat();
-        const longitude = event.latLng?.lng();
+
         getLocationAddress({
           latitude,
           longitude,
@@ -164,7 +165,6 @@ const ViewGoogleMap = () => {
         });
       });
     });
-
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
@@ -173,7 +173,11 @@ const ViewGoogleMap = () => {
 
   const handleMarkerClick = (markerData: any, markere: google.maps.Marker) => {
     router.replace(`${pathName}?marker_id=${markerData?.id}`);
-    getSingleMarker(markerData?.id);
+    getSingleMarker(
+      markerData?.id,
+      markerData?.coordinates[0],
+      markerData?.coordinates[1]
+    );
     setSingleMarkerOpen(true);
     map.setCenter(
       new google.maps.LatLng(
@@ -192,13 +196,16 @@ const ViewGoogleMap = () => {
     }
   };
 
-  const getSingleMarker = async (marker_id: any) => {
+  const getSingleMarker = async (marker_id: any, lat: any, lng: any) => {
     setSingleMarkerLoading(true);
     let markerID = marker_id;
     try {
-      const response = await getSingleMarkerAPI(id, markerID);
+      const response = await getSingleMarkerAPI(id, lat, lng);
+      let markerData = response?.data.find(
+        (item: any) => item?.id == marker_id
+      );
       setSingleMarkerData(response?.data);
-      setMarkerData(response?.data);
+      setMarkerData(markerData);
     } catch (err) {
       console.error(err);
     } finally {
@@ -218,7 +225,7 @@ const ViewGoogleMap = () => {
     drawingManager.setMap(map);
     drawingManagerRef.current = drawingManager;
     const newPolygon = new maps.Polygon({
-      paths: polygonCoords,
+      paths: [],
       strokeColor: "#282628",
       strokeOpacity: 0.8,
       strokeWeight: 4,
@@ -273,7 +280,6 @@ const ViewGoogleMap = () => {
         };
       });
       let coords = getPolygonWithMarkers(newCoords);
-      console.log(coords, "dskfkasdkfkadskfkasd");
       setPolygonCoords(coords);
     } catch (err) {
       console.error(err);
@@ -370,7 +376,7 @@ const ViewGoogleMap = () => {
             setSingleMarkerOpen={setSingleMarkerOpen}
             setMarkerOption={setMarkerOption}
             markerOption={markerOption}
-            getData={getSingleMapDetails}
+            getData={getSingleMapMarkers}
             map={map}
             maps={googleMaps}
             markersRef={markersRef}
@@ -392,6 +398,7 @@ const ViewGoogleMap = () => {
           popupFormData={markerData}
           setPopupFormData={setMarkerData}
           setSingleMarkerData={setSingleMarkerData}
+          getSingleMarker={getSingleMarker}
         />
       </div>
       <LoadingComponent loading={loading || singleMarkerLoading} />

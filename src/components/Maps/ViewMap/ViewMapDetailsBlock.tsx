@@ -46,7 +46,7 @@ const ViewMapDetailsDrawer = ({
   const [file, setFile] = useState<File | any>(null);
   const open = Boolean(anchorEl);
   const [showModal, setShowModal] = useState<any>(false);
-  const [addMapDrawerOpen, setAddMapDrawerOpen] = useState<any>(true);
+  const [addMapDrawerOpen, setAddMapDrawerOpen] = useState<any>(false);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
