@@ -126,6 +126,7 @@ const MappingScreen = ({
       </div>
       <div className="button-group">
         <Button
+          
           type="button"
           onClick={() => {
             setMappedValues({});
