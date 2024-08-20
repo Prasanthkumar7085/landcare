@@ -133,7 +133,7 @@ const MappingScreen = ({
                 onClose();
               }}
             >
-              Cancel
+              Close
             </Button>
             <Button
               disabled={

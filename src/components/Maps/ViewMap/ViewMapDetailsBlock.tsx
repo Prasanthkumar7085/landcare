@@ -202,6 +202,7 @@ const ViewMapDetailsDrawer = ({
         </MenuItem>
         <MenuItem
           className="menuItem"
+          disabled={singleMarkers?.length === 0}
           onClick={() => {
             setDeleteAllMarkersOpen(true);
             handleClickDeleteOpen();
