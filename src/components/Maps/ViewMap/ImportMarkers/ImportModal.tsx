@@ -218,6 +218,8 @@ const ImportModal: React.FC<IImportModalProps> = ({
             onClick={onClose}
           />
         </div>
+        <div className="modalContainer" style={{ gridTemplateColumns: checkMapping ? "2fr 1fr" : "1fr "}}>
+        <div className="leftBlock">
         <div className="instructions">
           <Image src="/map/info-icon.svg" alt="" width={20} height={20} />
           <div className="content">
@@ -263,6 +265,8 @@ const ImportModal: React.FC<IImportModalProps> = ({
         <div className="fileUpload">
           {file && <p>Selected file: {file.name}</p>}
         </div>
+        </div>
+        <div className="rightBlock">
         {checkMapping ? (
           <div>
             <MappingScreen
@@ -286,6 +290,8 @@ const ImportModal: React.FC<IImportModalProps> = ({
             </Button>
           </div>
         )}
+        </div>
+        </div>
 
         {validationsData?.length > 0 && !checkMapping ? (
           <ValidationsTable validationsData={validationsData} />

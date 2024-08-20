@@ -635,8 +635,7 @@
     background-color: #fff;
     padding: 24px;
     border: 1px solid #888;
-    width: 58%;
-    max-width: 800px;
+    width: 75%;
     border-radius: 12px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -644,6 +643,157 @@
     margin: auto;
     box-sizing: border-box;
     overflow-y: auto;
+    .modalContainer {
+      display: grid;
+      grid-column-gap: 1rem;
+
+      .rightBlock {
+        .mapping-screen {
+          width: 100%;
+          box-sizing: border-box;
+          padding: 0;
+
+          .mappingHeader {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-column-gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            .matchHeaderBtn {
+              border-radius: 8px;
+              background: #e1e1e1;
+              color: $blackColor;
+              text-align: center;
+              font-family: $fontPrimary;
+              font-size: $font_16;
+              font-weight: $fw_500;
+              line-height: 150%;
+              text-transform: capitalize;
+              padding-block: 6px;
+            }
+            .downloadBtn {
+              border-radius: 8px;
+              background: rgba(117, 162, 55, 0.3);
+              color: $primaryColor;
+              text-align: center;
+              font-family: $fontPrimary;
+              font-size: $font_16;
+              font-weight: $fw_500;
+              line-height: 150%;
+              text-transform: capitalize;
+            }
+          }
+          .table {
+            margin-bottom: 20px;
+
+            h2 {
+              font-size: 18px;
+              font-weight: bold;
+              margin-bottom: 10px;
+            }
+
+            table {
+              width: 100%;
+              border-collapse: collapse;
+
+              th,
+              td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+              }
+
+              th {
+                background-color: #cdeff8;
+                font-weight: bold;
+                color: #545961;
+                font-family: $fontPrimary;
+                font-size: $font_12;
+                font-weight: $fw_600;
+                line-height: 100%;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                padding: 12px;
+              }
+              td {
+                overflow: hidden;
+                color: #24282d;
+                text-overflow: ellipsis;
+                font-family: $fontPrimary;
+                font-size: $font_14;
+                font-weight: $fw_400;
+                line-height: 100%;
+                text-transform: capitalize;
+                padding-block: 5px !important;
+
+                .MuiInputBase-root {
+                  width: 100%;
+                  height: 30px;
+                  font-size: $font_12;
+                  font-weight: $fw_400;
+                  line-height: 100%;
+                  font-family: $fontPrimary;
+                  border: 1px solid #c8c7ce;
+                  fieldset {
+                    border: 0;
+                    border-radius: 4px;
+                  }
+                }
+                &:last-child {
+                  width: 60%;
+                }
+              }
+            }
+          }
+          // .form-group {
+          //   margin-bottom: 15px;
+          //   display: flex;
+          //   flex-direction: row;
+          //   align-items: center;
+
+          //   label {
+          //     display: block;
+          //     margin-bottom: 5px;
+          //   }
+
+          //   input {
+          //     width: 100%;
+          //     padding: 8px;
+          //     box-sizing: border-box;
+          //   }
+          // }
+
+          .button-group {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 1.5rem;
+
+            button {
+              padding: 6px 30px;
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              text-align: center;
+              font-family: $fontPrimary;
+              font-size: $font_16;
+              font-weight: $fw_500;
+              line-height: 150%;
+              text-transform: capitalize;
+            }
+
+            button:first-child {
+              background-color: transparent;
+              color: #f1282e;
+            }
+
+            button:last-child {
+              background: #75a237;
+              color: #f2f2f2;
+            }
+          }
+        }
+      }
+    }
     .modalHeader {
       display: flex;
       align-items: center;
