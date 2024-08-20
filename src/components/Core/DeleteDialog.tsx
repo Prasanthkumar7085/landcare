@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -9,28 +8,24 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import { CircularProgress } from '@mui/material';
+import Image from 'next/image';
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-    '& .MuiDialogContent-root': {
-        padding: theme.spacing(2),
-    },
-    '& .MuiDialogActions-root': {
-        padding: theme.spacing(1),
-    },
-}));
+
 
 const DeleteDialog = ({ deleteOpen, handleDeleteCose, deleteFunction, lable, text, loading }: any) => {
 
     return (
-        <BootstrapDialog
+        <Dialog
+            className='delete-dialog'
             onClose={handleDeleteCose}
             aria-labelledby="customized-dialog-title"
             open={deleteOpen}
         >
             <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                <Image src="/map/delete-info-icon.svg" alt='' width='20' height='20'/>
                 {lable}
             </DialogTitle>
-            <IconButton
+            {/* <IconButton
                 aria-label="close"
                 onClick={handleDeleteCose}
                 sx={{
@@ -41,14 +36,17 @@ const DeleteDialog = ({ deleteOpen, handleDeleteCose, deleteFunction, lable, tex
                 }}
             >
                 <CloseIcon />
-            </IconButton>
-            <DialogContent dividers>
-                <Typography gutterBottom>
+            </IconButton> */}
+            <DialogContent >
+                <Typography className='delete-text' gutterBottom>
                     {text}
                 </Typography>
             </DialogContent>
-            <DialogActions>
-                <Button autoFocus onClick={deleteFunction}>
+            <DialogActions className='action-btnGrp'>
+                <Button className='cancel'>
+                    Cancel
+                </Button>
+                <Button className='delete' autoFocus onClick={deleteFunction}>
                     {loading ? (
                         <CircularProgress color="inherit" size={"1rem"} />
                     ) : (
@@ -56,7 +54,7 @@ const DeleteDialog = ({ deleteOpen, handleDeleteCose, deleteFunction, lable, tex
                     )}
                 </Button>
             </DialogActions>
-        </BootstrapDialog>
+        </Dialog>
     );
 }
 
