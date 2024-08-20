@@ -292,28 +292,30 @@ const MarkerPopup = ({
           </div>
           <div className="media">
             <div className="subHeading">
-              Media 
+              Media
             </div>
-          <ImagesAddingComponent
-            setImageInput={setImageInput}
-            setErrorMessages={setErrorMessages}
-            popupFormData={popupFormData}
-            imageInput={imageInput}
-            setPopupFormData={setPopupFormData}
-            errorMessages={errorMessages}
-          />
+            <ImagesAddingComponent
+              setImageInput={setImageInput}
+              setErrorMessages={setErrorMessages}
+              popupFormData={popupFormData}
+              imageInput={imageInput}
+              setPopupFormData={setPopupFormData}
+              errorMessages={errorMessages}
+            />
           </div>
-      
-
-         
-          <TagsAddingComponent
-            setTagsInput={setTagsInput}
-            setErrorMessages={setErrorMessages}
-            popupFormData={popupFormData}
-            tagsInput={tagsInput}
-            setPopupFormData={setPopupFormData}
-            errorMessages={errorMessages}
-          />
+          <div className="tags">
+            <div className="subHeading">
+              Tags
+            </div>
+            <TagsAddingComponent
+              setTagsInput={setTagsInput}
+              setErrorMessages={setErrorMessages}
+              popupFormData={popupFormData}
+              tagsInput={tagsInput}
+              setPopupFormData={setPopupFormData}
+              errorMessages={errorMessages}
+            />
+          </div>
           <div className="actionBtnGrp">
             <Button onClick={handleCancel} disabled={loading ? true : false}>
               Cancel
@@ -325,7 +327,7 @@ const MarkerPopup = ({
               {loading ? (
                 <CircularProgress
                   color="inherit"
-                  size={"1rem"}                />
+                  size={"1rem"} />
               ) : params?.get("marker_id") ? (
                 "Update"
               ) : (

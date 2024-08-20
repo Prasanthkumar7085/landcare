@@ -365,8 +365,13 @@
   }
   .media {
     margin-top: 0.5rem;
-    .eachFeildGrp {
-      width: 70%;
+    .feildEntity {
+      width: 60%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
     }
     .addBtn {
       color: #0e2f00;
@@ -375,6 +380,85 @@
       font-weight: $fw_500;
       line-height: 100%;
       text-transform: capitalize;
+      &.update {
+        color: $primaryColor !important;
+      }
+      &.cancel {
+        color: $colorRed !important;
+      }
+    }
+    ul {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 0.5rem;
+      padding-left: 0;
+      margin-block: 0.5rem;
+      li {
+        list-style: none;
+        border-radius: 60px;
+        background: #e1e1e1;
+        overflow: hidden;
+        color: $blackColor;
+        text-align: center;
+        text-overflow: ellipsis;
+        font-family: $fontPrimary;
+        font-size: $font_12;
+        font-weight: $fw_500;
+        line-height: 100%;
+        button {
+          padding: 6px;
+        }
+      }
+    }
+  }
+  .tags {
+    margin-top: 0.5rem;
+    .feildEntity {
+      width: 60%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .addBtn {
+      color: #0e2f00;
+      font-family: $fontPrimary;
+      font-size: $font_14;
+      font-weight: $fw_500;
+      line-height: 100%;
+      text-transform: capitalize;
+      &.update {
+        color: $primaryColor !important;
+      }
+      &.cancel {
+        color: $colorRed !important;
+      }
+    }
+    ul {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.5rem;
+      padding-left: 0;
+      margin-block: 0.5rem;
+      li {
+        list-style: none;
+        border-radius: 60px;
+        background: #e8f3d4;
+        overflow: hidden;
+        color: $blackColor;
+        text-align: center;
+        text-overflow: ellipsis;
+        font-family: $fontPrimary;
+        font-size: $font_12;
+        font-weight: $fw_500;
+        line-height: 100%;
+        padding-left: 10px;
+        button {
+          padding: 6px;
+        }
+      }
     }
   }
   .eachFeildGrp {
