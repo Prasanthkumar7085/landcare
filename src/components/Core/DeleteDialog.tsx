@@ -25,25 +25,14 @@ const DeleteDialog = ({ deleteOpen, handleDeleteCose, deleteFunction, lable, tex
                 <Image src="/map/delete-info-icon.svg" alt='' width='20' height='20'/>
                 {lable}
             </DialogTitle>
-            {/* <IconButton
-                aria-label="close"
-                onClick={handleDeleteCose}
-                sx={{
-                    position: 'absolute',
-                    right: 8,
-                    top: 8,
-                    color: (theme) => theme.palette.grey[500],
-                }}
-            >
-                <CloseIcon />
-            </IconButton> */}
+           
             <DialogContent >
                 <Typography className='delete-text' gutterBottom>
                     {text}
                 </Typography>
             </DialogContent>
             <DialogActions className='action-btnGrp'>
-                <Button className='cancel'>
+                <Button onClick={handleDeleteCose} className='cancel'>
                     Cancel
                 </Button>
                 <Button className='delete' autoFocus onClick={deleteFunction}>

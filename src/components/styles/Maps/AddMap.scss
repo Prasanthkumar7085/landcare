@@ -1100,10 +1100,10 @@
 //     top: 5rem;
 // }
 .delete-dialog {
-  .MuiPaper-root{
+  .MuiPaper-root {
     width: 250px;
     border-radius: 16px;
-    padding:0 1rem 1rem;
+    padding: 0 1rem 1rem;
   }
   h2 {
     color: $blackColor;
@@ -1124,8 +1124,8 @@
     font-weight: $fw_400;
     line-height: 140%;
   }
-  .MuiDialogContent-root{
-padding-inline: 0;
+  .MuiDialogContent-root {
+    padding-inline: 0;
   }
   .action-btnGrp {
     display: flex;
@@ -1151,4 +1151,11 @@ padding-inline: 0;
       background: #75a237;
     }
   }
+}
+.noDataFound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 126px);
 }
