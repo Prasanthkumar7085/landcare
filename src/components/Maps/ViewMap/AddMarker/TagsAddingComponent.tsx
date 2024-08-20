@@ -40,7 +40,7 @@ const TagsAddingComponent = ({
   };
 
   const handleKeyPress = (event: any) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && editIndex === null) {
       handleAddTags();
     }
   };
@@ -79,7 +79,7 @@ const TagsAddingComponent = ({
 
   return (
     <div className="eachFeildGrp">
-      <div className="feildEntity" >
+      <div className="feildEntity">
         <TextField
           className="defaultTextFeild text"
           name="tags"
@@ -94,9 +94,12 @@ const TagsAddingComponent = ({
           onKeyDown={handleKeyPress}
         />
         {editIndex !== null ? (
-          <div style={{ display: 'flex', alignItems: "center" }}>
-            <Button className="addBtn update" onClick={handleUpdateTag}>Update</Button>
-            <Button className="addBtn cancel"
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Button className="addBtn update" onClick={handleUpdateTag}>
+              Update
+            </Button>
+            <Button
+              className="addBtn cancel"
               onClick={() => {
                 setEditIndex(null);
                 setEditInput("");
@@ -106,7 +109,9 @@ const TagsAddingComponent = ({
             </Button>
           </div>
         ) : (
-            <Button className="addBtn" onClick={handleAddTags}>+Add</Button>
+          <Button className="addBtn" onClick={handleAddTags}>
+            +Add
+          </Button>
         )}
       </div>
       <div className="tagList">
@@ -117,22 +122,32 @@ const TagsAddingComponent = ({
                 key={index}
                 style={{ color: index == editIndex ? "red" : "" }}
               >
-                <Tooltip title={tag && tag?.length > 25 ? tag : ""}>
-                  <span>{truncateText(tag, 25)}</span>
+                <Tooltip title={tag && tag?.length > 15 ? tag : ""}>
+                  <span>{truncateText(tag, 15)}</span>
                 </Tooltip>
                 <IconButton
                   onClick={() => handleEditTag(index)}
                   aria-label="edit"
                   disabled={editIndex == index}
                 >
-                  <Image src="/markers/add/edit.svg" alt="edit" width={15} height={15} />
+                  <Image
+                    src="/markers/add/edit.svg"
+                    alt="edit"
+                    width={15}
+                    height={15}
+                  />
                 </IconButton>
                 <IconButton
                   onClick={() => handleRemoveTags(index)}
                   aria-label="delete"
                   disabled={editIndex == index}
                 >
-                  <Image src="/markers/add/delete.svg" alt="edit" width={15} height={15} />
+                  <Image
+                    src="/markers/add/delete.svg"
+                    alt="edit"
+                    width={15}
+                    height={15}
+                  />
                 </IconButton>
               </li>
             ))}
