@@ -79,7 +79,6 @@ const ImagesAddingComponent = ({
 
   return (
     <div className="eachFeildGrp">
-      <label>Images</label>
       <div
         style={{
           display: "flex",
@@ -91,7 +90,7 @@ const ImagesAddingComponent = ({
         <TextField
           className="defaultTextFeild text"
           name="images"
-          placeholder="Enter Image link"
+          placeholder="Paste link here"
           sx={{ width: "100%" }}
           value={editIndex !== null ? editInput : imageInput}
           onChange={(e) =>
@@ -114,7 +113,7 @@ const ImagesAddingComponent = ({
             </Button>
           </>
         ) : (
-          <Button onClick={handleAddImage}>Add</Button>
+          <Button className="addBtn" onClick={handleAddImage}>+Add</Button>
         )}
       </div>
       <div className="imageList">

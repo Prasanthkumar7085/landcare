@@ -128,16 +128,11 @@ const MarkerPopup = ({
           {params?.get("marker_id") ? "Update Marker" : "Add Marker"}
         </h3>
         <form>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "3rem",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div>
+          <div className="basicInformation">
+            <h3 className="subHeading">
+              Basic Information
+            </h3>
+            <div className="eachGrp">
               <div className="eachFeildGrp">
                 <label>Title</label>
                 <TextField
@@ -149,7 +144,6 @@ const MarkerPopup = ({
                 />
                 <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
               </div>
-
               <div className="eachFeildGrp">
                 <label>Organization Type</label>
                 <TextField
@@ -176,22 +170,6 @@ const MarkerPopup = ({
                   errorMessage={errorMessages["contact"]}
                 />
               </div>
-              <div className="eachFeildGrp">
-                <label>Website</label>
-                <TextField
-                  className="defaultTextFeild text "
-                  name="website"
-                  placeholder="Enter Website link"
-                  value={popupFormData?.website}
-                  onChange={handleInputChange}
-                />
-                <ErrorMessagesComponent
-                  errorMessage={errorMessages["website"]}
-                />
-              </div>
-            </div>
-
-            <div>
               <div className="eachFeildGrp">
                 <label>Phone</label>
                 <TextField
@@ -227,12 +205,30 @@ const MarkerPopup = ({
                 <ErrorMessagesComponent errorMessage={errorMessages["fax"]} />
               </div>
             </div>
-
-            <div>
+            <div className="eachFeildGrp">
+              <label>Description</label>
+              <TextField
+                className="defaultTextFeild multiline "
+                name="description"
+                rows={5}
+                placeholder="Enter description"
+                value={popupFormData?.description}
+                onChange={handleInputChange}
+              />
+              <ErrorMessagesComponent
+                errorMessage={errorMessages["description"]}
+              />
+            </div>
+          </div>
+          <div className="locationInformation">
+            <div className="subHeading">
+              Location Information
+            </div>
+            <div className="eachGrp">
               <div className="eachFeildGrp">
                 <label>Postal Address</label>
                 <TextField
-                  className="defaultTextFeild text "
+                  className="defaultTextFeild  "
                   name="postal_address"
                   placeholder="Enter Postal Address"
                   value={popupFormData?.postal_address}
@@ -245,7 +241,7 @@ const MarkerPopup = ({
               <div className="eachFeildGrp">
                 <label>Street Address</label>
                 <TextField
-                  className="defaultTextFeild text "
+                  className="defaultTextFeild  "
                   name="street_address"
                   placeholder="Enter Street Address"
                   value={popupFormData?.street_address}
@@ -279,23 +275,25 @@ const MarkerPopup = ({
                 />
                 <ErrorMessagesComponent errorMessage={errorMessages["town"]} />
               </div>
+              <div className="eachFeildGrp">
+                <label>Website</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="website"
+                  placeholder="Enter Website link"
+                  value={popupFormData?.website}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["website"]}
+                />
+              </div>
             </div>
           </div>
-
-          <div className="eachFeildGrp">
-            <label>Description</label>
-            <TextField
-              className="defaultTextFeild text "
-              name="description"
-              rows={5}
-              placeholder="Enter description"
-              value={popupFormData?.description}
-              onChange={handleInputChange}
-            />
-            <ErrorMessagesComponent
-              errorMessage={errorMessages["description"]}
-            />
-          </div>
+          <div className="media">
+            <div className="subHeading">
+              Media 
+            </div>
           <ImagesAddingComponent
             setImageInput={setImageInput}
             setErrorMessages={setErrorMessages}
@@ -304,6 +302,10 @@ const MarkerPopup = ({
             setPopupFormData={setPopupFormData}
             errorMessages={errorMessages}
           />
+          </div>
+      
+
+         
           <TagsAddingComponent
             setTagsInput={setTagsInput}
             setErrorMessages={setErrorMessages}
@@ -323,8 +325,7 @@ const MarkerPopup = ({
               {loading ? (
                 <CircularProgress
                   color="inherit"
-                  sx={{ width: "10px", height: "10px" }}
-                />
+                  size={"1rem"}                />
               ) : params?.get("marker_id") ? (
                 "Update"
               ) : (

@@ -149,7 +149,7 @@ const AddMapDrawer = ({
               {loading ? (
                 <CircularProgress
                   color="inherit"
-                  sx={{ width: "10px", height: "10px" }}
+                  size={"1rem"}
                 />
               ) : id ? (
                 "Update Map"
