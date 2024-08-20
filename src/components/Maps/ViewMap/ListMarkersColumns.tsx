@@ -83,10 +83,12 @@ export const ListMarkersColumns = ({
       cell: (info: any) => {
         const value = info.getValue();
         const truncatedValue = truncateText(value, 10);
-        return (
+        return value ? (
           <Tooltip title={value && value.length > 10 ? value : ""}>
             <span>{truncatedValue}</span>
           </Tooltip>
+        ) : (
+          ""
         );
       },
       header: () => <span>Description</span>,
@@ -100,12 +102,14 @@ export const ListMarkersColumns = ({
       cell: (info: any) => {
         const value = info.getValue();
         const truncatedValue = truncateText(value, 20);
-        return (
+        return info.getValue() ? (
           <Tooltip title={value && value.length > 20 ? value : ""}>
             <Link href={value} target="_blank">
               {truncatedValue}
             </Link>
           </Tooltip>
+        ) : (
+          "---"
         );
       },
       header: () => <span>Website</span>,

@@ -327,7 +327,7 @@ const MarkerPopup = ({
               {loading ? (
                 <CircularProgress
                   color="inherit"
-                  size={"1rem"} />
+                  size={"1.2rem"} />
               ) : params?.get("marker_id") ? (
                 "Update"
               ) : (

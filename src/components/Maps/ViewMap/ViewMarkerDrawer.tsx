@@ -121,6 +121,7 @@ const ViewMarkerDrawer = ({
           Back
         </Button>
       </header>
+      <div className="markerViewContent">
       {data?.map((item: any, index: any) => {
         return (
           <Box className="viewContent" key={index}>
@@ -133,7 +134,7 @@ const ViewMarkerDrawer = ({
               }}
             >
               <IconButton
-                className="iconBtn"
+                className="iconBtnMenu"
                 onClick={(e) => {
                   setSelectedMarker(item);
                   handleClick(e);
@@ -153,8 +154,7 @@ const ViewMarkerDrawer = ({
                   style={{
                     minWidth: "100%",
                     width: "100%",
-                    minHeight: "90%",
-                    border: "1px solid black",
+                    height: "100%",
                   }}
                 >
                   <button
@@ -168,8 +168,7 @@ const ViewMarkerDrawer = ({
                     className="mapImg"
                     src={item?.images[currentIndex]}
                     alt={`images ${currentIndex}`}
-                    height={90}
-                    width={100}
+                    
                     style={{ objectFit: "cover" }}
                   />
                   <button
@@ -380,6 +379,7 @@ const ViewMarkerDrawer = ({
           </Box>
         );
       })}
+      </div>
 
       <Menu
         sx={{ mt: 1 }}

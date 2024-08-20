@@ -162,7 +162,7 @@ const ViewPublicMarkerDrawer = ({
                   style={{
                     minWidth: "100%",
                     width: "100%",
-                    minHeight: "90%",
+                    height: "100%",
                     border: "1px solid black",
                   }}
                 >

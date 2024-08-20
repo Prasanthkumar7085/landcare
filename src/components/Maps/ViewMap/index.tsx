@@ -64,7 +64,7 @@ const ViewGoogleMap = () => {
     full_address: "",
     coordinates: [],
   });
-
+  const [filtersLoading, setFiltersLoading] = useState<boolean>(false);
   const removalMarker = (markerIndex: number) => {
     const marker = localMarkers[markerIndex];
     if (marker) {
@@ -136,7 +136,10 @@ const ViewGoogleMap = () => {
             ? markersImagesWithOrganizationType[markerData?.organisation_type]
             : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
-        animation: google.maps.Animation.DROP,
+        animation:
+          searchParams?.marker_id == markerData?.id
+            ? google.maps.Animation.BOUNCE
+            : google.maps.Animation.DROP,
         draggable: true,
       });
       markersRef.current.push({ id: markerData.id, marker: markere });
@@ -159,7 +162,6 @@ const ViewGoogleMap = () => {
         if (drawingManagerRef.current) {
           drawingManagerRef.current.setOptions({ drawingControl: false });
         }
-
         getLocationAddress({
           latitude,
           longitude,
@@ -176,6 +178,7 @@ const ViewGoogleMap = () => {
   };
 
   const handleMarkerClick = (markerData: any, markere: google.maps.Marker) => {
+    setPlaceDetails({});
     router.replace(`${pathName}?marker_id=${markerData?.id}`);
     getSingleMarker(
       markerData?.id,
@@ -278,6 +281,7 @@ const ViewGoogleMap = () => {
     sort_type = markerOption?.title,
     type = selectedOrginazation?.title,
   }) => {
+    setFiltersLoading(true);
     try {
       let queryParams: any = {
         search_string: search_string,
@@ -301,6 +305,8 @@ const ViewGoogleMap = () => {
       setPolygonCoords(coords);
     } catch (err) {
       console.error(err);
+    } finally {
+      setFiltersLoading(false);
     }
   };
 
@@ -431,7 +437,9 @@ const ViewGoogleMap = () => {
           getSingleMarker={getSingleMarker}
         />
       </div>
-      <LoadingComponent loading={loading || singleMarkerLoading} />
+      <LoadingComponent
+        loading={loading || singleMarkerLoading || filtersLoading}
+      />
     </>
   );
 };
