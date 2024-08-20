@@ -62,7 +62,7 @@ const PublicMap = () => {
     setMarkersImagesWithOrganizationType,
   ] = useState<any>({});
   const [selectedOrginazation, setSelectedOrginazation] = useState<any>(null);
-  const [filtersLoading, setFiltersLoading] = useState<boolean>(false);
+
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     coordinates: [],
@@ -130,7 +130,10 @@ const PublicMap = () => {
             ? markersImagesWithOrganizationType[markerData?.organisation_type]
             : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
-        animation: google.maps.Animation.DROP,
+        animation:
+          searchParams?.marker_id == markerData?.id
+            ? google.maps.Animation.BOUNCE
+            : google.maps.Animation.DROP,
         draggable: false,
       });
       markersRef.current.push({ id: markerData.id, marker: markere });
@@ -273,7 +276,6 @@ const PublicMap = () => {
     id = mapDetails?.id,
     type = selectedOrginazation?.type,
   }) => {
-    setFiltersLoading(true);
     try {
       let queryParams: any = {
         get_all: true,
@@ -297,8 +299,6 @@ const PublicMap = () => {
       setPolygonCoords(coords);
     } catch (err) {
       console.error(err);
-    } finally {
-      setFiltersLoading(false);
     }
   };
 
@@ -468,9 +468,7 @@ const PublicMap = () => {
           ""
         )}
       </div>
-      <LoadingComponent
-        loading={loading || singleMarkerLoading || filtersLoading}
-      />
+      <LoadingComponent loading={loading || singleMarkerLoading} />
     </>
   );
 };

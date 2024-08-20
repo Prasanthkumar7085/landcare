@@ -126,9 +126,9 @@ const ViewPublicMarkerDrawer = ({
           Back
         </Button>
 
-        <IconButton className="iconBtn" onClick={handleClick}>
+        {/* <IconButton className="iconBtn" onClick={handleClick}>
           <Image src="/map/menu-with-bg.svg" alt="" height={28} width={28} />
-        </IconButton>
+        </IconButton> */}
       </header>
       {data?.map((item: any, index: any) => {
         return (
@@ -141,7 +141,7 @@ const ViewPublicMarkerDrawer = ({
                 marginTop: "0px",
               }}
             >
-              <IconButton
+              {/* <IconButton
                 className="iconBtn"
                 onClick={(e) => {
                   setSelectedMarker(item);
@@ -154,7 +154,7 @@ const ViewPublicMarkerDrawer = ({
                   height={28}
                   width={28}
                 />
-              </IconButton>
+              </IconButton> */}
             </div>
             <div className="imgBlock">
               {item?.images?.length > 0 ? (
@@ -389,7 +389,7 @@ const ViewPublicMarkerDrawer = ({
           </Box>
         );
       })}
-      <Menu
+      {/* <Menu
         sx={{ mt: 1 }}
         id="basic-menu"
         anchorEl={anchorEl}
@@ -422,7 +422,7 @@ const ViewPublicMarkerDrawer = ({
         >
           Delete
         </MenuItem>
-      </Menu>
+      </Menu> */}
       <ShareLinkDialog
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
