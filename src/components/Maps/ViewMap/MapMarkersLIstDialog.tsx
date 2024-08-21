@@ -19,6 +19,7 @@ import Image from "next/image";
 import { copyURL } from "@/lib/helpers/copyURL";
 import ShareLinkDialog from "@/components/Core/ShareLinkDialog";
 import { getMarkersImagesBasedOnOrganizationType } from "@/lib/helpers/mapsHelpers";
+import { addSerial } from "@/lib/helpers/addSerialNum";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -80,7 +81,8 @@ const MapMarkersListDialog = ({
       };
       const response = await getAllMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
-      setMarkers(data);
+      let afterAddingSerial = addSerial(data, page, limit);
+      setMarkers(afterAddingSerial);
       setPaginationDetails(rest);
     } catch (err) {
       console.error(err);
@@ -147,7 +149,7 @@ const MapMarkersListDialog = ({
 
   const capturePageNum = (value: number) => {
     getAllMapMarkers({
-      limit: 10,
+      limit: 8,
       page: value,
     });
   };

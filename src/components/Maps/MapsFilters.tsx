@@ -22,7 +22,9 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   const param = useParams();
 
   const [searchString, setSearchString] = useState(
-    params.get("search_string") || ""
+    params.get("search_string")
+      ? decodeURIComponent(params.get("search_string") as string)
+      : "" || ""
   );
   const [fromDate, setFromDate] = useState<string | null>(
     params.get("from_date") || null

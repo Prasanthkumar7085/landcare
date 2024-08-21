@@ -27,11 +27,9 @@ export const ListMarkersColumns = ({
       header: () => <span>S.No</span>,
       footer: (props: any) => props.column.id,
       width: "60px",
-      cell: ({ row, table }: any) =>
-        (table
-          .getSortedRowModel()
-          ?.flatRows?.findIndex((flatRow: any) => flatRow.id === row.id) || 0) +
-        1,
+      cell: (info: any) => {
+        return <span>{info.getValue() ? info.getValue() : "--"}</span>;
+      },
     },
     {
       accessorFn: (row: any) => row.title,
@@ -171,6 +169,7 @@ export const ListMarkersColumns = ({
       footer: (props: any) => props.column.id,
       width: "150px",
     },
+
     {
       accessorFn: (row: any) => row.coordinates,
       id: "coordinates",

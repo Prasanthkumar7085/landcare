@@ -373,6 +373,7 @@ const PublicMap = () => {
   return (
     <>
       <div
+        id="markersPageWithMap"
         className={styles.markersPageWeb}
         style={{
           display: loading == false ? "" : "none",
@@ -386,6 +387,7 @@ const PublicMap = () => {
               position: "absolute",
               top: "20px",
               left: "23%",
+              gap:"1.2rem "
             }}
           >
             <TextField
@@ -395,19 +397,28 @@ const PublicMap = () => {
               placeholder="Search on name"
               value={searchString}
               sx={{
+                '& .MuiInputBase-root': {
+                  height: "38px",
+                  border: '1.4px solid #c8c7ce'
+
+                },
                 "& .MuiOutlinedInput-root": {
-                  border: "1.4px solid #c8c7ce",
+                 
                   backgroundColor: "#f2f2f2",
                   width: " 100%",
-                  height: "40px",
+                  height: "38px",
                   background: "#ffffff",
                   color: "black",
                   fontWeight: 500,
                   fontSize: "12px",
                   padding: "8px 13px",
                   boxSizing: " border-box",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
+                  fontFamily:"Poppins"
                 },
+                'fieldset': {
+                  border:' 0 !important'
+                }
               }}
               onChange={(e) => setSearchString(e.target.value)}
               InputProps={{

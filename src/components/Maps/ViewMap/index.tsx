@@ -355,6 +355,7 @@ const ViewGoogleMap = () => {
       renderAllMarkers(markers, map, googleMaps);
     }
   }, [map, googleMaps, markers, searchParams]);
+
   useEffect(() => {
     setSearchParams(
       Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
