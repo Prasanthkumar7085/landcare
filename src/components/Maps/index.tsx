@@ -204,8 +204,8 @@ const Maps = () => {
                             <Image
                               src="/map/redo-arrow-icon.svg"
                               alt=""
-                              height={20}
-                              width={20}
+                              height={18}
+                              width={18}
                             />
                           </IconButton>
                           <IconButton
@@ -217,10 +217,10 @@ const Maps = () => {
                             }}
                           >
                             <Image
-                              src="/map/menu-icon.svg"
+                              src="/map/white-menu-bg.svg"
                               alt=""
-                              height={30}
-                              width={30}
+                              height={25}
+                              width={25}
                             />
                           </IconButton>
                         </div>
