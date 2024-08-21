@@ -12,7 +12,11 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast, Toaster } from "sonner";
 import DeleteDialog from "@/components/Core/DeleteDialog";
-import { deleteAllMarkersAPI, deleteMapAPI } from "@/services/maps";
+import {
+  deleteAllMarkersAPI,
+  deleteMapAPI,
+  updateMapWithCordinatesAPI,
+} from "@/services/maps";
 import MapMarkersList from "./MapMarkersList";
 import ImportModal from "./ImportMarkers/ImportModal";
 import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
@@ -66,6 +70,23 @@ const ViewMapDetailsDrawer = ({
     setDeleteOpen(false);
   };
 
+  const updateMapWithCordinates = async () => {
+    let body = {
+      title: mapDetails?.title ? mapDetails?.title : "",
+      description: mapDetails?.description ? mapDetails?.description : "",
+      status: mapDetails?.status,
+      geo_type: "polygon",
+      geo_coordinates: mapDetails?.geo_coordinates,
+      geo_zoom: 14,
+      image: "",
+    };
+    try {
+      const response = await updateMapWithCordinatesAPI(body, id);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const deleteMap = async () => {
     setLoading(true);
     try {
@@ -86,6 +107,7 @@ const ViewMapDetailsDrawer = ({
       const response = await deleteAllMarkersAPI(id);
       toast.success(response?.message);
       handleDeleteCose();
+      await updateMapWithCordinates();
       await getData({ get_all: true });
     } catch (err) {
       console.error(err);

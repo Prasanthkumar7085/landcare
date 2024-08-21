@@ -62,11 +62,11 @@ const PublicMap = () => {
     setMarkersImagesWithOrganizationType,
   ] = useState<any>({});
   const [selectedOrginazation, setSelectedOrginazation] = useState<any>(null);
-
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     coordinates: [],
   });
+  const [filtersLoading, setFiltersLoading] = useState<boolean>(false);
 
   const addMarkerEVent = (event: any, map: any, maps: any) => {
     const marker = new google.maps.Marker({
@@ -276,6 +276,7 @@ const PublicMap = () => {
     id = mapDetails?.id,
     type = selectedOrginazation?.type,
   }) => {
+    setFiltersLoading(true);
     try {
       let queryParams: any = {
         get_all: true,
@@ -299,6 +300,8 @@ const PublicMap = () => {
       setPolygonCoords(coords);
     } catch (err) {
       console.error(err);
+    } finally {
+      setFiltersLoading(false);
     }
   };
 
@@ -387,23 +390,21 @@ const PublicMap = () => {
               position: "absolute",
               top: "20px",
               left: "23%",
-              gap:"1.2rem "
+              gap: "1.2rem ",
             }}
           >
             <TextField
               variant="outlined"
               size="small"
               type="search"
-              placeholder="Search on name"
+              placeholder="Search on title"
               value={searchString}
               sx={{
-                '& .MuiInputBase-root': {
+                "& .MuiInputBase-root": {
                   height: "38px",
-                  border: '1.4px solid #c8c7ce'
-
+                  border: "1.4px solid #c8c7ce",
                 },
                 "& .MuiOutlinedInput-root": {
-                 
                   backgroundColor: "#f2f2f2",
                   width: " 100%",
                   height: "38px",
@@ -414,11 +415,11 @@ const PublicMap = () => {
                   padding: "8px 13px",
                   boxSizing: " border-box",
                   borderRadius: "6px",
-                  fontFamily:"Poppins"
+                  fontFamily: "Poppins",
                 },
-                'fieldset': {
-                  border:' 0 !important'
-                }
+                fieldset: {
+                  border: " 0 !important",
+                },
               }}
               onChange={(e) => setSearchString(e.target.value)}
               InputProps={{
@@ -479,7 +480,9 @@ const PublicMap = () => {
           ""
         )}
       </div>
-      <LoadingComponent loading={loading || singleMarkerLoading} />
+      <LoadingComponent
+        loading={loading || singleMarkerLoading || filtersLoading}
+      />
     </>
   );
 };
