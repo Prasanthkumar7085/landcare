@@ -1159,3 +1159,29 @@
   justify-content: center;
   height: calc(100vh - 126px);
 }
+
+#markersPageWithMap {
+  .defaultAutoComplete {
+    width: 100%;
+    .MuiFormControl-root {
+      width: 100%;
+      border-radius: 6px;
+    }
+    .MuiInputBase-root {
+      background: $whiteColor;
+      color: $blackColor;
+      font-weight: $fw_400;
+      font-size: 12px;
+      box-sizing: border-box;
+      border-radius: 6px;
+      border: 1.4px solid #c8c7ce;
+      background-color: #f2f2f2;
+      font-family: $fontPrimary;
+      width: 100%;
+      height: 38px;
+      fieldset {
+        border: 0 !important;
+      }
+    }
+  }
+}
