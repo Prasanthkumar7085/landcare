@@ -1184,3 +1184,86 @@
     }
   }
 }
+
+//share link dialog styles start
+.shareLinkDialog {
+  .MuiPaper-root {
+    min-width: 350px;
+    min-height: 150px;
+    border-radius: 16px;
+    padding: 0 1rem 1rem;
+  }
+  .dialogHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    h2 {
+      color: $blackColor;
+      font-family: $fontPrimary;
+      font-size: $font_18;
+      font-weight: $fw_500;
+      line-height: 100%;
+      padding: 0;
+    }
+    button {
+      padding: 0;
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+
+  .MuiDialogContent-root {
+   padding: 0;
+
+    button {
+      text-transform: capitalize;
+      font-family: $fontPrimary;
+    }
+    .shareLinkDialogContent {
+      padding-top: 1rem;
+      .imageDetailsBlock {
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+    }
+    .link {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 0.5rem;
+      .MuiInputBase-root {
+        background: $whiteColor;
+        color: $blackColor;
+        font-weight: $fw_400;
+        font-size: 12px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        height: 30px;
+        border: 1.4px solid #e4e4e4;
+        font-family: $fontPrimary;
+        width: 100%;
+
+        fieldset {
+          border: 0 !important;
+        }
+      }
+      .copyLinkBtn {
+        text-transform: uppercase;
+        font-size: $font_14;
+      }
+    }
+    .share-icons {
+      margin-top: 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-column-gap: 0.5rem;
+      button {
+        padding: 0;
+      }
+    }
+  }
+}
