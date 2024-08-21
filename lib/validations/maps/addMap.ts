@@ -13,7 +13,7 @@ export const AddMapSchema = v.object({
     description: v.nullish(v.string()),
     status: v.nullish(v.enum(Status)),
     geo_type: v.nullish(v.string()),
-    geo_coordinates: v.nullish(v.array(v.array(v.number()))),
+    geo_coordinates: v.optional(v.array(v.array(v.number()))),
     geo_zoom: v.nullish(v.number()),
     image: v.nullish(v.string()),
 });

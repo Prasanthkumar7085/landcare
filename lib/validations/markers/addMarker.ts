@@ -1,7 +1,7 @@
 import * as v from 'valibot';
   
 export const AddMarkerSchema = v.object({
-    title: v.nullish(v.string()),
+    title: v.pipe(v.string(), v.nonEmpty()),
     description: v.nullish(v.string()),
     organisation_type: v.nullish(v.string()),
     coordinates: v.nullish(v.array(v.number())),
@@ -18,9 +18,9 @@ export const AddMarkerSchema = v.object({
     fax: v.nullish(v.string()),
     contact: v.nullish(v.string()),
     
-    images: v.nullish(v.array(v.string())),
-    tags: v.nullish(v.array(v.string())),
-    social_links: v.nullish(v.array(v.string())),
+    images: v.optional(v.array(v.string())),
+    tags: v.optional(v.array(v.string())),
+    social_links: v.optional(v.array(v.string())),
 
     added_by: v.nullish(v.string()),
     status: v.nullish(v.boolean()),
