@@ -104,6 +104,7 @@ const AddMapDrawer = ({
               setAddMapDrawerOpen(false);
               getSingleMapDetails();
               setErrorMessages([]);
+              setMapDetails({});
             }}
           >
             <CloseIcon sx={{ fontSize: "1rem" }} />
@@ -141,6 +142,7 @@ const AddMapDrawer = ({
                 setAddMapDrawerOpen(false);
                 getSingleMapDetails();
                 setErrorMessages([]);
+                setMapDetails({});
               }}
             >
               Cancel
