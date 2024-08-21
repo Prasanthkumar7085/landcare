@@ -55,7 +55,15 @@ const MarkerPopup = ({
 
   const getStaticMap = async (updatedCoords: any, coords: any) => {
     let body = {
-      coordinates: [...coords, coords[0]],
+      coordinates:
+        updatedCoords?.length == 1
+          ? updatedCoords.map((item: any) => {
+              return {
+                lat: item[0],
+                lng: item[1],
+              };
+            })
+          : [...coords, coords[0]],
       markers: updatedCoords.slice(0, 50),
     };
     try {
@@ -70,7 +78,7 @@ const MarkerPopup = ({
     }
   };
 
-  const updateMapWithCordinates = async () => {
+  const updateMapWithCordinates = async (allMarkers: any) => {
     let updatedCoords = allMarkers?.map((item: any) => item?.coordinates);
     let newCoords = updatedCoords.map((item: any) => {
       return {
@@ -81,7 +89,7 @@ const MarkerPopup = ({
     let coords = getPolygonWithMarkers(newCoords);
 
     let mapImage;
-    mapImage = await getStaticMap(updatedCoords, coords);
+    mapImage = await getStaticMap(updatedCoords, coords || newCoords);
 
     let body = {
       title: mapDetails?.title ? mapDetails?.title : "",
@@ -155,8 +163,9 @@ const MarkerPopup = ({
             popupFormData?.coordinates[0],
             popupFormData?.coordinates[1]
           );
-          updateMapWithCordinates();
+          updateMapWithCordinates(allMarkers);
         }
+        updateMapWithCordinates([...allMarkers, response?.data]);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
       }
