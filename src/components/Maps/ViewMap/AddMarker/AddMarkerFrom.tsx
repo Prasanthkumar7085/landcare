@@ -109,41 +109,39 @@ const MarkerPopup = ({
 
   const getApiBasedOnParams = (id: any) => {
     let response;
+    let body: any = {
+      coordinates: placeDetails?.coordinates?.length
+        ? placeDetails?.coordinates
+        : popupFormData.coordinates,
+      organisation_type: popupFormData?.organisation_type || null,
+      map_id: popupFormData?.map_id,
+      title: popupFormData?.title || "",
+      phone: popupFormData?.phone || null,
+      postcode: placeDetails?.postcode
+        ? placeDetails?.postcode
+        : popupFormData?.postcode || null,
+      images: popupFormData?.images,
+      tags: popupFormData?.tags,
+      town: placeDetails?.town
+        ? placeDetails?.town
+        : popupFormData?.town || null,
+      street_address: placeDetails?.street_address
+        ? placeDetails?.street_address
+        : popupFormData.street_address || null,
+      description: popupFormData?.description || null,
+      website: popupFormData?.website || null,
+      contact: popupFormData?.contact || null,
+      fax: popupFormData?.fax || null,
+      postal_address: placeDetails?.postal_address
+        ? placeDetails?.postal_address
+        : popupFormData?.postal_address || null,
+    };
+    if (popupFormData?.email) {
+      body["email"] = popupFormData?.email;
+    }
     if (params?.get("marker_id")) {
-      let body: any = {
-        coordinates: placeDetails?.coordinates?.length
-          ? placeDetails?.coordinates
-          : popupFormData.coordinates,
-        organisation_type: popupFormData?.organisation_type || "",
-        map_id: popupFormData?.map_id,
-        title: popupFormData?.title || "",
-        phone: popupFormData?.phone || "",
-        postcode: placeDetails?.postcode
-          ? placeDetails?.postcode
-          : popupFormData?.postcode,
-        images: popupFormData?.images,
-        tags: popupFormData?.tags,
-        town: placeDetails?.town ? placeDetails?.town : popupFormData?.town,
-        street_address: placeDetails?.street_address
-          ? placeDetails?.street_address
-          : popupFormData.street_address,
-        description: popupFormData?.description || "",
-        website: popupFormData?.website || "",
-        contact: popupFormData?.contact || "",
-        fax: popupFormData?.fax || "",
-        postal_address: placeDetails?.postal_address
-          ? placeDetails?.postal_address
-          : popupFormData?.postal_address,
-      };
-      if (popupFormData?.email) {
-        body["email"] = popupFormData?.email;
-      }
       response = updateMarkerDeatilsAPI(id, body, params?.get("marker_id"));
     } else {
-      let body = {
-        ...placeDetails,
-        ...popupFormData,
-      };
       response = addMarkerDeatilsAPI(id, body);
     }
     return response;
@@ -353,7 +351,7 @@ const MarkerPopup = ({
             </div>
           </div>
           <div className="media">
-            <div className="subHeading">Media</div>
+            <div className="subHeading">Images</div>
             <ImagesAddingComponent
               setImageInput={setImageInput}
               setErrorMessages={setErrorMessages}
@@ -378,10 +376,7 @@ const MarkerPopup = ({
             <Button onClick={handleCancel} disabled={loading ? true : false}>
               Cancel
             </Button>
-            <Button
-              onClick={handleSave}
-              disabled={popupFormData?.title ? false : true}
-            >
+            <Button onClick={handleSave}>
               {loading ? (
                 <CircularProgress color="inherit" size={"1.2rem"} />
               ) : params?.get("marker_id") ? (

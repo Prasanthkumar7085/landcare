@@ -151,6 +151,7 @@ const ViewGoogleMap = () => {
 
       markere.addListener("dragstart", (event: google.maps.MouseEvent) => {});
       markere.addListener("dragend", async (event: google.maps.MouseEvent) => {
+        setPlaceDetails({});
         setShowMarkerPopup(true);
         router.replace(`${pathName}?marker_id=${markerData?.id}`);
         const latitude = event.latLng?.lat();
@@ -313,8 +314,11 @@ const ViewGoogleMap = () => {
   };
 
   const goTomarker = (data: any) => {
-    if (params.get("marker_id") && showMarkerPopup == false) {
-      console.log("Fdsafds");
+    if (
+      (params.get("marker_id") || searchParams?.marker_id) &&
+      showMarkerPopup == false
+    ) {
+      console.log("good");
       const markerEntry = markersRef.current.find(
         (entry: any) => entry.id == params.get("marker_id")
       );

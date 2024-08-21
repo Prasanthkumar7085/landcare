@@ -80,6 +80,10 @@ const AddMapDrawer = ({
         router.push(`/add-markers/${response?.data?.id || id}`);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
+      } else if (response?.status == 409) {
+        setErrorMessages(response?.error_data);
+      } else {
+        toast.error(response?.message);
       }
     } catch (err) {
       console.error(err);
@@ -147,10 +151,7 @@ const AddMapDrawer = ({
               disabled={loading ? true : false}
             >
               {loading ? (
-                <CircularProgress
-                  color="inherit"
-                  size={"1rem"}
-                />
+                <CircularProgress color="inherit" size={"1rem"} />
               ) : id ? (
                 "Update Map"
               ) : (
