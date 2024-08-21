@@ -65,6 +65,7 @@ const ViewGoogleMap = () => {
     coordinates: [],
   });
   const [filtersLoading, setFiltersLoading] = useState<boolean>(false);
+  const [allMarkers, setAllMarkers] = useState<any>([]);
   const removalMarker = (markerIndex: number) => {
     const marker = localMarkers[markerIndex];
     if (marker) {
@@ -150,6 +151,7 @@ const ViewGoogleMap = () => {
 
       markere.addListener("dragstart", (event: google.maps.MouseEvent) => {});
       markere.addListener("dragend", async (event: google.maps.MouseEvent) => {
+        setShowMarkerPopup(true);
         router.replace(`${pathName}?marker_id=${markerData?.id}`);
         const latitude = event.latLng?.lat();
         const longitude = event.latLng?.lng();
@@ -158,7 +160,6 @@ const ViewGoogleMap = () => {
           markerData?.coordinates[0],
           markerData?.coordinates[1]
         );
-        setShowMarkerPopup(true);
         if (drawingManagerRef.current) {
           drawingManagerRef.current.setOptions({ drawingControl: false });
         }
@@ -268,6 +269,7 @@ const ViewGoogleMap = () => {
       let queryParams: any = { get_all: true };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
+      setAllMarkers(data);
       let markersImages = getMarkersImagesBasedOnOrganizationType(data);
       setMarkersImagesWithOrganizationType(markersImages);
     } catch (err) {
@@ -311,7 +313,8 @@ const ViewGoogleMap = () => {
   };
 
   const goTomarker = (data: any) => {
-    if (params.get("marker_id")) {
+    if (params.get("marker_id") && showMarkerPopup == false) {
+      console.log("Fdsafds");
       const markerEntry = markersRef.current.find(
         (entry: any) => entry.id == params.get("marker_id")
       );
@@ -354,7 +357,7 @@ const ViewGoogleMap = () => {
       }
       renderAllMarkers(markers, map, googleMaps);
     }
-  }, [map, googleMaps, markers, searchParams]);
+  }, [map, googleMaps, markers]);
 
   useEffect(() => {
     setSearchParams(
@@ -398,6 +401,7 @@ const ViewGoogleMap = () => {
             setPlaceDetails={setPlaceDetails}
             getSingleMarker={getSingleMarker}
             mapDetails={mapDetails}
+            allMarkers={allMarkers}
           />
         ) : (
           <ViewMapDetailsDrawer
@@ -424,6 +428,7 @@ const ViewGoogleMap = () => {
             getSingleMapMarkersForOrginazations={
               getSingleMapMarkersForOrginazations
             }
+            allMarkers={allMarkers}
           />
         )}
         <MarkerPopup
@@ -436,6 +441,8 @@ const ViewGoogleMap = () => {
           setPopupFormData={setMarkerData}
           setSingleMarkerData={setSingleMarkerData}
           getSingleMarker={getSingleMarker}
+          mapDetails={mapDetails}
+          allMarkers={allMarkers}
         />
       </div>
       <LoadingComponent

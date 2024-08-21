@@ -1,5 +1,10 @@
 import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
-import { addMarkerDeatilsAPI, updateMarkerDeatilsAPI } from "@/services/maps";
+import {
+  addMarkerDeatilsAPI,
+  getStaticMapAPI,
+  updateMapWithCordinatesAPI,
+  updateMarkerDeatilsAPI,
+} from "@/services/maps";
 import {
   Button,
   CircularProgress,
@@ -12,6 +17,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import ImagesAddingComponent from "./ImagesAddingComponent";
 import TagsAddingComponent from "./TagsAddingComponent";
+import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
 
 const MarkerPopup = ({
   setShowMarkerPopup,
@@ -23,6 +29,8 @@ const MarkerPopup = ({
   setPopupFormData,
   setSingleMarkerData,
   getSingleMarker,
+  mapDetails,
+  allMarkers,
 }: any) => {
   const { id } = useParams();
   const params = useSearchParams();
@@ -44,14 +52,60 @@ const MarkerPopup = ({
     setShowMarkerPopup(false);
     setPopupFormData({});
   };
+
+  const getStaticMap = async (updatedCoords: any, coords: any) => {
+    let body = {
+      coordinates: [...coords, coords[0]],
+      markers: updatedCoords.slice(0, 50),
+    };
+    try {
+      const response = await getStaticMapAPI(body);
+      if (response?.status == 200 || response?.status == 201) {
+        return response?.data;
+      } else {
+        toast.error(response?.error_data.coordinates);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updateMapWithCordinates = async () => {
+    let updatedCoords = allMarkers?.map((item: any) => item?.coordinates);
+    let newCoords = updatedCoords.map((item: any) => {
+      return {
+        lat: item[0],
+        lng: item[1],
+      };
+    });
+    let coords = getPolygonWithMarkers(newCoords);
+
+    let mapImage;
+    mapImage = await getStaticMap(updatedCoords, coords);
+
+    let body = {
+      title: mapDetails?.title ? mapDetails?.title : "",
+      description: mapDetails?.description ? mapDetails?.description : "",
+      status: mapDetails?.status,
+      geo_type: "polygon",
+      geo_coordinates: coords.map((item: any) => [item.lat, item.lng]),
+      geo_zoom: 14,
+      image: mapImage,
+    };
+    try {
+      const response = await updateMapWithCordinatesAPI(body, id);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const getApiBasedOnParams = (id: any) => {
     let response;
     if (params?.get("marker_id")) {
-      let body = {
+      let body: any = {
         coordinates: placeDetails?.coordinates?.length
           ? placeDetails?.coordinates
           : popupFormData.coordinates,
-        email: popupFormData?.email || "",
         organisation_type: popupFormData?.organisation_type || "",
         map_id: popupFormData?.map_id,
         title: popupFormData?.title || "",
@@ -73,7 +127,9 @@ const MarkerPopup = ({
           ? placeDetails?.postal_address
           : popupFormData?.postal_address,
       };
-
+      if (popupFormData?.email) {
+        body["email"] = popupFormData?.email;
+      }
       response = updateMarkerDeatilsAPI(id, body, params?.get("marker_id"));
     } else {
       let body = {
@@ -99,6 +155,7 @@ const MarkerPopup = ({
             popupFormData?.coordinates[0],
             popupFormData?.coordinates[1]
           );
+          updateMapWithCordinates();
         }
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
@@ -129,9 +186,7 @@ const MarkerPopup = ({
         </h3>
         <form>
           <div className="basicInformation">
-            <h3 className="subHeading">
-              Basic Information
-            </h3>
+            <h3 className="subHeading">Basic Information</h3>
             <div className="eachGrp">
               <div className="eachFeildGrp">
                 <label>Title</label>
@@ -221,9 +276,7 @@ const MarkerPopup = ({
             </div>
           </div>
           <div className="locationInformation">
-            <div className="subHeading">
-              Location Information
-            </div>
+            <div className="subHeading">Location Information</div>
             <div className="eachGrp">
               <div className="eachFeildGrp">
                 <label>Postal Address</label>
@@ -291,9 +344,7 @@ const MarkerPopup = ({
             </div>
           </div>
           <div className="media">
-            <div className="subHeading">
-              Media
-            </div>
+            <div className="subHeading">Media</div>
             <ImagesAddingComponent
               setImageInput={setImageInput}
               setErrorMessages={setErrorMessages}
@@ -304,9 +355,7 @@ const MarkerPopup = ({
             />
           </div>
           <div className="tags">
-            <div className="subHeading">
-              Tags
-            </div>
+            <div className="subHeading">Tags</div>
             <TagsAddingComponent
               setTagsInput={setTagsInput}
               setErrorMessages={setErrorMessages}
@@ -325,9 +374,7 @@ const MarkerPopup = ({
               disabled={popupFormData?.title ? false : true}
             >
               {loading ? (
-                <CircularProgress
-                  color="inherit"
-                  size={"1.2rem"} />
+                <CircularProgress color="inherit" size={"1.2rem"} />
               ) : params?.get("marker_id") ? (
                 "Update"
               ) : (

@@ -15,11 +15,15 @@ import DeleteDialog from "@/components/Core/DeleteDialog";
 import {
   deleteAllMarkersAPI,
   deleteMapAPI,
+  getStaticMapAPI,
   updateMapWithCordinatesAPI,
 } from "@/services/maps";
 import MapMarkersList from "./MapMarkersList";
 import ImportModal from "./ImportMarkers/ImportModal";
-import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
+import {
+  getPolygonWithMarkers,
+  updateMapWithCordinatesHelper,
+} from "@/lib/helpers/mapsHelpers";
 import { truncateText } from "@/lib/helpers/nameFormate";
 import AddMapDrawer from "../AddMap/AddMapDrawer";
 
@@ -43,6 +47,7 @@ const ViewMapDetailsDrawer = ({
   selectedOrginazation,
   setSelectedOrginazation,
   getSingleMapMarkersForOrginazations,
+  allMarkers,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -70,23 +75,6 @@ const ViewMapDetailsDrawer = ({
     setDeleteOpen(false);
   };
 
-  const updateMapWithCordinates = async () => {
-    let body = {
-      title: mapDetails?.title ? mapDetails?.title : "",
-      description: mapDetails?.description ? mapDetails?.description : "",
-      status: mapDetails?.status,
-      geo_type: "polygon",
-      geo_coordinates: mapDetails?.geo_coordinates,
-      geo_zoom: 14,
-      image: "",
-    };
-    try {
-      const response = await updateMapWithCordinatesAPI(body, id);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const deleteMap = async () => {
     setLoading(true);
     try {
@@ -107,7 +95,12 @@ const ViewMapDetailsDrawer = ({
       const response = await deleteAllMarkersAPI(id);
       toast.success(response?.message);
       handleDeleteCose();
-      await updateMapWithCordinates();
+      await updateMapWithCordinatesHelper({
+        deleteall: true,
+        allMarkers: allMarkers,
+        mapDetails: mapDetails,
+        id: id,
+      });
       await getData({ get_all: true });
     } catch (err) {
       console.error(err);
