@@ -13,6 +13,7 @@ import Image from "next/image";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { Tab, Tabs, Tooltip } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 
 const ShareLinkDialog = ({
   open,
@@ -57,22 +58,27 @@ const ShareLinkDialog = ({
   };
 
   return (
-    <Dialog open={open}>
-      <DialogTitle>{"Share"}</DialogTitle>
+    <Dialog open={open} className="shareLinkDialog">
+      <div className="dialogHeader">
+
+        <DialogTitle>{"Share"}</DialogTitle>
+        <IconButton onClick={() => {
+          setShareDialogOpen(false);
+        }}>
+          <CloseIcon sx={{fontSize:"1rem", color:"#000"}} />
+        </IconButton>
+      </div>
       <DialogContent>
         <Tabs value={tabValue} onChange={handleTabChange} centered>
           <Tab label="Share" />
           <Tab label="Copy Embedded URL" />
         </Tabs>
         {tabValue === 0 && (
-          <div id="shareLinkDialog">
+          <div className="shareLinkDialogContent">
             <div
+              className="imageDetailsBlock"
               style={{
-                display: mapDetails?.title ? "flex" : "none",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "2rem",
+                display: mapDetails?.title ? "flex" : "none",               
               }}
             >
               <Image
@@ -86,6 +92,7 @@ const ShareLinkDialog = ({
                 style={{
                   display: "flex",
                   flexDirection: "column",
+                  flex:"1"
                 }}
               >
                 <p>{mapDetails?.title}</p>
@@ -118,11 +125,11 @@ const ShareLinkDialog = ({
               />
               <Button
                 onClick={() => copyURL(linkToShare)}
-                variant="contained"
+                variant="text"
                 color="primary"
-                sx={{ width: "30%" }}
+               className="copyLinkBtn"
               >
-                Copy
+                Copy Link
               </Button>
             </div>
             <div className="share-icons">
@@ -159,7 +166,7 @@ const ShareLinkDialog = ({
         )}
 
         {tabValue === 1 && (
-          <div className="copy-url">
+          <div className="link">
             <TextField
               value={linkToEmdeded}
               size="small"
@@ -170,25 +177,16 @@ const ShareLinkDialog = ({
             />
             <Button
               onClick={() => copyEmbededIframeUrl(linkToEmdeded)}
-              variant="contained"
+              variant="text"
               color="primary"
-              sx={{ width: "100%", marginTop: "1rem" }}
+              className="copyLinkBtn"
             >
               Copy
             </Button>
           </div>
         )}
       </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={() => {
-            setShareDialogOpen(false);
-          }}
-          color="primary"
-        >
-          Close
-        </Button>
-      </DialogActions>
+
     </Dialog>
   );
 };
