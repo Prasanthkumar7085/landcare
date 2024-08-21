@@ -59,7 +59,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    disabled: checkMapping,
+    disabled: checkMapping || success,
     accept: {
       "text/csv": [".csv"],
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
@@ -298,6 +298,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
               <div className="btnGrp">
                 <Button onClick={onClose}>Close</Button>
                 <Button
+                  sx={{ display: success ? "none" : "block" }}
                   onClick={handleFileUpload}
                   disabled={file && !success ? false : true}
                 >

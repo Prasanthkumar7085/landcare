@@ -218,12 +218,12 @@ const validationsForImportedData = ({
     ) {
       errorObjects.push({
         ...obj,
-        error: "Name and Location are required",
+        error: "Title and Location are required",
       });
     } else if (nameValue === undefined || nameValue === "") {
       errorObjects.push({
         ...obj,
-        error: "Name is required",
+        error: "Title is required",
       });
     } else if (coordinates === undefined || !isValidCoordinates(coordinates)) {
       if (townValue === undefined || townValue === "") {
