@@ -4,6 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
 import { useState } from "react";
 import { truncateText } from "@/lib/helpers/nameFormate";
+import Image from "next/image";
 
 const TagsAddingComponent = ({
   setTagsInput,
@@ -39,7 +40,7 @@ const TagsAddingComponent = ({
   };
 
   const handleKeyPress = (event: any) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && editIndex === null) {
       handleAddTags();
     }
   };
@@ -78,15 +79,7 @@ const TagsAddingComponent = ({
 
   return (
     <div className="eachFeildGrp">
-      <label>Tags</label>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+      <div className="feildEntity">
         <TextField
           className="defaultTextFeild text"
           name="tags"
@@ -101,9 +94,12 @@ const TagsAddingComponent = ({
           onKeyDown={handleKeyPress}
         />
         {editIndex !== null ? (
-          <>
-            <Button onClick={handleUpdateTag}>Update</Button>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Button className="addBtn update" onClick={handleUpdateTag}>
+              Update
+            </Button>
             <Button
+              className="addBtn cancel"
               onClick={() => {
                 setEditIndex(null);
                 setEditInput("");
@@ -111,9 +107,11 @@ const TagsAddingComponent = ({
             >
               Cancel
             </Button>
-          </>
+          </div>
         ) : (
-          <Button onClick={handleAddTags}>Add</Button>
+          <Button className="addBtn" onClick={handleAddTags}>
+            +Add
+          </Button>
         )}
       </div>
       <div className="tagList">
@@ -124,28 +122,38 @@ const TagsAddingComponent = ({
                 key={index}
                 style={{ color: index == editIndex ? "red" : "" }}
               >
-                <Tooltip title={tag && tag?.length > 30 ? tag : ""}>
-                  <span>{truncateText(tag, 30)}</span>
+                <Tooltip title={tag && tag?.length > 15 ? tag : ""}>
+                  <span>{truncateText(tag, 15)}</span>
                 </Tooltip>
                 <IconButton
                   onClick={() => handleEditTag(index)}
                   aria-label="edit"
                   disabled={editIndex == index}
                 >
-                  <EditIcon />
+                  <Image
+                    src="/markers/add/edit.svg"
+                    alt="edit"
+                    width={15}
+                    height={15}
+                  />
                 </IconButton>
                 <IconButton
                   onClick={() => handleRemoveTags(index)}
                   aria-label="delete"
                   disabled={editIndex == index}
                 >
-                  <DeleteIcon />
+                  <Image
+                    src="/markers/add/delete.svg"
+                    alt="edit"
+                    width={15}
+                    height={15}
+                  />
                 </IconButton>
               </li>
             ))}
           </ul>
         ) : (
-          <p>No tags added.</p>
+          ""
         )}
       </div>
       <ErrorMessagesComponent errorMessage={errorMessages["tags"]} />

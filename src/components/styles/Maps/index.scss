@@ -20,6 +20,12 @@
         font-weight: $fw-400;
         color: #00000099;
         min-width: fit-content;
+        &.Mui-selected {
+          color: #385642 !important;
+        }
+      }
+      .MuiTabs-indicator {
+          background-color: #385642 !important;
       }
     }
 
@@ -106,7 +112,7 @@
         }
         .iconBtn2 {
           position: absolute;
-          top: 0;
+          top: 10px;
           right: 10px;
           padding: 0;
           &:hover {
@@ -115,7 +121,7 @@
         }
         .iconBtn1 {
           position: absolute;
-          top: 0;
+          top: 10px;
           right: 45px;
           padding: 0;
           margin-top: 4px;

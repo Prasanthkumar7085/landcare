@@ -59,11 +59,13 @@ const ViewGoogleMap = () => {
     markersImagesWithOrganizationType,
     setMarkersImagesWithOrganizationType,
   ] = useState<any>({});
+  const [selectedOrginazation, setSelectedOrginazation] = useState<any>(null);
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     coordinates: [],
   });
-
+  const [filtersLoading, setFiltersLoading] = useState<boolean>(false);
+  const [allMarkers, setAllMarkers] = useState<any>([]);
   const removalMarker = (markerIndex: number) => {
     const marker = localMarkers[markerIndex];
     if (marker) {
@@ -120,8 +122,7 @@ const ViewGoogleMap = () => {
   };
   const renderAllMarkers = (markers1: any, map: any, maps: any) => {
     clearMarkers();
-    let markersImages = getMarkersImagesBasedOnOrganizationType(markers1);
-    setMarkersImagesWithOrganizationType(markersImages);
+
     markers1?.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
         markerData.coordinates?.[0],
@@ -132,11 +133,14 @@ const ViewGoogleMap = () => {
         map: map,
         title: markerData.title,
         icon: {
-          url: markersImages[markerData?.organisation_type]
-            ? markersImages[markerData?.organisation_type]
+          url: markersImagesWithOrganizationType[markerData?.organisation_type]
+            ? markersImagesWithOrganizationType[markerData?.organisation_type]
             : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
-        animation: google.maps.Animation.DROP,
+        animation:
+          searchParams?.marker_id == markerData?.id
+            ? google.maps.Animation.BOUNCE
+            : google.maps.Animation.DROP,
         draggable: true,
       });
       markersRef.current.push({ id: markerData.id, marker: markere });
@@ -147,6 +151,7 @@ const ViewGoogleMap = () => {
 
       markere.addListener("dragstart", (event: google.maps.MouseEvent) => {});
       markere.addListener("dragend", async (event: google.maps.MouseEvent) => {
+        setShowMarkerPopup(true);
         router.replace(`${pathName}?marker_id=${markerData?.id}`);
         const latitude = event.latLng?.lat();
         const longitude = event.latLng?.lng();
@@ -155,11 +160,9 @@ const ViewGoogleMap = () => {
           markerData?.coordinates[0],
           markerData?.coordinates[1]
         );
-        setShowMarkerPopup(true);
         if (drawingManagerRef.current) {
           drawingManagerRef.current.setOptions({ drawingControl: false });
         }
-
         getLocationAddress({
           latitude,
           longitude,
@@ -176,6 +179,7 @@ const ViewGoogleMap = () => {
   };
 
   const handleMarkerClick = (markerData: any, markere: google.maps.Marker) => {
+    setPlaceDetails({});
     router.replace(`${pathName}?marker_id=${markerData?.id}`);
     getSingleMarker(
       markerData?.id,
@@ -246,11 +250,11 @@ const ViewGoogleMap = () => {
   };
   const getSingleMapDetails = async () => {
     setLoading(true);
-
     try {
       const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
+        await getSingleMapMarkersForOrginazations({ id: response?.data?.id });
         await getSingleMapMarkers({});
       }
     } catch (err) {
@@ -260,17 +264,33 @@ const ViewGoogleMap = () => {
     }
   };
 
+  const getSingleMapMarkersForOrginazations = async ({ id }: any) => {
+    try {
+      let queryParams: any = { get_all: true };
+      const response = await getSingleMapMarkersAPI(id, queryParams);
+      const { data, ...rest } = response;
+      setAllMarkers(data);
+      let markersImages = getMarkersImagesBasedOnOrganizationType(data);
+      setMarkersImagesWithOrganizationType(markersImages);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const getSingleMapMarkers = async ({
     search_string = searchString,
     sort_by = markerOption?.value,
     sort_type = markerOption?.title,
+    type = selectedOrginazation?.title,
   }) => {
+    setFiltersLoading(true);
     try {
       let queryParams: any = {
         search_string: search_string,
         sort_by: sort_by,
         sort_type: sort_type,
         get_all: true,
+        organisation_type: type ? type : "",
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
@@ -287,11 +307,14 @@ const ViewGoogleMap = () => {
       setPolygonCoords(coords);
     } catch (err) {
       console.error(err);
+    } finally {
+      setFiltersLoading(false);
     }
   };
 
   const goTomarker = (data: any) => {
-    if (params.get("marker_id")) {
+    if (params.get("marker_id") && showMarkerPopup == false) {
+      console.log("Fdsafds");
       const markerEntry = markersRef.current.find(
         (entry: any) => entry.id == params.get("marker_id")
       );
@@ -312,8 +335,14 @@ const ViewGoogleMap = () => {
       search_string: searchString,
       sort_by: markerOption?.value,
       sort_type: markerOption?.title,
+      type: selectedOrginazation?.title,
     });
-  }, [searchString, markerOption?.value, markerOption?.title]);
+  }, [
+    searchString,
+    markerOption?.value,
+    markerOption?.title,
+    selectedOrginazation?.title,
+  ]);
 
   useEffect(() => {
     getSingleMapDetails();
@@ -321,7 +350,7 @@ const ViewGoogleMap = () => {
 
   useEffect(() => {
     if (map && googleMaps) {
-      if (params?.get("marker_id")) {
+      if (params?.get("marker_id") || searchParams?.marker_id) {
         goTomarker(markers);
       } else {
         boundToMapWithPolygon(polygonCoords, map);
@@ -329,6 +358,7 @@ const ViewGoogleMap = () => {
       renderAllMarkers(markers, map, googleMaps);
     }
   }, [map, googleMaps, markers]);
+
   useEffect(() => {
     setSearchParams(
       Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
@@ -371,6 +401,7 @@ const ViewGoogleMap = () => {
             setPlaceDetails={setPlaceDetails}
             getSingleMarker={getSingleMarker}
             mapDetails={mapDetails}
+            allMarkers={allMarkers}
           />
         ) : (
           <ViewMapDetailsDrawer
@@ -392,6 +423,12 @@ const ViewGoogleMap = () => {
             }
             setPolygonCoords={setPolygonCoords}
             setMapDetails={setMapDetails}
+            selectedOrginazation={selectedOrginazation}
+            setSelectedOrginazation={setSelectedOrginazation}
+            getSingleMapMarkersForOrginazations={
+              getSingleMapMarkersForOrginazations
+            }
+            allMarkers={allMarkers}
           />
         )}
         <MarkerPopup
@@ -404,9 +441,13 @@ const ViewGoogleMap = () => {
           setPopupFormData={setMarkerData}
           setSingleMarkerData={setSingleMarkerData}
           getSingleMarker={getSingleMarker}
+          mapDetails={mapDetails}
+          allMarkers={allMarkers}
         />
       </div>
-      <LoadingComponent loading={loading || singleMarkerLoading} />
+      <LoadingComponent
+        loading={loading || singleMarkerLoading || filtersLoading}
+      />
     </>
   );
 };

@@ -4,6 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
 import { useState } from "react";
 import { truncateText } from "@/lib/helpers/nameFormate";
+import Image from "next/image";
 
 const ImagesAddingComponent = ({
   setImageInput,
@@ -13,7 +14,6 @@ const ImagesAddingComponent = ({
   setPopupFormData,
   errorMessages,
 }: any) => {
-  console.log(popupFormData, "popupFormData");
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editInput, setEditInput] = useState<string>("");
 
@@ -80,19 +80,14 @@ const ImagesAddingComponent = ({
 
   return (
     <div className="eachFeildGrp">
-      <label>Images</label>
       <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
+        className="feildEntity"
+      
       >
         <TextField
           className="defaultTextFeild text"
           name="images"
-          placeholder="Enter Image link"
+          placeholder="Paste link here"
           sx={{ width: "100%" }}
           value={editIndex !== null ? editInput : imageInput}
           onChange={(e) =>
@@ -103,9 +98,9 @@ const ImagesAddingComponent = ({
           onKeyDown={handleKeyPress}
         />
         {editIndex !== null ? (
-          <>
-            <Button onClick={handleUpdateImage}>Update</Button>
-            <Button
+          <div style={{display:'flex', alignItems:"center"}}>
+            <Button className="addBtn update" onClick={handleUpdateImage}>Update</Button>
+            <Button className="addBtn cancel"
               onClick={() => {
                 setEditIndex(null);
                 setEditInput("");
@@ -113,9 +108,9 @@ const ImagesAddingComponent = ({
             >
               Cancel
             </Button>
-          </>
+          </div>
         ) : (
-          <Button onClick={handleAddImage}>Add</Button>
+          <Button className="addBtn" onClick={handleAddImage}>+Add</Button>
         )}
       </div>
       <div className="imageList">
@@ -126,28 +121,28 @@ const ImagesAddingComponent = ({
                 key={index}
                 style={{ color: index == editIndex ? "red" : "" }}
               >
-                <Tooltip title={url && url?.length > 30 ? url : ""}>
-                  <span>{truncateText(url, 30)}</span>
+                <Tooltip title={url && url?.length > 45 ? url : ""}>
+                  <span>{truncateText(url, 45)}</span>
                 </Tooltip>
                 <IconButton
                   onClick={() => handleEditImage(index)}
                   aria-label="edit"
                   disabled={editIndex == index}
                 >
-                  <EditIcon />
+                  <Image src="/markers/add/edit.svg" alt="edit" width={15} height={15} />
                 </IconButton>
                 <IconButton
                   onClick={() => handleRemoveImage(index)}
                   aria-label="delete"
                   disabled={editIndex == index}
                 >
-                  <DeleteIcon />
+                  <Image src="/markers/add/delete.svg" alt="edit" width={15} height={15} />
                 </IconButton>
               </li>
             ))}
           </ul>
         ) : (
-          <p>No images added.</p>
+          ""
         )}
       </div>
       <ErrorMessagesComponent errorMessage={errorMessages["images"]} />

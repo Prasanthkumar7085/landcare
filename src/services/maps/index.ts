@@ -164,6 +164,20 @@ export const deleteMapAPI = async (id: any) => {
   }
 };
 
+export const deleteAllMarkersAPI = async (id: any) => {
+  try {
+    const { success, data } = await $fetch.delete(
+      `/api/v1.0/maps/${id}/markers`
+    );
+    if (!success) {
+      return handleAPIErrorResponse(data);
+    }
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const changeStatusOfMapAPI = async (id: any, body: any) => {
   try {
     const { success, data } = await $fetch.patch(

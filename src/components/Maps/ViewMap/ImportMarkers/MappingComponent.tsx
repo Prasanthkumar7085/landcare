@@ -47,7 +47,7 @@ const MappingScreen = ({
       if (SheetHeaders.includes(item)) {
         acc[item] = item;
       } else {
-        acc[item] = ""; // Set to empty if not found in SheetHeaders
+        acc[item] = "";
       }
       return acc;
     }, {});
@@ -55,14 +55,12 @@ const MappingScreen = ({
   };
   return (
     <div className="mapping-screen">
-      <Typography variant="h6">Headers are not Macthed </Typography>
-      <Typography variant="subtitle1">
-        Please map according to correct headers
-      </Typography>
-      <Button variant="contained" onClick={exampleImportMarkersFile}>
+      <div className="mappingHeader">
+      <Button className="matchHeaderBtn" onClick={matchHeaders}>Match Headers</Button>
+      <Button className="downloadBtn" variant="contained" onClick={exampleImportMarkersFile}>
         Download Template
       </Button>
-      <Button onClick={matchHeaders}>Match Headers</Button>
+    </div>
       <div className="table">
         <table>
           <thead>
@@ -104,7 +102,7 @@ const MappingScreen = ({
                     }
                     sx={{
                       "& .MuiFormControl-root": {
-                        width: "170px",
+                        width: "100%",
                         background: "#fff",
                       },
                       "& .MuiPopper-root": {
@@ -123,37 +121,39 @@ const MappingScreen = ({
               </tr>
             ))}
           </tbody>
-          <div className="button-group">
-            <Button
-              type="button"
-              onClick={() => {
-                setMappedValues({});
-                setSheetHeaders({});
-                setAutocompleteSuggestions({});
-                onClose();
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={
-                Object.values(mappedValues)?.length == 15 ? false : true
-              }
-              onClick={async () => {
-                let headers = Object.values(mappedValues);
-                jsonData[0] = headers;
-                if (processImportedData(jsonData)) {
-                  let markersData = await getImportedFilteredData({ jsonData });
-                  setValidationsData(markersData);
-                  await handleUpload(markersData);
-                  setCheckMapping(false);
-                }
-              }}
-            >
-              Save & Upload
-            </Button>
-          </div>
+         
         </table>
+      </div>
+      <div className="button-group">
+        <Button
+          
+          type="button"
+          onClick={() => {
+            setMappedValues({});
+            setSheetHeaders({});
+            setAutocompleteSuggestions({});
+            onClose();
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          disabled={
+            Object.values(mappedValues)?.length == 15 ? false : true
+          }
+          onClick={async () => {
+            let headers = Object.values(mappedValues);
+            jsonData[0] = headers;
+            if (processImportedData(jsonData)) {
+              let markersData = await getImportedFilteredData({ jsonData });
+              setValidationsData(markersData);
+              await handleUpload(markersData);
+              setCheckMapping(false);
+            }
+          }}
+        >
+          Save & Upload
+        </Button>
       </div>
     </div>
   );

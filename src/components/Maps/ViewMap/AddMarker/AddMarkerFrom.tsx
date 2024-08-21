@@ -1,5 +1,10 @@
 import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
-import { addMarkerDeatilsAPI, updateMarkerDeatilsAPI } from "@/services/maps";
+import {
+  addMarkerDeatilsAPI,
+  getStaticMapAPI,
+  updateMapWithCordinatesAPI,
+  updateMarkerDeatilsAPI,
+} from "@/services/maps";
 import {
   Button,
   CircularProgress,
@@ -12,6 +17,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import ImagesAddingComponent from "./ImagesAddingComponent";
 import TagsAddingComponent from "./TagsAddingComponent";
+import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
 
 const MarkerPopup = ({
   setShowMarkerPopup,
@@ -23,6 +29,8 @@ const MarkerPopup = ({
   setPopupFormData,
   setSingleMarkerData,
   getSingleMarker,
+  mapDetails,
+  allMarkers,
 }: any) => {
   const { id } = useParams();
   const params = useSearchParams();
@@ -44,14 +52,68 @@ const MarkerPopup = ({
     setShowMarkerPopup(false);
     setPopupFormData({});
   };
+
+  const getStaticMap = async (updatedCoords: any, coords: any) => {
+    let body = {
+      coordinates:
+        updatedCoords?.length == 1
+          ? updatedCoords.map((item: any) => {
+              return {
+                lat: item[0],
+                lng: item[1],
+              };
+            })
+          : [...coords, coords[0]],
+      markers: updatedCoords.slice(0, 50),
+    };
+    try {
+      const response = await getStaticMapAPI(body);
+      if (response?.status == 200 || response?.status == 201) {
+        return response?.data;
+      } else {
+        toast.error(response?.error_data.coordinates);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updateMapWithCordinates = async (allMarkers: any) => {
+    let updatedCoords = allMarkers?.map((item: any) => item?.coordinates);
+    let newCoords = updatedCoords.map((item: any) => {
+      return {
+        lat: item[0],
+        lng: item[1],
+      };
+    });
+    let coords = getPolygonWithMarkers(newCoords);
+
+    let mapImage;
+    mapImage = await getStaticMap(updatedCoords, coords || newCoords);
+
+    let body = {
+      title: mapDetails?.title ? mapDetails?.title : "",
+      description: mapDetails?.description ? mapDetails?.description : "",
+      status: mapDetails?.status,
+      geo_type: "polygon",
+      geo_coordinates: coords.map((item: any) => [item.lat, item.lng]),
+      geo_zoom: 14,
+      image: mapImage,
+    };
+    try {
+      const response = await updateMapWithCordinatesAPI(body, id);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const getApiBasedOnParams = (id: any) => {
     let response;
     if (params?.get("marker_id")) {
-      let body = {
+      let body: any = {
         coordinates: placeDetails?.coordinates?.length
           ? placeDetails?.coordinates
           : popupFormData.coordinates,
-        email: popupFormData?.email || "",
         organisation_type: popupFormData?.organisation_type || "",
         map_id: popupFormData?.map_id,
         title: popupFormData?.title || "",
@@ -73,7 +135,9 @@ const MarkerPopup = ({
           ? placeDetails?.postal_address
           : popupFormData?.postal_address,
       };
-
+      if (popupFormData?.email) {
+        body["email"] = popupFormData?.email;
+      }
       response = updateMarkerDeatilsAPI(id, body, params?.get("marker_id"));
     } else {
       let body = {
@@ -99,7 +163,9 @@ const MarkerPopup = ({
             popupFormData?.coordinates[0],
             popupFormData?.coordinates[1]
           );
+          updateMapWithCordinates(allMarkers);
         }
+        updateMapWithCordinates([...allMarkers, response?.data]);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
       }
@@ -128,16 +194,9 @@ const MarkerPopup = ({
           {params?.get("marker_id") ? "Update Marker" : "Add Marker"}
         </h3>
         <form>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "3rem",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div>
+          <div className="basicInformation">
+            <h3 className="subHeading">Basic Information</h3>
+            <div className="eachGrp">
               <div className="eachFeildGrp">
                 <label>Title</label>
                 <TextField
@@ -149,7 +208,6 @@ const MarkerPopup = ({
                 />
                 <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
               </div>
-
               <div className="eachFeildGrp">
                 <label>Organization Type</label>
                 <TextField
@@ -176,22 +234,6 @@ const MarkerPopup = ({
                   errorMessage={errorMessages["contact"]}
                 />
               </div>
-              <div className="eachFeildGrp">
-                <label>Website</label>
-                <TextField
-                  className="defaultTextFeild text "
-                  name="website"
-                  placeholder="Enter Website link"
-                  value={popupFormData?.website}
-                  onChange={handleInputChange}
-                />
-                <ErrorMessagesComponent
-                  errorMessage={errorMessages["website"]}
-                />
-              </div>
-            </div>
-
-            <div>
               <div className="eachFeildGrp">
                 <label>Phone</label>
                 <TextField
@@ -227,12 +269,28 @@ const MarkerPopup = ({
                 <ErrorMessagesComponent errorMessage={errorMessages["fax"]} />
               </div>
             </div>
-
-            <div>
+            <div className="eachFeildGrp">
+              <label>Description</label>
+              <TextField
+                className="defaultTextFeild multiline "
+                name="description"
+                rows={5}
+                placeholder="Enter description"
+                value={popupFormData?.description}
+                onChange={handleInputChange}
+              />
+              <ErrorMessagesComponent
+                errorMessage={errorMessages["description"]}
+              />
+            </div>
+          </div>
+          <div className="locationInformation">
+            <div className="subHeading">Location Information</div>
+            <div className="eachGrp">
               <div className="eachFeildGrp">
                 <label>Postal Address</label>
                 <TextField
-                  className="defaultTextFeild text "
+                  className="defaultTextFeild  "
                   name="postal_address"
                   placeholder="Enter Postal Address"
                   value={popupFormData?.postal_address}
@@ -245,7 +303,7 @@ const MarkerPopup = ({
               <div className="eachFeildGrp">
                 <label>Street Address</label>
                 <TextField
-                  className="defaultTextFeild text "
+                  className="defaultTextFeild  "
                   name="street_address"
                   placeholder="Enter Street Address"
                   value={popupFormData?.street_address}
@@ -279,39 +337,43 @@ const MarkerPopup = ({
                 />
                 <ErrorMessagesComponent errorMessage={errorMessages["town"]} />
               </div>
+              <div className="eachFeildGrp">
+                <label>Website</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="website"
+                  placeholder="Enter Website link"
+                  value={popupFormData?.website}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["website"]}
+                />
+              </div>
             </div>
           </div>
-
-          <div className="eachFeildGrp">
-            <label>Description</label>
-            <TextField
-              className="defaultTextFeild text "
-              name="description"
-              rows={5}
-              placeholder="Enter description"
-              value={popupFormData?.description}
-              onChange={handleInputChange}
-            />
-            <ErrorMessagesComponent
-              errorMessage={errorMessages["description"]}
+          <div className="media">
+            <div className="subHeading">Media</div>
+            <ImagesAddingComponent
+              setImageInput={setImageInput}
+              setErrorMessages={setErrorMessages}
+              popupFormData={popupFormData}
+              imageInput={imageInput}
+              setPopupFormData={setPopupFormData}
+              errorMessages={errorMessages}
             />
           </div>
-          <ImagesAddingComponent
-            setImageInput={setImageInput}
-            setErrorMessages={setErrorMessages}
-            popupFormData={popupFormData}
-            imageInput={imageInput}
-            setPopupFormData={setPopupFormData}
-            errorMessages={errorMessages}
-          />
-          <TagsAddingComponent
-            setTagsInput={setTagsInput}
-            setErrorMessages={setErrorMessages}
-            popupFormData={popupFormData}
-            tagsInput={tagsInput}
-            setPopupFormData={setPopupFormData}
-            errorMessages={errorMessages}
-          />
+          <div className="tags">
+            <div className="subHeading">Tags</div>
+            <TagsAddingComponent
+              setTagsInput={setTagsInput}
+              setErrorMessages={setErrorMessages}
+              popupFormData={popupFormData}
+              tagsInput={tagsInput}
+              setPopupFormData={setPopupFormData}
+              errorMessages={errorMessages}
+            />
+          </div>
           <div className="actionBtnGrp">
             <Button onClick={handleCancel} disabled={loading ? true : false}>
               Cancel
@@ -321,10 +383,7 @@ const MarkerPopup = ({
               disabled={popupFormData?.title ? false : true}
             >
               {loading ? (
-                <CircularProgress
-                  color="inherit"
-                  sx={{ width: "10px", height: "10px" }}
-                />
+                <CircularProgress color="inherit" size={"1.2rem"} />
               ) : params?.get("marker_id") ? (
                 "Update"
               ) : (

@@ -17,6 +17,7 @@ export const ListMarkersColumns = ({
   id,
   markers,
   mapDetails,
+  markersImagesWithOrganizationType,
 }: any) => {
   return [
     {
@@ -26,11 +27,9 @@ export const ListMarkersColumns = ({
       header: () => <span>S.No</span>,
       footer: (props: any) => props.column.id,
       width: "60px",
-      cell: ({ row, table }: any) =>
-        (table
-          .getSortedRowModel()
-          ?.flatRows?.findIndex((flatRow: any) => flatRow.id === row.id) || 0) +
-        1,
+      cell: (info: any) => {
+        return <span>{info.getValue() ? info.getValue() : "--"}</span>;
+      },
     },
     {
       accessorFn: (row: any) => row.title,
@@ -62,7 +61,7 @@ export const ListMarkersColumns = ({
               height={15}
               src={
                 info.getValue()
-                  ? markersImages[info.getValue()]
+                  ? markersImagesWithOrganizationType[info.getValue()]
                   : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
               }
               alt={info.getValue()}
@@ -82,10 +81,12 @@ export const ListMarkersColumns = ({
       cell: (info: any) => {
         const value = info.getValue();
         const truncatedValue = truncateText(value, 10);
-        return (
+        return value ? (
           <Tooltip title={value && value.length > 10 ? value : ""}>
             <span>{truncatedValue}</span>
           </Tooltip>
+        ) : (
+          ""
         );
       },
       header: () => <span>Description</span>,
@@ -99,12 +100,14 @@ export const ListMarkersColumns = ({
       cell: (info: any) => {
         const value = info.getValue();
         const truncatedValue = truncateText(value, 20);
-        return (
+        return info.getValue() ? (
           <Tooltip title={value && value.length > 20 ? value : ""}>
             <Link href={value} target="_blank">
               {truncatedValue}
             </Link>
           </Tooltip>
+        ) : (
+          "---"
         );
       },
       header: () => <span>Website</span>,
@@ -166,6 +169,7 @@ export const ListMarkersColumns = ({
       footer: (props: any) => props.column.id,
       width: "150px",
     },
+
     {
       accessorFn: (row: any) => row.coordinates,
       id: "coordinates",
@@ -226,7 +230,7 @@ export const ListMarkersColumns = ({
             className="iconBtn"
             onClick={() => {
               copyURL(
-                `https://dev-landcare.vercel.app/landcare-map/${mapDetails?.slug}?marker_id=${singleMapDetails?.id}`
+                `https://dev-landcare.vercel.app/landcare-map/${mapDetails?.slug}?marker_id=${info?.row?.original?.id}`
               );
             }}
           >

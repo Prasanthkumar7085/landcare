@@ -20,6 +20,8 @@ const MapMarkersList = ({
   getSingleMapMarkers,
   markersImagesWithOrganizationType,
   mapDetails,
+  selectedOrginazation,
+  setSelectedOrginazation,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
@@ -29,6 +31,18 @@ const MapMarkersList = ({
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const getOrginazationTypes = () => {
+    let orginisationTypesOptions: any = Object.keys(
+      markersImagesWithOrganizationType
+    ).map((key: any) => ({
+      title: key,
+      label: key?.toUpperCase(),
+      img: markersImagesWithOrganizationType[key],
+    }));
+
+    return orginisationTypesOptions;
   };
 
   return (
@@ -51,11 +65,17 @@ const MapMarkersList = ({
           }}
         />
         <AutoCompleteSearch
+          data={getOrginazationTypes() || []}
+          setSelectValue={setSelectedOrginazation}
+          selectedValue={selectedOrginazation}
+          placeholder="Select Organization Type"
+        />
+        {/* <AutoCompleteSearch
           data={markerFilterOptions}
           setSelectValue={setMarkerOption}
           selectedValue={markerOption}
           placeholder="Sort Filter"
-        />
+        /> */}
       </div>
       {singleMarkers?.length > 0 ? (
         <div>

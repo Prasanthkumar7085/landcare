@@ -4,6 +4,7 @@ import {
   SheetHeaders,
   subHeadersMappingConstants,
 } from "../constants/mapConstants";
+import { getStaticMapAPI, updateMapWithCordinatesAPI } from "@/services/maps";
 
 export const calculatePolygonCentroid = (coordinates: any) => {
   let x = 0,
@@ -389,4 +390,57 @@ export const getLocationAddress = ({
       console.error("Geocoder failed due to: " + status);
     }
   });
+};
+
+const getStaticMap = async (updatedCoords: any, coords: any) => {
+  let body = {
+    coordinates: [...coords, coords[0]],
+    markers: updatedCoords.slice(0, 50),
+  };
+  try {
+    const response = await getStaticMapAPI(body);
+    if (response?.status == 200 || response?.status == 201) {
+      return response?.data;
+    } else {
+      toast.error(response?.error_data.coordinates);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const updateMapWithCordinatesHelper = async ({
+  deleteall,
+  allMarkers,
+  mapDetails,
+  id,
+}: any) => {
+  let updatedCoords = allMarkers?.map((item: any) => item?.coordinates);
+  let newCoords = updatedCoords.map((item: any) => {
+    return {
+      lat: item[0],
+      lng: item[1],
+    };
+  });
+  let coords = getPolygonWithMarkers(newCoords);
+
+  let mapImage;
+  if (!deleteall) {
+    mapImage = await getStaticMap(updatedCoords, coords);
+  }
+
+  let body = {
+    title: mapDetails?.title ? mapDetails?.title : "",
+    description: mapDetails?.description ? mapDetails?.description : "",
+    status: mapDetails?.status,
+    geo_type: "polygon",
+    geo_coordinates: mapDetails?.geo_coordinates,
+    geo_zoom: 14,
+    image: mapImage ? mapImage : "",
+  };
+  try {
+    const response = await updateMapWithCordinatesAPI(body, id);
+  } catch (err) {
+    console.error(err);
+  }
 };

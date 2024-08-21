@@ -83,7 +83,11 @@ const Maps = () => {
         to_date: to_date ? to_date : "",
         status: status ? status : "",
       };
-      let queryString = prepareURLEncodedParams("", queryParams);
+      let searchParams = {
+        ...queryParams,
+        search_string: search_string ? encodeURIComponent(search_string) : "",
+      };
+      let queryString = prepareURLEncodedParams("", searchParams);
 
       router.push(`${pathname}${queryString}`);
       const response = await getAllListMapsAPI(queryParams);
@@ -164,162 +168,163 @@ const Maps = () => {
     <div className="allMapsContainer">
       <MapsFilters getAllMaps={getAllMaps} mapsData={mapsData} />
       <Box>
-        <div className="mapListContainer">
-          {mapsData?.length ? (
-            mapsData.map((item: any, index: number) => {
-              return (
-                <Card className="eachListCard" key={index}>
-                  <div className="imgBlock">
-                    <Image
-                      className="mapImg"
-                      style={{
-                        objectFit: item?.image ? "cover" : "contain",
-                      }}
-                      src={item?.image ? item?.image : "/no-image.png"}
-                      alt="map image"
-                      width={100}
-                      height={150}
-                    />
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      <IconButton
-                        className="iconBtn1"
-                        onClick={(event) => {
-                          setShareMenuOpen(true);
-                          handleOpenUserMenu(event);
-                          setMapId(item?.id);
-                          setSingleMapDetails(item);
-                        }}
-                      >
+        {mapsData?.length ? (
+          <div className="mapListContainer">
+            {mapsData?.length
+              ? mapsData.map((item: any, index: number) => {
+                  return (
+                    <Card className="eachListCard" key={index}>
+                      <div className="imgBlock">
                         <Image
-                          src="/map/redo-arrow-icon.svg"
-                          alt=""
-                          height={20}
-                          width={20}
+                          className="mapImg"
+                          style={{
+                            objectFit: item?.image ? "cover" : "contain",
+                          }}
+                          src={item?.image ? item?.image : "/no-image.png"}
+                          alt="map image"
+                          width={100}
+                          height={150}
                         />
-                      </IconButton>
-                      <IconButton
-                        className="iconBtn2"
-                        onClick={(event) => {
-                          handleOpenUserMenu(event);
-                          setMapId(item?.id);
-                          setSingleMapDetails(item);
-                        }}
-                      >
-                        <Image
-                          src="/map/menu-icon.svg"
-                          alt=""
-                          height={30}
-                          width={30}
-                        />
-                      </IconButton>
-                    </div>
-                  </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
+                        >
+                          <IconButton
+                            className="iconBtn1"
+                            onClick={(event) => {
+                              setShareMenuOpen(true);
+                              handleOpenUserMenu(event);
+                              setMapId(item?.id);
+                              setSingleMapDetails(item);
+                            }}
+                          >
+                            <Image
+                              src="/map/redo-arrow-icon.svg"
+                              alt=""
+                              height={18}
+                              width={18}
+                            />
+                          </IconButton>
+                          <IconButton
+                            className="iconBtn2"
+                            onClick={(event) => {
+                              handleOpenUserMenu(event);
+                              setMapId(item?.id);
+                              setSingleMapDetails(item);
+                            }}
+                          >
+                            <Image
+                              src="/map/white-menu-bg.svg"
+                              alt=""
+                              height={25}
+                              width={25}
+                            />
+                          </IconButton>
+                        </div>
+                      </div>
 
-                  <div className="cardContent">
-                    <Typography className="cardTitle">
-                      <Tooltip
-                        title={item?.title?.length >= 50 ? item?.title : ""}
-                        placement="bottom"
-                      >
-                        {item?.title
-                          ? item?.title?.length >= 50
-                            ? `${item?.title.slice(0, 30)}....`
-                            : item?.title
-                          : "--"}
-                      </Tooltip>
-                    </Typography>
-                    <Typography className="cardDesc">
-                      <Tooltip
-                        title={
-                          item?.description?.length >= 50
-                            ? item?.description
-                            : ""
-                        }
-                        placement="bottom"
-                      >
-                        {item?.description
-                          ? item?.description?.length >= 50
-                            ? `${item?.description.slice(0, 30)}....`
-                            : item?.description
-                          : "--"}
-                      </Tooltip>
-                    </Typography>
-                  </div>
+                      <div className="cardContent">
+                        <Typography className="cardTitle">
+                          <Tooltip
+                            title={item?.title?.length >= 50 ? item?.title : ""}
+                            placement="bottom"
+                          >
+                            {item?.title
+                              ? item?.title?.length >= 50
+                                ? `${item?.title.slice(0, 30)}....`
+                                : item?.title
+                              : "--"}
+                          </Tooltip>
+                        </Typography>
+                        <Typography className="cardDesc">
+                          <Tooltip
+                            title={
+                              item?.description?.length >= 50
+                                ? item?.description
+                                : ""
+                            }
+                            placement="bottom"
+                          >
+                            {item?.description
+                              ? item?.description?.length >= 50
+                                ? `${item?.description.slice(0, 30)}....`
+                                : item?.description
+                              : "--"}
+                          </Tooltip>
+                        </Typography>
+                      </div>
 
-                  <div className="cardFooter">
-                    <Typography className="createDate">
-                      <Image
-                        src="/map/clock.svg"
-                        height={13}
-                        width={13}
-                        alt=""
-                      />
-                      <span>
-                        {item?.created_at ? datePipe(item?.created_at) : "--"}
-                      </span>
-                    </Typography>
-                    <Button
-                      className="previewBtn"
-                      variant="text"
-                      onClick={() => {
-                        router.push(`/view-map/${item?.id}`);
-                      }}
-                    >
-                      <Image
-                        src="/login/view-icon.svg"
-                        height={13}
-                        width={13}
-                        alt=""
-                      />
-                      Preview
-                    </Button>
-                  </div>
-                </Card>
-              );
-            })
-          ) : !loading ? (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {!mapsData?.length &&
-              (useParam?.get("from_date") ||
-                useParam?.get("to_date") ||
-                useParam?.get("search_string")) ? (
-                <>
-                  <Image
-                    src="/no-image-maps.svg"
-                    alt=""
-                    height={400}
-                    width={400}
-                  />
-                </>
-              ) : (
-                <>
-                  <Image
-                    src="/add-map-image.svg"
-                    alt=""
-                    height={300}
-                    width={300}
-                  />
-                  <p>{"No maps added yet. Click 'Add New' to start."}</p>
-                </>
-              )}
-            </div>
-          ) : (
-            ""
-          )}
-        </div>
+                      <div className="cardFooter">
+                        <Typography className="createDate">
+                          <Image
+                            src="/map/clock.svg"
+                            height={13}
+                            width={13}
+                            alt=""
+                          />
+                          <span>
+                            {item?.created_at
+                              ? datePipe(item?.created_at)
+                              : "--"}
+                          </span>
+                        </Typography>
+                        <Button
+                          className="previewBtn"
+                          variant="text"
+                          onClick={() => {
+                            router.push(`/view-map/${item?.id}`);
+                          }}
+                        >
+                          <Image
+                            src="/login/view-icon.svg"
+                            height={13}
+                            width={13}
+                            alt=""
+                          />
+                          Preview
+                        </Button>
+                      </div>
+                    </Card>
+                  );
+                })
+              : ""}
+          </div>
+        ) : (
+          ""
+        )}
+
+        {!loading && mapsData?.length == 0 ? (
+          <div className="noDataFound">
+            {!mapsData?.length &&
+            (useParam?.get("from_date") ||
+              useParam?.get("to_date") ||
+              useParam?.get("search_string")) ? (
+              <>
+                <Image
+                  src="/no-image-maps.svg"
+                  alt=""
+                  height={400}
+                  width={400}
+                />
+              </>
+            ) : (
+              <>
+                <Image
+                  src="/add-map-image.svg"
+                  alt=""
+                  height={300}
+                  width={300}
+                />
+                <p>{"No maps added yet. Click 'Add New' to start."}</p>
+              </>
+            )}
+          </div>
+        ) : (
+          ""
+        )}
         {mapsData?.length ? (
           <>
             {!loading ? (

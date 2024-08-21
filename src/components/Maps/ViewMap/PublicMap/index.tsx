@@ -61,10 +61,12 @@ const PublicMap = () => {
     markersImagesWithOrganizationType,
     setMarkersImagesWithOrganizationType,
   ] = useState<any>({});
+  const [selectedOrginazation, setSelectedOrginazation] = useState<any>(null);
   const [placeDetails, setPlaceDetails] = useState<any>({
     full_address: "",
     coordinates: [],
   });
+  const [filtersLoading, setFiltersLoading] = useState<boolean>(false);
 
   const addMarkerEVent = (event: any, map: any, maps: any) => {
     const marker = new google.maps.Marker({
@@ -114,8 +116,6 @@ const PublicMap = () => {
   };
   const renderAllMarkers = (markers1: any, map: any, maps: any) => {
     clearMarkers();
-    let markersImages = getMarkersImagesBasedOnOrganizationType(markers1);
-    setMarkersImagesWithOrganizationType(markersImages);
     markers1?.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
         markerData.coordinates?.[0],
@@ -126,11 +126,14 @@ const PublicMap = () => {
         map: map,
         title: markerData.title,
         icon: {
-          url: markersImages[markerData?.organisation_type]
-            ? markersImages[markerData?.organisation_type]
+          url: markersImagesWithOrganizationType[markerData?.organisation_type]
+            ? markersImagesWithOrganizationType[markerData?.organisation_type]
             : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
-        animation: google.maps.Animation.DROP,
+        animation:
+          searchParams?.marker_id == markerData?.id
+            ? google.maps.Animation.BOUNCE
+            : google.maps.Animation.DROP,
         draggable: false,
       });
       markersRef.current.push({ id: markerData.id, marker: markere });
@@ -245,6 +248,7 @@ const PublicMap = () => {
       const response = await getSingleMapDetailsBySlugAPI(slug);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
+        await getSingleMapMarkersForOrginazations({ id: response?.data?.id });
         await getSingleMapMarkers({ id: response?.data?.id });
       }
     } catch (err) {
@@ -253,19 +257,33 @@ const PublicMap = () => {
       setLoading(false);
     }
   };
+  const getSingleMapMarkersForOrginazations = async ({ id }: any) => {
+    try {
+      let queryParams: any = { get_all: true };
+      const response = await getSingleMapMarkersAPI(id, queryParams);
+      const { data, ...rest } = response;
+      let markersImages = getMarkersImagesBasedOnOrganizationType(data);
+      setMarkersImagesWithOrganizationType(markersImages);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const getSingleMapMarkers = async ({
     search_string = searchString,
     sort_by = markerOption?.value,
     sort_type = markerOption?.title,
     id = mapDetails?.id,
+    type = selectedOrginazation?.type,
   }) => {
+    setFiltersLoading(true);
     try {
       let queryParams: any = {
         get_all: true,
         search_string: search_string,
         sort_by: sort_by,
         sort_type: sort_type,
+        organisation_type: type ? type : "",
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
@@ -282,6 +300,8 @@ const PublicMap = () => {
       setPolygonCoords(coords);
     } catch (err) {
       console.error(err);
+    } finally {
+      setFiltersLoading(false);
     }
   };
 
@@ -302,6 +322,18 @@ const PublicMap = () => {
     }
   };
 
+  const getOrginazationTypes = () => {
+    let orginisationTypesOptions: any = Object?.keys(
+      markersImagesWithOrganizationType
+    ).map((key: any) => ({
+      title: key,
+      label: key?.toUpperCase(),
+      img: markersImagesWithOrganizationType[key],
+    }));
+
+    return orginisationTypesOptions;
+  };
+
   useEffect(() => {
     if (mapDetails?.id) {
       getSingleMapMarkers({
@@ -309,9 +341,16 @@ const PublicMap = () => {
         sort_by: markerOption?.value,
         sort_type: markerOption?.title,
         id: mapDetails?.id,
+        type: selectedOrginazation?.title,
       });
     }
-  }, [searchString, markerOption?.value, markerOption?.title, mapDetails?.id]);
+  }, [
+    searchString,
+    markerOption?.value,
+    markerOption?.title,
+    mapDetails?.id,
+    selectedOrginazation?.title,
+  ]);
 
   useEffect(() => {
     getSingleMapDetails();
@@ -319,14 +358,14 @@ const PublicMap = () => {
 
   useEffect(() => {
     if (map && googleMaps) {
-      if (params?.get("marker_id")) {
+      if (params?.get("marker_id") || searchParams?.marker_id) {
         goTomarker(markers);
       } else {
         boundToMapWithPolygon(polygonCoords, map);
       }
       renderAllMarkers(markers, map, googleMaps);
     }
-  }, [map, googleMaps, markers]);
+  }, [map, googleMaps, markers, searchParams]);
 
   useEffect(() => {
     setSearchParams(
@@ -337,6 +376,7 @@ const PublicMap = () => {
   return (
     <>
       <div
+        id="markersPageWithMap"
         className={styles.markersPageWeb}
         style={{
           display: loading == false ? "" : "none",
@@ -350,27 +390,35 @@ const PublicMap = () => {
               position: "absolute",
               top: "20px",
               left: "23%",
+              gap: "1.2rem ",
             }}
           >
             <TextField
               variant="outlined"
               size="small"
               type="search"
-              placeholder="Search on name"
+              placeholder="Search on title"
               value={searchString}
               sx={{
-                "& .MuiOutlinedInput-root": {
+                "& .MuiInputBase-root": {
+                  height: "38px",
                   border: "1.4px solid #c8c7ce",
+                },
+                "& .MuiOutlinedInput-root": {
                   backgroundColor: "#f2f2f2",
                   width: " 100%",
-                  height: "40px",
+                  height: "38px",
                   background: "#ffffff",
                   color: "black",
                   fontWeight: 500,
                   fontSize: "12px",
                   padding: "8px 13px",
                   boxSizing: " border-box",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
+                  fontFamily: "Poppins",
+                },
+                fieldset: {
+                  border: " 0 !important",
                 },
               }}
               onChange={(e) => setSearchString(e.target.value)}
@@ -388,11 +436,18 @@ const PublicMap = () => {
               }}
             />
             <AutoCompleteSearch
+              data={getOrginazationTypes() || []}
+              setSelectValue={setSelectedOrginazation}
+              selectedValue={selectedOrginazation}
+              placeholder="Select Organization Type"
+            />
+
+            {/* <AutoCompleteSearch
               data={markerFilterOptions}
               setSelectValue={setMarkerOption}
               selectedValue={markerOption}
               placeholder="Sort Filter"
-            />
+            /> */}
           </div>
         </div>
         {singleMarkeropen == true || params?.get("marker_id") ? (
@@ -425,7 +480,9 @@ const PublicMap = () => {
           ""
         )}
       </div>
-      <LoadingComponent loading={loading || singleMarkerLoading} />
+      <LoadingComponent
+        loading={loading || singleMarkerLoading || filtersLoading}
+      />
     </>
   );
 };
