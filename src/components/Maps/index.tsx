@@ -7,6 +7,7 @@ import {
   changeStatusOfMapAPI,
   deleteMapAPI,
   getAllListMapsAPI,
+  getMapsCounts,
 } from "@/services/maps";
 import {
   Box,
@@ -27,6 +28,7 @@ import LoadingComponent from "../Core/LoadingComponent";
 import ShareLinkDialog from "../Core/ShareLinkDialog";
 import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
+import { MapsController } from "../../../lib/controllers/mapsController";
 
 const Maps = () => {
   const useParam = useSearchParams();
@@ -42,6 +44,8 @@ const Maps = () => {
   const [singleMapDetails, setSingleMapDetails] = useState<any>({});
   const [shareLinkDialogOpen, setShareDialogOpen] = useState<boolean>(false);
   const [shareMenuOpen, setShareMenuOpen] = useState<any>(false);
+  const [mapsCount, setMapsCount] = useState<any>([]);
+
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
   );
@@ -102,6 +106,20 @@ const Maps = () => {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+  const countOfMaps = async () => {
+    try {
+      const response: any = await getMapsCounts();
+      let mapsCounts = {
+        publish: response?.data?.find((item: any) => item.status == "publish")
+          ?.count,
+        draft: response?.data?.find((item: any) => item.status == "draft")
+          ?.count,
+      };
+      setMapsCount(mapsCounts);
+    } catch (err: any) {
+      console.error(err);
     }
   };
 
@@ -170,6 +188,10 @@ const Maps = () => {
     }
   }, [searchParams?.search_string]);
 
+  useEffect(() => {
+    countOfMaps();
+  }, []);
+
   const capturePageNum = (value: number) => {
     getAllMaps({
       ...searchParams,
@@ -191,9 +213,14 @@ const Maps = () => {
       Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
     );
   }, [useParam]);
+
   return (
     <div className="allMapsContainer">
-      <MapsFilters getAllMaps={getAllMaps} mapsData={mapsData} />
+      <MapsFilters
+        getAllMaps={getAllMaps}
+        mapsData={mapsData}
+        mapsCount={mapsCount}
+      />
       <Box>
         {mapsData?.length ? (
           <div className="mapListContainer">
