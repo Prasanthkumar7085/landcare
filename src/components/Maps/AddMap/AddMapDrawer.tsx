@@ -77,6 +77,7 @@ const AddMapDrawer = ({
         setAddMapDrawerOpen(false);
         dispatch(storeEditPolygonCoords([]));
         setErrorMessages([]);
+        setMapDetails({});
         router.push(`/add-markers/${response?.data?.id || id}`);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);

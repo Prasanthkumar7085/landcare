@@ -38,9 +38,6 @@ export const processImportedData = (parsedData: any) => {
   if (isEmpty) {
     toast.warning("File is empty!");
     return false;
-  } else if (arraysEqual(SheetHeaders, parsedData[0]) == false) {
-    toast.warning("File is not in the correct format!");
-    return false;
   } else if (parsedData?.length == 1) {
     toast.warning("File contains empty data!");
     return false;
@@ -57,14 +54,14 @@ const parseField = (value: any, type: string) => {
 
   switch (type) {
     case "coordinates":
-      return value.split(",").map((coord: string) => parseFloat(coord.trim()));
+      return value?.split(",").map((coord: string) => parseFloat(coord.trim()));
     case "postcode":
       return value.toString();
     case "town":
       return value ? value + " " + "Australia" : "";
     case "tags":
     case "images":
-      return value.split(",").map((item: string) => item.trim());
+      return value ? value?.split(",").map((item: string) => item.trim()) : [];
     default:
       return value;
   }
@@ -76,7 +73,7 @@ const parseRows = (rows: any[], headers: any[]) => {
     headers.forEach((headerName: any, i: any) => {
       const mappedItem = subHeadersMappingConstants[headerName];
       const value = row[i];
-      obj[mappedItem] = parseField(value, mappedItem);
+      obj[mappedItem] = parseField(value?.toString(), mappedItem);
     });
     return obj;
   });
@@ -133,6 +130,7 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
   const headers: any =
     jsonData[0]?.length > 15 ? jsonData[0].slice(0, 15) : jsonData[0];
   const rows: any = jsonData.slice(1);
+  console.log(jsonData, "Fdasfdsaasfads");
 
   const dataObjects = parseRows(rows, headers);
   const filteredDataObjects = dataObjects.filter((obj: any) => {

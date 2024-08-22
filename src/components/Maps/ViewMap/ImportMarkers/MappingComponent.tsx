@@ -56,11 +56,17 @@ const MappingScreen = ({
   return (
     <div className="mapping-screen">
       <div className="mappingHeader">
-      <Button className="matchHeaderBtn" onClick={matchHeaders}>Match Headers</Button>
-      <Button className="downloadBtn" variant="contained" onClick={exampleImportMarkersFile}>
-        Download Template
-      </Button>
-    </div>
+        <Button className="matchHeaderBtn" onClick={matchHeaders}>
+          Match Headers
+        </Button>
+        <Button
+          className="downloadBtn"
+          variant="contained"
+          onClick={exampleImportMarkersFile}
+        >
+          Download Template
+        </Button>
+      </div>
       <div className="table">
         <table>
           <thead>
@@ -121,12 +127,10 @@ const MappingScreen = ({
               </tr>
             ))}
           </tbody>
-         
         </table>
       </div>
       <div className="button-group">
         <Button
-          
           type="button"
           onClick={() => {
             setMappedValues({});
@@ -138,9 +142,7 @@ const MappingScreen = ({
           Cancel
         </Button>
         <Button
-          disabled={
-            Object.values(mappedValues)?.length == 15 ? false : true
-          }
+          disabled={Object.values(mappedValues)?.length > 0 ? false : true}
           onClick={async () => {
             let headers = Object.values(mappedValues);
             jsonData[0] = headers;
