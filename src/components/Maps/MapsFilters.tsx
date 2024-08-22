@@ -1,5 +1,12 @@
 import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
-import { Button, InputAdornment, Tab, Tabs, TextField } from "@mui/material";
+import {
+  Button,
+  Chip,
+  InputAdornment,
+  Tab,
+  Tabs,
+  TextField,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Image from "next/image";
 import {
@@ -15,7 +22,7 @@ import dayjs from "dayjs";
 import AddMapDrawer from "./AddMap/AddMapDrawer";
 import { getSingleMapDetailsAPI } from "@/services/maps";
 
-const MapsFilters = ({ getAllMaps, mapsData }: any) => {
+const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
   const router = useRouter();
   const path = usePathname();
   const params = useSearchParams();
@@ -126,9 +133,23 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
           value={searchParams?.status ? searchParams?.status : ""}
           onChange={handleStatusChange}
         >
-          <Tab className="tabBtn" value="" label="All" />
-          <Tab className="tabBtn" value="draft" label="Draft" />
-          <Tab className="tabBtn" value="publish" label="Published" />
+          <Tab
+            className="tabBtn"
+            value=""
+            label={`All(${
+              +mapsCount["publish"] || 0 + +mapsCount["draft"] || 0
+            })`}
+          ></Tab>
+          <Tab
+            className="tabBtn"
+            value="draft"
+            label={`Draft(${mapsCount["draft"] || 0})`}
+          />
+          <Tab
+            className="tabBtn"
+            value="publish"
+            label={`Published(${mapsCount["publish"] || 0})`}
+          />
         </Tabs>
         <div className="filterGrp">
           <DateRangePicker
