@@ -2,7 +2,7 @@ import GoogleMapReact from "google-map-react";
 import { useEffect, useRef, useState } from "react";
 import { addCustomControl } from "../Maps/AddMap/CustomControls/NavigationOnMaps";
 import { MapTypeOptions } from "../Maps/AddMap/CustomControls/MapTypeOptions";
-import { SearchAutoComplete } from "../Maps/AddMap/CustomControls/SearchAutoComplete";
+// import { SearchAutoComplete } from "../Maps/AddMap/CustomControls/SearchAutoComplete";
 import { mapOptions } from "@/lib/constants/mapConstants";
 
 const GoogleMapComponent = ({ OtherMapOptions }: any) => {
@@ -21,12 +21,12 @@ const GoogleMapComponent = ({ OtherMapOptions }: any) => {
     createInfoWindow(map);
     addCustomControl({ map, maps, mapRef, infoWindowRef });
     MapTypeOptions(map, maps, setMapType);
-    SearchAutoComplete({
-      placesService,
-      maps,
-      map,
-      mapRef,
-    });
+    // SearchAutoComplete({
+    //   placesService,
+    //   maps,
+    //   map,
+    //   mapRef,
+    // });
     OtherMapOptions(map, maps);
   };
 

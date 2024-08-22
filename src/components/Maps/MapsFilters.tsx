@@ -1,6 +1,7 @@
-import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
+import { mapsFilterOptions } from "@/lib/constants/mapConstants";
+import { getSingleMapDetailsAPI } from "@/services/maps";
 import { Button, InputAdornment, Tab, Tabs, TextField } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import dayjs from "dayjs";
 import Image from "next/image";
 import {
   useParams,
@@ -11,11 +12,10 @@ import {
 import { useEffect, useState } from "react";
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.css";
-import dayjs from "dayjs";
+import AutoCompleteSearch from "../Core/AutoCompleteSearch";
 import AddMapDrawer from "./AddMap/AddMapDrawer";
-import { getSingleMapDetailsAPI } from "@/services/maps";
 
-const MapsFilters = ({ getAllMaps, mapsData }: any) => {
+const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
   const router = useRouter();
   const path = usePathname();
   const params = useSearchParams();
@@ -35,6 +35,13 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   const [status, setStatus] = useState<string | null>(
     params.get("status") || null
   );
+  const sortFilter = mapsFilterOptions?.find(
+    (item: any) =>
+      item?.title &&
+      item?.value == (params?.get("sort_type") && params?.get("sort_by"))
+  );
+  const [selecteValue, setSelectValue] = useState<any>(sortFilter || null);
+
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
   );
@@ -60,6 +67,26 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
       status: encodeURIComponent(newValue),
       page: 1,
     });
+  };
+
+  const handleSortFilter = (newValue: any) => {
+    if (newValue) {
+      setSelectValue(newValue);
+      getAllMaps({
+        ...searchParams,
+        sort_by: newValue?.value,
+        sort_type: newValue?.title,
+        page: 1,
+      });
+    } else {
+      setSelectValue(null);
+      getAllMaps({
+        ...searchParams,
+        sort_by: "",
+        sort_type: "",
+        page: 1,
+      });
+    }
   };
 
   const formatDate = (date: any) => {
@@ -115,6 +142,15 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
     );
   }, [params]);
 
+  useEffect(() => {
+    if (selecteValue) {
+      handleSortFilter(selecteValue);
+    } else {
+      handleSortFilter(null);
+      setSelectValue(null);
+    }
+  }, [selecteValue]);
+
   return (
     <>
       <div className="mapHeaderContainer">
@@ -126,11 +162,41 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
           value={searchParams?.status ? searchParams?.status : ""}
           onChange={handleStatusChange}
         >
-          <Tab className="tabBtn" value="" label="All" />
-          <Tab className="tabBtn" value="draft" label="Draft" />
-          <Tab className="tabBtn" value="publish" label="Published" />
+          <Tab
+            className="tabBtn"
+            value=""
+            label={`All(${
+              +mapsCount["publish"] || 0 + +mapsCount["draft"] || 0
+            })`}
+          ></Tab>
+          <Tab
+            className="tabBtn"
+            value="draft"
+            label={`Draft(${mapsCount["draft"] || 0})`}
+          />
+          <Tab
+            className="tabBtn"
+            value="publish"
+            label={`Published(${mapsCount["publish"] || 0})`}
+          />
         </Tabs>
         <div className="filterGrp">
+          <TextField
+            className="defaultTextFeild"
+            variant="outlined"
+            type="search"
+            size="small"
+            value={searchString}
+            onChange={handleSearchChange}
+            placeholder="Search"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Image src="/search-icon.svg" alt="" width={15} height={15} />
+                </InputAdornment>
+              ),
+            }}
+          />
           <DateRangePicker
             className="defaultDatePicker"
             value={
@@ -149,21 +215,11 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
             ]}
             placement="bottomEnd"
           />
-          <TextField
-            className="defaultTextFeild"
-            variant="outlined"
-            type="search"
-            size="small"
-            value={searchString}
-            onChange={handleSearchChange}
-            placeholder="Search"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Image src="/search-icon.svg" alt="" width={15} height={15} />
-                </InputAdornment>
-              ),
-            }}
+          <AutoCompleteSearch
+            data={mapsFilterOptions}
+            setSelectValue={setSelectValue}
+            selectedValue={selecteValue}
+            placeholder="Sort Filter"
           />
           <Button
             className="addNewBtn"

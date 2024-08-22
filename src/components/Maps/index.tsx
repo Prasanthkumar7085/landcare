@@ -7,6 +7,7 @@ import {
   changeStatusOfMapAPI,
   deleteMapAPI,
   getAllListMapsAPI,
+  getMapsCounts,
 } from "@/services/maps";
 import {
   Box,
@@ -27,6 +28,7 @@ import LoadingComponent from "../Core/LoadingComponent";
 import ShareLinkDialog from "../Core/ShareLinkDialog";
 import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
+import { MapsController } from "../../../lib/controllers/mapsController";
 
 const Maps = () => {
   const useParam = useSearchParams();
@@ -42,6 +44,8 @@ const Maps = () => {
   const [singleMapDetails, setSingleMapDetails] = useState<any>({});
   const [shareLinkDialogOpen, setShareDialogOpen] = useState<boolean>(false);
   const [shareMenuOpen, setShareMenuOpen] = useState<any>(false);
+  const [mapsCount, setMapsCount] = useState<any>([]);
+
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
   );
@@ -72,16 +76,20 @@ const Maps = () => {
     from_date = searchParams?.from_date,
     to_date = searchParams?.to_date,
     status = searchParams?.status,
+    sort_by = searchParams?.sort_by,
+    sort_type = searchParams?.sort_type,
   }: Partial<ListMapsApiProps>) => {
     setLoading(true);
     try {
       let queryParams: any = {
         page: page ? page : 1,
-        limit: limit ? limit : 8,
+        limit: limit ? limit : 12,
         search_string: search_string ? search_string : "",
         from_date: from_date ? from_date : "",
         to_date: to_date ? to_date : "",
         status: status ? status : "",
+        sort_by: sort_by ? sort_by : "",
+        sort_type: sort_type ? sort_type : "",
       };
       let searchParams = {
         ...queryParams,
@@ -98,6 +106,20 @@ const Maps = () => {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+  const countOfMaps = async () => {
+    try {
+      const response: any = await getMapsCounts();
+      let mapsCounts = {
+        publish: response?.data?.find((item: any) => item.status == "publish")
+          ?.count,
+        draft: response?.data?.find((item: any) => item.status == "draft")
+          ?.count,
+      };
+      setMapsCount(mapsCounts);
+    } catch (err: any) {
+      console.error(err);
     }
   };
 
@@ -134,11 +156,13 @@ const Maps = () => {
   useEffect(() => {
     getAllMaps({
       page: searchParams?.page ? searchParams?.page : 1,
-      limit: searchParams?.limit ? searchParams?.limit : 8,
+      limit: searchParams?.limit ? searchParams?.limit : 12,
       search_string: searchParams?.search_string,
       from_date: searchParams?.from_date,
       to_date: searchParams?.to_date,
       status: searchParams?.status,
+      sort_by: searchParams?.sort_by,
+      sort_type: searchParams?.sort_type,
     });
   }, [
     searchParams?.status,
@@ -164,6 +188,10 @@ const Maps = () => {
     }
   }, [searchParams?.search_string]);
 
+  useEffect(() => {
+    countOfMaps();
+  }, []);
+
   const capturePageNum = (value: number) => {
     getAllMaps({
       ...searchParams,
@@ -185,9 +213,14 @@ const Maps = () => {
       Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
     );
   }, [useParam]);
+
   return (
     <div className="allMapsContainer">
-      <MapsFilters getAllMaps={getAllMaps} mapsData={mapsData} />
+      <MapsFilters
+        getAllMaps={getAllMaps}
+        mapsData={mapsData}
+        mapsCount={mapsCount}
+      />
       <Box>
         {mapsData?.length ? (
           <div className="mapListContainer">
@@ -195,7 +228,13 @@ const Maps = () => {
               ? mapsData.map((item: any, index: number) => {
                   return (
                     <Card className="eachListCard" key={index}>
-                      <div className="imgBlock">
+                      <div
+                        className="imgBlock"
+                        style={{ cursor: "pointer" }}
+                        // onClick={() => {
+                        //   router.push(`/view-map/${item?.id}`);
+                        // }}
+                      >
                         <Image
                           className="mapImg"
                           style={{
@@ -259,6 +298,9 @@ const Maps = () => {
                                 : item?.title
                               : "--"}
                           </Tooltip>
+                        </Typography>
+                        <Typography className="cardTitle">
+                          {item?.status ? item?.status?.toUpperCase() : "--"}
                         </Typography>
                         <Typography className="cardDesc">
                           <Tooltip

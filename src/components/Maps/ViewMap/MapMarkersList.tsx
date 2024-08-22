@@ -68,7 +68,7 @@ const MapMarkersList = ({
           data={getOrginazationTypes() || []}
           setSelectValue={setSelectedOrginazation}
           selectedValue={selectedOrginazation}
-          placeholder="Select Organization Type"
+          placeholder="Select Type"
         />
         {/* <AutoCompleteSearch
           data={markerFilterOptions}
