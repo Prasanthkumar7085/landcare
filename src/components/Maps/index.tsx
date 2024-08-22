@@ -107,7 +107,7 @@ const Maps = () => {
   const countOfMaps = async () => {
     try {
       const response: any = await getMapsCounts();
-      console.log(response?.data, "response");
+
       let mapsCounts = {
         publish: response?.data?.find((item: any) => item.status == "publish")
           ?.count,
@@ -166,10 +166,8 @@ const Maps = () => {
       to_date: searchParams?.to_date,
       status: searchParams?.status,
     });
-  }, [searchParams]);
-  useEffect(() => {
     countOfMaps();
-  }, []);
+  }, [searchParams]);
 
   const capturePageNum = (value: number) => {
     getAllMaps({
