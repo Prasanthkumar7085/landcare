@@ -132,12 +132,6 @@ const Maps = () => {
   };
 
   useEffect(() => {
-    setSearchParams(
-      Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
-    );
-  }, [useParam]);
-
-  useEffect(() => {
     getAllMaps({
       page: searchParams?.page ? searchParams?.page : 1,
       limit: searchParams?.limit ? searchParams?.limit : 8,
@@ -146,7 +140,29 @@ const Maps = () => {
       to_date: searchParams?.to_date,
       status: searchParams?.status,
     });
-  }, [searchParams]);
+  }, [
+    searchParams?.status,
+    searchParams?.page,
+    searchParams?.limit,
+    searchParams?.from_date,
+    searchParams?.to_date,
+  ]);
+
+  useEffect(() => {
+    if (searchParams?.search_string) {
+      const debounce = setTimeout(() => {
+        getAllMaps({
+          page: searchParams?.page ? searchParams?.page : 1,
+          limit: searchParams?.limit ? searchParams?.limit : 8,
+          search_string: searchParams?.search_string,
+          from_date: searchParams?.from_date,
+          to_date: searchParams?.to_date,
+          status: searchParams?.status,
+        });
+      }, 1000);
+      return () => clearTimeout(debounce);
+    }
+  }, [searchParams?.search_string]);
 
   const capturePageNum = (value: number) => {
     getAllMaps({
@@ -164,6 +180,11 @@ const Maps = () => {
     });
   };
 
+  useEffect(() => {
+    setSearchParams(
+      Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
+    );
+  }, [useParam]);
   return (
     <div className="allMapsContainer">
       <MapsFilters getAllMaps={getAllMaps} mapsData={mapsData} />

@@ -190,4 +190,10 @@ export const markersImages = [
   "/markers/libraries.svg",
   "/markers/gyms.svg",
   "/markers/cinemas.svg",
+  "/markers/extra-marker1.svg",
+  "/markers/extra-marker2.svg",
+  "/markers/extra-marker3.svg",
+  "/markers/extra-marker4.svg",
+  "/markers/extra-marker5.svg",
+  "/markers/extra-marker6.svg",
 ];

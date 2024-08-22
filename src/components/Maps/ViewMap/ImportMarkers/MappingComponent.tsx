@@ -7,11 +7,14 @@ import {
 import {
   Autocomplete,
   Button,
+  IconButton,
   Paper,
   TextField,
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Image from "next/image";
 
 const MappingScreen = ({
   sheetHeaders,
@@ -53,6 +56,14 @@ const MappingScreen = ({
     }, {});
     setMappedValues(newMappedValues);
   };
+
+  const handleRemove = (key: string) => {
+    let options = { ...mappedValues };
+    delete options?.[key];
+    setMappedValues(options);
+    setSheetHeaders(Object.keys(options));
+  };
+
   return (
     <div className="mapping-screen">
       <div className="mappingHeader">
@@ -73,6 +84,7 @@ const MappingScreen = ({
             <tr>
               <th>Header</th>
               <th>Mapped Value</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -124,6 +136,20 @@ const MappingScreen = ({
                     )}
                   />
                 </td>
+                <td>
+                  <IconButton
+                    aria-label="remove"
+                    color="error"
+                    onClick={() => handleRemove(item)}
+                  >
+                    <Image
+                      src="/markers/add/delete.svg"
+                      alt="edit"
+                      width={20}
+                      height={20}
+                    />
+                  </IconButton>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -142,6 +168,12 @@ const MappingScreen = ({
           Cancel
         </Button>
         <Button
+          sx={{
+            cursor:
+              Object.values(mappedValues)?.length > 0
+                ? "pointer"
+                : "not-allowed",
+          }}
           disabled={Object.values(mappedValues)?.length > 0 ? false : true}
           onClick={async () => {
             let headers = Object.values(mappedValues);
