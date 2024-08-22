@@ -73,7 +73,7 @@ const Maps = () => {
     to_date = searchParams?.to_date,
     status = searchParams?.status,
     sort_by = searchParams?.sort_by,
-    sort_type = searchParams?.sort_type
+    sort_type = searchParams?.sort_type,
   }: Partial<ListMapsApiProps>) => {
     setLoading(true);
     try {
@@ -84,8 +84,8 @@ const Maps = () => {
         from_date: from_date ? from_date : "",
         to_date: to_date ? to_date : "",
         status: status ? status : "",
-        sort_by : sort_by ? sort_by : "",
-    sort_type : sort_type ? sort_type : "",
+        sort_by: sort_by ? sort_by : "",
+        sort_type: sort_type ? sort_type : "",
       };
       let searchParams = {
         ...queryParams,
@@ -144,7 +144,7 @@ const Maps = () => {
       to_date: searchParams?.to_date,
       status: searchParams?.status,
       sort_by: searchParams?.sort_by,
-    sort_type: searchParams?.sort_type
+      sort_type: searchParams?.sort_type,
     });
   }, [
     searchParams?.status,
@@ -201,7 +201,13 @@ const Maps = () => {
               ? mapsData.map((item: any, index: number) => {
                   return (
                     <Card className="eachListCard" key={index}>
-                      <div className="imgBlock">
+                      <div
+                        className="imgBlock"
+                        style={{ cursor: "pointer" }}
+                        // onClick={() => {
+                        //   router.push(`/view-map/${item?.id}`);
+                        // }}
+                      >
                         <Image
                           className="mapImg"
                           style={{
@@ -267,7 +273,7 @@ const Maps = () => {
                           </Tooltip>
                         </Typography>
                         <Typography className="cardTitle">
-                            {item?.status ? item?.status : "--"}
+                          {item?.status ? item?.status : "--"}
                         </Typography>
                         <Typography className="cardDesc">
                           <Tooltip
