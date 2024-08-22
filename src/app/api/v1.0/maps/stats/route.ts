@@ -10,5 +10,8 @@ export async function GET(req: NextRequest) {
         return authResult
     }
 
-    return mapsController.getStats();
+    const { searchParams } = new URL(req.url);
+    const query = Object.fromEntries(new URLSearchParams(Array.from(searchParams.entries())));
+
+    return mapsController.getStats(query);
 }

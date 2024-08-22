@@ -102,15 +102,16 @@ const Maps = () => {
       const { data, ...rest } = response;
       setMapsData(data);
       setPaginationDetails(rest);
+      await countOfMaps(queryParams);
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
-  const countOfMaps = async () => {
+  const countOfMaps = async (queryParams: any) => {
     try {
-      const response: any = await getMapsCounts(searchParams);
+      const response: any = await getMapsCounts(queryParams);
       let mapsCounts = {
         publish: response?.data?.find((item: any) => item.status == "publish")
           ?.count,
@@ -164,7 +165,6 @@ const Maps = () => {
       sort_by: searchParams?.sort_by,
       sort_type: searchParams?.sort_type,
     });
-    countOfMaps();
   }, [
     searchParams?.status,
     searchParams?.page,
@@ -184,7 +184,6 @@ const Maps = () => {
           to_date: searchParams?.to_date,
           status: searchParams?.status,
         });
-        countOfMaps();
       }, 1000);
       return () => clearTimeout(debounce);
     }
