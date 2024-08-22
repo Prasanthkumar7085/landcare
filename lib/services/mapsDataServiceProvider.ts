@@ -122,13 +122,17 @@ export class MapsDataServiceProvider {
             .where(eq(maps.id, id))
     }
 
-    async findStats() {
-        return await db
+    async findStats(filters: any) {
+        let countQuery: any = db
             .select({
                 status: maps.status,
                 count: sql`COUNT(*)`,
             })
             .from(maps)
             .groupBy(maps.status)
+        
+        countQuery = filterHelper.maps(countQuery, filters);
+
+        return await countQuery;
     }
 }

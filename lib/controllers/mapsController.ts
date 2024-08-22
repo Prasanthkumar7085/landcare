@@ -225,9 +225,9 @@ export class MapsController {
     }
   }
 
-  async getStats() {
+  async getStats(query:any) {
     try {
-      const stats = await mapsDataServiceProvider.findStats();
+      const stats = await mapsDataServiceProvider.findStats(query);
       return ResponseHelper.sendSuccessResponse(200, STATS_FETCHED, stats);
     } catch (error: any) {
       console.error(error);
