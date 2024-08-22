@@ -166,7 +166,7 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
             className="tabBtn"
             value=""
             label={`All(${
-              +mapsCount["publish"] || 0 + +mapsCount["draft"] || 0
+              (+mapsCount["publish"] || 0) + (+mapsCount["draft"] || 0)
             })`}
           ></Tab>
           <Tab

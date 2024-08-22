@@ -138,9 +138,12 @@ export const getSingleMarkerAPI = async (id: any, lat: any, lag: any) => {
   }
 };
 
-export const getMapsCounts = async () => {
+export const getMapsCounts = async (queryParams: any) => {
   try {
-    const { success, data } = await $fetch.get(`/api/v1.0/maps/stats`);
+    const { success, data } = await $fetch.get(
+      `/api/v1.0/maps/stats`,
+      queryParams
+    );
     if (!success) {
       return handleAPIErrorResponse(data);
     }

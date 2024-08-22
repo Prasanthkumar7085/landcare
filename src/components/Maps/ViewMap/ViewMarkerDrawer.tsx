@@ -299,7 +299,7 @@ const ViewMarkerDrawer = ({
                           }
                           alt={item?.organisation_type}
                         />
-                        {item?.organisation_type || "---"}
+                        {item?.organisation_type?.toUpperCase() || "---"}
                       </Typography>
                     )}
                   </div>

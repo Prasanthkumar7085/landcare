@@ -110,7 +110,7 @@ const Maps = () => {
   };
   const countOfMaps = async () => {
     try {
-      const response: any = await getMapsCounts();
+      const response: any = await getMapsCounts(searchParams);
       let mapsCounts = {
         publish: response?.data?.find((item: any) => item.status == "publish")
           ?.count,
@@ -164,6 +164,7 @@ const Maps = () => {
       sort_by: searchParams?.sort_by,
       sort_type: searchParams?.sort_type,
     });
+    countOfMaps();
   }, [
     searchParams?.status,
     searchParams?.page,
@@ -183,14 +184,11 @@ const Maps = () => {
           to_date: searchParams?.to_date,
           status: searchParams?.status,
         });
+        countOfMaps();
       }, 1000);
       return () => clearTimeout(debounce);
     }
   }, [searchParams?.search_string]);
-
-  useEffect(() => {
-    countOfMaps();
-  }, []);
 
   const capturePageNum = (value: number) => {
     getAllMaps({
