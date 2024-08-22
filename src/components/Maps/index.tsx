@@ -273,7 +273,7 @@ const Maps = () => {
                           </Tooltip>
                         </Typography>
                         <Typography className="cardTitle">
-                          {item?.status ? item?.status : "--"}
+                          {item?.status ? item?.status?.toUpperCase() : "--"}
                         </Typography>
                         <Typography className="cardDesc">
                           <Tooltip

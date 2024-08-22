@@ -83,12 +83,12 @@ export const mapsFilterOptions = [
     label: "Title (Z to A)",
   },
   {
-    title: "asc",
+    title: "desc",
     value: "created_at",
     label: "Newest First",
   },
   {
-    title: "desc",
+    title: "asc",
     value: "created_at",
     label: "Oldest First",
   },
