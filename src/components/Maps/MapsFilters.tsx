@@ -1,6 +1,7 @@
-import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
+import { mapsFilterOptions } from "@/lib/constants/mapConstants";
+import { getSingleMapDetailsAPI } from "@/services/maps";
 import { Button, InputAdornment, Tab, Tabs, TextField } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import dayjs from "dayjs";
 import Image from "next/image";
 import {
   useParams,
@@ -11,11 +12,8 @@ import {
 import { useEffect, useState } from "react";
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.css";
-import dayjs from "dayjs";
-import AddMapDrawer from "./AddMap/AddMapDrawer";
-import { getSingleMapDetailsAPI } from "@/services/maps";
 import AutoCompleteSearch from "../Core/AutoCompleteSearch";
-import { mapsFilterOptions } from "@/lib/constants/mapConstants";
+import AddMapDrawer from "./AddMap/AddMapDrawer";
 
 const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   const router = useRouter();
@@ -38,12 +36,10 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
     params.get("status") || null
   );
   const sortFilter = mapsFilterOptions?.find(
-    (item: any) => item?.title == (params?.get("sort_type"))
+    (item: any) => item?.title && item?.value == (params?.get("sort_type") && params?.get("sort_by"))
   );
   const [selecteValue, setSelectValue] = useState<any>(sortFilter || null);
-  console.log(selecteValue);
 
-  
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
   );
@@ -145,6 +141,14 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
       Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
     );
   }, [params]);
+  useEffect(() => {
+if(selecteValue){
+  handleSortFilter(selecteValue)
+}else {
+  handleSortFilter(null);
+  setSelectValue(null);
+}
+  },[selecteValue])
 
   return (
     <>
@@ -200,7 +204,6 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
           data={mapsFilterOptions}
           setSelectValue={setSelectValue}
           selectedValue={selecteValue}
-          handleSortFilter={handleSortFilter}
           placeholder="Sort Filter"
         />
           <Button

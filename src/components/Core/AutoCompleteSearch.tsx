@@ -8,12 +8,10 @@ const AutoCompleteSearch = ({
   data,
   setSelectValue,
   selectedValue,
-  handleSortFilter,
   placeholder,
 }: any) => {
   const handleChange = (_: any, newValue: any) => {
     setSelectValue(newValue);
-    handleSortFilter(newValue);
   };
 
   return (
