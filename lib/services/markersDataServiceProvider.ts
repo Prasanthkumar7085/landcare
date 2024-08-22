@@ -41,29 +41,43 @@ export class MarkersDataServiceProvider {
     }
 
     async findAllByMapId(skip: number, limit: number, mapId: number, filters: any) {
-        let queryData: any = db.select({
-            id: mapMarkers.id,
-            title: mapMarkers.title,
-            description: mapMarkers.description,
-            coordinates: mapMarkers.coordinates,
-            contact: mapMarkers.contact,
-            organisation_type: mapMarkers.organisation_type,
-            phone: mapMarkers.phone,
-            email: mapMarkers.email,
-            postal_address: mapMarkers.postal_address,
-            street_address: mapMarkers.street_address,
-            town: mapMarkers.town,
-            postcode: mapMarkers.postcode,
-            website: mapMarkers.website,
-            images: mapMarkers.images,
-            tags: mapMarkers.tags,
-            created_at: mapMarkers.created_at,
-            updated_at: mapMarkers.updated_at
-        })
-            .from(mapMarkers)
-            .where(eq(mapMarkers.map_id, mapId))
-            .limit(limit)
-            .offset(skip)
+        let queryData: any;
+        if (filters.limited_datatypes) {
+            queryData = db.select({
+                id: mapMarkers.id,
+                title: mapMarkers.title,
+                coordinates: mapMarkers.coordinates,
+                organisation_type: mapMarkers.organisation_type,
+            })
+                .from(mapMarkers)
+                .where(eq(mapMarkers.map_id, mapId))
+                .limit(limit)
+                .offset(skip)
+        } else {
+            queryData = db.select({
+                id: mapMarkers.id,
+                title: mapMarkers.title,
+                description: mapMarkers.description,
+                coordinates: mapMarkers.coordinates,
+                contact: mapMarkers.contact,
+                organisation_type: mapMarkers.organisation_type,
+                phone: mapMarkers.phone,
+                email: mapMarkers.email,
+                postal_address: mapMarkers.postal_address,
+                street_address: mapMarkers.street_address,
+                town: mapMarkers.town,
+                postcode: mapMarkers.postcode,
+                website: mapMarkers.website,
+                images: mapMarkers.images,
+                tags: mapMarkers.tags,
+                created_at: mapMarkers.created_at,
+                updated_at: mapMarkers.updated_at
+            })
+                .from(mapMarkers)
+                .where(eq(mapMarkers.map_id, mapId))
+                .limit(limit)
+                .offset(skip)
+        }
 
         // Apply dynamic sorting
         if (filters.sort_by && filters.sort_type) {

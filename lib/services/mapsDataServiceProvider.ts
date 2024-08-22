@@ -1,4 +1,4 @@
-import { eq, sql, and, ne, desc } from "drizzle-orm";
+import { eq, sql, and, ne, desc, asc } from "drizzle-orm";
 import { db } from "../database";
 import { lower, maps } from "../schemas/maps";
 import filterHelper from "../helpers/filterHelper";
@@ -25,7 +25,7 @@ export class MapsDataServiceProvider {
         const mapData = await db.select()
             .from(maps)
             .where(and(
-                eq(lower(maps.slug), slug.toLowerCase()),
+                eq(maps.slug, slug)
             ));
         return mapData[0];
     }
@@ -37,7 +37,7 @@ export class MapsDataServiceProvider {
 
     async findAll(page: number, limit: number, filters: any) {
 
-        let queryData:any = db.select({
+        let queryData: any = db.select({
             id: maps.id,
             title: maps.title,
             slug: maps.slug,
@@ -55,16 +55,26 @@ export class MapsDataServiceProvider {
             .orderBy(desc(maps.created_at))
             .limit(limit)
             .offset(limit * (page - 1));
+        
+        // Apply dynamic sorting
+        if (filters.sort_by && filters.sort_type) {
+            const sortColumn = maps[filters.sort_by];
+            const sortOrder = filters.sort_type.toLowerCase() === 'asc' ? asc(sortColumn) : desc(sortColumn);
+            queryData = queryData.orderBy(sortOrder);
+        } else {
+            // Default sorting
+            queryData = queryData.orderBy(desc(maps.created_at));
+        }
 
         queryData = filterHelper.maps(queryData, filters);
-        
+
         return await queryData;
     }
 
     async findMapsCount(query: any) {
         let countQuery: any = db.select({ count: sql`COUNT(*)` })
             .from(maps)
-            
+
         countQuery = filterHelper.maps(countQuery, query);
         return countQuery;
 
@@ -86,7 +96,7 @@ export class MapsDataServiceProvider {
             .from(maps)
             .where(and(
                 eq(lower(maps.slug), slug.toLowerCase()),
-                ne(maps.id, id),
+                ne(maps.id, id)
             ))
         return mapData[0];
     }
@@ -110,5 +120,15 @@ export class MapsDataServiceProvider {
             .update(maps)
             .set(data)
             .where(eq(maps.id, id))
+    }
+
+    async findStats() {
+        return await db
+            .select({
+                status: maps.status,
+                count: sql`COUNT(*)`,
+            })
+            .from(maps)
+            .groupBy(maps.status)
     }
 }

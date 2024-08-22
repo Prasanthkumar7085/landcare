@@ -3,10 +3,12 @@ import { validateAccessToken } from "../../../../../../lib/middlewares/authMiddl
 import { MapsController } from "../../../../../../lib/controllers/mapsController";
 const mapsController = new MapsController();
 
+export async function GET(req: NextRequest) {
+    //Check authorization
+    const authResult: any = await validateAccessToken(req);
+    if (authResult.status === 403) {
+        return authResult
+    }
 
-
-
-export async function GET(req: NextRequest, { params }: any) {
-    
-    return mapsController.getMapBySlug(params);
+    return mapsController.getStats();
 }
