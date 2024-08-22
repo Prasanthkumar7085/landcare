@@ -59,19 +59,17 @@ const Navbar: React.FC<pageProps> = ({ children }) => {
               width={150}
             />
           </div>
-          <p
-            className={pathname === "/maps" ? "pagetitleActive" : "pageTitle"}
-            onClick={() => router.push("/maps")}
-          >
-            Maps
-          </p>
           <div className="profileGrp">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar sx={{ bgcolor: "orange" }}>
                 {userDetails?.name?.slice(0, 1).toUpperCase()}
               </Avatar>
             </IconButton>
-            <div className="profileName">
+            <div
+              className="profileName"
+              onClick={handleOpenUserMenu}
+              style={{ cursor: "pointer" }}
+            >
               <h4 className="profile">
                 {capitalizeFirstTwoWords(userDetails?.name)}
               </h4>

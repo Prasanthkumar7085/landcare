@@ -19,7 +19,7 @@ export default function RootLayout({
           {pathname == "/maps" ? <Navbar>{children}</Navbar> : children}
         </Providers>
       </body>
-      <Toaster richColors closeButton position="top-center"/>
+      <Toaster richColors closeButton position="top-center" />
     </html>
   );
 }
