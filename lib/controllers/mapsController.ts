@@ -32,7 +32,7 @@ export class MapsController {
 
       const existedMap = await mapsDataServiceProvider.findMapByTitle(normalizedTitle);
       if (existedMap) {
-          throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
+        throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
       }
 
       const existedSlugMap = await mapsDataServiceProvider.findMapBySlug(reqData.slug);
@@ -42,7 +42,7 @@ export class MapsController {
         } else {
           throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
         }
-      } 
+      }
 
       const reponseData = await mapsDataServiceProvider.create(reqData);
       return ResponseHelper.sendSuccessResponse(200, MAP_CREATED, reponseData[0]);
@@ -123,14 +123,16 @@ export class MapsController {
 
       const existedSlug = await mapsDataServiceProvider.findMapBySlugAndId(slug, params.id);
       if (existedSlug) {
-        throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
-      } else {
-        reqData.slug = reqData.slug + "-" + Date.now();
+        if (existedSlug.status === "archived") {
+          reqData.slug = reqData.slug + "-" + Date.now();
+        } else {
+          throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
+        }
       }
 
       await mapsDataServiceProvider.update(params.id, reqData);
-
       return ResponseHelper.sendSuccessResponse(200, MAP_UPDATED);
+
     } catch (error: any) {
       console.error(error);
       if (error.validation_error) {
