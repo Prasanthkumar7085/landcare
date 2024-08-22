@@ -87,6 +87,7 @@ export class MapsDataServiceProvider {
             .where(and(
                 eq(lower(maps.slug), slug.toLowerCase()),
                 ne(maps.id, id),
+                ne(maps.status, 'archived')
             ))
         return mapData[0];
     }
@@ -110,5 +111,15 @@ export class MapsDataServiceProvider {
             .update(maps)
             .set(data)
             .where(eq(maps.id, id))
+    }
+
+    async findStats() {
+        return await db
+            .select({
+                status: maps.status,
+                count: sql`COUNT(*)`,
+            })
+            .from(maps)
+            .groupBy(maps.status)
     }
 }
