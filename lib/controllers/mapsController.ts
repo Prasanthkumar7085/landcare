@@ -26,13 +26,17 @@ const markersDataServiceProvider = new MarkersDataServiceProvider();
 export class MapsController {
   async addMap(reqData: IMap, res: NextResponse) {
     try {
-      reqData.slug = makeSlug(reqData.title);
 
-      const existedMap = await mapsDataServiceProvider.findMapByTitle(
-        reqData.title
-      );
+      const normalizedTitle = reqData.title.trim().replace(/\s+/g, " ");
+      reqData.slug = makeSlug(normalizedTitle);
+
+      const existedMap = await mapsDataServiceProvider.findMapByTitle(normalizedTitle);
       if (existedMap) {
-        throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
+        if (existedMap.status === "archived") {
+          reqData.slug = reqData.slug + "-" + Date.now();
+        } else {
+          throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
+        }
       }
 
       const existedSlug = await mapsDataServiceProvider.findMapBySlug(reqData.slug);
@@ -43,7 +47,8 @@ export class MapsController {
       }
 
       const reponseData = await mapsDataServiceProvider.create(reqData);
-      return ResponseHelper.sendSuccessResponse(200, MAP_CREATED, "reponseData[0]");
+      return ResponseHelper.sendSuccessResponse(200, MAP_CREATED, reponseData[0]);
+
     } catch (error: any) {
       console.error(error);
       if (error.validation_error) {
@@ -105,14 +110,15 @@ export class MapsController {
   async updateOne(reqData: any, params: any) {
     try {
 
-      let slug = makeSlug(reqData.title);
+      const normalizedTitle = reqData.title.trim().replace(/\s+/g, " ");
+      let slug = makeSlug(normalizedTitle);
 
       const mapData: any = await mapsDataServiceProvider.findById(params.id);
       if (!mapData) {
         return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
       }
 
-      const existedMap: any = await mapsDataServiceProvider.findMapByTitleAndId(reqData.title, params.id);
+      const existedMap: any = await mapsDataServiceProvider.findMapByTitleAndId(normalizedTitle, params.id);
       if (existedMap) {
         throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
       }
@@ -223,7 +229,7 @@ export class MapsController {
     try {
       const stats = await mapsDataServiceProvider.findStats();
       return ResponseHelper.sendSuccessResponse(200, STATS_FETCHED, stats);
-    } catch (error: any) {  
+    } catch (error: any) {
       console.error(error);
       return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
