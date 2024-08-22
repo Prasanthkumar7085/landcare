@@ -70,6 +70,29 @@ export const markerFilterOptions = [
     label: "Oldest First",
   },
 ];
+
+export const mapsFilterOptions = [
+  {
+    title: "asc",
+    value: "title",
+    label: "Title (A to Z)",
+  },
+  {
+    title: "desc",
+    value: "title",
+    label: "Title (Z to A)",
+  },
+  {
+    title: "asc",
+    value: "created_at",
+    label: "Newest First",
+  },
+  {
+    title: "desc",
+    value: "created_at",
+    label: "Oldest First",
+  },
+];
 export const mapOptions = {
   styles: [
     {
