@@ -67,9 +67,11 @@ const MapMarkersListDialog = ({
 
   const getAllMapMarkers = async ({
     page = 1,
-    limit = 8,
+    limit = 12,
     search_string = search,
     type = selectType?.title,
+    sort_by = "",
+  sort_type = "",
   }) => {
     setShowLoading(true);
     try {
@@ -78,6 +80,8 @@ const MapMarkersListDialog = ({
         page: page,
         limit: limit,
         organisation_type: type ? type : "",
+        sort_by: sort_by,
+      sort_type: sort_type,
       };
       const response = await getAllMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
@@ -137,9 +141,11 @@ const MapMarkersListDialog = ({
   useEffect(() => {
     getAllMapMarkers({
       page: 1,
-      limit: 8,
+      limit: 12,
       search_string: search,
       type: selectType?.title,
+      sort_by : "",
+  sort_type : "",
     });
     getAllMapMarkersForOrginazations({
       search_string: search,
@@ -149,7 +155,7 @@ const MapMarkersListDialog = ({
 
   const capturePageNum = (value: number) => {
     getAllMapMarkers({
-      limit: 8,
+      limit: 12,
       page: value,
     });
   };
@@ -225,6 +231,7 @@ const MapMarkersListDialog = ({
       <div>
         <TanstackTableComponent
           data={markers}
+          getData ={getAllMapMarkers}
           columns={ListMarkersColumns({
             handleClose,
             setShareDialogOpen,
