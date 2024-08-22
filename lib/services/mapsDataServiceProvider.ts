@@ -25,8 +25,7 @@ export class MapsDataServiceProvider {
         const mapData = await db.select()
             .from(maps)
             .where(and(
-                eq(maps.slug, slug),
-                ne(maps.status, 'archived')
+                eq(maps.slug, slug)
             ));
         return mapData[0];
     }
@@ -97,8 +96,7 @@ export class MapsDataServiceProvider {
             .from(maps)
             .where(and(
                 eq(lower(maps.slug), slug.toLowerCase()),
-                ne(maps.id, id),
-                ne(maps.status, 'archived')
+                ne(maps.id, id)
             ))
         return mapData[0];
     }
