@@ -26,6 +26,7 @@ import {
 } from "@/lib/helpers/mapsHelpers";
 import { truncateText } from "@/lib/helpers/nameFormate";
 import AddMapDrawer from "../AddMap/AddMapDrawer";
+import { datePipe } from "@/lib/helpers/datePipe";
 
 const ViewMapDetailsDrawer = ({
   mapDetails,
@@ -148,7 +149,7 @@ const ViewMapDetailsDrawer = ({
 
           <Typography className="mapCreated">
             <Image src="/map/clock.svg" height={13} width={13} alt="" />
-            {dayjs(mapDetails?.created_at).format("MM-DD-YYYY")}
+            {datePipe(mapDetails?.created_at)}
           </Typography>
           <Tooltip
             title={

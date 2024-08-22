@@ -318,7 +318,6 @@ const ViewGoogleMap = () => {
       (params.get("marker_id") || searchParams?.marker_id) &&
       showMarkerPopup == false
     ) {
-      console.log("good");
       const markerEntry = markersRef.current.find(
         (entry: any) => entry.id == params.get("marker_id")
       );
