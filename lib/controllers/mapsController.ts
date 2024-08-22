@@ -39,12 +39,14 @@ export class MapsController {
         }
       }
 
-      const existedSlug = await mapsDataServiceProvider.findMapBySlug(reqData.slug);
-      if (existedSlug) {
-        throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
-      } else {
-        reqData.slug = reqData.slug + "-" + Date.now();
-      }
+      const existedSlugMap = await mapsDataServiceProvider.findMapBySlug(reqData.slug);
+      if (existedSlugMap) {
+        if (existedSlugMap.status === "archived") {
+          reqData.slug = reqData.slug + "-" + Date.now();
+        } else {
+          throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
+        }
+      } 
 
       const reponseData = await mapsDataServiceProvider.create(reqData);
       return ResponseHelper.sendSuccessResponse(200, MAP_CREATED, reponseData[0]);
