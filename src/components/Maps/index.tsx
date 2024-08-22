@@ -72,16 +72,20 @@ const Maps = () => {
     from_date = searchParams?.from_date,
     to_date = searchParams?.to_date,
     status = searchParams?.status,
+    sort_by = searchParams?.sort_by,
+    sort_type = searchParams?.sort_type
   }: Partial<ListMapsApiProps>) => {
     setLoading(true);
     try {
       let queryParams: any = {
         page: page ? page : 1,
-        limit: limit ? limit : 8,
+        limit: limit ? limit : 12,
         search_string: search_string ? search_string : "",
         from_date: from_date ? from_date : "",
         to_date: to_date ? to_date : "",
         status: status ? status : "",
+        sort_by : sort_by ? sort_by : "",
+    sort_type : sort_type ? sort_type : "",
       };
       let searchParams = {
         ...queryParams,
@@ -140,11 +144,13 @@ const Maps = () => {
   useEffect(() => {
     getAllMaps({
       page: searchParams?.page ? searchParams?.page : 1,
-      limit: searchParams?.limit ? searchParams?.limit : 8,
+      limit: searchParams?.limit ? searchParams?.limit : 12,
       search_string: searchParams?.search_string,
       from_date: searchParams?.from_date,
       to_date: searchParams?.to_date,
       status: searchParams?.status,
+      sort_by: searchParams?.sort_by,
+    sort_type: searchParams?.sort_type
     });
   }, [searchParams]);
 
@@ -238,6 +244,9 @@ const Maps = () => {
                                 : item?.title
                               : "--"}
                           </Tooltip>
+                        </Typography>
+                        <Typography className="cardTitle">
+                            {item?.status ? item?.status : "--"}
                         </Typography>
                         <Typography className="cardDesc">
                           <Tooltip

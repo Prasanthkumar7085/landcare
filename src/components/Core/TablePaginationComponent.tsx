@@ -31,7 +31,7 @@ const TablePaginationComponent = ({ paginationDetails, capturePageNum, captureRo
 
   const [limitOptions] = useState(
 
-    [8, 12, 24, 48, 100]
+    [12, 24, 48, 100]
   );
 
   return (

@@ -14,6 +14,8 @@ import "rsuite/dist/rsuite.css";
 import dayjs from "dayjs";
 import AddMapDrawer from "./AddMap/AddMapDrawer";
 import { getSingleMapDetailsAPI } from "@/services/maps";
+import AutoCompleteSearch from "../Core/AutoCompleteSearch";
+import { mapsFilterOptions } from "@/lib/constants/mapConstants";
 
 const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   const router = useRouter();
@@ -35,6 +37,13 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
   const [status, setStatus] = useState<string | null>(
     params.get("status") || null
   );
+  const sortFilter = mapsFilterOptions?.find(
+    (item: any) => item?.title == (params?.get("sort_type"))
+  );
+  const [selecteValue, setSelectValue] = useState<any>(sortFilter || null);
+  console.log(selecteValue);
+
+  
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
   );
@@ -60,6 +69,28 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
       status: encodeURIComponent(newValue),
       page: 1,
     });
+  };
+
+  const handleSortFilter = (
+    newValue: any
+  ) => {
+    if(newValue){
+    setSelectValue(newValue);
+    getAllMaps({
+      ...searchParams,
+      sort_by: newValue?.value,
+      sort_type: newValue?.title,
+      page: 1,
+    });
+  }else {
+    setSelectValue(null);
+    getAllMaps({
+      ...searchParams,
+      sort_by: "",
+      sort_type: "",
+      page: 1,
+    });
+  }
   };
 
   const formatDate = (date: any) => {
@@ -131,6 +162,22 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
           <Tab className="tabBtn" value="publish" label="Published" />
         </Tabs>
         <div className="filterGrp">
+          <TextField
+            className="defaultTextFeild"
+            variant="outlined"
+            type="search"
+            size="small"
+            value={searchString}
+            onChange={handleSearchChange}
+            placeholder="Search"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Image src="/search-icon.svg" alt="" width={15} height={15} />
+                </InputAdornment>
+              ),
+            }}
+          />
           <DateRangePicker
             className="defaultDatePicker"
             value={
@@ -149,22 +196,13 @@ const MapsFilters = ({ getAllMaps, mapsData }: any) => {
             ]}
             placement="bottomEnd"
           />
-          <TextField
-            className="defaultTextFeild"
-            variant="outlined"
-            type="search"
-            size="small"
-            value={searchString}
-            onChange={handleSearchChange}
-            placeholder="Search"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Image src="/search-icon.svg" alt="" width={15} height={15} />
-                </InputAdornment>
-              ),
-            }}
-          />
+           <AutoCompleteSearch
+          data={mapsFilterOptions}
+          setSelectValue={setSelectValue}
+          selectedValue={selecteValue}
+          handleSortFilter={handleSortFilter}
+          placeholder="Sort Filter"
+        />
           <Button
             className="addNewBtn"
             variant="contained"
