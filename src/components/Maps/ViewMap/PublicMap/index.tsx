@@ -394,6 +394,10 @@ const PublicMap = () => {
               setSelectedOrginazation={setSelectedOrginazation}
               selectedOrginazation={selectedOrginazation}
               getSingleMapMarkers={getSingleMapMarkers}
+              setMarkers={setMarkers}
+              setSingleMarkers={setSingleMarkers}
+              markers={markers}
+              singleMarkers={singleMarkers}
             />
           </div>
         </div>

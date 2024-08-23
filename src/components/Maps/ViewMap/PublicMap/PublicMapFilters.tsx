@@ -10,6 +10,10 @@ const PublicMapFilters = ({
   setSelectedOrginazation,
   selectedOrginazation,
   getSingleMapMarkers,
+  setMarkers,
+  setSingleMarkers,
+  markers,
+  singleMarkers,
 }: any) => {
   const getOrginazationTypes = () => {
     let orginisationTypesOptions: any = Object?.keys(
@@ -23,25 +27,50 @@ const PublicMapFilters = ({
     return orginisationTypesOptions;
   };
 
-  const handleSearchChange = (event: any) => {
-    const newSearchString = event.target.value;
+  const handleFilterChange = (searchString?: string, newValue?: any) => {
+    const newSearchString = searchString
+      ? searchString.toLowerCase().trim()
+      : "";
+    const selectedOrganization = newValue?.title ? newValue : "";
+
+    let filteredMarkers: any[] = [...singleMarkers];
+
+    if (selectedOrganization?.title) {
+      filteredMarkers = filteredMarkers.filter(
+        (item: any) => item?.organisation_type === selectedOrganization?.title
+      );
+    }
+
+    // Apply search string filter if applicable
+    if (newSearchString) {
+      filteredMarkers = filteredMarkers.filter((item: any) =>
+        item.title.toLowerCase().includes(newSearchString)
+      );
+    }
+
+    setMarkers(filteredMarkers);
     setSearchString(newSearchString);
-    getSingleMapMarkers({
-      search_string: encodeURIComponent(newSearchString),
-    });
+    setSingleMarkers(singleMarkers);
+    if (newValue) {
+      setSelectedOrginazation(newValue);
+    } else {
+      setSelectedOrginazation(null);
+    }
+  };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchString = event.target.value.toLowerCase().trim();
+    setSearchString(newSearchString);
+    handleFilterChange(newSearchString, selectedOrginazation);
   };
 
   const handleSelectTypeChange = (newValue: any) => {
     if (newValue) {
       setSelectedOrginazation(newValue);
-      getSingleMapMarkers({
-        type: newValue?.title,
-      });
+      handleFilterChange(searchString, newValue);
     } else {
       setSelectedOrginazation(null);
-      getSingleMapMarkers({
-        type: "",
-      });
+      handleFilterChange(searchString, "");
     }
   };
 

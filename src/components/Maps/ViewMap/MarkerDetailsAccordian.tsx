@@ -136,6 +136,16 @@ const MarkerDetailsAccordian = ({
           </Typography>
         </div>
         <div className="eachMarkerDetail">
+          <Typography className="title">Fax</Typography>
+          <Typography className="value">
+            {singleMarkerLoading ? (
+              <Skeleton width="60%" />
+            ) : (
+              item?.fax || "---"
+            )}
+          </Typography>
+        </div>
+        <div className="eachMarkerDetail">
           <Typography className="title">Postcode</Typography>
           {singleMarkerLoading ? (
             <Skeleton width="60%" />

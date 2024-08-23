@@ -150,6 +150,16 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
     }
   }, [selecteValue]);
 
+
+  const getTextHtml = (text: string, count: number) => {
+    return (
+      <div>
+        <span>{text}</span>
+        <span className="count">{count}</span>
+      </div>
+    )
+  }
+
   return (
     <>
       <div className="mapHeaderContainer">
@@ -164,19 +174,18 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
           <Tab
             className="tabBtn"
             value=""
-            label={`All(${
-              (+mapsCount["publish"] || 0) + (+mapsCount["draft"] || 0)
-            })`}
+            label={getTextHtml("All", (+mapsCount["publish"] || 0) + (+mapsCount["draft"] || 0))}
           ></Tab>
           <Tab
             className="tabBtn"
             value="draft"
-            label={`Draft(${mapsCount["draft"] || 0})`}
+            label={getTextHtml("draft", mapsCount["draft"] || 0)}
+
           />
           <Tab
             className="tabBtn"
             value="publish"
-            label={`Published(${mapsCount["publish"] || 0})`}
+            label={getTextHtml("Published", mapsCount["publish"] || 0)}
           />
         </Tabs>
         <div className="filterGrp">
