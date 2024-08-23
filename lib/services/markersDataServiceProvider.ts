@@ -112,6 +112,7 @@ export class MarkersDataServiceProvider {
             website: mapMarkers.website,
             images: mapMarkers.images,
             tags: mapMarkers.tags,
+            fax: mapMarkers.fax,
             created_at: mapMarkers.created_at,
             updated_at: mapMarkers.updated_at
         })
