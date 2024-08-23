@@ -269,6 +269,7 @@ const Maps = () => {
                       alignItems: "center",
                     }}
                   >
+                    {item?.status == "publish" ? (
                     <IconButton
                       className="iconBtn1"
                       onClick={(event) => handleShareClick(event, item)}
@@ -280,6 +281,9 @@ const Maps = () => {
                         width={18}
                       />
                     </IconButton>
+                    ) : (
+                      ""
+                    )}
                     <IconButton
                       className="iconBtn2"
                       onClick={(event) => handleMenuClick(event, item)}
@@ -447,18 +451,21 @@ const Maps = () => {
             >
               Open In New Tab
             </MenuItem>
-
-            <MenuItem
-              className="menuItem"
-              onClick={() => {
-                copyURL(
-                  `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`
-                );
-                handleCloseUserMenu();
-              }}
-            >
-              Copy
-            </MenuItem>
+            {singleMapDetails?.status == "publish" ? (
+              <MenuItem
+                className="menuItem"
+                onClick={() => {
+                  copyURL(
+                    `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`
+                  );
+                  handleCloseUserMenu();
+                }}
+              >
+                Copy
+              </MenuItem>
+            ) : (
+              ""
+            )}
             <MenuItem
               className="menuItem"
               onClick={() => {
