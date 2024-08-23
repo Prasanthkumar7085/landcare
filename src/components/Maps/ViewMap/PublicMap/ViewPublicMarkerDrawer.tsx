@@ -273,6 +273,7 @@ const ViewPublicMarkerDrawer = ({
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
+                        textTransform: "capitalize",
                       }}
                     >
                       <img
@@ -290,7 +291,7 @@ const ViewPublicMarkerDrawer = ({
                         }
                         alt={item?.organisation_type}
                       />
-                      {item?.organisation_type?.toUpperCase() || "---"}
+                      {item?.organisation_type || "---"}
                     </Typography>
                   )}
                 </div>

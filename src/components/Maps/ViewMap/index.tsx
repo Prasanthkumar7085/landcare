@@ -188,13 +188,13 @@ const ViewGoogleMap = () => {
       markerData?.coordinates[1]
     );
     setSingleMarkerOpen(true);
-    map.setCenter(
-      new google.maps.LatLng(
-        markerData?.coordinates[0],
-        markerData?.coordinates[1]
-      )
-    );
-    map.setZoom(18);
+    // map.setCenter(
+    //   new google.maps.LatLng(
+    //     markerData?.coordinates[0],
+    //     markerData?.coordinates[1]
+    //   )
+    // );
+    // map.setZoom(18);
     if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
       markere.setAnimation(null);
     } else {
