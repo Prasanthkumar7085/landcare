@@ -1,6 +1,12 @@
 import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import { markerFilterOptions } from "@/lib/constants/mapConstants";
-import { Button, InputAdornment, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  capitalize,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React from "react";
@@ -38,7 +44,7 @@ const MapMarkersList = ({
       markersImagesWithOrganizationType
     ).map((key: any) => ({
       title: key,
-      label: key?.toUpperCase(),
+      label: capitalize(key) || key,
       img: markersImagesWithOrganizationType[key],
     }));
 
@@ -143,6 +149,7 @@ const MapMarkersList = ({
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
+                          textTransform: "capitalize",
                         }}
                       >
                         <img
@@ -157,8 +164,7 @@ const MapMarkersList = ({
                           }
                           alt={markerDetails?.organisation_type}
                         />
-                        {markerDetails?.organisation_type?.toUpperCase() ||
-                          "---"}
+                        {markerDetails?.organisation_type || "---"}
                       </span>
                     </div>
                     <div className="createdDate">

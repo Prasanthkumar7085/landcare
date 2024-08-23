@@ -54,6 +54,7 @@ export const ListMarkersColumns = ({
               display: "flex",
               flexDirection: "row",
               alignItems: "center",
+              textTransform: "capitalize",
             }}
           >
             <img

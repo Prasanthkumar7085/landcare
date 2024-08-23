@@ -440,3 +440,10 @@ export const updateMapWithCordinatesHelper = async ({
     console.error(err);
   }
 };
+
+const capitalize = (text: any) => {
+  const spacedText = text.replace(/(\D)(\d)/g, "$1 $2");
+  return spacedText
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char: string) => char.toUpperCase());
+};

@@ -1,7 +1,7 @@
 import TablePaginationComponent from "@/components/Core/TablePaginationComponent";
 import TanstackTableComponent from "@/components/Core/TanstackTableComponent";
 import SearchIcon from "@mui/icons-material/Search";
-import { InputAdornment, TextField } from "@mui/material";
+import { capitalize, InputAdornment, TextField } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
@@ -71,7 +71,7 @@ const MapMarkersListDialog = ({
     search_string = search,
     type = selectType?.title,
     sort_by = "",
-  sort_type = "",
+    sort_type = "",
   }) => {
     setShowLoading(true);
     try {
@@ -81,7 +81,7 @@ const MapMarkersListDialog = ({
         limit: limit,
         organisation_type: type ? type : "",
         sort_by: sort_by,
-      sort_type: sort_type,
+        sort_type: sort_type,
       };
       const response = await getAllMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
@@ -110,7 +110,7 @@ const MapMarkersListDialog = ({
       let orginisationTypesOptions: any = Object.keys(markersImages).map(
         (key: any) => ({
           title: key,
-          label: key?.toUpperCase(),
+          label: capitalize(key) || key,
           img: markersImages[key],
         })
       );
@@ -144,9 +144,10 @@ const MapMarkersListDialog = ({
       limit: 12,
       search_string: search,
       type: selectType?.title,
-      sort_by : "",
-  sort_type : "",
+      sort_by: "",
+      sort_type: "",
     });
+
     getAllMapMarkersForOrginazations({
       search_string: search,
       type: selectType?.title,
@@ -231,7 +232,7 @@ const MapMarkersListDialog = ({
       <div>
         <TanstackTableComponent
           data={markers}
-          getData ={getAllMapMarkers}
+          getData={getAllMapMarkers}
           columns={ListMarkersColumns({
             handleClose,
             setShareDialogOpen,

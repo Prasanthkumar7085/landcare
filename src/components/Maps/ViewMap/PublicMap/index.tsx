@@ -15,7 +15,7 @@ import {
   getSingleMarkerAPI,
 } from "@/services/maps";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import { InputAdornment, TextField } from "@mui/material";
+import { capitalize, InputAdornment, TextField } from "@mui/material";
 import Image from "next/image";
 import {
   useParams,
@@ -26,6 +26,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import styles from "../view-map.module.css";
 import ViewPublicMarkerDrawer from "./ViewPublicMarkerDrawer";
+import { capitalizeFirstLetter } from "@/lib/helpers/nameFormate";
 
 const PublicMap = () => {
   const { slug } = useParams();
@@ -335,7 +336,7 @@ const PublicMap = () => {
       markersImagesWithOrganizationType
     ).map((key: any) => ({
       title: key,
-      label: key?.toUpperCase(),
+      label: capitalizeFirstLetter(key) || key,
       img: markersImagesWithOrganizationType[key],
     }));
 
