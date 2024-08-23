@@ -127,11 +127,13 @@ const MarkerDetailsAccordian = ({
         </div>
         <div className="eachMarkerDetail">
           <Typography className="title">Contact</Typography>
-          {singleMarkerLoading ? (
-            <Skeleton width="60%" />
-          ) : (
-            item?.contact || "---"
-          )}
+          <Typography className="value">
+            {singleMarkerLoading ? (
+              <Skeleton width="60%" />
+            ) : (
+              item?.contact || "---"
+            )}
+          </Typography>
         </div>
         <div className="eachMarkerDetail">
           <Typography className="title">Postcode</Typography>
@@ -147,7 +149,10 @@ const MarkerDetailsAccordian = ({
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
-            <Typography className="footerText">
+            <Typography
+              className="footerText"
+              style={{ marginBottom: "0.3rem" }}
+            >
               <Image src="/map/email.svg" alt="" width={12} height={12} />
               <span>{item?.email || "---"} </span>
             </Typography>

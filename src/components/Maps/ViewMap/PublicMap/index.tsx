@@ -400,7 +400,7 @@ const PublicMap = () => {
             style={{
               position: "absolute",
               top: "20px",
-              left: "23%",
+              left: "30px",
               gap: "1.2rem ",
             }}
           >

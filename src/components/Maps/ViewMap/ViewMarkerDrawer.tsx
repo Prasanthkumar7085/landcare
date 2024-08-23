@@ -210,7 +210,7 @@ const ViewMarkerDrawer = ({
                     alt="Fallback"
                     height={100}
                     width={100}
-                    style={{ objectFit: "cover" }}
+                    style={{ objectFit: "contain" }}
                   />
                 )}
               </div>
@@ -338,11 +338,13 @@ const ViewMarkerDrawer = ({
                   </div>
                   <div className="eachMarkerDetail">
                     <Typography className="title">Contact</Typography>
-                    {singleMarkerLoading ? (
-                      <Skeleton width="60%" />
-                    ) : (
-                      item?.contact || "---"
-                    )}
+                    <Typography className="value">
+                      {singleMarkerLoading ? (
+                        <Skeleton width="60%" />
+                      ) : (
+                        item?.contact || "---"
+                      )}
+                    </Typography>
                   </div>
                   <div className="eachMarkerDetail">
                     <Typography className="title">Postcode</Typography>
@@ -358,7 +360,10 @@ const ViewMarkerDrawer = ({
                     {singleMarkerLoading ? (
                       <Skeleton width="60%" />
                     ) : (
-                      <Typography className="footerText">
+                      <Typography
+                        className="footerText"
+                        style={{ marginBottom: "0.3rem" }}
+                      >
                         <Image
                           src="/map/email.svg"
                           alt=""
@@ -382,7 +387,10 @@ const ViewMarkerDrawer = ({
                       </Typography>
                     )}
                   </div>
-                  <div className="btnGrp">
+                  <div
+                    className="btnGrp"
+                    style={{ gridTemplateColumns: "1fr " }}
+                  >
                     <Button
                       className="navigateBtn"
                       variant="contained"

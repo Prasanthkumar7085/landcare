@@ -57,7 +57,11 @@ $inputBorderColor: #9c9c9c;
             overflow: hidden;
             @include first-child-sticky;
           }
-
+          &:nth-child(2) {
+            background-color: $colorTableHeader;
+            position: sticky;
+            left: 86px;
+          }
           &:last-child {
             background-color: $colorTableHeader;
             border-left: 1px solid $whiteColor;
@@ -65,12 +69,12 @@ $inputBorderColor: #9c9c9c;
             overflow: hidden;
             @include last-child-sticky;
           }
+        }
 
-          cursor: default !important;
+        cursor: default !important;
 
-          img {
-            cursor: pointer;
-          }
+        img {
+          cursor: pointer;
         }
       }
     }
@@ -91,6 +95,11 @@ $inputBorderColor: #9c9c9c;
           &:first-child {
             @include first-child-sticky;
             border-right: 1px solid #edf2f7;
+          }
+          &:nth-child(2) {
+            border-right: 1px solid #edf2f7;
+            position: sticky;
+            left: 86px;
           }
 
           &:last-child {
@@ -116,6 +125,7 @@ $inputBorderColor: #9c9c9c;
     }
   }
 }
+
 #validationTable {
   .tableContainer {
     border-radius: 0 0 8px 8px;
