@@ -117,10 +117,12 @@ const AddMapDrawer = ({
 
         <div className="dialogBody">
           <div className="eachFeildGrp">
-            <label className="label">Map Name</label>
+            <label className="label">
+              Map Title<span style={{ color: "red" }}>*</span>
+            </label>
             <TextField
               className="defaultTextFeild text"
-              placeholder="Enter Map Name"
+              placeholder="Enter Map Title"
               value={mapDetails?.title}
               name="title"
               onChange={handleFieldValue}

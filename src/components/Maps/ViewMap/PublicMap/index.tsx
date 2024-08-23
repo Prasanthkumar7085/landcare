@@ -198,7 +198,13 @@ const PublicMap = () => {
       markerData?.coordinates[1]
     );
     setSingleMarkerOpen(true);
-
+    map.setCenter(
+      new google.maps.LatLng(
+        markerData?.coordinates[0],
+        markerData?.coordinates[1]
+      )
+    );
+    map.setZoom(6);
     if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
       bouncingMarkerRef.current.setAnimation(null);
     }
