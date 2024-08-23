@@ -334,12 +334,14 @@ const ViewGoogleMap = () => {
   };
 
   useEffect(() => {
-    getSingleMapMarkers({
-      search_string: searchString,
-      sort_by: markerOption?.value,
-      sort_type: markerOption?.title,
-      type: selectedOrginazation?.title,
-    });
+    if (selectedOrginazation) {
+      getSingleMapMarkers({
+        search_string: searchString,
+        sort_by: markerOption?.value,
+        sort_type: markerOption?.title,
+        type: selectedOrginazation?.title,
+      });
+    }
   }, [
     searchString,
     markerOption?.value,
@@ -350,6 +352,24 @@ const ViewGoogleMap = () => {
   useEffect(() => {
     getSingleMapDetails();
   }, []);
+  useEffect(() => {
+    if (selectedOrginazation) {
+      const newParams = {
+        ...searchParams,
+        organization_type: selectedOrginazation.title,
+      };
+      const searchParamsString = new URLSearchParams(newParams).toString();
+      router.replace(`${pathName}?${searchParamsString}`);
+      setSearchParams(newParams);
+    }
+  }, [selectedOrginazation]);
+  // useEffect(() => {
+  //   if (selectedOrginazation) {
+  //     getSingleMapMarkers({
+  //       type: selectedOrginazation.title,
+  //     });
+  //   }
+  // }, [selectedOrginazation]);
 
   useEffect(() => {
     if (map && googleMaps) {
