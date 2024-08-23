@@ -71,7 +71,7 @@ export const ListMarkersColumns = ({
           </span>
         );
       },
-      header: () => <span>Organisation Type</span>,
+      header: () => <span>Type</span>,
       footer: (props: any) => props.column.id,
       width: "150px",
     },

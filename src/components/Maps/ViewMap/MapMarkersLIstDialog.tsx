@@ -212,7 +212,7 @@ const MapMarkersListDialog = ({
             data={orginisationTypesOptions || []}
             setSelectValue={setSelectType}
             selectedValue={selectType}
-            placeholder="Select Organization Type"
+            placeholder="Select Type"
           />
           <IconButton
             className="iconBtn"

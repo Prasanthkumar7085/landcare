@@ -63,11 +63,6 @@ const TagsAddingComponent = ({
       return;
     }
 
-    if (popupFormData.tags.includes(editInput)) {
-      setErrorMessages({ tags: "This tag is already in the list." });
-      return;
-    }
-
     const updatedTags = [...popupFormData.tags];
     updatedTags[editIndex!] = editInput;
 

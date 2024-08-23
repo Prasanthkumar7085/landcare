@@ -280,7 +280,7 @@ const ViewMarkerDrawer = ({
                     )}
                   </div>
                   <div className="eachMarkerDetail">
-                    <Typography className="title">Organization Type</Typography>
+                    <Typography className="title">Type</Typography>
                     {singleMarkerLoading ? (
                       <Skeleton width="60%" />
                     ) : (

@@ -200,6 +200,16 @@ export const SheetHeaders = [
 ];
 
 export const markersImages = [
+  "/markers/Group-2.svg",
+  "/markers/Group-3.svg",
+  "/markers/Group-4.svg",
+  "/markers/Group-5.svg",
+  "/markers/Group-6.svg",
+  "/markers/Group-7.svg",
+  "/markers/Group-8.svg",
+  "/markers/Group-9.svg",
+  "/markers/Group.svg",
+  "/markers/Group-1.svg",
   "https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png",
   "https://maps.gstatic.com/mapfiles/ms2/micons/green-dot.png",
   "https://maps.gstatic.com/mapfiles/ms2/micons/ltblue-dot.png",
