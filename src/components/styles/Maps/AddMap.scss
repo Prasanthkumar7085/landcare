@@ -103,7 +103,7 @@
   }
 }
 .mapViewContainer {
-  width: 330px;
+  width: 400px;
   height: 100vh;
   background-color: $whiteColor;
   box-sizing: border-box;
@@ -959,7 +959,7 @@
   }
 }
 .signleMarkerView {
-  width: 330px;
+  width: 400px;
   height: 100vh;
   background-color: $whiteColor;
   box-sizing: border-box;
@@ -1006,7 +1006,7 @@
       }
     }
     .imgBlock {
-      height: 150px;
+      height: 200px;
       border-radius: 4px;
       position: relative;
       background: #fff;
@@ -1051,7 +1051,7 @@
       .markerTitle {
         color: $blackColor;
         font-family: $font-secondary;
-        font-size: $font_16;
+        font-size: $font_18;
         font-weight: $fw_400;
       }
       .markerLocation {
@@ -1060,16 +1060,16 @@
         gap: 4px;
         color: #005b8d;
         font-family: $font-secondary;
-        font-size: $font_12;
+        font-size: $font_14;
         font-weight: $fw_400;
       }
       .footerText {
         display: flex;
         align-items: center;
         gap: 4px;
-        color: rgba(0, 0, 0, 0.8);
+        color: #000;
         font-family: $font-secondary;
-        font-size: $font_12;
+        font-size: $font_16;
         font-weight: $fw-400;
         line-height: 100%;
       }
@@ -1077,9 +1077,9 @@
     .eachMarkerDetail {
       margin-bottom: 0.8rem;
       .title {
-        color: #000000b3;
+        color: #000;
         font-family: $font-secondary;
-        font-size: $font_13;
+        font-size: $font_16;
         font-weight: $fw_500;
       }
       .markerLocation {
@@ -1088,13 +1088,13 @@
         gap: 4px;
         color: #005b8d;
         font-family: $font-secondary;
-        font-size: $font_12;
+        font-size: $font_16;
         font-weight: $fw_400;
       }
       .value {
         color: $blackColor;
         font-family: $font-secondary;
-        font-size: $font_14;
+        font-size: $font_16;
         font-weight: $fw_400;
       }
     }
