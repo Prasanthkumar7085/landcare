@@ -3,6 +3,7 @@ import { checkAllowedValidText } from "@/lib/helpers/inputCheckingFunctions";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
 import {
   addMapWithCordinatesAPI,
+  getSingleMapDetailsAPI,
   updateMapWithCordinatesAPI,
 } from "@/services/maps";
 import CloseIcon from "@mui/icons-material/Close";
@@ -15,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
@@ -31,7 +32,7 @@ const AddMapDrawer = ({
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
   const router = useRouter();
   const dispatch = useDispatch();
-
+  const [mapData, setMapData] = useState<any>();
   const [errorMessages, setErrorMessages] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -40,11 +41,11 @@ const AddMapDrawer = ({
     if (value && checkAllowedValidText(value)) {
       let details = { ...mapDetails };
       details[name] = value;
-      setMapDetails(details);
+      setMapData(details);
     } else {
       let details = { ...mapDetails };
       delete details[name];
-      setMapDetails(details);
+      setMapData(details);
     }
   };
 
@@ -63,9 +64,9 @@ const AddMapDrawer = ({
     setLoading(true);
 
     let body = {
-      title: mapDetails?.title ? mapDetails?.title : "",
-      description: mapDetails?.description ? mapDetails?.description : "",
-      status: mapDetails?.status ? mapDetails?.status : "draft",
+      title: mapData?.title ? mapData?.title : "",
+      description: mapData?.description ? mapData?.description : "",
+      status: mapData?.status ? mapData?.status : "draft",
       geo_type: "polygon",
       geo_coordinates: polygonCoords.map((obj: any) => Object.values(obj)),
       geo_zoom: 14,
@@ -77,7 +78,7 @@ const AddMapDrawer = ({
         setAddMapDrawerOpen(false);
         dispatch(storeEditPolygonCoords([]));
         setErrorMessages([]);
-        setMapDetails({});
+        setMapData({});
         router.push(`/add-markers/${response?.data?.id || id}`);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
@@ -92,6 +93,25 @@ const AddMapDrawer = ({
       setLoading(false);
     }
   };
+
+  const getSingleMapData = async () => {
+    setLoading(true);
+    try {
+      const response = await getSingleMapDetailsAPI(id);
+      if (response?.status == 200 || response?.status == 201) {
+        setMapData(response?.data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getSingleMapData();
+  }, [addMapDrawerOpen]);
+
   return (
     <div>
       <Dialog className="addMapDrawer" open={addMapDrawerOpen}>
@@ -105,7 +125,7 @@ const AddMapDrawer = ({
               setAddMapDrawerOpen(false);
               getSingleMapDetails({});
               setErrorMessages([]);
-              setMapDetails({});
+              setMapData({});
               if (pathName === "/add-map") {
                 router.push("/maps");
               }
@@ -123,7 +143,7 @@ const AddMapDrawer = ({
             <TextField
               className="defaultTextFeild text"
               placeholder="Enter Map Title"
-              value={mapDetails?.title}
+              value={mapData?.title}
               name="title"
               onChange={handleFieldValue}
             />
@@ -135,7 +155,7 @@ const AddMapDrawer = ({
               className="defaultTextFeild multiline"
               multiline
               placeholder="Enter Map Description"
-              value={mapDetails?.description}
+              value={mapData?.description}
               rows={9}
               name="description"
               onChange={handleFieldValue}
@@ -148,7 +168,7 @@ const AddMapDrawer = ({
                 setAddMapDrawerOpen(false);
                 getSingleMapDetails({});
                 setErrorMessages([]);
-                setMapDetails({});
+                setMapData({});
                 if (pathName === "/add-map") {
                   router.push("/maps");
                 }
