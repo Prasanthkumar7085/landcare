@@ -157,7 +157,8 @@ const MapMarkersList = ({
                           }
                           alt={markerDetails?.organisation_type}
                         />
-                        {markerDetails?.organisation_type || "---"}
+                        {markerDetails?.organisation_type?.toUpperCase() ||
+                          "---"}
                       </span>
                     </div>
                     <div className="createdDate">

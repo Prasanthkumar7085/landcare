@@ -70,6 +70,29 @@ export const markerFilterOptions = [
     label: "Oldest First",
   },
 ];
+
+export const mapsFilterOptions = [
+  {
+    title: "asc",
+    value: "title",
+    label: "Title (A to Z)",
+  },
+  {
+    title: "desc",
+    value: "title",
+    label: "Title (Z to A)",
+  },
+  {
+    title: "desc",
+    value: "created_at",
+    label: "Newest First",
+  },
+  {
+    title: "asc",
+    value: "created_at",
+    label: "Oldest First",
+  },
+];
 export const mapOptions = {
   styles: [
     {
@@ -190,4 +213,10 @@ export const markersImages = [
   "/markers/libraries.svg",
   "/markers/gyms.svg",
   "/markers/cinemas.svg",
+  "/markers/extra-marker1.svg",
+  "/markers/extra-marker2.svg",
+  "/markers/extra-marker3.svg",
+  "/markers/extra-marker4.svg",
+  "/markers/extra-marker5.svg",
+  "/markers/extra-marker6.svg",
 ];

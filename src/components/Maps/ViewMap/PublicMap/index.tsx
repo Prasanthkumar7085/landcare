@@ -246,20 +246,27 @@ const PublicMap = () => {
     setLoading(true);
     try {
       const response = await getSingleMapDetailsBySlugAPI(slug);
-      if (response?.status == 200 || response?.status == 201) {
+
+      if (response?.status === 200 || response?.status === 201) {
         setMapDetails(response?.data);
-        await getSingleMapMarkersForOrginazations({ id: response?.data?.id });
-        await getSingleMapMarkers({ id: response?.data?.id });
+
+        const mapId = response?.data?.id;
+        const [markersForOrganizationsResult, markersResult] =
+          await Promise.allSettled([
+            getSingleMapMarkersForOrginazations({ id: mapId }),
+            getSingleMapMarkers({ id: mapId }),
+          ]);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error in getSingleMapDetails:", err);
     } finally {
       setLoading(false);
     }
   };
+
   const getSingleMapMarkersForOrginazations = async ({ id }: any) => {
     try {
-      let queryParams: any = { get_all: true };
+      let queryParams: any = { get_all: true, limited_datatypes: true };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
       let markersImages = getMarkersImagesBasedOnOrganizationType(data);
@@ -284,6 +291,7 @@ const PublicMap = () => {
         sort_by: sort_by,
         sort_type: sort_type,
         organisation_type: type ? type : "",
+        limited_datatypes: true,
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;

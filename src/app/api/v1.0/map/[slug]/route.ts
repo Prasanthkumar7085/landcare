@@ -7,11 +7,6 @@ const mapsController = new MapsController();
 
 
 export async function GET(req: NextRequest, { params }: any) {
-    //Check authorization
-    const authResult: any = await validateAccessToken(req);
-    if (authResult.status === 403) {
-        return authResult
-    }
     
     return mapsController.getMapBySlug(params);
 }
