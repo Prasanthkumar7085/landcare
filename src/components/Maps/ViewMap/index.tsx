@@ -363,14 +363,6 @@ const ViewGoogleMap = () => {
       setSearchParams(newParams);
     }
   }, [selectedOrginazation]);
-  // useEffect(() => {
-  //   if (selectedOrginazation) {
-  //     getSingleMapMarkers({
-  //       type: selectedOrginazation.title,
-  //     });
-  //   }
-  // }, [selectedOrginazation]);
-
   useEffect(() => {
     if (map && googleMaps) {
       if (params?.get("marker_id") || searchParams?.marker_id) {
