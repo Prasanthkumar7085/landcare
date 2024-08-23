@@ -69,6 +69,7 @@ const PublicMap = () => {
     coordinates: [],
   });
   const [filtersLoading, setFiltersLoading] = useState<boolean>(false);
+  const bouncingMarkerRef = useRef<google.maps.Marker | null>(null);
 
   const addMarkerEVent = (event: any, map: any, maps: any) => {
     const marker = new google.maps.Marker({
@@ -197,11 +198,15 @@ const PublicMap = () => {
       markerData?.coordinates[1]
     );
     setSingleMarkerOpen(true);
-    setSingleMarkerOpen(true);
+
+    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
+      bouncingMarkerRef.current.setAnimation(null);
+    }
     if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
       markere.setAnimation(null);
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
+      bouncingMarkerRef.current = markere;
     }
     if (drawingManagerRef.current) {
       drawingManagerRef.current.setOptions({ drawingControl: false });
@@ -371,7 +376,7 @@ const PublicMap = () => {
       }
       renderAllMarkers(markers, map, googleMaps);
     }
-  }, [map, googleMaps, markers, searchParams]);
+  }, [map, googleMaps, markers]);
 
   useEffect(() => {
     setSearchParams(

@@ -126,7 +126,7 @@ const ViewPublicMarkerDrawer = ({
             });
             boundToMapWithPolygon(polygonCoords, map);
             if (drawingManagerRef.current) {
-              drawingManagerRef.current.setOptions({ drawingControl: true });
+              drawingManagerRef.current.setOptions({ drawingControl: false });
             }
             onClose();
             setData([]);
