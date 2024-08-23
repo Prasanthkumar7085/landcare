@@ -110,8 +110,12 @@ const Maps = () => {
     }
   };
   const countOfMaps = async (queryParams: any) => {
+    let restParams = {
+      ...queryParams,
+    };
+    delete restParams.status;
     try {
-      const response: any = await getMapsCounts(queryParams);
+      const response: any = await getMapsCounts(restParams);
       let mapsCounts = {
         publish: response?.data?.find((item: any) => item.status == "publish")
           ?.count,
@@ -189,6 +193,26 @@ const Maps = () => {
     }
   }, [searchParams?.search_string]);
 
+  const handleImageClick = (event: any, id: any) => {
+    event.stopPropagation();
+    router.push(`/view-map/${id}`);
+  };
+
+  const handleShareClick = (event: any, item: any) => {
+    event.stopPropagation();
+    setShareMenuOpen(true);
+    handleOpenUserMenu(event);
+    setMapId(item?.id);
+    setSingleMapDetails(item);
+  };
+
+  const handleMenuClick = (event: any, item: any) => {
+    event.stopPropagation();
+    handleOpenUserMenu(event);
+    setMapId(item?.id);
+    setSingleMapDetails(item);
+  };
+
   const capturePageNum = (value: number) => {
     getAllMaps({
       ...searchParams,
@@ -221,136 +245,113 @@ const Maps = () => {
       <Box>
         {mapsData?.length ? (
           <div className="mapListContainer">
-            {mapsData?.length
-              ? mapsData.map((item: any, index: number) => {
-                  return (
-                    <Card className="eachListCard" key={index}>
-                      <div
-                        className="imgBlock"
-                        style={{ cursor: "pointer" }}
-                        // onClick={() => {
-                        //   router.push(`/view-map/${item?.id}`);
-                        // }}
-                      >
-                        <Image
-                          className="mapImg"
-                          style={{
-                            objectFit: item?.image ? "cover" : "contain",
-                          }}
-                          src={item?.image ? item?.image : "/no-image.png"}
-                          alt="map image"
-                          width={100}
-                          height={150}
-                        />
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                          }}
-                        >
-                          <IconButton
-                            className="iconBtn1"
-                            onClick={(event) => {
-                              setShareMenuOpen(true);
-                              handleOpenUserMenu(event);
-                              setMapId(item?.id);
-                              setSingleMapDetails(item);
-                            }}
-                          >
-                            <Image
-                              src="/map/redo-arrow-icon.svg"
-                              alt=""
-                              height={18}
-                              width={18}
-                            />
-                          </IconButton>
-                          <IconButton
-                            className="iconBtn2"
-                            onClick={(event) => {
-                              handleOpenUserMenu(event);
-                              setMapId(item?.id);
-                              setSingleMapDetails(item);
-                            }}
-                          >
-                            <Image
-                              src="/map/white-menu-bg.svg"
-                              alt=""
-                              height={25}
-                              width={25}
-                            />
-                          </IconButton>
-                        </div>
-                      </div>
+            {mapsData.map((item: any, index) => (
+              <Card className="eachListCard" key={index}>
+                <div
+                  className="imgBlock"
+                  style={{ cursor: "pointer" }}
+                  onClick={(event) => handleImageClick(event, item?.id)}
+                >
+                  <Image
+                    className="mapImg"
+                    style={{
+                      objectFit: item?.image ? "cover" : "contain",
+                    }}
+                    src={item?.image ? item?.image : "/no-image.png"}
+                    alt="map image"
+                    width={100}
+                    height={150}
+                  />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <IconButton
+                      className="iconBtn1"
+                      onClick={(event) => handleShareClick(event, item)}
+                    >
+                      <Image
+                        src="/map/redo-arrow-icon.svg"
+                        alt=""
+                        height={18}
+                        width={18}
+                      />
+                    </IconButton>
+                    <IconButton
+                      className="iconBtn2"
+                      onClick={(event) => handleMenuClick(event, item)}
+                    >
+                      <Image
+                        src="/map/white-menu-bg.svg"
+                        alt=""
+                        height={25}
+                        width={25}
+                      />
+                    </IconButton>
+                  </div>
+                </div>
 
-                      <div className="cardContent">
-                        <Typography className="cardTitle">
-                          <Tooltip
-                            title={item?.title?.length >= 50 ? item?.title : ""}
-                            placement="bottom"
-                          >
-                            {item?.title
-                              ? item?.title?.length >= 50
-                                ? `${item?.title.slice(0, 30)}....`
-                                : item?.title
-                              : "--"}
-                          </Tooltip>
-                        </Typography>
-                        <Typography className="cardTitle">
-                          {item?.status ? item?.status?.toUpperCase() : "--"}
-                        </Typography>
-                        <Typography className="cardDesc">
-                          <Tooltip
-                            title={
-                              item?.description?.length >= 50
-                                ? item?.description
-                                : ""
-                            }
-                            placement="bottom"
-                          >
-                            {item?.description
-                              ? item?.description?.length >= 50
-                                ? `${item?.description.slice(0, 30)}....`
-                                : item?.description
-                              : "--"}
-                          </Tooltip>
-                        </Typography>
-                      </div>
+                <div className="cardContent">
+                  <Typography className="cardTitle">
+                    <Tooltip
+                      title={item?.title?.length >= 50 ? item?.title : ""}
+                      placement="bottom"
+                    >
+                      {item?.title
+                        ? item?.title?.length >= 50
+                          ? `${item?.title.slice(0, 30)}....`
+                          : item?.title
+                        : "--"}
+                    </Tooltip>
+                  </Typography>
+                  <Typography
+                    className="cardTitle"
+                    style={{ textTransform: "capitalize" }}
+                  >
+                    {item?.status ? item?.status?.toLowerCase() : "--"}
+                  </Typography>
+                  <Typography className="cardDesc">
+                    <Tooltip
+                      title={
+                        item?.description?.length >= 50 ? item?.description : ""
+                      }
+                      placement="bottom"
+                    >
+                      {item?.description
+                        ? item?.description?.length >= 50
+                          ? `${item?.description.slice(0, 30)}....`
+                          : item?.description
+                        : "--"}
+                    </Tooltip>
+                  </Typography>
+                </div>
 
-                      <div className="cardFooter">
-                        <Typography className="createDate">
-                          <Image
-                            src="/map/clock.svg"
-                            height={13}
-                            width={13}
-                            alt=""
-                          />
-                          <span>
-                            {item?.created_at
-                              ? datePipe(item?.created_at)
-                              : "--"}
-                          </span>
-                        </Typography>
-                        <Button
-                          className="previewBtn"
-                          variant="text"
-                          onClick={() => {
-                            router.push(`/view-map/${item?.id}`);
-                          }}
-                        >
-                          <Image
-                            src="/login/view-icon.svg"
-                            height={13}
-                            width={13}
-                            alt=""
-                          />
-                          Preview
-                        </Button>
-                      </div>
-                    </Card>
-                  );
-                })
-              : ""}
+                <div className="cardFooter">
+                  <Typography className="createDate">
+                    <Image src="/map/clock.svg" height={13} width={13} alt="" />
+                    <span>
+                      {item?.created_at ? datePipe(item?.created_at) : "--"}
+                    </span>
+                  </Typography>
+                  <Button
+                    className="previewBtn"
+                    variant="text"
+                    onClick={() => router.push(`/view-map/${item?.id}`)}
+                  >
+                    <Image
+                      src="/login/view-icon.svg"
+                      height={13}
+                      width={13}
+                      alt=""
+                    />
+                    Preview
+                  </Button>
+                </div>
+              </Card>
+            ))}
           </div>
         ) : (
           ""
