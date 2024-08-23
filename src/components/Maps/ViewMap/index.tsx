@@ -196,13 +196,13 @@ const ViewGoogleMap = () => {
       markerData?.coordinates[1]
     );
     setSingleMarkerOpen(true);
-    // map.setCenter(
-    //   new google.maps.LatLng(
-    //     markerData?.coordinates[0],
-    //     markerData?.coordinates[1]
-    //   )
-    // );
-    // map.setZoom(18);
+    map.setCenter(
+      new google.maps.LatLng(
+        markerData?.coordinates[0],
+        markerData?.coordinates[1]
+      )
+    );
+    map.setZoom(18);
     if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
       markere.setAnimation(null);
     } else {
@@ -275,7 +275,7 @@ const ViewGoogleMap = () => {
 
   const getSingleMapMarkersForOrginazations = async ({ id }: any) => {
     try {
-      let queryParams: any = { get_all: true };
+      let queryParams: any = { get_all: true, limited_datatypes: true };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
       setAllMarkers(data);

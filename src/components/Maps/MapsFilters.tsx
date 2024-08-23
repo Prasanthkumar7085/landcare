@@ -225,7 +225,7 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
             className="addNewBtn"
             variant="contained"
             onClick={() => {
-              setAddMapDrawerOpen(true);
+              router.push("/add-map");
             }}
             endIcon={
               <Image src="/map/add-icon.svg" alt="" height={13} width={13} />
@@ -235,13 +235,6 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
           </Button>
         </div>
       </div>
-      <AddMapDrawer
-        mapDetails={mapDetails}
-        setMapDetails={setMapDetails}
-        addMapDrawerOpen={addMapDrawerOpen}
-        setAddMapDrawerOpen={setAddMapDrawerOpen}
-        getSingleMapDetails={getSingleMapDetails}
-      />
     </>
   );
 };

@@ -310,12 +310,14 @@ const PublicMap = () => {
   };
 
   const goTomarker = (data: any) => {
-    if (params.get("marker_id")) {
+    if (params.get("marker_id") || searchParams?.marker_id) {
       const markerEntry = markersRef.current.find(
-        (entry: any) => entry.id == params.get("marker_id")
+        (entry: any) =>
+          entry.id == (params.get("marker_id") || searchParams?.marker_id)
       );
       let markerDetails = data?.find(
-        (item: any) => item.id == params.get("marker_id")
+        (item: any) =>
+          item.id == (params.get("marker_id") || searchParams?.marker_id)
       );
       if (markerEntry) {
         const { marker } = markerEntry;
