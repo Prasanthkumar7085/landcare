@@ -176,9 +176,9 @@ export const ListMarkersColumns = ({
       id: "coordinates",
       sortDescFirst: false,
       cell: (info: any) => (
-        <span>{info.getValue() ? `[${info.getValue()}]` : "--"}</span>
+        <span>{info.getValue() ? `${info.getValue()}` : "--"}</span>
       ),
-      header: () => <span>Coordinates</span>,
+      header: () => <span>Latitude Longitude</span>,
       footer: (props: any) => props.column.id,
       width: "150px",
     },
@@ -217,7 +217,7 @@ export const ListMarkersColumns = ({
             <Image src="/map/table/view.svg" alt="" width={15} height={15} />
           </IconButton>
 
-          <IconButton
+          {/* <IconButton
             className="iconBtn"
             onClick={() => {
               setShareDialogOpen(true);
@@ -225,9 +225,9 @@ export const ListMarkersColumns = ({
             }}
           >
             <Image src="/map/table/share.svg" alt="" width={15} height={15} />
-          </IconButton>
+          </IconButton> */}
 
-          <IconButton
+          {/* <IconButton
             className="iconBtn"
             onClick={() => {
               copyURL(
@@ -236,7 +236,7 @@ export const ListMarkersColumns = ({
             }}
           >
             <Image src="/map/table/copy.svg" alt="" width={15} height={15} />
-          </IconButton>
+          </IconButton> */}
           <IconButton
             className="iconBtn"
             onClick={() => {

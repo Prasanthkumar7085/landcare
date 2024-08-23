@@ -408,7 +408,7 @@ const ViewMarkerDrawer = ({
                     >
                       {item ? "Navigate" : <Skeleton width="100%" />}
                     </Button>
-                    <IconButton
+                    {/* <IconButton
                       className="iconBtn"
                       onClick={() => {
                         setShareDialogOpen(true);
@@ -424,7 +424,7 @@ const ViewMarkerDrawer = ({
                       ) : (
                         <Skeleton variant="circular" width={13} height={13} />
                       )}
-                    </IconButton>
+                    </IconButton> */}
                   </div>
                 </>
               )}
