@@ -7,6 +7,7 @@ import {
   getLocationAddress,
   getMarkersImagesBasedOnOrganizationType,
   getPolygonWithMarkers,
+  renderer,
 } from "@/lib/helpers/mapsHelpers";
 import {
   getSingleMapDetailsAPI,
@@ -167,6 +168,7 @@ const PublicMap = () => {
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
+      renderer,
     });
   };
 
@@ -196,13 +198,6 @@ const PublicMap = () => {
     );
     setSingleMarkerOpen(true);
     setSingleMarkerOpen(true);
-    map.setCenter(
-      new google.maps.LatLng(
-        markerData?.coordinates[0],
-        markerData?.coordinates[1]
-      )
-    );
-    map.setZoom(18);
     if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
       markere.setAnimation(null);
     } else {
