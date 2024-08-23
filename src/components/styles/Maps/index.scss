@@ -13,15 +13,31 @@
 
       .tabBtn {
         min-height: inherit;
-        padding: 4px 0;
+        padding: 8px 0;
         text-transform: capitalize;
         font-family: $fontPrimary;
         font-size: $font_16;
         font-weight: $fw-400;
         color: #00000099;
         min-width: fit-content;
+        .count {
+          color: #385642 !important;
+          border-radius: 100px;
+          background: #3856421a;
+          padding: 2px 8px;
+          margin-left: 0.4rem;
+          font-size: $font_12 !important;
+        }
         &.Mui-selected {
           color: #385642 !important;
+          .count {
+            color: $whiteColor !important;
+            border-radius: 100px;
+            background: #385642;
+            padding: 2px 8px;
+            margin-left: 0.4rem;
+            font-size: $font_12 !important;
+          }
         }
       }
       .MuiTabs-indicator {
