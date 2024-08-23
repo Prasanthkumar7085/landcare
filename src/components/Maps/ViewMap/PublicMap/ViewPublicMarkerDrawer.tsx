@@ -138,29 +138,6 @@ const ViewPublicMarkerDrawer = ({
       {data?.map((item: any, index: any) => {
         return (
           <Box className="viewContent" key={index}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                marginTop: "0px",
-              }}
-            >
-              <IconButton
-                className="iconBtnMenu"
-                onClick={(e) => {
-                  setSelectedMarker(item);
-                  handleClick(e);
-                }}
-              >
-                <Image
-                  src="/map/menu-with-bg.svg"
-                  alt=""
-                  height={28}
-                  width={28}
-                />
-              </IconButton>
-            </div>
             <div className="imgBlock">
               {item?.images?.length > 0 ? (
                 <div
@@ -404,63 +381,13 @@ const ViewPublicMarkerDrawer = ({
                   >
                     {item ? "Navigate" : <Skeleton width="100%" />}
                   </Button>
-                  <IconButton
-                    className="iconBtn"
-                    onClick={() => {
-                      setShareDialogOpen(true);
-                    }}
-                  >
-                    {item ? (
-                      <Image
-                        src="/map/share-white.svg"
-                        alt=""
-                        width={13}
-                        height={13}
-                      />
-                    ) : (
-                      <Skeleton variant="circular" width={13} height={13} />
-                    )}
-                  </IconButton>
                 </div>
               </>
             )}
           </Box>
         );
       })}
-      {/* <Menu
-        sx={{ mt: 1 }}
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
-      >
-        <MenuItem
-          className="menuItem"
-          onClick={() => {
-            getSingleMarker(
-              selectedMarker?.id,
-              selectedMarker?.coordinates[0],
-              selectedMarker?.coordinates[1]
-            );
-            setShowMarkerPopup(true);
-            handleClose();
-          }}
-        >
-          Edit
-        </MenuItem>
-        <MenuItem
-          className="menuItem"
-          onClick={() => {
-            handleClickDeleteOpen();
-            handleClose();
-          }}
-        >
-          Delete
-        </MenuItem>
-      </Menu> */}
+
       <ShareLinkDialog
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}

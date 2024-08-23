@@ -98,7 +98,7 @@ const ViewMarkerDrawer = ({
       toast.success(response?.message);
       onClose();
       router.replace(`/view-map/${id}`);
-      getSingleMapMarkers({});
+      getSingleMapMarkers({ marker_id: "" });
       handleDeleteCose();
       let filtermarkers = allMarkers?.filter(
         (item: any) => item?.id !== selectedMarker?.id
@@ -126,7 +126,7 @@ const ViewMarkerDrawer = ({
           }
           onClick={() => {
             setMarkerData({});
-            router.replace(`${pathname}`);
+            getSingleMapMarkers({ marker_id: "" });
             markersRef.current.forEach(({ marker }: any) => {
               if (marker.getAnimation() === google.maps.Animation.BOUNCE) {
                 marker.setAnimation(null);
@@ -280,7 +280,7 @@ const ViewMarkerDrawer = ({
                     )}
                   </div>
                   <div className="eachMarkerDetail">
-                    <Typography className="title">Type</Typography>
+                    <Typography className="title"> Type</Typography>
                     {singleMarkerLoading ? (
                       <Skeleton width="60%" />
                     ) : (

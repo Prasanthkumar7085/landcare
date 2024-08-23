@@ -8,8 +8,8 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { useParams } from "next/navigation";
-import React from "react";
+import { useParams, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
 
 const MapMarkersList = ({
@@ -28,9 +28,15 @@ const MapMarkersList = ({
   mapDetails,
   selectedOrginazation,
   setSelectedOrginazation,
+  getData,
 }: any) => {
   const { id } = useParams();
+  const params = useSearchParams();
   const [open, setOpen] = React.useState(false);
+
+  const [searchParams, setSearchParams] = useState(
+    Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
+  );
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -51,6 +57,43 @@ const MapMarkersList = ({
     return orginisationTypesOptions;
   };
 
+  const handleSearchChange = (event: any) => {
+    const newSearchString = event.target.value;
+    setSearchString(newSearchString);
+    getData({
+      ...searchParams,
+      search_string: encodeURIComponent(newSearchString),
+    });
+  };
+
+  const handleSelectTypeChange = (newValue: any) => {
+    if (newValue) {
+      setSelectedOrginazation(newValue);
+      getData({
+        ...searchParams,
+        type: newValue?.title,
+      });
+    } else {
+      setSelectedOrginazation(null);
+      getData({
+        ...searchParams,
+        type: "",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (params?.get("organisation_type")) {
+      const selectType = getOrginazationTypes()?.find(
+        (item: any) => item?.title == params?.get("organisation_type")
+      );
+      setSelectedOrginazation(selectType);
+    }
+    if (params?.get("search_string")) {
+      setSearchString(params?.get("search_string"));
+    }
+  }, [params]);
+
   return (
     <div className="markersList">
       <div className="filterGrp">
@@ -61,7 +104,7 @@ const MapMarkersList = ({
           type="search"
           placeholder="Search"
           value={searchString}
-          onChange={(e) => setSearchString(e.target.value)}
+          onChange={handleSearchChange}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -75,6 +118,7 @@ const MapMarkersList = ({
           setSelectValue={setSelectedOrginazation}
           selectedValue={selectedOrginazation}
           placeholder="Select Type"
+          onChange={handleSelectTypeChange}
         />
         {/* <AutoCompleteSearch
           data={markerFilterOptions}

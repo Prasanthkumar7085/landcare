@@ -1101,7 +1101,7 @@
     .btnGrp {
       width: 100%;
       display: grid;
-      grid-template-columns: auto 13%;
+      // grid-template-columns: auto 13%;
       grid-column-gap: 12px;
       align-items: center;
       margin-block: 1rem 0.3rem;
@@ -1115,10 +1115,10 @@
         font-weight: $fw_500;
         padding-block: 3px;
       }
-      .iconBtn {
-        border-radius: 4px;
-        background: #202124;
-      }
+      // .iconBtn {
+      //   border-radius: 4px;
+      //   background: #202124;
+      // }
     }
   }
 }

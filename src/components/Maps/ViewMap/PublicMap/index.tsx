@@ -28,6 +28,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "../view-map.module.css";
 import ViewPublicMarkerDrawer from "./ViewPublicMarkerDrawer";
 import { capitalizeFirstLetter } from "@/lib/helpers/nameFormate";
+import PublicMapFilters from "./PublicMapFilters";
 
 const PublicMap = () => {
   const { slug } = useParams();
@@ -204,7 +205,6 @@ const PublicMap = () => {
         markerData?.coordinates[1]
       )
     );
-    map.setZoom(6);
     if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
       bouncingMarkerRef.current.setAnimation(null);
     }
@@ -313,6 +313,9 @@ const PublicMap = () => {
       });
       let coords = getPolygonWithMarkers(newCoords);
       setPolygonCoords(coords);
+      if (params?.get("marker_id") || searchParams?.marker_id) {
+        goTomarker(data);
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -339,38 +342,10 @@ const PublicMap = () => {
     }
   };
 
-  const getOrginazationTypes = () => {
-    let orginisationTypesOptions: any = Object?.keys(
-      markersImagesWithOrganizationType
-    ).map((key: any) => ({
-      title: key,
-      label: capitalizeFirstLetter(key) || key,
-      img: markersImagesWithOrganizationType[key],
-    }));
-
-    return orginisationTypesOptions;
-  };
-
   useEffect(() => {
-    if (mapDetails?.id) {
-      getSingleMapMarkers({
-        search_string: searchString,
-        sort_by: markerOption?.value,
-        sort_type: markerOption?.title,
-        id: mapDetails?.id,
-        type: selectedOrginazation?.title,
-      });
+    if (slug) {
+      getSingleMapDetails();
     }
-  }, [
-    searchString,
-    markerOption?.value,
-    markerOption?.title,
-    mapDetails?.id,
-    selectedOrginazation?.title,
-  ]);
-
-  useEffect(() => {
-    getSingleMapDetails();
   }, []);
 
   useEffect(() => {
@@ -410,61 +385,16 @@ const PublicMap = () => {
               gap: "1.2rem ",
             }}
           >
-            <TextField
-              variant="outlined"
-              size="small"
-              type="search"
-              placeholder="Search on title"
-              value={searchString}
-              sx={{
-                "& .MuiInputBase-root": {
-                  height: "38px",
-                  border: "1.4px solid #c8c7ce",
-                },
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "#f2f2f2",
-                  width: " 100%",
-                  height: "38px",
-                  background: "#ffffff",
-                  color: "black",
-                  fontWeight: 500,
-                  fontSize: "12px",
-                  padding: "8px 13px",
-                  boxSizing: " border-box",
-                  borderRadius: "6px",
-                  fontFamily: "Poppins",
-                },
-                fieldset: {
-                  border: " 0 !important",
-                },
-              }}
-              onChange={(e) => setSearchString(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Image
-                      src="/search-icon.svg"
-                      alt=""
-                      width={15}
-                      height={15}
-                    />
-                  </InputAdornment>
-                ),
-              }}
+            <PublicMapFilters
+              searchString={searchString}
+              setSearchString={setSearchString}
+              markersImagesWithOrganizationType={
+                markersImagesWithOrganizationType
+              }
+              setSelectedOrginazation={setSelectedOrginazation}
+              selectedOrginazation={selectedOrginazation}
+              getSingleMapMarkers={getSingleMapMarkers}
             />
-            <AutoCompleteSearch
-              data={getOrginazationTypes() || []}
-              setSelectValue={setSelectedOrginazation}
-              selectedValue={selectedOrginazation}
-              placeholder="Select Organization Type"
-            />
-
-            {/* <AutoCompleteSearch
-              data={markerFilterOptions}
-              setSelectValue={setMarkerOption}
-              selectedValue={markerOption}
-              placeholder="Sort Filter"
-            /> */}
           </div>
         </div>
         {singleMarkeropen == true || params?.get("marker_id") ? (

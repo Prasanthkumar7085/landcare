@@ -1,17 +1,17 @@
-import React from "react";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
 import { Box, Paper } from "@mui/material";
-import Image from "next/image";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 
 const AutoCompleteSearch = ({
   data,
   setSelectValue,
   selectedValue,
   placeholder,
+  onChange,
 }: any) => {
   const handleChange = (_: any, newValue: any) => {
     setSelectValue(newValue);
+    onChange(newValue);
   };
 
   return (

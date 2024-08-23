@@ -184,6 +184,7 @@ const ViewMapDetailsDrawer = ({
               mapDetails={mapDetails}
               selectedOrginazation={selectedOrginazation}
               setSelectedOrginazation={setSelectedOrginazation}
+              getData={getData}
             />
           </div>
         </div>

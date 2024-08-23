@@ -1,4 +1,11 @@
-import { SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import {
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import Image from "next/image";
 import { FC, useState, useEffect } from "react";
 
@@ -9,7 +16,12 @@ interface pageProps {
   getData: any;
 }
 
-const TanstackTableComponent: FC<pageProps> = ({ columns, data, getData, loading }) => {
+const TanstackTableComponent: FC<pageProps> = ({
+  columns,
+  data,
+  getData,
+  loading,
+}) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   let removeSortingForColumnIds = ["id", "actions"];
 
@@ -175,10 +187,7 @@ const TanstackTableComponent: FC<pageProps> = ({ columns, data, getData, loading
                           : "",
                     }}
                   >
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
               </tr>
@@ -197,8 +206,8 @@ const TanstackTableComponent: FC<pageProps> = ({ columns, data, getData, loading
                   <Image
                     src="/no-image-markers.svg"
                     alt=""
-                    height={130}
-                    width={210}
+                    height={500}
+                    width={300}
                   />
                 </div>
               </td>

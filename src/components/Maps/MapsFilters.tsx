@@ -23,8 +23,7 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
 
   const [searchString, setSearchString] = useState(
     params.get("search_string")
-      ? decodeURIComponent(params.get("search_string") as string)
-      : "" || ""
+      || ""
   );
   const [fromDate, setFromDate] = useState<string | null>(
     params.get("from_date") || null
@@ -52,7 +51,7 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
     setSearchString(newSearchString);
     getAllMaps({
       ...searchParams,
-      search_string: encodeURIComponent(newSearchString),
+      search_string: newSearchString,
       page: 1,
     });
   };
@@ -64,7 +63,7 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
     setStatus(newValue);
     getAllMaps({
       ...searchParams,
-      status: encodeURIComponent(newValue),
+      status: newValue,
       page: 1,
     });
   };

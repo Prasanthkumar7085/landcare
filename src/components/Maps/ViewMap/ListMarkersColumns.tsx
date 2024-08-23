@@ -199,52 +199,35 @@ export const ListMarkersColumns = ({
       id: "actions",
       cell: (info: any) => (
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <IconButton
-            className="iconBtn"
-            onClick={() => {
-              handleClose();
-              const markerEntry = markersRef.current.find(
-                (entry: any) => entry.id === info?.row?.original?.id
-              );
-              if (markerEntry) {
-                const { marker } = markerEntry;
-                handleMarkerClick(info?.row?.original, marker);
-              } else {
-                console.error(`Marker with ID ${id} not found.`);
-              }
-            }}
-          >
-            <Image src="/map/table/view.svg" alt="" width={15} height={15} />
-          </IconButton>
-
-          {/* <IconButton
-            className="iconBtn"
-            onClick={() => {
-              setShareDialogOpen(true);
-              setSingleMapDetails(info?.row?.original);
-            }}
-          >
-            <Image src="/map/table/share.svg" alt="" width={15} height={15} />
-          </IconButton> */}
-
-          {/* <IconButton
-            className="iconBtn"
-            onClick={() => {
-              copyURL(
-                `https://dev-landcare.vercel.app/landcare-map/${mapDetails?.slug}?marker_id=${info?.row?.original?.id}`
-              );
-            }}
-          >
-            <Image src="/map/table/copy.svg" alt="" width={15} height={15} />
-          </IconButton> */}
-          <IconButton
-            className="iconBtn"
-            onClick={() => {
-              handleClickDeleteOpen(info?.row?.original?.id);
-            }}
-          >
-            <Image src="/map/table/trash.svg" alt="" width={15} height={15} />
-          </IconButton>
+          <Tooltip title="View">
+            <IconButton
+              className="iconBtn"
+              onClick={() => {
+                handleClose();
+                const markerEntry = markersRef.current.find(
+                  (entry: any) => entry.id === info?.row?.original?.id
+                );
+                if (markerEntry) {
+                  const { marker } = markerEntry;
+                  handleMarkerClick(info?.row?.original, marker);
+                } else {
+                  console.error(`Marker with ID ${id} not found.`);
+                }
+              }}
+            >
+              <Image src="/map/table/view.svg" alt="" width={15} height={15} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="delete">
+            <IconButton
+              className="iconBtn"
+              onClick={() => {
+                handleClickDeleteOpen(info?.row?.original?.id);
+              }}
+            >
+              <Image src="/map/table/trash.svg" alt="" width={15} height={15} />
+            </IconButton>
+          </Tooltip>
         </div>
       ),
       header: () => <span>ACTIONS</span>,
