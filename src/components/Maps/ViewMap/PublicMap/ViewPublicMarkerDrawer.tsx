@@ -27,6 +27,7 @@ import {
 import React, { useState } from "react";
 import { toast } from "sonner";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MarkerDetailsAccordian from "../MarkerDetailsAccordian";
 
 const ViewPublicMarkerDrawer = ({
   onClose,
@@ -125,7 +126,7 @@ const ViewPublicMarkerDrawer = ({
             });
             boundToMapWithPolygon(polygonCoords, map);
             if (drawingManagerRef.current) {
-              drawingManagerRef.current.setOptions({ drawingControl: true });
+              drawingManagerRef.current.setOptions({ drawingControl: false });
             }
             onClose();
             setData([]);
@@ -200,16 +201,24 @@ const ViewPublicMarkerDrawer = ({
                   alt="Fallback"
                   height={100}
                   width={100}
-                  style={{ objectFit: "cover" }}
+                  style={{ objectFit: "contain" }}
                 />
               )}
             </div>
-            <Accordion key={index}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1-content"
-                id="panel1-header"
-              >
+            {data?.length > 1 ? (
+              <MarkerDetailsAccordian
+                singleMarkerLoading={singleMarkerLoading}
+                item={item}
+                index={index}
+                markersImagesWithOrganizationType={
+                  markersImagesWithOrganizationType
+                }
+                markersRef={markersRef}
+                handleMarkerClick={handleMarkerClick}
+                setShareDialogOpen={setShareDialogOpen}
+              />
+            ) : (
+              <>
                 <div className="headerDetails">
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" className="markerTitle" />
@@ -232,8 +241,6 @@ const ViewPublicMarkerDrawer = ({
                     )}
                   </Typography>
                 </div>
-              </AccordionSummary>
-              <AccordionDetails>
                 <div className="eachMarkerDetail">
                   <Typography className="title">Description</Typography>
                   {singleMarkerLoading ? (
@@ -252,6 +259,7 @@ const ViewPublicMarkerDrawer = ({
                     </Tooltip>
                   )}
                 </div>
+
                 <div className="eachMarkerDetail">
                   <Typography className="title">Tags</Typography>
                   {singleMarkerLoading ? (
@@ -273,6 +281,7 @@ const ViewPublicMarkerDrawer = ({
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
+                        textTransform: "capitalize",
                       }}
                     >
                       <img
@@ -301,7 +310,7 @@ const ViewPublicMarkerDrawer = ({
                   ) : item?.website ? (
                     <Tooltip
                       title={
-                        item?.website && item?.website?.length > 70
+                        item?.website && item?.website?.length > 40
                           ? item?.website
                           : ""
                       }
@@ -311,7 +320,7 @@ const ViewPublicMarkerDrawer = ({
                         target="_blank"
                         className="value"
                       >
-                        {truncateText(item?.website, 70) || "---"}
+                        {truncateText(item?.website, 40) || "---"}
                       </Link>
                     </Tooltip>
                   ) : (
@@ -320,11 +329,13 @@ const ViewPublicMarkerDrawer = ({
                 </div>
                 <div className="eachMarkerDetail">
                   <Typography className="title">Contact</Typography>
-                  {singleMarkerLoading ? (
-                    <Skeleton width="60%" />
-                  ) : (
-                    item?.contact || "---"
-                  )}
+                  <Typography className="value">
+                    {singleMarkerLoading ? (
+                      <Skeleton width="60%" />
+                    ) : (
+                      item?.contact || "---"
+                    )}
+                  </Typography>
                 </div>
                 <div className="eachMarkerDetail">
                   <Typography className="title">Postcode</Typography>
@@ -340,7 +351,10 @@ const ViewPublicMarkerDrawer = ({
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
                   ) : (
-                    <Typography className="footerText">
+                    <Typography
+                      className="footerText"
+                      style={{ marginBottom: "0.3rem" }}
+                    >
                       <Image
                         src="/map/email.svg"
                         alt=""
@@ -408,8 +422,8 @@ const ViewPublicMarkerDrawer = ({
                     )}
                   </IconButton>
                 </div>
-              </AccordionDetails>
-            </Accordion>
+              </>
+            )}
           </Box>
         );
       })}

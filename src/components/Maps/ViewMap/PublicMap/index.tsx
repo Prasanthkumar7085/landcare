@@ -7,6 +7,7 @@ import {
   getLocationAddress,
   getMarkersImagesBasedOnOrganizationType,
   getPolygonWithMarkers,
+  renderer,
 } from "@/lib/helpers/mapsHelpers";
 import {
   getSingleMapDetailsAPI,
@@ -15,7 +16,7 @@ import {
   getSingleMarkerAPI,
 } from "@/services/maps";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import { InputAdornment, TextField } from "@mui/material";
+import { capitalize, InputAdornment, TextField } from "@mui/material";
 import Image from "next/image";
 import {
   useParams,
@@ -26,6 +27,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import styles from "../view-map.module.css";
 import ViewPublicMarkerDrawer from "./ViewPublicMarkerDrawer";
+import { capitalizeFirstLetter } from "@/lib/helpers/nameFormate";
 
 const PublicMap = () => {
   const { slug } = useParams();
@@ -67,6 +69,7 @@ const PublicMap = () => {
     coordinates: [],
   });
   const [filtersLoading, setFiltersLoading] = useState<boolean>(false);
+  const bouncingMarkerRef = useRef<google.maps.Marker | null>(null);
 
   const addMarkerEVent = (event: any, map: any, maps: any) => {
     const marker = new google.maps.Marker({
@@ -166,6 +169,7 @@ const PublicMap = () => {
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
+      renderer,
     });
   };
 
@@ -194,18 +198,21 @@ const PublicMap = () => {
       markerData?.coordinates[1]
     );
     setSingleMarkerOpen(true);
-    setSingleMarkerOpen(true);
     map.setCenter(
       new google.maps.LatLng(
         markerData?.coordinates[0],
         markerData?.coordinates[1]
       )
     );
-    map.setZoom(18);
+    map.setZoom(6);
+    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
+      bouncingMarkerRef.current.setAnimation(null);
+    }
     if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
       markere.setAnimation(null);
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
+      bouncingMarkerRef.current = markere;
     }
     if (drawingManagerRef.current) {
       drawingManagerRef.current.setOptions({ drawingControl: false });
@@ -314,12 +321,14 @@ const PublicMap = () => {
   };
 
   const goTomarker = (data: any) => {
-    if (params.get("marker_id")) {
+    if (params.get("marker_id") || searchParams?.marker_id) {
       const markerEntry = markersRef.current.find(
-        (entry: any) => entry.id == params.get("marker_id")
+        (entry: any) =>
+          entry.id == (params.get("marker_id") || searchParams?.marker_id)
       );
       let markerDetails = data?.find(
-        (item: any) => item.id == params.get("marker_id")
+        (item: any) =>
+          item.id == (params.get("marker_id") || searchParams?.marker_id)
       );
       if (markerEntry) {
         const { marker } = markerEntry;
@@ -335,7 +344,7 @@ const PublicMap = () => {
       markersImagesWithOrganizationType
     ).map((key: any) => ({
       title: key,
-      label: key?.toUpperCase(),
+      label: capitalizeFirstLetter(key) || key,
       img: markersImagesWithOrganizationType[key],
     }));
 
@@ -373,7 +382,7 @@ const PublicMap = () => {
       }
       renderAllMarkers(markers, map, googleMaps);
     }
-  }, [map, googleMaps, markers, searchParams]);
+  }, [map, googleMaps, markers]);
 
   useEffect(() => {
     setSearchParams(
@@ -397,7 +406,7 @@ const PublicMap = () => {
             style={{
               position: "absolute",
               top: "20px",
-              left: "23%",
+              left: "30px",
               gap: "1.2rem ",
             }}
           >

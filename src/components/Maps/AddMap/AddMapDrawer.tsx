@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
@@ -27,7 +27,7 @@ const AddMapDrawer = ({
   getSingleMapDetails,
 }: any) => {
   const { id } = useParams();
-
+  const pathName = usePathname();
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -103,9 +103,12 @@ const AddMapDrawer = ({
             className="iconBtn"
             onClick={() => {
               setAddMapDrawerOpen(false);
-              getSingleMapDetails();
+              getSingleMapDetails({});
               setErrorMessages([]);
               setMapDetails({});
+              if (pathName === "/add-map") {
+                router.push("/maps");
+              }
             }}
           >
             <CloseIcon sx={{ fontSize: "1rem" }} />
@@ -114,10 +117,12 @@ const AddMapDrawer = ({
 
         <div className="dialogBody">
           <div className="eachFeildGrp">
-            <label className="label">Map Name</label>
+            <label className="label">
+              Map Title<span style={{ color: "red" }}>*</span>
+            </label>
             <TextField
               className="defaultTextFeild text"
-              placeholder="Enter Map Name"
+              placeholder="Enter Map Title"
               value={mapDetails?.title}
               name="title"
               onChange={handleFieldValue}
@@ -141,9 +146,12 @@ const AddMapDrawer = ({
               disabled={loading ? true : false}
               onClick={() => {
                 setAddMapDrawerOpen(false);
-                getSingleMapDetails();
+                getSingleMapDetails({});
                 setErrorMessages([]);
                 setMapDetails({});
+                if (pathName === "/add-map") {
+                  router.push("/maps");
+                }
               }}
             >
               Cancel

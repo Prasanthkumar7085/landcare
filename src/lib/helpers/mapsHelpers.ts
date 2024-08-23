@@ -5,6 +5,7 @@ import {
   subHeadersMappingConstants,
 } from "../constants/mapConstants";
 import { getStaticMapAPI, updateMapWithCordinatesAPI } from "@/services/maps";
+import { Cluster, ClusterStats, Marker } from "@googlemaps/markerclusterer";
 
 export const calculatePolygonCentroid = (coordinates: any) => {
   let x = 0,
@@ -130,7 +131,6 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
   const headers: any =
     jsonData[0]?.length > 15 ? jsonData[0].slice(0, 15) : jsonData[0];
   const rows: any = jsonData.slice(1);
-  console.log(jsonData, "Fdasfdsaasfads");
 
   const dataObjects = parseRows(rows, headers);
   const filteredDataObjects = dataObjects.filter((obj: any) => {
@@ -439,4 +439,38 @@ export const updateMapWithCordinatesHelper = async ({
   } catch (err) {
     console.error(err);
   }
+};
+
+export const renderer = {
+  render(
+    { count, position }: Cluster,
+    stats: ClusterStats,
+    map: google.maps.Map
+  ): Marker {
+    const color =
+      count > Math.max(10, stats.clusters.markers.mean) ? "#006600" : "#339900";
+
+    const svg = `<svg fill="${color}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="50" height="50">
+<circle cx="120" cy="120" opacity=".6" r="70" />
+<circle cx="120" cy="120" opacity=".3" r="90" />
+<circle cx="120" cy="120" opacity=".2" r="110" />
+<text x="50%" y="50%" style="fill:#fff" text-anchor="middle" font-size="50" dominant-baseline="middle" font-family="roboto,arial,sans-serif">${count}</text>
+</svg>`;
+    const title = `Cluster of ${count} markers`,
+      zIndex: number = Number(google.maps.Marker.MAX_ZINDEX) + count;
+    const parser = new DOMParser();
+    const svgEl = parser.parseFromString(svg, "image/svg+xml").documentElement;
+    svgEl.setAttribute("transform", "translate(0 25)");
+
+    const clusterOptions: google.maps.MarkerOptions = {
+      position,
+      zIndex,
+      title,
+      icon: {
+        url: `data:image/svg+xml;base64,${btoa(svg)}`,
+        anchor: new google.maps.Point(25, 25),
+      },
+    };
+    return new google.maps.Marker(clusterOptions);
+  },
 };

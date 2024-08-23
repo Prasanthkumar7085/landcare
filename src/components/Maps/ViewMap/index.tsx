@@ -6,13 +6,19 @@ import {
   getLocationAddress,
   getMarkersImagesBasedOnOrganizationType,
   getPolygonWithMarkers,
+  renderer,
 } from "@/lib/helpers/mapsHelpers";
 import {
   getSingleMapDetailsAPI,
   getSingleMapMarkersAPI,
   getSingleMarkerAPI,
 } from "@/services/maps";
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import {
+  Cluster,
+  ClusterStats,
+  Marker,
+  MarkerClusterer,
+} from "@googlemaps/markerclusterer";
 import {
   useParams,
   usePathname,
@@ -173,9 +179,11 @@ const ViewGoogleMap = () => {
         });
       });
     });
+
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
+      renderer,
     });
   };
 
@@ -267,7 +275,7 @@ const ViewGoogleMap = () => {
 
   const getSingleMapMarkersForOrginazations = async ({ id }: any) => {
     try {
-      let queryParams: any = { get_all: true };
+      let queryParams: any = { get_all: true, limited_datatypes: true };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
       setAllMarkers(data);

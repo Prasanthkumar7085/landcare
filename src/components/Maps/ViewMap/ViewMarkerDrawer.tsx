@@ -30,6 +30,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import MarkerDetailsAccordian from "./MarkerDetailsAccordian";
 
 const ViewMarkerDrawer = ({
   onClose,
@@ -209,16 +210,24 @@ const ViewMarkerDrawer = ({
                     alt="Fallback"
                     height={100}
                     width={100}
-                    style={{ objectFit: "cover" }}
+                    style={{ objectFit: "contain" }}
                   />
                 )}
               </div>
-              <Accordion key={index}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1-content"
-                  id="panel1-header"
-                >
+              {data?.length > 1 ? (
+                <MarkerDetailsAccordian
+                  singleMarkerLoading={singleMarkerLoading}
+                  item={item}
+                  index={index}
+                  markersImagesWithOrganizationType={
+                    markersImagesWithOrganizationType
+                  }
+                  markersRef={markersRef}
+                  handleMarkerClick={handleMarkerClick}
+                  setShareDialogOpen={setShareDialogOpen}
+                />
+              ) : (
+                <>
                   <div className="headerDetails">
                     {singleMarkerLoading ? (
                       <Skeleton width="60%" className="markerTitle" />
@@ -241,8 +250,6 @@ const ViewMarkerDrawer = ({
                       )}
                     </Typography>
                   </div>
-                </AccordionSummary>
-                <AccordionDetails>
                   <div className="eachMarkerDetail">
                     <Typography className="title">Description</Typography>
                     {singleMarkerLoading ? (
@@ -261,6 +268,7 @@ const ViewMarkerDrawer = ({
                       </Tooltip>
                     )}
                   </div>
+
                   <div className="eachMarkerDetail">
                     <Typography className="title">Tags</Typography>
                     {singleMarkerLoading ? (
@@ -282,6 +290,7 @@ const ViewMarkerDrawer = ({
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
+                          textTransform: "capitalize",
                         }}
                       >
                         <img
@@ -310,7 +319,7 @@ const ViewMarkerDrawer = ({
                     ) : item?.website ? (
                       <Tooltip
                         title={
-                          item?.website && item?.website?.length > 70
+                          item?.website && item?.website?.length > 40
                             ? item?.website
                             : ""
                         }
@@ -320,7 +329,7 @@ const ViewMarkerDrawer = ({
                           target="_blank"
                           className="value"
                         >
-                          {truncateText(item?.website, 70) || "---"}
+                          {truncateText(item?.website, 40) || "---"}
                         </Link>
                       </Tooltip>
                     ) : (
@@ -329,11 +338,13 @@ const ViewMarkerDrawer = ({
                   </div>
                   <div className="eachMarkerDetail">
                     <Typography className="title">Contact</Typography>
-                    {singleMarkerLoading ? (
-                      <Skeleton width="60%" />
-                    ) : (
-                      item?.contact || "---"
-                    )}
+                    <Typography className="value">
+                      {singleMarkerLoading ? (
+                        <Skeleton width="60%" />
+                      ) : (
+                        item?.contact || "---"
+                      )}
+                    </Typography>
                   </div>
                   <div className="eachMarkerDetail">
                     <Typography className="title">Postcode</Typography>
@@ -349,7 +360,10 @@ const ViewMarkerDrawer = ({
                     {singleMarkerLoading ? (
                       <Skeleton width="60%" />
                     ) : (
-                      <Typography className="footerText">
+                      <Typography
+                        className="footerText"
+                        style={{ marginBottom: "0.3rem" }}
+                      >
                         <Image
                           src="/map/email.svg"
                           alt=""
@@ -373,7 +387,10 @@ const ViewMarkerDrawer = ({
                       </Typography>
                     )}
                   </div>
-                  <div className="btnGrp">
+                  <div
+                    className="btnGrp"
+                    style={{ gridTemplateColumns: "1fr " }}
+                  >
                     <Button
                       className="navigateBtn"
                       variant="contained"
@@ -393,13 +410,13 @@ const ViewMarkerDrawer = ({
                           const { marker } = markerEntry;
                           handleMarkerClick(item, marker);
                         } else {
-                          console.error(`Marker with ID ${id} not found.`);
+                          console.error(`Marker with ID  not found.`);
                         }
                       }}
                     >
                       {item ? "Navigate" : <Skeleton width="100%" />}
                     </Button>
-                    <IconButton
+                    {/* <IconButton
                       className="iconBtn"
                       onClick={() => {
                         setShareDialogOpen(true);
@@ -415,10 +432,10 @@ const ViewMarkerDrawer = ({
                       ) : (
                         <Skeleton variant="circular" width={13} height={13} />
                       )}
-                    </IconButton>
+                    </IconButton> */}
                   </div>
-                </AccordionDetails>
-              </Accordion>
+                </>
+              )}
             </Box>
           );
         })}
