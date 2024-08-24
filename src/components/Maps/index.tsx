@@ -246,12 +246,15 @@ const Maps = () => {
                     width={100}
                     height={150}
                   />
+                  <div className="topStrip">
+                    <Typography
+                      className="stripTitle"
+                      style={{ background: item?.status == "publish" ? "#34a853" : "#F29900", textTransform: "capitalize" }}
+                    >
+                      {item?.status ? item?.status?.toLowerCase() : "--"}
+                    </Typography>
                   <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
+                   className="iconsDiv"
                   >
                     {item?.status == "publish" ? (
                       <IconButton
@@ -259,10 +262,10 @@ const Maps = () => {
                         onClick={(event) => handleShareClick(event, item)}
                       >
                         <Image
-                          src="/map/redo-arrow-icon.svg"
+                          src="/map/share-bg.svg"
                           alt=""
-                          height={18}
-                          width={18}
+                          height={30}
+                          width={30}
                         />
                       </IconButton>
                     ) : (
@@ -273,12 +276,13 @@ const Maps = () => {
                       onClick={(event) => handleMenuClick(event, item)}
                     >
                       <Image
-                        src="/map/white-menu-bg.svg"
+                        src="/map/menu-bg.svg"
                         alt=""
-                        height={25}
-                        width={25}
+                        height={30}
+                        width={30}
                       />
                     </IconButton>
+                  </div>
                   </div>
                 </div>
 
@@ -295,12 +299,7 @@ const Maps = () => {
                         : "--"}
                     </Tooltip>
                   </Typography>
-                  <Typography
-                    className="cardTitle"
-                    style={{ textTransform: "capitalize" }}
-                  >
-                    {item?.status ? item?.status?.toLowerCase() : "--"}
-                  </Typography>
+                 
                   <Typography className="cardDesc">
                     <Tooltip
                       title={

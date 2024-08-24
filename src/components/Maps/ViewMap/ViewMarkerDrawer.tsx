@@ -298,7 +298,7 @@ const ViewMarkerDrawer = ({
                           textTransform: "capitalize",
                         }}
                       >
-                        <img
+                        <Image
                           width={15}
                           height={15}
                           style={{
