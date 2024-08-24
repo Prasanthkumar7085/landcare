@@ -270,6 +270,7 @@ const MapMarkersList = ({
           handleMarkerClick={handleMarkerClick}
           getSingleMapMarkers={getSingleMapMarkers}
           mapDetails={mapDetails}
+          map={map}
         />
       )}
     </div>

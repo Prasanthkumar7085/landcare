@@ -37,6 +37,7 @@ const MapMarkersListDialog = ({
   handleMarkerClick,
   getSingleMapMarkers,
   mapDetails,
+  map,
 }: any) => {
   const { id } = useParams();
 
@@ -278,6 +279,7 @@ const MapMarkersListDialog = ({
             markers,
             mapDetails,
             markersImagesWithOrganizationType,
+            map,
           })}
           loading={showLoading}
         />
