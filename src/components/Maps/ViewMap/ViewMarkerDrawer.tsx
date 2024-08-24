@@ -31,6 +31,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MarkerDetailsAccordian from "./MarkerDetailsAccordian";
+import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
 
 const ViewMarkerDrawer = ({
   onClose,
@@ -52,6 +53,7 @@ const ViewMarkerDrawer = ({
   getSingleMarker,
   mapDetails,
   allMarkers,
+  searchParams,
 }: any) => {
   const { id } = useParams();
   const pathname = usePathname();
@@ -126,7 +128,6 @@ const ViewMarkerDrawer = ({
           }
           onClick={() => {
             setMarkerData({});
-            getSingleMapMarkers({ marker_id: "" });
             markersRef.current.forEach(({ marker }: any) => {
               if (marker.getAnimation() === google.maps.Animation.BOUNCE) {
                 marker.setAnimation(null);
@@ -138,6 +139,10 @@ const ViewMarkerDrawer = ({
             }
             onClose();
             setData([]);
+            let queries = { ...searchParams };
+            delete queries.marker_id;
+            let queryString = prepareURLEncodedParams("", queries);
+            router.replace(`${pathname}${queryString}`);
           }}
         >
           Back

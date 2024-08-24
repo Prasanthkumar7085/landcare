@@ -184,16 +184,20 @@ const ViewGoogleMap = () => {
         });
       });
     });
-
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
       renderer,
     });
+    if (params.get("marker_id") || searchParams?.marker_id) {
+      goTomarker(markers1);
+    }
   };
 
   const handleMarkerClick = (markerData: any, markere: google.maps.Marker) => {
-    let queryString = prepareURLEncodedParams("", searchParams);
+    let queries = { ...searchParams };
+    delete queries.marker_id;
+    let queryString = prepareURLEncodedParams("", queries);
     router.replace(`${pathName}${queryString}&marker_id=${markerData?.id}`);
     setPlaceDetails({});
     getSingleMarker(
@@ -208,7 +212,6 @@ const ViewGoogleMap = () => {
         markerData?.coordinates[1]
       )
     );
-    map.setZoom(18);
     if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
       bouncingMarkerRef.current.setAnimation(null);
     }
@@ -368,9 +371,7 @@ const ViewGoogleMap = () => {
 
   useEffect(() => {
     if (map && googleMaps) {
-      if (params?.get("marker_id") || searchParams?.marker_id) {
-        goTomarker(markers);
-      } else {
+      if (!params?.get("marker_id") || !searchParams?.marker_id) {
         boundToMapWithPolygon(polygonCoords, map);
       }
       renderAllMarkers(markers, map, googleMaps);
@@ -420,6 +421,7 @@ const ViewGoogleMap = () => {
             getSingleMarker={getSingleMarker}
             mapDetails={mapDetails}
             allMarkers={allMarkers}
+            searchParams={searchParams}
           />
         ) : (
           <ViewMapDetailsDrawer
@@ -447,6 +449,7 @@ const ViewGoogleMap = () => {
               getSingleMapMarkersForOrginazations
             }
             allMarkers={allMarkers}
+            searchParams={searchParams}
           />
         )}
         <MarkerPopup

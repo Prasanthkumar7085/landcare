@@ -74,7 +74,12 @@ const parseRows = (rows: any[], headers: any[]) => {
     headers.forEach((headerName: any, i: any) => {
       const mappedItem = subHeadersMappingConstants[headerName];
       const value = row[i];
-      obj[mappedItem] = parseField(value?.toString(), mappedItem);
+      obj[mappedItem] =
+        mappedItem == "organisation_type"
+          ? value
+            ? value?.toString()
+            : "None"
+          : parseField(value?.toString(), mappedItem);
     });
     return obj;
   });
@@ -306,19 +311,18 @@ export const getPolygonWithMarkers = (points: any) => {
 };
 
 export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
-  let organizationTypes: any = markersData?.map((item: any) => {
-    return item.organisation_type;
-  });
-  const uniqueOrganizationTypes = organizationTypes?.filter(
-    (value: any, index: any, self: any) => {
-      return (
-        value !== undefined &&
-        value !== null &&
-        value !== "" &&
-        self.indexOf(value) === index
-      );
-    }
+  let organizationTypes: any = markersData?.map(
+    (item: any) => item.organisation_type
   );
+  const uniqueOrganizationTypes = organizationTypes?.filter(
+    (value: any, index: any, self: any) =>
+      value !== undefined &&
+      value !== null &&
+      value !== "" &&
+      self.indexOf(value) === index
+  );
+
+  const noneImage = "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png";
 
   const OrganizationMarkersImages: Record<string, string> =
     uniqueOrganizationTypes
@@ -327,6 +331,10 @@ export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
         acc[type] = markersImages[index];
         return acc;
       }, {} as Record<string, string>);
+
+  if (OrganizationMarkersImages["None"]) {
+    OrganizationMarkersImages["None"] = noneImage;
+  }
 
   return OrganizationMarkersImages;
 };

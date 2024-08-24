@@ -177,22 +177,6 @@ const Maps = () => {
     searchParams?.to_date,
   ]);
 
-  useEffect(() => {
-    if (searchParams?.search_string) {
-      const debounce = setTimeout(() => {
-        getAllMaps({
-          page: searchParams?.page ? searchParams?.page : 1,
-          limit: searchParams?.limit ? searchParams?.limit : 8,
-          search_string: searchParams?.search_string,
-          from_date: searchParams?.from_date,
-          to_date: searchParams?.to_date,
-          status: searchParams?.status,
-        });
-      }, 1000);
-      return () => clearTimeout(debounce);
-    }
-  }, [searchParams?.search_string]);
-
   const handleImageClick = (event: any, id: any) => {
     event.stopPropagation();
     router.push(`/view-map/${id}`);
@@ -270,17 +254,17 @@ const Maps = () => {
                     }}
                   >
                     {item?.status == "publish" ? (
-                    <IconButton
-                      className="iconBtn1"
-                      onClick={(event) => handleShareClick(event, item)}
-                    >
-                      <Image
-                        src="/map/redo-arrow-icon.svg"
-                        alt=""
-                        height={18}
-                        width={18}
-                      />
-                    </IconButton>
+                      <IconButton
+                        className="iconBtn1"
+                        onClick={(event) => handleShareClick(event, item)}
+                      >
+                        <Image
+                          src="/map/redo-arrow-icon.svg"
+                          alt=""
+                          height={18}
+                          width={18}
+                        />
+                      </IconButton>
                     ) : (
                       ""
                     )}

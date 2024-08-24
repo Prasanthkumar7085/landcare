@@ -22,8 +22,7 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
   const param = useParams();
 
   const [searchString, setSearchString] = useState(
-    params.get("search_string")
-      || ""
+    params.get("search_string") || ""
   );
   const [fromDate, setFromDate] = useState<string | null>(
     params.get("from_date") || null
@@ -94,6 +93,20 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
     return dateFormat;
   };
 
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      getAllMaps({
+        page: searchParams?.page ? searchParams?.page : 1,
+        limit: searchParams?.limit ? searchParams?.limit : 8,
+        search_string: searchString,
+        from_date: searchParams?.from_date,
+        to_date: searchParams?.to_date,
+        status: searchParams?.status,
+      });
+    }, 1000);
+    return () => clearTimeout(debounce);
+  }, [searchString]);
+
   const handleDateRangeChange = (range: any) => {
     if (range) {
       const [start, end] = range;
@@ -150,15 +163,14 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
     }
   }, [selecteValue]);
 
-
   const getTextHtml = (text: string, count: number) => {
     return (
       <div>
         <span>{text}</span>
         <span className="count">{count}</span>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -174,13 +186,15 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
           <Tab
             className="tabBtn"
             value=""
-            label={getTextHtml("All", (+mapsCount["publish"] || 0) + (+mapsCount["draft"] || 0))}
+            label={getTextHtml(
+              "All",
+              (+mapsCount["publish"] || 0) + (+mapsCount["draft"] || 0)
+            )}
           ></Tab>
           <Tab
             className="tabBtn"
             value="draft"
             label={getTextHtml("draft", mapsCount["draft"] || 0)}
-
           />
           <Tab
             className="tabBtn"

@@ -40,8 +40,6 @@ const PublicMapFilters = ({
         (item: any) => item?.organisation_type === selectedOrganization?.title
       );
     }
-
-    // Apply search string filter if applicable
     if (newSearchString) {
       filteredMarkers = filteredMarkers.filter((item: any) =>
         item.title.toLowerCase().includes(newSearchString)

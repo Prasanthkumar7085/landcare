@@ -156,7 +156,6 @@ const PublicMap = () => {
         if (drawingManagerRef.current) {
           drawingManagerRef.current.setOptions({ drawingControl: false });
         }
-
         getLocationAddress({
           latitude,
           longitude,
@@ -166,12 +165,14 @@ const PublicMap = () => {
         });
       });
     });
-
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
       renderer,
     });
+    if (params.get("marker_id") || searchParams?.marker_id) {
+      goTomarker(markers1);
+    }
   };
 
   const getSingleMarker = async (marker_id: any, lat: any, lng: any) => {
@@ -313,9 +314,6 @@ const PublicMap = () => {
       });
       let coords = getPolygonWithMarkers(newCoords);
       setPolygonCoords(coords);
-      if (params?.get("marker_id") || searchParams?.marker_id) {
-        goTomarker(data);
-      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -335,6 +333,7 @@ const PublicMap = () => {
       );
       if (markerEntry) {
         const { marker } = markerEntry;
+        console.log(marker);
         handleMarkerClick(markerDetails, marker);
       } else {
         console.error(`Marker with ID ${mapDetails?.id} not found.`);
@@ -350,9 +349,7 @@ const PublicMap = () => {
 
   useEffect(() => {
     if (map && googleMaps) {
-      if (params?.get("marker_id") || searchParams?.marker_id) {
-        goTomarker(markers);
-      } else {
+      if (!params?.get("marker_id") || !searchParams?.marker_id) {
         boundToMapWithPolygon(polygonCoords, map);
       }
       renderAllMarkers(markers, map, googleMaps);

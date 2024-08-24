@@ -49,6 +49,7 @@ const ViewMapDetailsDrawer = ({
   setSelectedOrginazation,
   getSingleMapMarkersForOrginazations,
   allMarkers,
+  searchParams,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -185,6 +186,7 @@ const ViewMapDetailsDrawer = ({
               selectedOrginazation={selectedOrginazation}
               setSelectedOrginazation={setSelectedOrginazation}
               getData={getData}
+              searchParams={searchParams}
             />
           </div>
         </div>

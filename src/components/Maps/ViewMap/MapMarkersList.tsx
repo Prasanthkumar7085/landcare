@@ -1,5 +1,4 @@
 import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
-import { markerFilterOptions } from "@/lib/constants/mapConstants";
 import {
   Button,
   capitalize,
@@ -8,8 +7,8 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { useParams, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import React, { useEffect } from "react";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
 
 const MapMarkersList = ({
@@ -29,14 +28,10 @@ const MapMarkersList = ({
   selectedOrginazation,
   setSelectedOrginazation,
   getData,
+  searchParams,
 }: any) => {
   const { id } = useParams();
-  const params = useSearchParams();
   const [open, setOpen] = React.useState(false);
-
-  const [searchParams, setSearchParams] = useState(
-    Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
-  );
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -83,16 +78,17 @@ const MapMarkersList = ({
   };
 
   useEffect(() => {
-    if (params?.get("organisation_type")) {
+    if (searchParams?.organisation_type) {
       const selectType = getOrginazationTypes()?.find(
-        (item: any) => item?.title == params?.get("organisation_type")
+        (item: any) => item?.title == searchParams?.organisation_type
       );
+      console.log("selectType", selectType);
       setSelectedOrginazation(selectType);
     }
-    if (params?.get("search_string")) {
-      setSearchString(params?.get("search_string"));
+    if (searchParams?.search_string) {
+      setSearchString(searchParams?.search_string);
     }
-  }, [params]);
+  }, [searchParams, markersImagesWithOrganizationType]);
 
   return (
     <div className="markersList">
