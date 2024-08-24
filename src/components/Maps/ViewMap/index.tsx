@@ -288,12 +288,16 @@ const ViewGoogleMap = () => {
       const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
-        await getSingleMapMarkers({
+        const markersPromise = getSingleMapMarkers({
           marker_id: params?.get("marker_id") || searchParams?.marker_id,
         });
-        await getSingleMapMarkersForOrginazations({
+        const organizationsPromise = getSingleMapMarkersForOrginazations({
           id: response?.data?.id,
         });
+        const results = await Promise.allSettled([
+          markersPromise,
+          organizationsPromise,
+        ]);
       }
     } catch (err) {
       console.error(err);
@@ -471,19 +475,21 @@ const ViewGoogleMap = () => {
             drawingManagerRef={drawingManagerRef}
           />
         )}
-        <MarkerPopup
-          setShowMarkerPopup={setShowMarkerPopup}
-          showMarkerPopup={showMarkerPopup}
-          placeDetails={placeDetails}
-          getSingleMapMarkers={getSingleMapDetails}
-          removalMarker={removalMarker}
-          popupFormData={markerData}
-          setPopupFormData={setMarkerData}
-          setSingleMarkerData={setSingleMarkerData}
-          getSingleMarker={getSingleMarker}
-          mapDetails={mapDetails}
-          allMarkers={allMarkers}
-        />
+        {showMarkerPopup && (
+          <MarkerPopup
+            setShowMarkerPopup={setShowMarkerPopup}
+            showMarkerPopup={showMarkerPopup}
+            placeDetails={placeDetails}
+            getSingleMapMarkers={getSingleMapDetails}
+            removalMarker={removalMarker}
+            popupFormData={markerData}
+            setPopupFormData={setMarkerData}
+            setSingleMarkerData={setSingleMarkerData}
+            getSingleMarker={getSingleMarker}
+            mapDetails={mapDetails}
+            allMarkers={allMarkers}
+          />
+        )}
       </div>
       <LoadingComponent
         loading={loading || singleMarkerLoading || filtersLoading}

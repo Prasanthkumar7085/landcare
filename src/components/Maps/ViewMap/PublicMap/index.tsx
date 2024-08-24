@@ -1,7 +1,5 @@
-import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
-import { markerFilterOptions } from "@/lib/constants/mapConstants";
 import {
   boundToMapWithPolygon,
   getLocationAddress,
@@ -11,14 +9,11 @@ import {
   renderer,
 } from "@/lib/helpers/mapsHelpers";
 import {
-  getSingleMapDetailsAPI,
   getSingleMapDetailsBySlugAPI,
   getSingleMapMarkersAPI,
   getSingleMarkerAPI,
 } from "@/services/maps";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import { capitalize, InputAdornment, TextField } from "@mui/material";
-import Image from "next/image";
 import {
   useParams,
   usePathname,
@@ -27,9 +22,8 @@ import {
 } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "../view-map.module.css";
-import ViewPublicMarkerDrawer from "./ViewPublicMarkerDrawer";
-import { capitalizeFirstLetter } from "@/lib/helpers/nameFormate";
 import PublicMapFilters from "./PublicMapFilters";
+import ViewPublicMarkerDrawer from "./ViewPublicMarkerDrawer";
 
 const PublicMap = () => {
   const { slug } = useParams();

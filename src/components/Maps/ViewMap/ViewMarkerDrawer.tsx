@@ -2,6 +2,7 @@ import DeleteDialog from "@/components/Core/DeleteDialog";
 import ShareLinkDialog from "@/components/Core/ShareLinkDialog";
 import {
   boundToMapWithPolygon,
+  navigateToMarker,
   updateMapWithCordinatesHelper,
 } from "@/lib/helpers/mapsHelpers";
 import { truncateText } from "@/lib/helpers/nameFormate";
@@ -229,7 +230,7 @@ const ViewMarkerDrawer = ({
                   }
                   markersRef={markersRef}
                   handleMarkerClick={handleMarkerClick}
-                  setShareDialogOpen={setShareDialogOpen}
+                  map={map}
                 />
               ) : (
                 <>
@@ -423,6 +424,7 @@ const ViewMarkerDrawer = ({
                         );
                         if (markerEntry) {
                           const { marker } = markerEntry;
+                          navigateToMarker(map, item?.id, [item]);
                           handleMarkerClick(item, marker);
                         } else {
                           console.error(`Marker with ID  not found.`);
@@ -431,23 +433,6 @@ const ViewMarkerDrawer = ({
                     >
                       {item ? "Navigate" : <Skeleton width="100%" />}
                     </Button>
-                    {/* <IconButton
-                      className="iconBtn"
-                      onClick={() => {
-                        setShareDialogOpen(true);
-                      }}
-                    >
-                      {item ? (
-                        <Image
-                          src="/map/share-white.svg"
-                          alt=""
-                          width={13}
-                          height={13}
-                        />
-                      ) : (
-                        <Skeleton variant="circular" width={13} height={13} />
-                      )}
-                    </IconButton> */}
                   </div>
                 </>
               )}
@@ -503,7 +488,7 @@ const ViewMarkerDrawer = ({
         handleDeleteCose={handleDeleteCose}
         deleteFunction={deleteMarker}
         lable="Delete Marker"
-        text="Are you sure want to delete marker?"
+        text="Are you sure you want to delete the marker?"
         loading={loading}
       />
     </div>

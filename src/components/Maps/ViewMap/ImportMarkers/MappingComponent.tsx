@@ -10,6 +10,7 @@ import {
   IconButton,
   Paper,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -137,18 +138,20 @@ const MappingScreen = ({
                   />
                 </td>
                 <td>
-                  <IconButton
-                    aria-label="remove"
-                    color="error"
-                    onClick={() => handleRemove(item)}
-                  >
-                    <Image
-                      src="/markers/add/delete.svg"
-                      alt="edit"
-                      width={20}
-                      height={20}
-                    />
-                  </IconButton>
+                  <Tooltip title="Remove">
+                    <IconButton
+                      aria-label="remove"
+                      color="error"
+                      onClick={() => handleRemove(item)}
+                    >
+                      <Image
+                        src="/markers/add/delete.svg"
+                        alt="edit"
+                        width={20}
+                        height={20}
+                      />
+                    </IconButton>
+                  </Tooltip>
                 </td>
               </tr>
             ))}
