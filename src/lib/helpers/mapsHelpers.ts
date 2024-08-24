@@ -273,7 +273,16 @@ export const boundToMapWithPolygon = (polygonCoords: any, map: any) => {
     map.setZoom(5);
   }
 };
-
+export const navigateToMarker = (map: any, markerID: any, markers: any) => {
+  let markerDetails = markers?.find((item: any) => item.id == markerID);
+  map.setCenter(
+    new google.maps.LatLng(
+      markerDetails?.coordinates[0],
+      markerDetails?.coordinates[1]
+    )
+  );
+  map.setZoom(15);
+};
 export const getPolygonWithMarkers = (points: any) => {
   points.sort((a: any, b: any) => a.lng - b.lng || a.lat - b.lat);
 

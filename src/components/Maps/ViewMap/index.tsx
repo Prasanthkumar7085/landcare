@@ -6,6 +6,7 @@ import {
   getLocationAddress,
   getMarkersImagesBasedOnOrganizationType,
   getPolygonWithMarkers,
+  navigateToMarker,
   renderer,
 } from "@/lib/helpers/mapsHelpers";
 import {
@@ -219,8 +220,8 @@ const ViewGoogleMap = () => {
       });
 
       if (clusterBounds.getNorthEast() && clusterBounds.getSouthWest()) {
-        map.fitBounds(clusterBounds);
-        map.setZoom(map.getZoom() + 1);
+        const center = clusterBounds.getCenter();
+        map.setCenter(center);
       }
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
@@ -384,6 +385,12 @@ const ViewGoogleMap = () => {
     if (map && googleMaps) {
       if (!params?.get("marker_id") || !searchParams?.marker_id) {
         boundToMapWithPolygon(polygonCoords, map);
+      } else {
+        navigateToMarker(
+          map,
+          params?.get("marker_id") || searchParams?.marker_id,
+          markers
+        );
       }
       renderAllMarkers(markers, map, googleMaps);
     }
@@ -461,6 +468,7 @@ const ViewGoogleMap = () => {
             }
             allMarkers={allMarkers}
             searchParams={searchParams}
+            drawingManagerRef={drawingManagerRef}
           />
         )}
         <MarkerPopup

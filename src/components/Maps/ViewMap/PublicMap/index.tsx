@@ -7,6 +7,7 @@ import {
   getLocationAddress,
   getMarkersImagesBasedOnOrganizationType,
   getPolygonWithMarkers,
+  navigateToMarker,
   renderer,
 } from "@/lib/helpers/mapsHelpers";
 import {
@@ -164,14 +165,14 @@ const PublicMap = () => {
         });
       });
     });
+    if (params.get("marker_id") || searchParams?.marker_id) {
+      goTomarker(markers1);
+    }
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
       renderer,
     });
-    if (params.get("marker_id") || searchParams?.marker_id) {
-      goTomarker(markers1);
-    }
   };
 
   const getSingleMarker = async (marker_id: any, lat: any, lng: any) => {
@@ -208,7 +209,6 @@ const PublicMap = () => {
     const isInCluster = markersRef.current.some(
       ({ marker }) => marker === markere
     );
-
     if (isInCluster) {
       let clusterBounds = new google.maps.LatLngBounds();
       markersRef.current.forEach(({ marker }: any) => {
@@ -217,8 +217,8 @@ const PublicMap = () => {
         }
       });
       if (clusterBounds.getNorthEast() && clusterBounds.getSouthWest()) {
-        map.fitBounds(clusterBounds);
-        map.setZoom(map.getZoom() + 1);
+        const center = clusterBounds.getCenter();
+        map.setCenter(center);
       }
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
@@ -364,6 +364,12 @@ const PublicMap = () => {
     if (map && googleMaps) {
       if (!params?.get("marker_id") || !searchParams?.marker_id) {
         boundToMapWithPolygon(polygonCoords, map);
+      } else {
+        navigateToMarker(
+          map,
+          params?.get("marker_id") || searchParams?.marker_id,
+          markers
+        );
       }
       renderAllMarkers(markers, map, googleMaps);
     }

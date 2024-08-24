@@ -29,6 +29,7 @@ const MapMarkersList = ({
   setSelectedOrginazation,
   getData,
   searchParams,
+  drawingManagerRef,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
@@ -82,7 +83,6 @@ const MapMarkersList = ({
       const selectType = getOrginazationTypes()?.find(
         (item: any) => item?.title == searchParams?.organisation_type
       );
-      console.log("selectType", selectType);
       setSelectedOrginazation(selectType);
     }
     if (searchParams?.search_string) {
@@ -142,7 +142,9 @@ const MapMarkersList = ({
                     } else {
                       console.error(`Marker with ID ${id} not found.`);
                     }
-
+                    if (drawingManagerRef.current) {
+                      drawingManagerRef.current.setDrawingMode(null);
+                    }
                     setSingleMarkerOpen(true);
                   }}
                 >
