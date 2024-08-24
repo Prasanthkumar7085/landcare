@@ -196,7 +196,9 @@ const MarkerPopup = ({
             <h3 className="subHeading">Basic Information</h3>
             <div className="eachGrp">
               <div className="eachFeildGrp">
-                <label>Title</label>
+                <label>
+                  Title<span style={{ color: "red" }}>*</span>
+                </label>
                 <TextField
                   className="defaultTextFeild text "
                   placeholder="Enter Title"
@@ -207,11 +209,11 @@ const MarkerPopup = ({
                 <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
               </div>
               <div className="eachFeildGrp">
-                <label>Organization Type</label>
+                <label>Type</label>
                 <TextField
                   className="defaultTextFeild text "
                   name="organisation_type"
-                  placeholder="Enter Organization"
+                  placeholder="Enter Type"
                   value={popupFormData?.organisation_type}
                   onChange={handleInputChange}
                 />

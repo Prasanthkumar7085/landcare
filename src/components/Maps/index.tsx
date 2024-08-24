@@ -158,25 +158,6 @@ const Maps = () => {
     }
   };
 
-  useEffect(() => {
-    getAllMaps({
-      page: searchParams?.page ? searchParams?.page : 1,
-      limit: searchParams?.limit ? searchParams?.limit : 12,
-      search_string: searchParams?.search_string,
-      from_date: searchParams?.from_date,
-      to_date: searchParams?.to_date,
-      status: searchParams?.status,
-      sort_by: searchParams?.sort_by,
-      sort_type: searchParams?.sort_type,
-    });
-  }, [
-    searchParams?.status,
-    searchParams?.page,
-    searchParams?.limit,
-    searchParams?.from_date,
-    searchParams?.to_date,
-  ]);
-
   const handleImageClick = (event: any, id: any) => {
     event.stopPropagation();
     router.push(`/view-map/${id}`);
@@ -212,6 +193,9 @@ const Maps = () => {
       page: 1,
     });
   };
+  useEffect(() => {
+    getAllMaps({});
+  }, []);
 
   useEffect(() => {
     setSearchParams(

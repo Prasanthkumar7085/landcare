@@ -13,7 +13,6 @@ import { useEffect, useState } from "react";
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.css";
 import AutoCompleteSearch from "../Core/AutoCompleteSearch";
-import AddMapDrawer from "./AddMap/AddMapDrawer";
 
 const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
   const router = useRouter();
@@ -97,7 +96,7 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
     const debounce = setTimeout(() => {
       getAllMaps({
         page: searchParams?.page ? searchParams?.page : 1,
-        limit: searchParams?.limit ? searchParams?.limit : 8,
+        limit: searchParams?.limit ? searchParams?.limit : 12,
         search_string: searchString,
         from_date: searchParams?.from_date,
         to_date: searchParams?.to_date,
@@ -153,15 +152,6 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
       Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
     );
   }, [params]);
-
-  useEffect(() => {
-    if (selecteValue) {
-      handleSortFilter(selecteValue);
-    } else {
-      handleSortFilter(null);
-      setSelectValue(null);
-    }
-  }, [selecteValue]);
 
   const getTextHtml = (text: string, count: number) => {
     return (
@@ -242,6 +232,7 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
             setSelectValue={setSelectValue}
             selectedValue={selecteValue}
             placeholder="Sort Filter"
+            onChange={handleSortFilter}
           />
           <Button
             className="addNewBtn"

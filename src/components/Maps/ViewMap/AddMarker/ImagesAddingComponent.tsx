@@ -41,7 +41,7 @@ const ImagesAddingComponent = ({
   };
 
   const handleKeyPress = (event: any) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && editIndex == null) {
       handleAddImage();
     }
   };

@@ -141,7 +141,6 @@ const PublicMap = () => {
         draggable: false,
       });
       markersRef.current.push({ id: markerData.id, marker: markere });
-
       markere.addListener("click", () => {
         handleMarkerClick(markerData, markere);
       });
@@ -185,6 +184,12 @@ const PublicMap = () => {
       );
       setSingleMarkerData(response?.data);
       setMarkerData(markerData);
+      map.setCenter(
+        new google.maps.LatLng(
+          markerData?.coordinates[0],
+          markerData?.coordinates[1]
+        )
+      );
     } catch (err) {
       console.error(err);
     } finally {
@@ -200,21 +205,30 @@ const PublicMap = () => {
       markerData?.coordinates[1]
     );
     setSingleMarkerOpen(true);
-    map.setCenter(
-      new google.maps.LatLng(
-        markerData?.coordinates[0],
-        markerData?.coordinates[1]
-      )
+    const isInCluster = markersRef.current.some(
+      ({ marker }) => marker === markere
     );
-    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
-      bouncingMarkerRef.current.setAnimation(null);
-    }
-    if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
-      markere.setAnimation(null);
+
+    if (isInCluster) {
+      let clusterBounds = new google.maps.LatLngBounds();
+      markersRef.current.forEach(({ marker }: any) => {
+        if (marker.getPosition() && marker === markere) {
+          clusterBounds.extend(marker.getPosition());
+        }
+      });
+      if (clusterBounds.getNorthEast() && clusterBounds.getSouthWest()) {
+        map.fitBounds(clusterBounds);
+        map.setZoom(map.getZoom() + 1);
+      }
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
       bouncingMarkerRef.current = markere;
     }
+    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
+      bouncingMarkerRef.current.setAnimation(null);
+    }
+    markere.setAnimation(google.maps.Animation.BOUNCE);
+    bouncingMarkerRef.current = markere;
     if (drawingManagerRef.current) {
       drawingManagerRef.current.setOptions({ drawingControl: false });
     }
@@ -333,7 +347,6 @@ const PublicMap = () => {
       );
       if (markerEntry) {
         const { marker } = markerEntry;
-        console.log(marker);
         handleMarkerClick(markerDetails, marker);
       } else {
         console.error(`Marker with ID ${mapDetails?.id} not found.`);

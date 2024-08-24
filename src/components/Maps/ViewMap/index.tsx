@@ -206,21 +206,32 @@ const ViewGoogleMap = () => {
       markerData?.coordinates[1]
     );
     setSingleMarkerOpen(true);
-    map.setCenter(
-      new google.maps.LatLng(
-        markerData?.coordinates[0],
-        markerData?.coordinates[1]
-      )
+    const isInCluster = markersRef.current.some(
+      ({ marker }) => marker === markere
     );
-    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
-      bouncingMarkerRef.current.setAnimation(null);
-    }
-    if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
-      markere.setAnimation(null);
+
+    if (isInCluster) {
+      let clusterBounds = new google.maps.LatLngBounds();
+      markersRef.current.forEach(({ marker }: any) => {
+        if (marker.getPosition() && marker === markere) {
+          clusterBounds.extend(marker.getPosition());
+        }
+      });
+
+      if (clusterBounds.getNorthEast() && clusterBounds.getSouthWest()) {
+        map.fitBounds(clusterBounds);
+        map.setZoom(map.getZoom() + 1);
+      }
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
       bouncingMarkerRef.current = markere;
     }
+
+    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
+      bouncingMarkerRef.current.setAnimation(null);
+    }
+    markere.setAnimation(google.maps.Animation.BOUNCE);
+    bouncingMarkerRef.current = markere;
     if (drawingManagerRef.current) {
       drawingManagerRef.current.setOptions({ drawingControl: false });
     }
