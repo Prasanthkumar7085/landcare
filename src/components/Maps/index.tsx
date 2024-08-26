@@ -29,6 +29,7 @@ import ShareLinkDialog from "../Core/ShareLinkDialog";
 import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
 import { MapsController } from "../../../lib/controllers/mapsController";
+import { truncateText } from "@/lib/helpers/nameFormate";
 
 const Maps = () => {
   const params = useSearchParams();
@@ -272,20 +273,17 @@ const Maps = () => {
                     </Tooltip>
                   </Typography>
 
-                  <Typography className="cardDesc">
-                    <Tooltip
-                      title={
-                        item?.description?.length >= 50 ? item?.description : ""
-                      }
-                      placement="bottom"
-                    >
-                      {item?.description
-                        ? item?.description?.length >= 50
-                          ? `${item?.description.slice(0, 30)}....`
-                          : item?.description
-                        : "--"}
-                    </Tooltip>
-                  </Typography>
+                  <Tooltip
+                    title={
+                      item?.description && item?.description?.length >= 200
+                        ? item?.description
+                        : ""
+                    }
+                  >
+                    <Typography className="cardDesc">
+                      {truncateText(item?.description, 200) || "---"}
+                    </Typography>
+                  </Tooltip>
                 </div>
 
                 <div className="cardFooter">

@@ -111,7 +111,7 @@ const MarkerPopup = ({
       coordinates: placeDetails?.coordinates?.length
         ? placeDetails?.coordinates
         : popupFormData.coordinates,
-      organisation_type: popupFormData?.organisation_type || null,
+      organisation_type: popupFormData?.organisation_type || "none",
       map_id: popupFormData?.map_id,
       title: popupFormData?.title || "",
       phone: popupFormData?.phone || null,

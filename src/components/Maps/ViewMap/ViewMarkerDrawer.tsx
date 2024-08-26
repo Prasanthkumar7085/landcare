@@ -168,7 +168,7 @@ const ViewMarkerDrawer = ({
                     handleClick(e);
                   }}
                 >
-                  <Image
+                  <img
                     src="/map/menu-with-bg.svg"
                     alt=""
                     height={28}
@@ -286,7 +286,7 @@ const ViewMarkerDrawer = ({
                     )}
                   </div>
                   <div className="eachMarkerDetail">
-                    <Typography className="title"> Type</Typography>
+                    <Typography className="title">Type</Typography>
                     {singleMarkerLoading ? (
                       <Skeleton width="60%" />
                     ) : (
@@ -299,7 +299,7 @@ const ViewMarkerDrawer = ({
                           textTransform: "capitalize",
                         }}
                       >
-                        <Image
+                        <img
                           width={15}
                           height={15}
                           style={{
