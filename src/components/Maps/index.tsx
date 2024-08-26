@@ -372,7 +372,7 @@ const Maps = () => {
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={singleMapDetails}
-        linkToShare={`${process.env.NEXT_PUBLIC_SHARED_URL}/${singleMapDetails?.slug}`}
+        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`}
       />
 
       <Menu
@@ -396,7 +396,7 @@ const Maps = () => {
               className="menuItem"
               onClick={() => {
                 window.open(
-                  `${process.env.NEXT_PUBLIC_SHARED_URL}/${singleMapDetails?.slug}`,
+                  `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`,
                   "_blank"
                 );
                 handleCloseUserMenu();
@@ -409,7 +409,7 @@ const Maps = () => {
                 className="menuItem"
                 onClick={() => {
                   copyURL(
-                    `${process.env.NEXT_PUBLIC_SHARED_URL}/${singleMapDetails?.slug}`
+                    `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`
                   );
                   handleCloseUserMenu();
                 }}
@@ -456,7 +456,7 @@ const Maps = () => {
             <MenuItem
               className="menuItem"
               onClick={() => {
-                const linkToEmdeded = `<iframe src=${process.env.NEXT_PUBLIC_SHARED_URL}/${singleMapDetails?.slug} width="600" height="450" style="border:0;"
+                const linkToEmdeded = `<iframe src=https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug} width="600" height="450" style="border:0;"
        loading="lazy"
        referrerpolicy="no-referrer-when-downgrade"
      ></iframe>`;
