@@ -41,7 +41,7 @@ const ImagesAddingComponent = ({
   };
 
   const handleKeyPress = (event: any) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && editIndex == null) {
       handleAddImage();
     }
   };
@@ -63,12 +63,6 @@ const ImagesAddingComponent = ({
       setErrorMessages({ images: "Image link cannot be empty." });
       return;
     }
-
-    if (popupFormData.images.includes(editInput)) {
-      setErrorMessages({ images: "This link is already in the list." });
-      return;
-    }
-
     const updatedImages = [...popupFormData.images];
     updatedImages[editIndex!] = editInput;
 
@@ -80,10 +74,7 @@ const ImagesAddingComponent = ({
 
   return (
     <div className="eachFeildGrp">
-      <div
-        className="feildEntity"
-      
-      >
+      <div className="feildEntity">
         <TextField
           className="defaultTextFeild text"
           name="images"
@@ -98,9 +89,12 @@ const ImagesAddingComponent = ({
           onKeyDown={handleKeyPress}
         />
         {editIndex !== null ? (
-          <div style={{display:'flex', alignItems:"center"}}>
-            <Button className="addBtn update" onClick={handleUpdateImage}>Update</Button>
-            <Button className="addBtn cancel"
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Button className="addBtn update" onClick={handleUpdateImage}>
+              Update
+            </Button>
+            <Button
+              className="addBtn cancel"
               onClick={() => {
                 setEditIndex(null);
                 setEditInput("");
@@ -110,7 +104,9 @@ const ImagesAddingComponent = ({
             </Button>
           </div>
         ) : (
-          <Button className="addBtn" onClick={handleAddImage}>+Add</Button>
+          <Button className="addBtn" onClick={handleAddImage}>
+            +Add
+          </Button>
         )}
       </div>
       <div className="imageList">
@@ -129,14 +125,24 @@ const ImagesAddingComponent = ({
                   aria-label="edit"
                   disabled={editIndex == index}
                 >
-                  <Image src="/markers/add/edit.svg" alt="edit" width={15} height={15} />
+                  <Image
+                    src="/markers/add/edit.svg"
+                    alt="edit"
+                    width={15}
+                    height={15}
+                  />
                 </IconButton>
                 <IconButton
                   onClick={() => handleRemoveImage(index)}
                   aria-label="delete"
                   disabled={editIndex == index}
                 >
-                  <Image src="/markers/add/delete.svg" alt="edit" width={15} height={15} />
+                  <Image
+                    src="/markers/add/delete.svg"
+                    alt="edit"
+                    width={15}
+                    height={15}
+                  />
                 </IconButton>
               </li>
             ))}

@@ -1,19 +1,12 @@
-import DeleteDialog from "@/components/Core/DeleteDialog";
-import ShareLinkDialog from "@/components/Core/ShareLinkDialog";
-import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
+import {
+  boundToMapWithPolygon,
+  navigateToMarker,
+} from "@/lib/helpers/mapsHelpers";
 import { truncateText } from "@/lib/helpers/nameFormate";
 import { deleteMarkerAPI } from "@/services/maps";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Menu,
-  MenuItem,
-  Tooltip,
-} from "@mui/material";
+import { Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
@@ -26,7 +19,6 @@ import {
 } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MarkerDetailsAccordian from "../MarkerDetailsAccordian";
 
 const ViewPublicMarkerDrawer = ({
@@ -50,17 +42,10 @@ const ViewPublicMarkerDrawer = ({
   getSingleMarker,
   mapDetails,
 }: any) => {
-  const { slug } = useParams();
   const pathname = usePathname();
-  const params = useSearchParams();
   const router = useRouter();
-  const [shareLinkDialogOpen, setShareDialogOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
   const [selectedMarker, setSelectedMarker] = useState<any>({});
-
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextSlide = (marker: any) => {
@@ -80,32 +65,6 @@ const ViewPublicMarkerDrawer = ({
   };
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleClickDeleteOpen = () => {
-    setDeleteOpen(true);
-  };
-  const handleDeleteCose = () => {
-    setDeleteOpen(false);
-  };
-
-  const deleteMarker = async () => {
-    setLoading(true);
-    try {
-      const response = await deleteMarkerAPI(
-        mapDetails?.id,
-        selectedMarker?.id
-      );
-      toast.success(response?.message);
-      onClose();
-      getSingleMapMarkers({});
-      router.replace(`/landcare-map/${mapDetails?.slug}`);
-      handleDeleteCose();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
@@ -135,91 +94,68 @@ const ViewPublicMarkerDrawer = ({
           Back
         </Button>
       </header>
-      {data?.map((item: any, index: any) => {
-        return (
-          <Box className="viewContent" key={index}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                marginTop: "0px",
-              }}
-            >
-              <IconButton
-                className="iconBtnMenu"
-                onClick={(e) => {
-                  setSelectedMarker(item);
-                  handleClick(e);
-                }}
-              >
-                <Image
-                  src="/map/menu-with-bg.svg"
-                  alt=""
-                  height={28}
-                  width={28}
-                />
-              </IconButton>
-            </div>
-            <div className="imgBlock">
-              {item?.images?.length > 0 ? (
-                <div
-                  style={{
-                    minWidth: "100%",
-                    width: "100%",
-                    height: "100%",
-                  }}
-                >
-                  <button
-                    onClick={() => prevSlide(item)}
-                    className="navButton"
+      <div className="markerViewContent">
+        {data?.map((item: any, index: any) => {
+          return (
+            <Box className="viewContent" key={index}>
+              <div className="imgBlock">
+                {item?.images?.length > 0 ? (
+                  <div
                     style={{
-                      display: item?.images?.length == 1 ? "none" : "",
+                      minWidth: "100%",
+                      width: "100%",
+                      height: "100%",
                     }}
                   >
-                    &#10094;
-                  </button>
+                    <button
+                      onClick={() => prevSlide(item)}
+                      className="navButton"
+                      style={{
+                        display: item?.images?.length == 1 ? "none" : "",
+                      }}
+                    >
+                      &#10094;
+                    </button>
+                    <img
+                      className="mapImg"
+                      src={item?.images[currentIndex]}
+                      alt={`images ${currentIndex}`}
+                    />
+                    <button
+                      onClick={() => nextSlide(item)}
+                      className="navButton"
+                      style={{
+                        display: item?.images?.length == 1 ? "none" : "",
+                      }}
+                    >
+                      &#10095;
+                    </button>
+                  </div>
+                ) : (
                   <img
                     className="mapImg"
-                    src={item?.images[currentIndex]}
-                    alt={`images ${currentIndex}`}
+                    src="/no-images.jpg"
+                    alt="Fallback"
+                    height={100}
+                    width={100}
+                    style={{ objectFit: "contain" }}
                   />
-                  <button
-                    onClick={() => nextSlide(item)}
-                    className="navButton"
-                    style={{
-                      display: item?.images?.length == 1 ? "none" : "",
-                    }}
-                  >
-                    &#10095;
-                  </button>
-                </div>
-              ) : (
-                <img
-                  className="mapImg"
-                  src="/no-images.jpg"
-                  alt="Fallback"
-                  height={100}
-                  width={100}
-                  style={{ objectFit: "contain" }}
+                )}
+              </div>
+              {data?.length > 1 ? (
+                <MarkerDetailsAccordian
+                  singleMarkerLoading={singleMarkerLoading}
+                  item={item}
+                  index={index}
+                  markersImagesWithOrganizationType={
+                    markersImagesWithOrganizationType
+                  }
+                  markersRef={markersRef}
+                  handleMarkerClick={handleMarkerClick}
+                  map={map}
                 />
-              )}
-            </div>
-            {data?.length > 1 ? (
-              <MarkerDetailsAccordian
-                singleMarkerLoading={singleMarkerLoading}
-                item={item}
-                index={index}
-                markersImagesWithOrganizationType={
-                  markersImagesWithOrganizationType
-                }
-                markersRef={markersRef}
-                handleMarkerClick={handleMarkerClick}
-                setShareDialogOpen={setShareDialogOpen}
-              />
-            ) : (
-              <>
-                <div className="headerDetails">
+              ) : (
+                <>
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" className="markerTitle" />
                   ) : (
@@ -227,12 +163,21 @@ const ViewPublicMarkerDrawer = ({
                       {item?.title || "---"}
                     </Typography>
                   )}
+
+                  {singleMarkerLoading ? (
+                    <Skeleton width="60%" />
+                  ) : (
+                    <Typography className="value">
+                      {item?.description || "---"}
+                    </Typography>
+                  )}
+
                   <Typography className="markerLocation">
                     <Image
-                      src="/map/location-blue.svg"
+                      src="/map/view/location-view.svg"
                       alt=""
-                      width={10}
-                      height={10}
+                      width={18}
+                      height={18}
                     />
                     {singleMarkerLoading ? (
                       <Skeleton width="60%" />
@@ -240,53 +185,42 @@ const ViewPublicMarkerDrawer = ({
                       <span>{item?.town?.split(" ")[0] || "---"}</span>
                     )}
                   </Typography>
-                </div>
-                <div className="eachMarkerDetail">
-                  <Typography className="title">Description</Typography>
-                  {singleMarkerLoading ? (
-                    <Skeleton width="60%" />
-                  ) : (
-                    <Tooltip
-                      title={
-                        item?.description && item?.description?.length >= 200
-                          ? item?.description
-                          : ""
-                      }
-                    >
-                      <Typography className="value">
-                        {truncateText(item?.description, 200) || "---"}
-                      </Typography>
-                    </Tooltip>
-                  )}
-                </div>
 
-                <div className="eachMarkerDetail">
-                  <Typography className="title">Tags</Typography>
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
                   ) : (
-                    <Typography className="value">
-                      {item?.tags?.join(", ") || "---"}
+                    <Typography className=" tagValue">
+                      <Image
+                        src="/map/view/tag-view.svg"
+                        alt=""
+                        width={18}
+                        height={18}
+                      />
+
+                      {item?.tags?.length > 0
+                        ? item?.tags.map((tag: any, index: number) => {
+                            return (
+                              <span className="tagText" key={index}>
+                                {tag}
+                              </span>
+                            );
+                          })
+                        : "---"}
                     </Typography>
                   )}
-                </div>
-                <div className="eachMarkerDetail">
-                  <Typography className="title">Organization Type</Typography>
+
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
                   ) : (
                     <Typography
                       className="value"
                       sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
                         textTransform: "capitalize",
                       }}
                     >
                       <img
-                        width={15}
-                        height={15}
+                        width={18}
+                        height={18}
                         style={{
                           display: item?.organisation_type ? "" : "none",
                         }}
@@ -295,188 +229,151 @@ const ViewPublicMarkerDrawer = ({
                             ? markersImagesWithOrganizationType[
                                 item?.organisation_type
                               ]
-                            : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
+                            : ""
                         }
                         alt={item?.organisation_type}
                       />
-                      {item?.organisation_type || "---"}
+                      <span>{item?.organisation_type || "---"}</span>
                     </Typography>
                   )}
-                </div>
-                <div className="eachMarkerDetail">
-                  <Typography className="title">Website</Typography>
+
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
-                  ) : item?.website ? (
-                    <Tooltip
-                      title={
-                        item?.website && item?.website?.length > 40
-                          ? item?.website
-                          : ""
-                      }
-                    >
-                      <Link
-                        href={item?.website}
-                        target="_blank"
-                        className="value"
-                      >
-                        {truncateText(item?.website, 40) || "---"}
-                      </Link>
-                    </Tooltip>
                   ) : (
-                    "---"
+                    <span className="value">
+                      <Image
+                        src="/map/view/website-view.svg"
+                        alt=""
+                        width={18}
+                        height={18}
+                      />
+                      <Tooltip
+                        title={
+                          item?.website && item?.website?.length > 40
+                            ? item?.website
+                            : ""
+                        }
+                      >
+                        <Link
+                          href={item?.website ? item?.website : "#"}
+                          target="_blank"
+                          className="value"
+                          style={{ textDecoration: "none", marginBottom: "0" }}
+                        >
+                          {truncateText(item?.website, 40) || "--"}
+                        </Link>
+                      </Tooltip>
+                    </span>
                   )}
-                </div>
-                <div className="eachMarkerDetail">
-                  <Typography className="title">Contact</Typography>
+
+                  <Typography className="value" style={{ marginTop: "0.5rem" }}>
+                    {singleMarkerLoading ? (
+                      <Skeleton width="60%" />
+                    ) : (
+                      <span className="value">
+                        <Image
+                          src="/map/view/mobile-view.svg"
+                          alt=""
+                          width={18}
+                          height={18}
+                        />
+                        <span>{item?.contact || "---"}</span>
+                      </span>
+                    )}
+                  </Typography>
+
                   <Typography className="value">
                     {singleMarkerLoading ? (
                       <Skeleton width="60%" />
                     ) : (
-                      item?.contact || "---"
+                      <span className="value">
+                        <Image
+                          src="/map/view/fax-view.svg"
+                          alt=""
+                          width={18}
+                          height={18}
+                        />
+                        <span>{item?.fax || "---"}</span>
+                      </span>
                     )}
                   </Typography>
-                </div>
-                <div className="eachMarkerDetail">
-                  <Typography className="title">Postcode</Typography>
+
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
                   ) : (
                     <Typography className="value">
-                      {item?.postcode || "---"}{" "}
+                      <Image
+                        src="/map/view/postal-view.svg"
+                        alt=""
+                        width={18}
+                        height={18}
+                      />
+                      <span>{item?.postcode || "---"} </span>
                     </Typography>
                   )}
-                </div>
-                <div className="headerDetails">
+
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
                   ) : (
-                    <Typography
-                      className="footerText"
-                      style={{ marginBottom: "0.3rem" }}
-                    >
+                    <Typography className="value">
                       <Image
-                        src="/map/email.svg"
+                        src="/map/view/email-view.svg"
                         alt=""
-                        width={12}
-                        height={12}
+                        width={18}
+                        height={18}
                       />
                       <span>{item?.email || "---"} </span>
                     </Typography>
                   )}
+
                   {singleMarkerLoading ? (
                     <Skeleton width="30%" />
                   ) : (
-                    <Typography className="footerText">
+                    <Typography className="value">
                       <Image
-                        src="/map/cell-icon.svg"
+                        src="/map/view/mobile-view.svg"
                         alt=""
-                        width={12}
-                        height={12}
+                        width={18}
+                        height={18}
                       />
                       <span>{item?.phone || "---"} </span>
                     </Typography>
                   )}
-                </div>
-                <div className="btnGrp">
-                  <Button
-                    className="navigateBtn"
-                    variant="contained"
-                    endIcon={
-                      <Image
-                        src="/map/navigate.svg"
-                        alt=""
-                        width={15}
-                        height={15}
-                      />
-                    }
-                    onClick={() => {
-                      const markerEntry = markersRef.current.find(
-                        (entry: any) => entry.id === item?.id
-                      );
-                      if (markerEntry) {
-                        const { marker } = markerEntry;
-                        handleMarkerClick(item, marker);
-                      } else {
-                        console.error(`Marker with ID  not found.`);
+
+                  <div className="btnGrp">
+                    <Button
+                      className="navigateBtn"
+                      variant="contained"
+                      endIcon={
+                        <Image
+                          src="/map/navigate.svg"
+                          alt=""
+                          width={15}
+                          height={15}
+                        />
                       }
-                    }}
-                  >
-                    {item ? "Navigate" : <Skeleton width="100%" />}
-                  </Button>
-                  <IconButton
-                    className="iconBtn"
-                    onClick={() => {
-                      setShareDialogOpen(true);
-                    }}
-                  >
-                    {item ? (
-                      <Image
-                        src="/map/share-white.svg"
-                        alt=""
-                        width={13}
-                        height={13}
-                      />
-                    ) : (
-                      <Skeleton variant="circular" width={13} height={13} />
-                    )}
-                  </IconButton>
-                </div>
-              </>
-            )}
-          </Box>
-        );
-      })}
-      {/* <Menu
-        sx={{ mt: 1 }}
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
-      >
-        <MenuItem
-          className="menuItem"
-          onClick={() => {
-            getSingleMarker(
-              selectedMarker?.id,
-              selectedMarker?.coordinates[0],
-              selectedMarker?.coordinates[1]
-            );
-            setShowMarkerPopup(true);
-            handleClose();
-          }}
-        >
-          Edit
-        </MenuItem>
-        <MenuItem
-          className="menuItem"
-          onClick={() => {
-            handleClickDeleteOpen();
-            handleClose();
-          }}
-        >
-          Delete
-        </MenuItem>
-      </Menu> */}
-      <ShareLinkDialog
-        open={shareLinkDialogOpen}
-        setShareDialogOpen={setShareDialogOpen}
-        mapDetails={selectedMarker}
-        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${
-          mapDetails?.slug
-        }?marker_id=${params?.get("marker_id")}`}
-      />
-      <DeleteDialog
-        deleteOpen={deleteOpen}
-        handleDeleteCose={handleDeleteCose}
-        deleteFunction={deleteMarker}
-        lable="Delete Marker"
-        text="Are you sure want to delete marker?"
-        loading={loading}
-      />
+                      onClick={() => {
+                        const markerEntry = markersRef.current.find(
+                          (entry: any) => entry.id === item?.id
+                        );
+                        if (markerEntry) {
+                          const { marker } = markerEntry;
+                          navigateToMarker(map, item?.id, [item]);
+                          handleMarkerClick(item, marker);
+                        } else {
+                          console.error(`Marker with ID  not found.`);
+                        }
+                      }}
+                    >
+                      {item ? "Navigate" : <Skeleton width="100%" />}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </Box>
+          );
+        })}
+      </div>
     </div>
   );
 };

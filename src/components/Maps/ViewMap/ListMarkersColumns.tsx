@@ -1,6 +1,8 @@
-import { copyURL } from "@/lib/helpers/copyURL";
 import { datePipe } from "@/lib/helpers/datePipe";
-import { getMarkersImagesBasedOnOrganizationType } from "@/lib/helpers/mapsHelpers";
+import {
+  getMarkersImagesBasedOnOrganizationType,
+  navigateToMarker,
+} from "@/lib/helpers/mapsHelpers";
 import { truncateText } from "@/lib/helpers/nameFormate";
 import { IconButton, Tooltip } from "@mui/material";
 import Image from "next/image";
@@ -18,18 +20,16 @@ export const ListMarkersColumns = ({
   markers,
   mapDetails,
   markersImagesWithOrganizationType,
+  map,
 }: any) => {
   return [
     {
       accessorFn: (row: any) => row.serial,
       id: "id",
-      enableSorting: false,
       header: () => <span>S.No</span>,
       footer: (props: any) => props.column.id,
       width: "60px",
-      cell: (info: any) => {
-        return <span>{info.getValue() ? info.getValue() : "--"}</span>;
-      },
+      maxWidth: "60px",
     },
     {
       accessorFn: (row: any) => row.title,
@@ -71,7 +71,7 @@ export const ListMarkersColumns = ({
           </span>
         );
       },
-      header: () => <span>Organisation Type</span>,
+      header: () => <span>Type</span>,
       footer: (props: any) => props.column.id,
       width: "150px",
     },
@@ -199,52 +199,38 @@ export const ListMarkersColumns = ({
       id: "actions",
       cell: (info: any) => (
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <IconButton
-            className="iconBtn"
-            onClick={() => {
-              handleClose();
-              const markerEntry = markersRef.current.find(
-                (entry: any) => entry.id === info?.row?.original?.id
-              );
-              if (markerEntry) {
-                const { marker } = markerEntry;
-                handleMarkerClick(info?.row?.original, marker);
-              } else {
-                console.error(`Marker with ID ${id} not found.`);
-              }
-            }}
-          >
-            <Image src="/map/table/view.svg" alt="" width={15} height={15} />
-          </IconButton>
-
-          {/* <IconButton
-            className="iconBtn"
-            onClick={() => {
-              setShareDialogOpen(true);
-              setSingleMapDetails(info?.row?.original);
-            }}
-          >
-            <Image src="/map/table/share.svg" alt="" width={15} height={15} />
-          </IconButton> */}
-
-          {/* <IconButton
-            className="iconBtn"
-            onClick={() => {
-              copyURL(
-                `https://dev-landcare.vercel.app/landcare-map/${mapDetails?.slug}?marker_id=${info?.row?.original?.id}`
-              );
-            }}
-          >
-            <Image src="/map/table/copy.svg" alt="" width={15} height={15} />
-          </IconButton> */}
-          <IconButton
-            className="iconBtn"
-            onClick={() => {
-              handleClickDeleteOpen(info?.row?.original?.id);
-            }}
-          >
-            <Image src="/map/table/trash.svg" alt="" width={15} height={15} />
-          </IconButton>
+          <Tooltip title="View">
+            <IconButton
+              className="iconBtn"
+              onClick={() => {
+                handleClose();
+                const markerEntry = markersRef.current.find(
+                  (entry: any) => entry.id === info?.row?.original?.id
+                );
+                if (markerEntry) {
+                  const { marker } = markerEntry;
+                  navigateToMarker(map, info?.row?.original?.id, [
+                    info?.row?.original,
+                  ]);
+                  handleMarkerClick(info?.row?.original, marker);
+                } else {
+                  console.error(`Marker with ID ${id} not found.`);
+                }
+              }}
+            >
+              <Image src="/map/table/view.svg" alt="" width={15} height={15} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton
+              className="iconBtn"
+              onClick={() => {
+                handleClickDeleteOpen(info?.row?.original?.id);
+              }}
+            >
+              <Image src="/map/table/trash.svg" alt="" width={15} height={15} />
+            </IconButton>
+          </Tooltip>
         </div>
       ),
       header: () => <span>ACTIONS</span>,

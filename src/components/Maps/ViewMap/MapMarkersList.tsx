@@ -1,5 +1,4 @@
 import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
-import { markerFilterOptions } from "@/lib/constants/mapConstants";
 import {
   Button,
   capitalize,
@@ -9,8 +8,9 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
+import { navigateToMarker } from "@/lib/helpers/mapsHelpers";
 
 const MapMarkersList = ({
   singleMarkers,
@@ -28,10 +28,13 @@ const MapMarkersList = ({
   mapDetails,
   selectedOrginazation,
   setSelectedOrginazation,
+  getData,
+  searchParams,
+  drawingManagerRef,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
-
+  const [mount, setMount] = useState<boolean>(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -51,6 +54,51 @@ const MapMarkersList = ({
     return orginisationTypesOptions;
   };
 
+  const handleSearchChange = (event: any) => {
+    const newSearchString = event.target.value;
+    setSearchString(newSearchString);
+  };
+
+  const handleSelectTypeChange = (newValue: any) => {
+    if (newValue) {
+      setSelectedOrginazation(newValue);
+      getData({
+        ...searchParams,
+        type: newValue?.title,
+      });
+    } else {
+      setSelectedOrginazation(null);
+      getData({
+        ...searchParams,
+        type: "",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (mount) {
+      let debounce = setTimeout(() => {
+        getData({
+          search_string: encodeURIComponent(searchString),
+          page: 1,
+        });
+      }, 500);
+      return () => clearInterval(debounce);
+    } else {
+      setMount(true);
+      setSearchString((searchParams?.search_string as string) || "");
+    }
+  }, [searchString]);
+
+  useEffect(() => {
+    if (searchParams?.organisation_type) {
+      const selectType = getOrginazationTypes()?.find(
+        (item: any) => item?.title == searchParams?.organisation_type
+      );
+      setSelectedOrginazation(selectType);
+    }
+  }, [searchParams, markersImagesWithOrganizationType]);
+
   return (
     <div className="markersList">
       <div className="filterGrp">
@@ -61,7 +109,7 @@ const MapMarkersList = ({
           type="search"
           placeholder="Search"
           value={searchString}
-          onChange={(e) => setSearchString(e.target.value)}
+          onChange={handleSearchChange}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -75,6 +123,7 @@ const MapMarkersList = ({
           setSelectValue={setSelectedOrginazation}
           selectedValue={selectedOrginazation}
           placeholder="Select Type"
+          onChange={handleSelectTypeChange}
         />
         {/* <AutoCompleteSearch
           data={markerFilterOptions}
@@ -98,11 +147,18 @@ const MapMarkersList = ({
                     );
                     if (markerEntry) {
                       const { marker } = markerEntry;
+                      navigateToMarker(
+                        map,
+                        searchParams?.marker_id,
+                        singleMarkers
+                      );
                       handleMarkerClick(markerDetails, marker);
                     } else {
                       console.error(`Marker with ID ${id} not found.`);
                     }
-
+                    if (drawingManagerRef.current) {
+                      drawingManagerRef.current.setDrawingMode(null);
+                    }
                     setSingleMarkerOpen(true);
                   }}
                 >
@@ -203,14 +259,17 @@ const MapMarkersList = ({
           </Typography>
         </div>
       )}
-      <MapMarkersListDialog
-        open={open}
-        handleClose={handleClose}
-        markersRef={markersRef}
-        handleMarkerClick={handleMarkerClick}
-        getSingleMapMarkers={getSingleMapMarkers}
-        mapDetails={mapDetails}
-      />
+      {open && (
+        <MapMarkersListDialog
+          open={open}
+          handleClose={handleClose}
+          markersRef={markersRef}
+          handleMarkerClick={handleMarkerClick}
+          getSingleMapMarkers={getSingleMapMarkers}
+          mapDetails={mapDetails}
+          map={map}
+        />
+      )}
     </div>
   );
 };

@@ -37,10 +37,12 @@ const MapMarkersListDialog = ({
   handleMarkerClick,
   getSingleMapMarkers,
   mapDetails,
+  map,
 }: any) => {
   const { id } = useParams();
 
   const [markers, setMarkers] = useState<any[]>([]);
+  const [limitData, setLimitData] = useState<any>(12);
   const [paginationDetails, setPaginationDetails] = useState({});
   const [search, setSearch] = useState("");
   const [selectType, setSelectType] = useState<any>();
@@ -57,6 +59,7 @@ const MapMarkersListDialog = ({
   const [orginisationTypesOptions, setOrginisationTypesOptions] = useState<any>(
     []
   );
+  const [searchParams, setSearchParams] = useState<any>({});
   const handleClickDeleteOpen = (id: any) => {
     setDeleteOpen(true);
     setMarkerId(id);
@@ -67,7 +70,7 @@ const MapMarkersListDialog = ({
 
   const getAllMapMarkers = async ({
     page = 1,
-    limit = 12,
+    limit = limitData,
     search_string = search,
     type = selectType?.title,
     sort_by = "",
@@ -83,10 +86,11 @@ const MapMarkersListDialog = ({
         sort_by: sort_by,
         sort_type: sort_type,
       };
+      setSearchParams(queryParams);
       const response = await getAllMapMarkersAPI(id, queryParams);
-      const { data, ...rest } = response;
-      let afterAddingSerial = addSerial(data, page, limit);
-      setMarkers(afterAddingSerial);
+      let { data, ...rest } = response;
+      data = addSerial(data, +rest.page, +rest.limit);
+      setMarkers(data);
       setPaginationDetails(rest);
     } catch (err) {
       console.error(err);
@@ -94,10 +98,7 @@ const MapMarkersListDialog = ({
       setShowLoading(false);
     }
   };
-  const getAllMapMarkersForOrginazations = async ({
-    search_string = search,
-    type = selectType?.title,
-  }) => {
+  const getAllMapMarkersForOrginazations = async () => {
     setShowLoading(true);
     try {
       let queryParams: any = {
@@ -139,33 +140,64 @@ const MapMarkersListDialog = ({
   };
 
   useEffect(() => {
-    getAllMapMarkers({
-      page: 1,
-      limit: 12,
-      search_string: search,
-      type: selectType?.title,
-      sort_by: "",
-      sort_type: "",
-    });
+    if (open) {
+      getAllMapMarkers({
+        page: 1,
+        limit: limitData,
+        search_string: search,
+        type: selectType?.title,
+        sort_by: "",
+        sort_type: "",
+      });
+      getAllMapMarkersForOrginazations();
+    }
+  }, [open]);
 
-    getAllMapMarkersForOrginazations({
-      search_string: search,
-      type: selectType?.title,
-    });
-  }, [search, selectType?.title, open]);
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      getAllMapMarkers({
+        page: 1,
+        limit: limitData,
+        search_string: search,
+        type: selectType?.title,
+        sort_by: "",
+        sort_type: "",
+      });
+    }, 1000);
+    return () => clearTimeout(debounce);
+  }, [search]);
 
   const capturePageNum = (value: number) => {
     getAllMapMarkers({
-      limit: 12,
+      ...searchParams,
+      limit: limitData,
       page: value,
     });
   };
 
   const captureRowPerItems = (value: number) => {
+    setLimitData(value);
     getAllMapMarkers({
+      ...searchParams,
       limit: value,
       page: 1,
     });
+  };
+
+  const handleSelectTypeChange = (newValue: any) => {
+    if (newValue) {
+      setSelectType(newValue);
+      getAllMapMarkers({
+        ...searchParams,
+        type: newValue?.title,
+      });
+    } else {
+      setSelectType(null);
+      getAllMapMarkers({
+        ...searchParams,
+        type: "",
+      });
+    }
   };
 
   return (
@@ -212,12 +244,17 @@ const MapMarkersListDialog = ({
             data={orginisationTypesOptions || []}
             setSelectValue={setSelectType}
             selectedValue={selectType}
-            placeholder="Select Organization Type"
+            placeholder="Select Type"
+            onChange={handleSelectTypeChange}
           />
           <IconButton
             className="iconBtn"
             aria-label="close"
-            onClick={handleClose}
+            onClick={() => {
+              handleClose();
+              setSelectType(null);
+              setSearch("");
+            }}
           >
             <Image
               src="/map/close-with-border.svg"
@@ -245,8 +282,10 @@ const MapMarkersListDialog = ({
             markers,
             mapDetails,
             markersImagesWithOrganizationType,
+            map,
           })}
-          loading={false}
+          loading={showLoading}
+          searchParams={searchParams}
         />
         {markers?.length ? (
           <TablePaginationComponent
@@ -264,7 +303,7 @@ const MapMarkersListDialog = ({
         handleDeleteCose={handleDeleteCose}
         deleteFunction={deleteMarker}
         lable="Delete Marker"
-        text="Are you sure want to delete marker?"
+        text="Are you sure you want to delete marker?"
         loading={loading}
       />
       <ShareLinkDialog

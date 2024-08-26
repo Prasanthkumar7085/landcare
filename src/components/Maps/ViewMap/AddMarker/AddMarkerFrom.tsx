@@ -70,8 +70,6 @@ const MarkerPopup = ({
       const response = await getStaticMapAPI(body);
       if (response?.status == 200 || response?.status == 201) {
         return response?.data;
-      } else {
-        toast.error(response?.error_data.coordinates);
       }
     } catch (err) {
       console.error(err);
@@ -113,7 +111,7 @@ const MarkerPopup = ({
       coordinates: placeDetails?.coordinates?.length
         ? placeDetails?.coordinates
         : popupFormData.coordinates,
-      organisation_type: popupFormData?.organisation_type || null,
+      organisation_type: popupFormData?.organisation_type || "none",
       map_id: popupFormData?.map_id,
       title: popupFormData?.title || "",
       phone: popupFormData?.phone || null,
@@ -196,7 +194,9 @@ const MarkerPopup = ({
             <h3 className="subHeading">Basic Information</h3>
             <div className="eachGrp">
               <div className="eachFeildGrp">
-                <label>Title</label>
+                <label>
+                  Title<span style={{ color: "red" }}>*</span>
+                </label>
                 <TextField
                   className="defaultTextFeild text "
                   placeholder="Enter Title"
@@ -207,11 +207,11 @@ const MarkerPopup = ({
                 <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
               </div>
               <div className="eachFeildGrp">
-                <label>Organization Type</label>
+                <label>Type</label>
                 <TextField
                   className="defaultTextFeild text "
                   name="organisation_type"
-                  placeholder="Enter Organization"
+                  placeholder="Enter Type"
                   value={popupFormData?.organisation_type}
                   onChange={handleInputChange}
                 />

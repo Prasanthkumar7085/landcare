@@ -1,23 +1,19 @@
-import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
-import { markerFilterOptions } from "@/lib/constants/mapConstants";
 import {
   boundToMapWithPolygon,
   getLocationAddress,
   getMarkersImagesBasedOnOrganizationType,
   getPolygonWithMarkers,
+  navigateToMarker,
   renderer,
 } from "@/lib/helpers/mapsHelpers";
 import {
-  getSingleMapDetailsAPI,
   getSingleMapDetailsBySlugAPI,
   getSingleMapMarkersAPI,
   getSingleMarkerAPI,
 } from "@/services/maps";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import { capitalize, InputAdornment, TextField } from "@mui/material";
-import Image from "next/image";
 import {
   useParams,
   usePathname,
@@ -26,8 +22,8 @@ import {
 } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "../view-map.module.css";
+import PublicMapFilters from "./PublicMapFilters";
 import ViewPublicMarkerDrawer from "./ViewPublicMarkerDrawer";
-import { capitalizeFirstLetter } from "@/lib/helpers/nameFormate";
 
 const PublicMap = () => {
   const { slug } = useParams();
@@ -70,6 +66,7 @@ const PublicMap = () => {
   });
   const [filtersLoading, setFiltersLoading] = useState<boolean>(false);
   const bouncingMarkerRef = useRef<google.maps.Marker | null>(null);
+  const [previewError, setPreviewError] = useState<any>(false);
 
   const addMarkerEVent = (event: any, map: any, maps: any) => {
     const marker = new google.maps.Marker({
@@ -140,7 +137,6 @@ const PublicMap = () => {
         draggable: false,
       });
       markersRef.current.push({ id: markerData.id, marker: markere });
-
       markere.addListener("click", () => {
         handleMarkerClick(markerData, markere);
       });
@@ -155,7 +151,6 @@ const PublicMap = () => {
         if (drawingManagerRef.current) {
           drawingManagerRef.current.setOptions({ drawingControl: false });
         }
-
         getLocationAddress({
           latitude,
           longitude,
@@ -165,7 +160,9 @@ const PublicMap = () => {
         });
       });
     });
-
+    if (params.get("marker_id") || searchParams?.marker_id) {
+      goTomarker(markers1);
+    }
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
@@ -183,6 +180,12 @@ const PublicMap = () => {
       );
       setSingleMarkerData(response?.data);
       setMarkerData(markerData);
+      map.setCenter(
+        new google.maps.LatLng(
+          markerData?.coordinates[0],
+          markerData?.coordinates[1]
+        )
+      );
     } catch (err) {
       console.error(err);
     } finally {
@@ -198,22 +201,29 @@ const PublicMap = () => {
       markerData?.coordinates[1]
     );
     setSingleMarkerOpen(true);
-    map.setCenter(
-      new google.maps.LatLng(
-        markerData?.coordinates[0],
-        markerData?.coordinates[1]
-      )
+    const isInCluster = markersRef.current.some(
+      ({ marker }) => marker === markere
     );
-    map.setZoom(6);
-    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
-      bouncingMarkerRef.current.setAnimation(null);
-    }
-    if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
-      markere.setAnimation(null);
+    if (isInCluster) {
+      let clusterBounds = new google.maps.LatLngBounds();
+      markersRef.current.forEach(({ marker }: any) => {
+        if (marker.getPosition() && marker === markere) {
+          clusterBounds.extend(marker.getPosition());
+        }
+      });
+      if (clusterBounds.getNorthEast() && clusterBounds.getSouthWest()) {
+        const center = clusterBounds.getCenter();
+        map.setCenter(center);
+      }
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
       bouncingMarkerRef.current = markere;
     }
+    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
+      bouncingMarkerRef.current.setAnimation(null);
+    }
+    markere.setAnimation(google.maps.Animation.BOUNCE);
+    bouncingMarkerRef.current = markere;
     if (drawingManagerRef.current) {
       drawingManagerRef.current.setOptions({ drawingControl: false });
     }
@@ -256,13 +266,16 @@ const PublicMap = () => {
 
       if (response?.status === 200 || response?.status === 201) {
         setMapDetails(response?.data);
-
-        const mapId = response?.data?.id;
-        const [markersForOrganizationsResult, markersResult] =
-          await Promise.allSettled([
-            getSingleMapMarkersForOrginazations({ id: mapId }),
-            getSingleMapMarkers({ id: mapId }),
-          ]);
+        if (response?.data?.status == "draft") {
+          setPreviewError(true);
+        } else {
+          const mapId = response?.data?.id;
+          const [markersForOrganizationsResult, markersResult] =
+            await Promise.allSettled([
+              getSingleMapMarkersForOrginazations({ id: mapId }),
+              getSingleMapMarkers({ id: mapId }),
+            ]);
+        }
       }
     } catch (err) {
       console.error("Error in getSingleMapDetails:", err);
@@ -339,46 +352,22 @@ const PublicMap = () => {
     }
   };
 
-  const getOrginazationTypes = () => {
-    let orginisationTypesOptions: any = Object?.keys(
-      markersImagesWithOrganizationType
-    ).map((key: any) => ({
-      title: key,
-      label: capitalizeFirstLetter(key) || key,
-      img: markersImagesWithOrganizationType[key],
-    }));
-
-    return orginisationTypesOptions;
-  };
-
   useEffect(() => {
-    if (mapDetails?.id) {
-      getSingleMapMarkers({
-        search_string: searchString,
-        sort_by: markerOption?.value,
-        sort_type: markerOption?.title,
-        id: mapDetails?.id,
-        type: selectedOrginazation?.title,
-      });
+    if (slug) {
+      getSingleMapDetails();
     }
-  }, [
-    searchString,
-    markerOption?.value,
-    markerOption?.title,
-    mapDetails?.id,
-    selectedOrginazation?.title,
-  ]);
-
-  useEffect(() => {
-    getSingleMapDetails();
   }, []);
 
   useEffect(() => {
     if (map && googleMaps) {
-      if (params?.get("marker_id") || searchParams?.marker_id) {
-        goTomarker(markers);
-      } else {
+      if (!params?.get("marker_id") || !searchParams?.marker_id) {
         boundToMapWithPolygon(polygonCoords, map);
+      } else {
+        navigateToMarker(
+          map,
+          params?.get("marker_id") || searchParams?.marker_id,
+          markers
+        );
       }
       renderAllMarkers(markers, map, googleMaps);
     }
@@ -392,111 +381,84 @@ const PublicMap = () => {
 
   return (
     <>
-      <div
-        id="markersPageWithMap"
-        className={styles.markersPageWeb}
-        style={{
-          display: loading == false ? "" : "none",
-        }}
-      >
-        <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
-          <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
-          <div
-            className={styles.filterGrp}
-            style={{
-              position: "absolute",
-              top: "20px",
-              left: "30px",
-              gap: "1.2rem ",
-            }}
-          >
-            <TextField
-              variant="outlined"
-              size="small"
-              type="search"
-              placeholder="Search on title"
-              value={searchString}
-              sx={{
-                "& .MuiInputBase-root": {
-                  height: "38px",
-                  border: "1.4px solid #c8c7ce",
-                },
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "#f2f2f2",
-                  width: " 100%",
-                  height: "38px",
-                  background: "#ffffff",
-                  color: "black",
-                  fontWeight: 500,
-                  fontSize: "12px",
-                  padding: "8px 13px",
-                  boxSizing: " border-box",
-                  borderRadius: "6px",
-                  fontFamily: "Poppins",
-                },
-                fieldset: {
-                  border: " 0 !important",
-                },
+      {previewError == false ? (
+        <div
+          id="markersPageWithMap"
+          className={styles.markersPageWeb}
+          style={{
+            display: loading == false ? "" : "none",
+          }}
+        >
+          <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
+            <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
+            <div
+              className={styles.filterGrp}
+              style={{
+                position: "absolute",
+                top: "20px",
+                left: "30px",
+                gap: "1.2rem ",
               }}
-              onChange={(e) => setSearchString(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Image
-                      src="/search-icon.svg"
-                      alt=""
-                      width={15}
-                      height={15}
-                    />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <AutoCompleteSearch
-              data={getOrginazationTypes() || []}
-              setSelectValue={setSelectedOrginazation}
-              selectedValue={selectedOrginazation}
-              placeholder="Select Organization Type"
-            />
-
-            {/* <AutoCompleteSearch
-              data={markerFilterOptions}
-              setSelectValue={setMarkerOption}
-              selectedValue={markerOption}
-              placeholder="Sort Filter"
-            /> */}
+            >
+              <PublicMapFilters
+                searchString={searchString}
+                setSearchString={setSearchString}
+                markersImagesWithOrganizationType={
+                  markersImagesWithOrganizationType
+                }
+                setSelectedOrginazation={setSelectedOrginazation}
+                selectedOrginazation={selectedOrginazation}
+                getSingleMapMarkers={getSingleMapMarkers}
+                setMarkers={setMarkers}
+                setSingleMarkers={setSingleMarkers}
+                markers={markers}
+                singleMarkers={singleMarkers}
+              />
+            </div>
           </div>
+          {singleMarkeropen == true || params?.get("marker_id") ? (
+            <ViewPublicMarkerDrawer
+              onClose={setSingleMarkerOpen}
+              getSingleMapMarkers={getSingleMapMarkers}
+              setShowMarkerPopup={setShowMarkerPopup}
+              currentBouncingMarker={currentBouncingMarker}
+              markersRef={markersRef}
+              setMarkerData={setMarkerData}
+              markerData={markerData}
+              data={singleMarkerdata}
+              setData={setSingleMarkerData}
+              map={map}
+              polygonCoords={polygonCoords}
+              showMarkerPopup={showMarkerPopup}
+              drawingManagerRef={drawingManagerRef}
+              setSingleMarkerLoading={setSingleMarkerLoading}
+              singleMarkerLoading={singleMarkerLoading}
+              setMarkersOpen={setMarkersOpen}
+              handleMarkerClick={handleMarkerClick}
+              markersImagesWithOrganizationType={
+                markersImagesWithOrganizationType
+              }
+              setPlaceDetails={setPlaceDetails}
+              getSingleMarker={getSingleMarker}
+              mapDetails={mapDetails}
+            />
+          ) : (
+            ""
+          )}
         </div>
-        {singleMarkeropen == true || params?.get("marker_id") ? (
-          <ViewPublicMarkerDrawer
-            onClose={setSingleMarkerOpen}
-            getSingleMapMarkers={getSingleMapMarkers}
-            setShowMarkerPopup={setShowMarkerPopup}
-            currentBouncingMarker={currentBouncingMarker}
-            markersRef={markersRef}
-            setMarkerData={setMarkerData}
-            markerData={markerData}
-            data={singleMarkerdata}
-            setData={setSingleMarkerData}
-            map={map}
-            polygonCoords={polygonCoords}
-            showMarkerPopup={showMarkerPopup}
-            drawingManagerRef={drawingManagerRef}
-            setSingleMarkerLoading={setSingleMarkerLoading}
-            singleMarkerLoading={singleMarkerLoading}
-            setMarkersOpen={setMarkersOpen}
-            handleMarkerClick={handleMarkerClick}
-            markersImagesWithOrganizationType={
-              markersImagesWithOrganizationType
-            }
-            setPlaceDetails={setPlaceDetails}
-            getSingleMarker={getSingleMarker}
-            mapDetails={mapDetails}
-          />
-        ) : (
-          ""
-        )}
-      </div>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <h1>Page not found</h1>
+        </div>
+      )}
       <LoadingComponent
         loading={loading || singleMarkerLoading || filtersLoading}
       />

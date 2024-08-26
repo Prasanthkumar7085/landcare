@@ -1,3 +1,8 @@
+import DeleteDialog from "@/components/Core/DeleteDialog";
+import { datePipe } from "@/lib/helpers/datePipe";
+import { updateMapWithCordinatesHelper } from "@/lib/helpers/mapsHelpers";
+import { truncateText } from "@/lib/helpers/nameFormate";
+import { deleteAllMarkersAPI, deleteMapAPI } from "@/services/maps";
 import {
   Button,
   IconButton,
@@ -6,27 +11,13 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import dayjs from "dayjs";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { toast, Toaster } from "sonner";
-import DeleteDialog from "@/components/Core/DeleteDialog";
-import {
-  deleteAllMarkersAPI,
-  deleteMapAPI,
-  getStaticMapAPI,
-  updateMapWithCordinatesAPI,
-} from "@/services/maps";
-import MapMarkersList from "./MapMarkersList";
-import ImportModal from "./ImportMarkers/ImportModal";
-import {
-  getPolygonWithMarkers,
-  updateMapWithCordinatesHelper,
-} from "@/lib/helpers/mapsHelpers";
-import { truncateText } from "@/lib/helpers/nameFormate";
+import { toast } from "sonner";
 import AddMapDrawer from "../AddMap/AddMapDrawer";
-import { datePipe } from "@/lib/helpers/datePipe";
+import ImportModal from "./ImportMarkers/ImportModal";
+import MapMarkersList from "./MapMarkersList";
 
 const ViewMapDetailsDrawer = ({
   mapDetails,
@@ -49,6 +40,8 @@ const ViewMapDetailsDrawer = ({
   setSelectedOrginazation,
   getSingleMapMarkersForOrginazations,
   allMarkers,
+  searchParams,
+  drawingManagerRef,
 }: any) => {
   const router = useRouter();
   const { id } = useParams();
@@ -102,7 +95,7 @@ const ViewMapDetailsDrawer = ({
         mapDetails: mapDetails,
         id: id,
       });
-      await getData({ get_all: true });
+      await getSingleMapMarkers({ get_all: true });
     } catch (err) {
       console.error(err);
     } finally {
@@ -184,6 +177,9 @@ const ViewMapDetailsDrawer = ({
               mapDetails={mapDetails}
               selectedOrginazation={selectedOrginazation}
               setSelectedOrginazation={setSelectedOrginazation}
+              getData={getSingleMapMarkers}
+              searchParams={searchParams}
+              drawingManagerRef={drawingManagerRef}
             />
           </div>
         </div>
@@ -233,7 +229,7 @@ const ViewMapDetailsDrawer = ({
         handleDeleteCose={handleDeleteCose}
         deleteFunction={deleteMap}
         lable="Delete Map"
-        text="Are you sure want to delete map?"
+        text="Are you sure you want to delete map?"
         loading={loading}
       />
       <DeleteDialog
@@ -241,7 +237,7 @@ const ViewMapDetailsDrawer = ({
         handleDeleteCose={handleDeleteCose}
         deleteFunction={deleteAllMarkers}
         lable="Delete markers"
-        text="Are you sure want to delete all markers?"
+        text="Are you sure you want to delete all markers?"
         loading={loading}
       />
       {showModal ? (
@@ -260,13 +256,15 @@ const ViewMapDetailsDrawer = ({
       ) : (
         ""
       )}
-      <AddMapDrawer
-        mapDetails={mapDetails}
-        setMapDetails={setMapDetails}
-        addMapDrawerOpen={addMapDrawerOpen}
-        setAddMapDrawerOpen={setAddMapDrawerOpen}
-        getSingleMapDetails={getData}
-      />
+      {addMapDrawerOpen && (
+        <AddMapDrawer
+          mapDetails={mapDetails}
+          setMapDetails={setMapDetails}
+          addMapDrawerOpen={addMapDrawerOpen}
+          setAddMapDrawerOpen={setAddMapDrawerOpen}
+          getSingleMapDetails={getData}
+        />
+      )}
     </div>
   );
 };

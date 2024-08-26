@@ -29,9 +29,10 @@ import ShareLinkDialog from "../Core/ShareLinkDialog";
 import TablePaginationComponent from "../Core/TablePaginationComponent";
 import MapsFilters from "./MapsFilters";
 import { MapsController } from "../../../lib/controllers/mapsController";
+import { truncateText } from "@/lib/helpers/nameFormate";
 
 const Maps = () => {
-  const useParam = useSearchParams();
+  const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -46,9 +47,6 @@ const Maps = () => {
   const [shareMenuOpen, setShareMenuOpen] = useState<any>(false);
   const [mapsCount, setMapsCount] = useState<any>([]);
 
-  const [searchParams, setSearchParams] = useState(
-    Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
-  );
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -70,14 +68,14 @@ const Maps = () => {
   };
 
   const getAllMaps = async ({
-    page = searchParams?.page,
-    limit = searchParams?.limit,
-    search_string = searchParams?.search_string,
-    from_date = searchParams?.from_date,
-    to_date = searchParams?.to_date,
-    status = searchParams?.status,
-    sort_by = searchParams?.sort_by,
-    sort_type = searchParams?.sort_type,
+    page = params.get("page") as string,
+    limit = params.get("limit") as string,
+    search_string = params.get("search_string") as string,
+    from_date = params.get("from_date") as string,
+    to_date = params.get("to_date") as string,
+    status = params.get("status") as string,
+    sort_by = params.get("sort_by") as string,
+    sort_type = params.get("sort_type") as string,
   }: Partial<ListMapsApiProps>) => {
     setLoading(true);
     try {
@@ -149,7 +147,7 @@ const Maps = () => {
     try {
       const response = await changeStatusOfMapAPI(mapId, body);
       toast.success(response?.message);
-      getAllMaps({});
+      await getAllMaps({});
       handleDeleteCose();
     } catch (err) {
       console.error(err);
@@ -157,41 +155,6 @@ const Maps = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    getAllMaps({
-      page: searchParams?.page ? searchParams?.page : 1,
-      limit: searchParams?.limit ? searchParams?.limit : 12,
-      search_string: searchParams?.search_string,
-      from_date: searchParams?.from_date,
-      to_date: searchParams?.to_date,
-      status: searchParams?.status,
-      sort_by: searchParams?.sort_by,
-      sort_type: searchParams?.sort_type,
-    });
-  }, [
-    searchParams?.status,
-    searchParams?.page,
-    searchParams?.limit,
-    searchParams?.from_date,
-    searchParams?.to_date,
-  ]);
-
-  useEffect(() => {
-    if (searchParams?.search_string) {
-      const debounce = setTimeout(() => {
-        getAllMaps({
-          page: searchParams?.page ? searchParams?.page : 1,
-          limit: searchParams?.limit ? searchParams?.limit : 8,
-          search_string: searchParams?.search_string,
-          from_date: searchParams?.from_date,
-          to_date: searchParams?.to_date,
-          status: searchParams?.status,
-        });
-      }, 1000);
-      return () => clearTimeout(debounce);
-    }
-  }, [searchParams?.search_string]);
 
   const handleImageClick = (event: any, id: any) => {
     event.stopPropagation();
@@ -215,25 +178,17 @@ const Maps = () => {
 
   const capturePageNum = (value: number) => {
     getAllMaps({
-      ...searchParams,
-      limit: searchParams.limit as string,
+      limit: params.get("limit") as string,
       page: value,
     });
   };
 
   const captureRowPerItems = (value: number) => {
     getAllMaps({
-      ...searchParams,
       limit: value,
       page: 1,
     });
   };
-
-  useEffect(() => {
-    setSearchParams(
-      Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
-    );
-  }, [useParam]);
 
   return (
     <div className="allMapsContainer">
@@ -262,39 +217,45 @@ const Maps = () => {
                     width={100}
                     height={150}
                   />
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    {item?.status == "publish" ? (
-                    <IconButton
-                      className="iconBtn1"
-                      onClick={(event) => handleShareClick(event, item)}
+                  <div className="topStrip">
+                    <Typography
+                      className="stripTitle"
+                      style={{
+                        background:
+                          item?.status == "publish" ? "#34a853" : "#F29900",
+                        textTransform: "capitalize",
+                      }}
                     >
-                      <Image
-                        src="/map/redo-arrow-icon.svg"
-                        alt=""
-                        height={18}
-                        width={18}
-                      />
-                    </IconButton>
-                    ) : (
-                      ""
-                    )}
-                    <IconButton
-                      className="iconBtn2"
-                      onClick={(event) => handleMenuClick(event, item)}
-                    >
-                      <Image
-                        src="/map/white-menu-bg.svg"
-                        alt=""
-                        height={25}
-                        width={25}
-                      />
-                    </IconButton>
+                      {item?.status ? item?.status?.toLowerCase() : "--"}
+                    </Typography>
+                    <div className="iconsDiv">
+                      {item?.status == "publish" ? (
+                        <IconButton
+                          className="iconBtn1"
+                          onClick={(event) => handleShareClick(event, item)}
+                        >
+                          <Image
+                            src="/map/share-bg.svg"
+                            alt=""
+                            height={30}
+                            width={30}
+                          />
+                        </IconButton>
+                      ) : (
+                        ""
+                      )}
+                      <IconButton
+                        className="iconBtn2"
+                        onClick={(event) => handleMenuClick(event, item)}
+                      >
+                        <Image
+                          src="/map/menu-bg.svg"
+                          alt=""
+                          height={30}
+                          width={30}
+                        />
+                      </IconButton>
+                    </div>
                   </div>
                 </div>
 
@@ -311,26 +272,18 @@ const Maps = () => {
                         : "--"}
                     </Tooltip>
                   </Typography>
-                  <Typography
-                    className="cardTitle"
-                    style={{ textTransform: "capitalize" }}
+
+                  <Tooltip
+                    title={
+                      item?.description && item?.description?.length >= 200
+                        ? item?.description
+                        : ""
+                    }
                   >
-                    {item?.status ? item?.status?.toLowerCase() : "--"}
-                  </Typography>
-                  <Typography className="cardDesc">
-                    <Tooltip
-                      title={
-                        item?.description?.length >= 50 ? item?.description : ""
-                      }
-                      placement="bottom"
-                    >
-                      {item?.description
-                        ? item?.description?.length >= 50
-                          ? `${item?.description.slice(0, 30)}....`
-                          : item?.description
-                        : "--"}
-                    </Tooltip>
-                  </Typography>
+                    <Typography className="cardDesc">
+                      {truncateText(item?.description, 200) || "---"}
+                    </Typography>
+                  </Tooltip>
                 </div>
 
                 <div className="cardFooter">
@@ -364,9 +317,9 @@ const Maps = () => {
         {!loading && mapsData?.length == 0 ? (
           <div className="noDataFound">
             {!mapsData?.length &&
-            (useParam?.get("from_date") ||
-              useParam?.get("to_date") ||
-              useParam?.get("search_string")) ? (
+            (params?.get("from_date") ||
+              params?.get("to_date") ||
+              params?.get("search_string")) ? (
               <>
                 <Image
                   src="/no-image-maps.svg"
@@ -412,7 +365,7 @@ const Maps = () => {
         handleDeleteCose={handleDeleteCose}
         deleteFunction={deleteMap}
         lable="Delete Map"
-        text="Are you sure want to delete map?"
+        text="Are you sure you want to delete map?"
         loading={showLoading}
       />
       <ShareLinkDialog
@@ -443,7 +396,7 @@ const Maps = () => {
               className="menuItem"
               onClick={() => {
                 window.open(
-                  `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`,
+                  `https://dev-landcare.vercel.app/view-map/${singleMapDetails?.id}`,
                   "_blank"
                 );
                 handleCloseUserMenu();
@@ -451,21 +404,6 @@ const Maps = () => {
             >
               Open In New Tab
             </MenuItem>
-            {singleMapDetails?.status == "publish" ? (
-              <MenuItem
-                className="menuItem"
-                onClick={() => {
-                  copyURL(
-                    `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`
-                  );
-                  handleCloseUserMenu();
-                }}
-              >
-                Copy
-              </MenuItem>
-            ) : (
-              ""
-            )}
             <MenuItem
               className="menuItem"
               onClick={() => {

@@ -74,7 +74,12 @@ const parseRows = (rows: any[], headers: any[]) => {
     headers.forEach((headerName: any, i: any) => {
       const mappedItem = subHeadersMappingConstants[headerName];
       const value = row[i];
-      obj[mappedItem] = parseField(value?.toString(), mappedItem);
+      obj[mappedItem] =
+        mappedItem == "organisation_type"
+          ? value
+            ? value?.toString()
+            : "none"
+          : parseField(value?.toString(), mappedItem);
     });
     return obj;
   });
@@ -268,7 +273,16 @@ export const boundToMapWithPolygon = (polygonCoords: any, map: any) => {
     map.setZoom(5);
   }
 };
-
+export const navigateToMarker = (map: any, markerID: any, markers: any) => {
+  let markerDetails = markers?.find((item: any) => item.id == markerID);
+  map.setCenter(
+    new google.maps.LatLng(
+      markerDetails?.coordinates[0],
+      markerDetails?.coordinates[1]
+    )
+  );
+  map.setZoom(16);
+};
 export const getPolygonWithMarkers = (points: any) => {
   points.sort((a: any, b: any) => a.lng - b.lng || a.lat - b.lat);
 
@@ -306,19 +320,18 @@ export const getPolygonWithMarkers = (points: any) => {
 };
 
 export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
-  let organizationTypes: any = markersData?.map((item: any) => {
-    return item.organisation_type;
-  });
-  const uniqueOrganizationTypes = organizationTypes?.filter(
-    (value: any, index: any, self: any) => {
-      return (
-        value !== undefined &&
-        value !== null &&
-        value !== "" &&
-        self.indexOf(value) === index
-      );
-    }
+  let organizationTypes: any = markersData?.map(
+    (item: any) => item.organisation_type
   );
+  const uniqueOrganizationTypes = organizationTypes?.filter(
+    (value: any, index: any, self: any) =>
+      value !== undefined &&
+      value !== null &&
+      value !== "" &&
+      self.indexOf(value) === index
+  );
+
+  const noneImage = "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png";
 
   const OrganizationMarkersImages: Record<string, string> =
     uniqueOrganizationTypes
@@ -327,6 +340,10 @@ export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
         acc[type] = markersImages[index];
         return acc;
       }, {} as Record<string, string>);
+
+  if (OrganizationMarkersImages["none"]) {
+    OrganizationMarkersImages["none"] = noneImage;
+  }
 
   return OrganizationMarkersImages;
 };

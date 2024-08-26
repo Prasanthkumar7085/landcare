@@ -18,7 +18,7 @@ import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import * as XLSX from "xlsx";
 import ValidationsTable from "./ValidationsTable";
-import { Button } from "@mui/material";
+import { Button, IconButton, Tooltip } from "@mui/material";
 import MappingScreen from "./MappingComponent";
 
 interface IImportModalProps {
@@ -133,8 +133,6 @@ const ImportModal: React.FC<IImportModalProps> = ({
       const response = await getStaticMapAPI(body);
       if (response?.status == 200 || response?.status == 201) {
         return response?.data;
-      } else {
-        toast.error(response?.error_data.coordinates);
       }
     } catch (err) {
       console.error(err);
@@ -277,8 +275,39 @@ const ImportModal: React.FC<IImportModalProps> = ({
                 </div>
               )}
             </div>
-            <div className="fileUpload">
+            <div
+              className="fileUpload"
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               {file && <p>Selected file: {file.name}</p>}
+              {file && (
+                <Tooltip title="Delete">
+                  <IconButton
+                    aria-label="remove"
+                    color="error"
+                    onClick={() => {
+                      setCheckMapping(false);
+                      setFile(null);
+                      setValidationsData([]);
+                      setSheetHeaders({});
+                      setSheetValues([]);
+                      setSuccess(false);
+                    }}
+                  >
+                    <Image
+                      src="/markers/add/delete.svg"
+                      alt="edit"
+                      width={20}
+                      height={20}
+                    />
+                  </IconButton>
+                </Tooltip>
+              )}
             </div>
           </div>
           <div className="rightBlock">
@@ -298,7 +327,10 @@ const ImportModal: React.FC<IImportModalProps> = ({
               <div className="btnGrp">
                 <Button onClick={onClose}>Close</Button>
                 <Button
-                  sx={{ display: success ? "none" : "block" }}
+                  sx={{
+                    display: success ? "none" : "block",
+                    cursor: file && !success ? "" : "not-allowed",
+                  }}
                   onClick={handleFileUpload}
                   disabled={file && !success ? false : true}
                 >

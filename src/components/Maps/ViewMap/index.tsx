@@ -6,6 +6,7 @@ import {
   getLocationAddress,
   getMarkersImagesBasedOnOrganizationType,
   getPolygonWithMarkers,
+  navigateToMarker,
   renderer,
 } from "@/lib/helpers/mapsHelpers";
 import {
@@ -29,6 +30,7 @@ import { useEffect, useRef, useState } from "react";
 import MarkerPopup from "./AddMarker/AddMarkerFrom";
 import styles from "./view-map.module.css";
 import ViewMapDetailsDrawer from "./ViewMapDetailsBlock";
+import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
 
 const ViewGoogleMap = () => {
   const { id } = useParams();
@@ -38,6 +40,7 @@ const ViewGoogleMap = () => {
   const router = useRouter();
   let currentBouncingMarker: any = null;
   let markersRef = useRef<{ id: number; marker: google.maps.Marker }[]>([]);
+  const bouncingMarkerRef = useRef<google.maps.Marker | null>(null);
   const clusterRef: any = useRef<any>(null);
   const [searchParams, setSearchParams] = useState(
     Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
@@ -51,7 +54,11 @@ const ViewGoogleMap = () => {
   const [markers, setMarkers] = useState<any[]>([]);
   const [mapRef, setMapRef] = useState<any>(null);
   const [singleMarkers, setSingleMarkers] = useState<any[]>([]);
-  const [searchString, setSearchString] = useState("");
+  const [searchString, setSearchString] = useState(
+    params.get("search_string")
+      ? decodeURIComponent(params.get("search_string") as string)
+      : "" || ""
+  );
   const [showMarkerPopup, setShowMarkerPopup] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
   const [localMarkers, setLocalMarkers] = useState<any>([]);
@@ -128,7 +135,6 @@ const ViewGoogleMap = () => {
   };
   const renderAllMarkers = (markers1: any, map: any, maps: any) => {
     clearMarkers();
-
     markers1?.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
         markerData.coordinates?.[0],
@@ -179,35 +185,54 @@ const ViewGoogleMap = () => {
         });
       });
     });
-
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
       renderer,
     });
+    if (params.get("marker_id") || searchParams?.marker_id) {
+      goTomarker(markers1);
+    }
   };
 
   const handleMarkerClick = (markerData: any, markere: google.maps.Marker) => {
+    let queries = { ...searchParams };
+    delete queries.marker_id;
+    let queryString = prepareURLEncodedParams("", queries);
+    router.replace(`${pathName}${queryString}&marker_id=${markerData?.id}`);
     setPlaceDetails({});
-    router.replace(`${pathName}?marker_id=${markerData?.id}`);
     getSingleMarker(
       markerData?.id,
       markerData?.coordinates[0],
       markerData?.coordinates[1]
     );
     setSingleMarkerOpen(true);
-    map.setCenter(
-      new google.maps.LatLng(
-        markerData?.coordinates[0],
-        markerData?.coordinates[1]
-      )
+    const isInCluster = markersRef.current.some(
+      ({ marker }) => marker === markere
     );
-    map.setZoom(18);
-    if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
-      markere.setAnimation(null);
+
+    if (isInCluster) {
+      let clusterBounds = new google.maps.LatLngBounds();
+      markersRef.current.forEach(({ marker }: any) => {
+        if (marker.getPosition() && marker === markere) {
+          clusterBounds.extend(marker.getPosition());
+        }
+      });
+
+      if (clusterBounds.getNorthEast() && clusterBounds.getSouthWest()) {
+        const center = clusterBounds.getCenter();
+        map.setCenter(center);
+      }
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
+      bouncingMarkerRef.current = markere;
     }
+
+    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
+      bouncingMarkerRef.current.setAnimation(null);
+    }
+    markere.setAnimation(google.maps.Animation.BOUNCE);
+    bouncingMarkerRef.current = markere;
     if (drawingManagerRef.current) {
       drawingManagerRef.current.setOptions({ drawingControl: false });
     }
@@ -235,7 +260,7 @@ const ViewGoogleMap = () => {
     const drawingManager = new maps.drawing.DrawingManager({
       drawingControl: true,
       drawingControlOptions: {
-        position: maps.ControlPosition.LEFT_CENTER,
+        position: maps.ControlPosition.LEFT_TOP,
         drawingModes: [google.maps.drawing.OverlayType.MARKER],
       },
     });
@@ -263,8 +288,16 @@ const ViewGoogleMap = () => {
       const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
-        await getSingleMapMarkersForOrginazations({ id: response?.data?.id });
-        await getSingleMapMarkers({});
+        const markersPromise = getSingleMapMarkers({
+          marker_id: params?.get("marker_id") || searchParams?.marker_id,
+        });
+        const organizationsPromise = getSingleMapMarkersForOrginazations({
+          id: response?.data?.id,
+        });
+        const results = await Promise.allSettled([
+          markersPromise,
+          organizationsPromise,
+        ]);
       }
     } catch (err) {
       console.error(err);
@@ -287,20 +320,28 @@ const ViewGoogleMap = () => {
   };
 
   const getSingleMapMarkers = async ({
-    search_string = searchString,
+    search_string = searchParams?.search_string,
     sort_by = markerOption?.value,
     sort_type = markerOption?.title,
-    type = selectedOrginazation?.title,
-  }) => {
+    type = searchParams?.organisation_type,
+    marker_id,
+  }: any) => {
     setFiltersLoading(true);
     try {
       let queryParams: any = {
-        search_string: search_string,
+        search_string: search_string ? search_string : "",
         sort_by: sort_by,
         sort_type: sort_type,
         get_all: true,
         organisation_type: type ? type : "",
       };
+      let searchParamsDetails = {
+        ...queryParams,
+        marker_id: marker_id,
+        search_string: search_string ? encodeURIComponent(search_string) : "",
+      };
+      let queryString = prepareURLEncodedParams("", searchParamsDetails);
+      router.push(`${pathName}${queryString}`);
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;
       setMarkers(data);
@@ -322,10 +363,7 @@ const ViewGoogleMap = () => {
   };
 
   const goTomarker = (data: any) => {
-    if (
-      (params.get("marker_id") || searchParams?.marker_id) &&
-      showMarkerPopup == false
-    ) {
+    if (params.get("marker_id") || searchParams?.marker_id) {
       const markerEntry = markersRef.current.find(
         (entry: any) => entry.id == params.get("marker_id")
       );
@@ -342,29 +380,21 @@ const ViewGoogleMap = () => {
   };
 
   useEffect(() => {
-    getSingleMapMarkers({
-      search_string: searchString,
-      sort_by: markerOption?.value,
-      sort_type: markerOption?.title,
-      type: selectedOrginazation?.title,
-    });
-  }, [
-    searchString,
-    markerOption?.value,
-    markerOption?.title,
-    selectedOrginazation?.title,
-  ]);
-
-  useEffect(() => {
-    getSingleMapDetails();
+    if (id) {
+      getSingleMapDetails();
+    }
   }, []);
 
   useEffect(() => {
     if (map && googleMaps) {
-      if (params?.get("marker_id") || searchParams?.marker_id) {
-        goTomarker(markers);
-      } else {
+      if (!params?.get("marker_id") || !searchParams?.marker_id) {
         boundToMapWithPolygon(polygonCoords, map);
+      } else {
+        navigateToMarker(
+          map,
+          params?.get("marker_id") || searchParams?.marker_id,
+          markers
+        );
       }
       renderAllMarkers(markers, map, googleMaps);
     }
@@ -413,6 +443,7 @@ const ViewGoogleMap = () => {
             getSingleMarker={getSingleMarker}
             mapDetails={mapDetails}
             allMarkers={allMarkers}
+            searchParams={searchParams}
           />
         ) : (
           <ViewMapDetailsDrawer
@@ -423,7 +454,7 @@ const ViewGoogleMap = () => {
             setSingleMarkerOpen={setSingleMarkerOpen}
             setMarkerOption={setMarkerOption}
             markerOption={markerOption}
-            getData={getSingleMapMarkers}
+            getData={getSingleMapDetails}
             map={map}
             maps={googleMaps}
             markersRef={markersRef}
@@ -440,21 +471,25 @@ const ViewGoogleMap = () => {
               getSingleMapMarkersForOrginazations
             }
             allMarkers={allMarkers}
+            searchParams={searchParams}
+            drawingManagerRef={drawingManagerRef}
           />
         )}
-        <MarkerPopup
-          setShowMarkerPopup={setShowMarkerPopup}
-          showMarkerPopup={showMarkerPopup}
-          placeDetails={placeDetails}
-          getSingleMapMarkers={getSingleMapDetails}
-          removalMarker={removalMarker}
-          popupFormData={markerData}
-          setPopupFormData={setMarkerData}
-          setSingleMarkerData={setSingleMarkerData}
-          getSingleMarker={getSingleMarker}
-          mapDetails={mapDetails}
-          allMarkers={allMarkers}
-        />
+        {showMarkerPopup && (
+          <MarkerPopup
+            setShowMarkerPopup={setShowMarkerPopup}
+            showMarkerPopup={showMarkerPopup}
+            placeDetails={placeDetails}
+            getSingleMapMarkers={getSingleMapDetails}
+            removalMarker={removalMarker}
+            popupFormData={markerData}
+            setPopupFormData={setMarkerData}
+            setSingleMarkerData={setSingleMarkerData}
+            getSingleMarker={getSingleMarker}
+            mapDetails={mapDetails}
+            allMarkers={allMarkers}
+          />
+        )}
       </div>
       <LoadingComponent
         loading={loading || singleMarkerLoading || filtersLoading}
