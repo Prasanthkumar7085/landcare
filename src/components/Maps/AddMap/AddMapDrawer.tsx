@@ -32,7 +32,7 @@ const AddMapDrawer = ({
   const polygonCoords = useSelector((state: any) => state.maps.polygonCoords);
   const router = useRouter();
   const dispatch = useDispatch();
-  const [mapData, setMapData] = useState<any>();
+  const [mapData, setMapData] = useState<any>({});
   const [errorMessages, setErrorMessages] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
 

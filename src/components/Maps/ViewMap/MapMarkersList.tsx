@@ -97,9 +97,6 @@ const MapMarkersList = ({
       );
       setSelectedOrginazation(selectType);
     }
-    if (searchParams?.search_string) {
-      setSearchString(searchParams?.search_string);
-    }
   }, [searchParams, markersImagesWithOrganizationType]);
 
   return (
