@@ -257,8 +257,6 @@ const ViewMarkerDrawer = ({
                     </Typography>
                   )}
 
-
-
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
                   ) : (
