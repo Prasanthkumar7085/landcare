@@ -14,6 +14,7 @@ interface pageProps {
   data: any[];
   loading: boolean;
   getData: any;
+  searchParams: any;
 }
 
 const TanstackTableComponent: FC<pageProps> = ({
@@ -21,9 +22,10 @@ const TanstackTableComponent: FC<pageProps> = ({
   data,
   getData,
   loading,
+  searchParams,
 }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  let removeSortingForColumnIds = ["id", "actions"];
+  let removeSortingForColumnIds = ["id", "actions", "serial"];
 
   const table = useReactTable({
     columns,
@@ -38,42 +40,36 @@ const TanstackTableComponent: FC<pageProps> = ({
     debugTable: true,
   });
 
-  // Handle sorting and call the getData function with the sort parameters
-  useEffect(() => {
-    if (sorting.length > 0) {
-      const { id: sort_by, desc } = sorting[0];
-      const sort_type = desc ? "desc" : "asc";
-      getData({ sort_by, sort_type });
-    } else {
-      getData({ sort_by: "", sort_type: "" });
+  const sortAndGetData = (header: any) => {
+    if (
+      removeSortingForColumnIds &&
+      removeSortingForColumnIds?.length &&
+      removeSortingForColumnIds.includes(header.id)
+    ) {
+      return;
     }
-  }, [sorting]);
+    let sort_by = header.id;
+    let sort_type = "asc";
+    if ((searchParams?.sort_by as string) == header.id) {
+      if (searchParams?.sort_type == "asc") {
+        sort_type = "desc";
+      } else {
+        sort_by = "";
+        sort_type = "";
+      }
+    }
+
+    getData({
+      ...searchParams,
+      sort_by: sort_by,
+      sort_type: sort_type,
+    });
+  };
 
   const getWidth = (id: string) => {
     const widthObj = columns.find((item: any) => item.id == id);
     const width = widthObj?.width;
     return width;
-  };
-
-  const getBackgroundColor = (totalCases: any, targetVolume: any) => {
-    if (targetVolume === 0) {
-      if (totalCases === 0) {
-        return "#f5fff7";
-      } else if (totalCases >= targetVolume) {
-        return "#f5fff7";
-      } else {
-        return "#ffebe9";
-      }
-    }
-
-    const percentage = totalCases / targetVolume;
-    if (totalCases >= targetVolume) {
-      return "#f5fff7";
-    } else if (percentage >= 0.5) {
-      return "#feecd1";
-    } else {
-      return "#ffebe9";
-    }
   };
 
   return (
@@ -105,12 +101,7 @@ const TanstackTableComponent: FC<pageProps> = ({
                   >
                     {header.isPlaceholder ? null : (
                       <div
-                        {...{
-                          className: header.column.getCanSort()
-                            ? "cursor-pointer select-none"
-                            : "",
-                          onClick: header.column.getToggleSortingHandler(),
-                        }}
+                        onClick={() => sortAndGetData(header)}
                         style={{
                           display: "flex",
                           gap: "10px",
@@ -125,38 +116,11 @@ const TanstackTableComponent: FC<pageProps> = ({
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {{
-                          asc: (
-                            <Image
-                              src="/sort-asc.svg"
-                              height={12}
-                              width={12}
-                              alt="image"
-                            />
-                          ),
-                          desc: (
-                            <Image
-                              src="/sort-desc.svg"
-                              height={12}
-                              width={12}
-                              alt="image"
-                            />
-                          ),
-                        }[header.column.getIsSorted() as string] ?? (
-                          <Image
-                            src="/un-sort.svg"
-                            height={12}
-                            width={12}
-                            alt="Unsorted"
-                            style={{
-                              display:
-                                header.id === "actions" ||
-                                removeSortingForColumnIds.includes(header.id)
-                                  ? "none"
-                                  : "",
-                            }}
-                          />
-                        )}
+                        <SortItems
+                          searchParams={searchParams}
+                          header={header}
+                          removeSortingForColumnIds={removeSortingForColumnIds}
+                        />
                       </div>
                     )}
                   </th>
@@ -174,17 +138,6 @@ const TanstackTableComponent: FC<pageProps> = ({
                     key={index}
                     style={{
                       width: "100%",
-                      backgroundColor:
-                        row?.original.hasOwnProperty("total_targets") &&
-                        cell?.id &&
-                        cell?.id.includes("total_cases")
-                          ? getBackgroundColor(
-                              row.original.total_cases,
-                              row?.original?.dayTargets
-                                ? row?.original?.dayTargets
-                                : row?.original?.total_targets
-                            )
-                          : "",
                     }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -222,3 +175,29 @@ const TanstackTableComponent: FC<pageProps> = ({
 };
 
 export default TanstackTableComponent;
+
+const SortItems = ({
+  searchParams,
+  header,
+  removeSortingForColumnIds,
+}: {
+  searchParams: any;
+  header: any;
+  removeSortingForColumnIds?: string[];
+}) => {
+  return (
+    <div style={{ display: "flex", alignItems: "center" }}>
+      {searchParams.sort_by == header.id ? (
+        searchParams.sort_type == "asc" ? (
+          <Image src="/sort-asc.svg" height={13} width={13} alt="image" />
+        ) : (
+          <Image src="/sort-desc.svg" height={13} width={13} alt="image" />
+        )
+      ) : removeSortingForColumnIds?.includes(header.id) ? (
+        ""
+      ) : (
+        <Image src="/un-sort.svg" height={13} width={15} alt="image" />
+      )}
+    </div>
+  );
+};

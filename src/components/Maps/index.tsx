@@ -219,40 +219,42 @@ const Maps = () => {
                   <div className="topStrip">
                     <Typography
                       className="stripTitle"
-                      style={{ background: item?.status == "publish" ? "#34a853" : "#F29900", textTransform: "capitalize" }}
+                      style={{
+                        background:
+                          item?.status == "publish" ? "#34a853" : "#F29900",
+                        textTransform: "capitalize",
+                      }}
                     >
                       {item?.status ? item?.status?.toLowerCase() : "--"}
                     </Typography>
-                  <div
-                   className="iconsDiv"
-                  >
-                    {item?.status == "publish" ? (
+                    <div className="iconsDiv">
+                      {item?.status == "publish" ? (
+                        <IconButton
+                          className="iconBtn1"
+                          onClick={(event) => handleShareClick(event, item)}
+                        >
+                          <Image
+                            src="/map/share-bg.svg"
+                            alt=""
+                            height={30}
+                            width={30}
+                          />
+                        </IconButton>
+                      ) : (
+                        ""
+                      )}
                       <IconButton
-                        className="iconBtn1"
-                        onClick={(event) => handleShareClick(event, item)}
+                        className="iconBtn2"
+                        onClick={(event) => handleMenuClick(event, item)}
                       >
                         <Image
-                          src="/map/share-bg.svg"
+                          src="/map/menu-bg.svg"
                           alt=""
                           height={30}
                           width={30}
                         />
                       </IconButton>
-                    ) : (
-                      ""
-                    )}
-                    <IconButton
-                      className="iconBtn2"
-                      onClick={(event) => handleMenuClick(event, item)}
-                    >
-                      <Image
-                        src="/map/menu-bg.svg"
-                        alt=""
-                        height={30}
-                        width={30}
-                      />
-                    </IconButton>
-                  </div>
+                    </div>
                   </div>
                 </div>
 
@@ -269,7 +271,7 @@ const Maps = () => {
                         : "--"}
                     </Tooltip>
                   </Typography>
-                 
+
                   <Typography className="cardDesc">
                     <Tooltip
                       title={
@@ -365,7 +367,7 @@ const Maps = () => {
         handleDeleteCose={handleDeleteCose}
         deleteFunction={deleteMap}
         lable="Delete Map"
-        text="Are you sure youwant to delete map?"
+        text="Are you sure you want to delete map?"
         loading={showLoading}
       />
       <ShareLinkDialog

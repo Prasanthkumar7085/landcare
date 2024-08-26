@@ -75,11 +75,12 @@ const AddMapDrawer = ({
       const response = await getmapDetailsAPI(body);
       if (response?.status == 200 || response?.status == 201) {
         toast.success(response?.message);
+        getSingleMapDetails({});
         setAddMapDrawerOpen(false);
         dispatch(storeEditPolygonCoords([]));
         setErrorMessages([]);
         setMapData({});
-        router.push(`/add-markers/${response?.data?.id || id}`);
+        router.replace(`/add-markers/${response?.data?.id || id}`);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
       } else if (response?.status == 409) {
@@ -109,7 +110,9 @@ const AddMapDrawer = ({
   };
 
   useEffect(() => {
-    getSingleMapData();
+    if (id) {
+      getSingleMapData();
+    }
   }, [addMapDrawerOpen]);
 
   return (

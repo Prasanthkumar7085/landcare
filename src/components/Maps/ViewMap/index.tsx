@@ -454,7 +454,7 @@ const ViewGoogleMap = () => {
             setSingleMarkerOpen={setSingleMarkerOpen}
             setMarkerOption={setMarkerOption}
             markerOption={markerOption}
-            getData={getSingleMapMarkers}
+            getData={getSingleMapDetails}
             map={map}
             maps={googleMaps}
             markersRef={markersRef}

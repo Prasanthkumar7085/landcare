@@ -26,13 +26,10 @@ export const ListMarkersColumns = ({
     {
       accessorFn: (row: any) => row.serial,
       id: "id",
-      enableSorting: false,
       header: () => <span>S.No</span>,
       footer: (props: any) => props.column.id,
       width: "60px",
-      cell: (info: any) => {
-        return <span>{info.getValue() ? info.getValue() : "--"}</span>;
-      },
+      maxWidth: "60px",
     },
     {
       accessorFn: (row: any) => row.title,

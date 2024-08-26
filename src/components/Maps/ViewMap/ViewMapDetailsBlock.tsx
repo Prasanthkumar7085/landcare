@@ -95,7 +95,7 @@ const ViewMapDetailsDrawer = ({
         mapDetails: mapDetails,
         id: id,
       });
-      await getData({ get_all: true });
+      await getSingleMapMarkers({ get_all: true });
     } catch (err) {
       console.error(err);
     } finally {
@@ -177,7 +177,7 @@ const ViewMapDetailsDrawer = ({
               mapDetails={mapDetails}
               selectedOrginazation={selectedOrginazation}
               setSelectedOrginazation={setSelectedOrginazation}
-              getData={getData}
+              getData={getSingleMapMarkers}
               searchParams={searchParams}
               drawingManagerRef={drawingManagerRef}
             />

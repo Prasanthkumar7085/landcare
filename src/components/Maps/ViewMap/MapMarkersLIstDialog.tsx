@@ -59,7 +59,7 @@ const MapMarkersListDialog = ({
   const [orginisationTypesOptions, setOrginisationTypesOptions] = useState<any>(
     []
   );
-
+  const [searchParams, setSearchParams] = useState<any>({});
   const handleClickDeleteOpen = (id: any) => {
     setDeleteOpen(true);
     setMarkerId(id);
@@ -86,16 +86,12 @@ const MapMarkersListDialog = ({
         sort_by: sort_by,
         sort_type: sort_type,
       };
+      setSearchParams(queryParams);
       const response = await getAllMapMarkersAPI(id, queryParams);
-      const { data, ...rest } = response;
-      let afterAddingSerial = addSerial(
-        data,
-        queryParams.page,
-        queryParams.limit
-      );
-      setMarkers(afterAddingSerial);
+      let { data, ...rest } = response;
+      data = addSerial(data, +rest.page, +rest.limit);
+      setMarkers(data);
       setPaginationDetails(rest);
-      await getAllMapMarkersForOrginazations();
     } catch (err) {
       console.error(err);
     } finally {
@@ -144,14 +140,17 @@ const MapMarkersListDialog = ({
   };
 
   useEffect(() => {
-    getAllMapMarkers({
-      page: 1,
-      limit: limitData,
-      search_string: search,
-      type: selectType?.title,
-      sort_by: "",
-      sort_type: "",
-    });
+    if (open) {
+      getAllMapMarkers({
+        page: 1,
+        limit: limitData,
+        search_string: search,
+        type: selectType?.title,
+        sort_by: "",
+        sort_type: "",
+      });
+      getAllMapMarkersForOrginazations();
+    }
   }, [open]);
 
   useEffect(() => {
@@ -170,6 +169,7 @@ const MapMarkersListDialog = ({
 
   const capturePageNum = (value: number) => {
     getAllMapMarkers({
+      ...searchParams,
       limit: limitData,
       page: value,
     });
@@ -178,6 +178,7 @@ const MapMarkersListDialog = ({
   const captureRowPerItems = (value: number) => {
     setLimitData(value);
     getAllMapMarkers({
+      ...searchParams,
       limit: value,
       page: 1,
     });
@@ -187,11 +188,13 @@ const MapMarkersListDialog = ({
     if (newValue) {
       setSelectType(newValue);
       getAllMapMarkers({
+        ...searchParams,
         type: newValue?.title,
       });
     } else {
       setSelectType(null);
       getAllMapMarkers({
+        ...searchParams,
         type: "",
       });
     }
@@ -282,6 +285,7 @@ const MapMarkersListDialog = ({
             map,
           })}
           loading={showLoading}
+          searchParams={searchParams}
         />
         {markers?.length ? (
           <TablePaginationComponent
@@ -299,7 +303,7 @@ const MapMarkersListDialog = ({
         handleDeleteCose={handleDeleteCose}
         deleteFunction={deleteMarker}
         lable="Delete Marker"
-        text="Are you sure want to delete marker?"
+        text="Are you sure you want to delete marker?"
         loading={loading}
       />
       <ShareLinkDialog

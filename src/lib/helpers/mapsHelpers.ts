@@ -78,7 +78,7 @@ const parseRows = (rows: any[], headers: any[]) => {
         mappedItem == "organisation_type"
           ? value
             ? value?.toString()
-            : "None"
+            : "none"
           : parseField(value?.toString(), mappedItem);
     });
     return obj;
@@ -341,8 +341,8 @@ export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
         return acc;
       }, {} as Record<string, string>);
 
-  if (OrganizationMarkersImages["None"]) {
-    OrganizationMarkersImages["None"] = noneImage;
+  if (OrganizationMarkersImages["none"]) {
+    OrganizationMarkersImages["none"] = noneImage;
   }
 
   return OrganizationMarkersImages;
