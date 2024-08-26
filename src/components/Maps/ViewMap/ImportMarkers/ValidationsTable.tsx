@@ -32,7 +32,7 @@ const ValidationsTable = ({ validationsData }: any) => {
                 Title
               </th>
               <th className="cell" style={{ minWidth: "200px" }}>
-                Organisation Type
+                Type
               </th>
               <th className="cell" style={{ minWidth: "200px" }}>
                 Website

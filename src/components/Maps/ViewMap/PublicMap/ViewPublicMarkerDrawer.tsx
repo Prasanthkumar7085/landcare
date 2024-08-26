@@ -1,19 +1,12 @@
-import DeleteDialog from "@/components/Core/DeleteDialog";
-import ShareLinkDialog from "@/components/Core/ShareLinkDialog";
-import { boundToMapWithPolygon } from "@/lib/helpers/mapsHelpers";
+import {
+  boundToMapWithPolygon,
+  navigateToMarker,
+} from "@/lib/helpers/mapsHelpers";
 import { truncateText } from "@/lib/helpers/nameFormate";
 import { deleteMarkerAPI } from "@/services/maps";
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Menu,
-  MenuItem,
-  Tooltip,
-} from "@mui/material";
+import { Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
@@ -26,7 +19,6 @@ import {
 } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MarkerDetailsAccordian from "../MarkerDetailsAccordian";
 
 const ViewPublicMarkerDrawer = ({
@@ -50,17 +42,10 @@ const ViewPublicMarkerDrawer = ({
   getSingleMarker,
   mapDetails,
 }: any) => {
-  const { slug } = useParams();
   const pathname = usePathname();
-  const params = useSearchParams();
   const router = useRouter();
-  const [shareLinkDialogOpen, setShareDialogOpen] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
   const [selectedMarker, setSelectedMarker] = useState<any>({});
-
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextSlide = (marker: any) => {
@@ -80,32 +65,6 @@ const ViewPublicMarkerDrawer = ({
   };
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleClickDeleteOpen = () => {
-    setDeleteOpen(true);
-  };
-  const handleDeleteCose = () => {
-    setDeleteOpen(false);
-  };
-
-  const deleteMarker = async () => {
-    setLoading(true);
-    try {
-      const response = await deleteMarkerAPI(
-        mapDetails?.id,
-        selectedMarker?.id
-      );
-      toast.success(response?.message);
-      onClose();
-      getSingleMapMarkers({});
-      router.replace(`/landcare-map/${mapDetails?.slug}`);
-      handleDeleteCose();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
@@ -193,7 +152,7 @@ const ViewPublicMarkerDrawer = ({
                   }
                   markersRef={markersRef}
                   handleMarkerClick={handleMarkerClick}
-                  setShareDialogOpen={setShareDialogOpen}
+                  map={map}
                 />
               ) : (
                 <>
@@ -384,6 +343,7 @@ const ViewPublicMarkerDrawer = ({
                         );
                         if (markerEntry) {
                           const { marker } = markerEntry;
+                          navigateToMarker(map, item?.id, [item]);
                           handleMarkerClick(item, marker);
                         } else {
                           console.error(`Marker with ID  not found.`);
@@ -399,23 +359,6 @@ const ViewPublicMarkerDrawer = ({
           );
         })}
       </div>
-
-      <ShareLinkDialog
-        open={shareLinkDialogOpen}
-        setShareDialogOpen={setShareDialogOpen}
-        mapDetails={selectedMarker}
-        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${
-          mapDetails?.slug
-        }?marker_id=${params?.get("marker_id")}`}
-      />
-      <DeleteDialog
-        deleteOpen={deleteOpen}
-        handleDeleteCose={handleDeleteCose}
-        deleteFunction={deleteMarker}
-        lable="Delete Marker"
-        text="Are you sure want to delete marker?"
-        loading={loading}
-      />
     </div>
   );
 };

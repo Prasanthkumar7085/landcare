@@ -1,14 +1,11 @@
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
-import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
-import { Button } from "@mui/material";
-import Image from "next/image";
+import { getSingleMapDetailsAPI } from "@/services/maps";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import AddMapDrawer from "./AddMapDrawer";
 import styles from "./google-map.module.css";
-import { getSingleMapDetailsAPI } from "@/services/maps";
 
 const AddPolygon = () => {
   const dispatch = useDispatch();

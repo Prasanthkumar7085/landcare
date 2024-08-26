@@ -31,7 +31,7 @@ import MapsFilters from "./MapsFilters";
 import { MapsController } from "../../../lib/controllers/mapsController";
 
 const Maps = () => {
-  const useParam = useSearchParams();
+  const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -46,9 +46,6 @@ const Maps = () => {
   const [shareMenuOpen, setShareMenuOpen] = useState<any>(false);
   const [mapsCount, setMapsCount] = useState<any>([]);
 
-  const [searchParams, setSearchParams] = useState(
-    Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
-  );
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -70,14 +67,14 @@ const Maps = () => {
   };
 
   const getAllMaps = async ({
-    page = searchParams?.page,
-    limit = searchParams?.limit,
-    search_string = searchParams?.search_string,
-    from_date = searchParams?.from_date,
-    to_date = searchParams?.to_date,
-    status = searchParams?.status,
-    sort_by = searchParams?.sort_by,
-    sort_type = searchParams?.sort_type,
+    page = params.get("page") as string,
+    limit = params.get("limit") as string,
+    search_string = params.get("search_string") as string,
+    from_date = params.get("from_date") as string,
+    to_date = params.get("to_date") as string,
+    status = params.get("status") as string,
+    sort_by = params.get("sort_by") as string,
+    sort_type = params.get("sort_type") as string,
   }: Partial<ListMapsApiProps>) => {
     setLoading(true);
     try {
@@ -158,25 +155,6 @@ const Maps = () => {
     }
   };
 
-  useEffect(() => {
-    getAllMaps({
-      page: searchParams?.page ? searchParams?.page : 1,
-      limit: searchParams?.limit ? searchParams?.limit : 12,
-      search_string: searchParams?.search_string,
-      from_date: searchParams?.from_date,
-      to_date: searchParams?.to_date,
-      status: searchParams?.status,
-      sort_by: searchParams?.sort_by,
-      sort_type: searchParams?.sort_type,
-    });
-  }, [
-    searchParams?.status,
-    searchParams?.page,
-    searchParams?.limit,
-    searchParams?.from_date,
-    searchParams?.to_date,
-  ]);
-
   const handleImageClick = (event: any, id: any) => {
     event.stopPropagation();
     router.push(`/view-map/${id}`);
@@ -199,25 +177,17 @@ const Maps = () => {
 
   const capturePageNum = (value: number) => {
     getAllMaps({
-      ...searchParams,
-      limit: searchParams.limit as string,
+      limit: params.get("limit") as string,
       page: value,
     });
   };
 
   const captureRowPerItems = (value: number) => {
     getAllMaps({
-      ...searchParams,
       limit: value,
       page: 1,
     });
   };
-
-  useEffect(() => {
-    setSearchParams(
-      Object.fromEntries(new URLSearchParams(Array.from(useParam.entries())))
-    );
-  }, [useParam]);
 
   return (
     <div className="allMapsContainer">
@@ -347,9 +317,9 @@ const Maps = () => {
         {!loading && mapsData?.length == 0 ? (
           <div className="noDataFound">
             {!mapsData?.length &&
-            (useParam?.get("from_date") ||
-              useParam?.get("to_date") ||
-              useParam?.get("search_string")) ? (
+            (params?.get("from_date") ||
+              params?.get("to_date") ||
+              params?.get("search_string")) ? (
               <>
                 <Image
                   src="/no-image-maps.svg"
@@ -395,14 +365,14 @@ const Maps = () => {
         handleDeleteCose={handleDeleteCose}
         deleteFunction={deleteMap}
         lable="Delete Map"
-        text="Are you sure want to delete map?"
+        text="Are you sure youwant to delete map?"
         loading={showLoading}
       />
       <ShareLinkDialog
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={singleMapDetails}
-        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`}
+        linkToShare={`${process.env.NEXT_PUBLIC_SHARED_URL}/${singleMapDetails?.slug}`}
       />
 
       <Menu
@@ -426,7 +396,7 @@ const Maps = () => {
               className="menuItem"
               onClick={() => {
                 window.open(
-                  `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`,
+                  `${process.env.NEXT_PUBLIC_SHARED_URL}/${singleMapDetails?.slug}`,
                   "_blank"
                 );
                 handleCloseUserMenu();
@@ -439,7 +409,7 @@ const Maps = () => {
                 className="menuItem"
                 onClick={() => {
                   copyURL(
-                    `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`
+                    `${process.env.NEXT_PUBLIC_SHARED_URL}/${singleMapDetails?.slug}`
                   );
                   handleCloseUserMenu();
                 }}
@@ -486,7 +456,7 @@ const Maps = () => {
             <MenuItem
               className="menuItem"
               onClick={() => {
-                const linkToEmdeded = `<iframe src=https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug} width="600" height="450" style="border:0;"
+                const linkToEmdeded = `<iframe src=${process.env.NEXT_PUBLIC_SHARED_URL}/${singleMapDetails?.slug} width="600" height="450" style="border:0;"
        loading="lazy"
        referrerpolicy="no-referrer-when-downgrade"
      ></iframe>`;

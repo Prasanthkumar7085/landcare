@@ -13,17 +13,17 @@ import { useEffect, useState } from "react";
 import { DateRangePicker } from "rsuite";
 import "rsuite/dist/rsuite.css";
 import AutoCompleteSearch from "../Core/AutoCompleteSearch";
-import AddMapDrawer from "./AddMap/AddMapDrawer";
 
 const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
   const router = useRouter();
   const path = usePathname();
   const params = useSearchParams();
-  const param = useParams();
+  const { id } = useParams();
 
   const [searchString, setSearchString] = useState(
     params.get("search_string") || ""
   );
+  const [mount, setMount] = useState(false);
   const [fromDate, setFromDate] = useState<string | null>(
     params.get("from_date") || null
   );
@@ -39,20 +39,10 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
       item?.value == (params?.get("sort_type") && params?.get("sort_by"))
   );
   const [selecteValue, setSelectValue] = useState<any>(sortFilter || null);
-
-  const [searchParams, setSearchParams] = useState(
-    Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
-  );
-  const [addMapDrawerOpen, setAddMapDrawerOpen] = useState<any>(false);
   const [mapDetails, setMapDetails] = useState<any>({});
   const handleSearchChange = (event: any) => {
     const newSearchString = event.target.value;
     setSearchString(newSearchString);
-    getAllMaps({
-      ...searchParams,
-      search_string: newSearchString,
-      page: 1,
-    });
   };
 
   const handleStatusChange = (
@@ -61,7 +51,6 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
   ) => {
     setStatus(newValue);
     getAllMaps({
-      ...searchParams,
       status: newValue,
       page: 1,
     });
@@ -71,7 +60,6 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
     if (newValue) {
       setSelectValue(newValue);
       getAllMaps({
-        ...searchParams,
         sort_by: newValue?.value,
         sort_type: newValue?.title,
         page: 1,
@@ -79,7 +67,6 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
     } else {
       setSelectValue(null);
       getAllMaps({
-        ...searchParams,
         sort_by: "",
         sort_type: "",
         page: 1,
@@ -94,17 +81,19 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
   };
 
   useEffect(() => {
-    const debounce = setTimeout(() => {
-      getAllMaps({
-        page: searchParams?.page ? searchParams?.page : 1,
-        limit: searchParams?.limit ? searchParams?.limit : 8,
-        search_string: searchString,
-        from_date: searchParams?.from_date,
-        to_date: searchParams?.to_date,
-        status: searchParams?.status,
-      });
-    }, 1000);
-    return () => clearTimeout(debounce);
+    if (mount) {
+      let debounce = setTimeout(() => {
+        getAllMaps({
+          search_string: searchString,
+          page: 1,
+        });
+      }, 500);
+      return () => clearInterval(debounce);
+    } else {
+      setMount(true);
+      setSearchString((params.get("search_string") as string) || "");
+      getAllMaps({});
+    }
   }, [searchString]);
 
   const handleDateRangeChange = (range: any) => {
@@ -113,7 +102,6 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
       setFromDate(formatDate(start));
       setToDate(formatDate(end));
       getAllMaps({
-        ...searchParams,
         from_date: formatDate(start) ? formatDate(start) : "",
         to_date: formatDate(end) ? formatDate(end) : "",
         page: 1,
@@ -123,7 +111,6 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
       setToDate(null);
 
       getAllMaps({
-        ...searchParams,
         from_date: "",
         to_date: "",
         page: 1,
@@ -133,7 +120,7 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
 
   const getSingleMapDetails = async () => {
     try {
-      const response = await getSingleMapDetailsAPI(param.id);
+      const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
       }
@@ -143,25 +130,10 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
     }
   };
   useEffect(() => {
-    if (param.id) {
+    if (id) {
       getSingleMapDetails();
     }
   }, []);
-
-  useEffect(() => {
-    setSearchParams(
-      Object.fromEntries(new URLSearchParams(Array.from(params.entries())))
-    );
-  }, [params]);
-
-  useEffect(() => {
-    if (selecteValue) {
-      handleSortFilter(selecteValue);
-    } else {
-      handleSortFilter(null);
-      setSelectValue(null);
-    }
-  }, [selecteValue]);
 
   const getTextHtml = (text: string, count: number) => {
     return (
@@ -180,7 +152,7 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
           textColor="secondary"
           indicatorColor="secondary"
           aria-label="secondary tabs example"
-          value={searchParams?.status ? searchParams?.status : ""}
+          value={params.get("status") ? params.get("status") : ""}
           onChange={handleStatusChange}
         >
           <Tab
@@ -242,6 +214,7 @@ const MapsFilters = ({ getAllMaps, mapsData, mapsCount }: any) => {
             setSelectValue={setSelectValue}
             selectedValue={selecteValue}
             placeholder="Sort Filter"
+            onChange={handleSortFilter}
           />
           <Button
             className="addNewBtn"

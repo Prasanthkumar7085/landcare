@@ -1,6 +1,8 @@
-import { copyURL } from "@/lib/helpers/copyURL";
 import { datePipe } from "@/lib/helpers/datePipe";
-import { getMarkersImagesBasedOnOrganizationType } from "@/lib/helpers/mapsHelpers";
+import {
+  getMarkersImagesBasedOnOrganizationType,
+  navigateToMarker,
+} from "@/lib/helpers/mapsHelpers";
 import { truncateText } from "@/lib/helpers/nameFormate";
 import { IconButton, Tooltip } from "@mui/material";
 import Image from "next/image";
@@ -18,6 +20,7 @@ export const ListMarkersColumns = ({
   markers,
   mapDetails,
   markersImagesWithOrganizationType,
+  map,
 }: any) => {
   return [
     {
@@ -209,6 +212,9 @@ export const ListMarkersColumns = ({
                 );
                 if (markerEntry) {
                   const { marker } = markerEntry;
+                  navigateToMarker(map, info?.row?.original?.id, [
+                    info?.row?.original,
+                  ]);
                   handleMarkerClick(info?.row?.original, marker);
                 } else {
                   console.error(`Marker with ID ${id} not found.`);

@@ -1,23 +1,19 @@
-import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import GoogleMapComponent from "@/components/Core/GoogleMap";
 import LoadingComponent from "@/components/Core/LoadingComponent";
-import { markerFilterOptions } from "@/lib/constants/mapConstants";
 import {
   boundToMapWithPolygon,
   getLocationAddress,
   getMarkersImagesBasedOnOrganizationType,
   getPolygonWithMarkers,
+  navigateToMarker,
   renderer,
 } from "@/lib/helpers/mapsHelpers";
 import {
-  getSingleMapDetailsAPI,
   getSingleMapDetailsBySlugAPI,
   getSingleMapMarkersAPI,
   getSingleMarkerAPI,
 } from "@/services/maps";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import { capitalize, InputAdornment, TextField } from "@mui/material";
-import Image from "next/image";
 import {
   useParams,
   usePathname,
@@ -26,9 +22,8 @@ import {
 } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import styles from "../view-map.module.css";
-import ViewPublicMarkerDrawer from "./ViewPublicMarkerDrawer";
-import { capitalizeFirstLetter } from "@/lib/helpers/nameFormate";
 import PublicMapFilters from "./PublicMapFilters";
+import ViewPublicMarkerDrawer from "./ViewPublicMarkerDrawer";
 
 const PublicMap = () => {
   const { slug } = useParams();
@@ -141,7 +136,6 @@ const PublicMap = () => {
         draggable: false,
       });
       markersRef.current.push({ id: markerData.id, marker: markere });
-
       markere.addListener("click", () => {
         handleMarkerClick(markerData, markere);
       });
@@ -165,14 +159,14 @@ const PublicMap = () => {
         });
       });
     });
+    if (params.get("marker_id") || searchParams?.marker_id) {
+      goTomarker(markers1);
+    }
     clusterRef.current = new MarkerClusterer({
       markers: markersRef.current.map(({ marker }) => marker),
       map: map,
       renderer,
     });
-    if (params.get("marker_id") || searchParams?.marker_id) {
-      goTomarker(markers1);
-    }
   };
 
   const getSingleMarker = async (marker_id: any, lat: any, lng: any) => {
@@ -185,6 +179,12 @@ const PublicMap = () => {
       );
       setSingleMarkerData(response?.data);
       setMarkerData(markerData);
+      map.setCenter(
+        new google.maps.LatLng(
+          markerData?.coordinates[0],
+          markerData?.coordinates[1]
+        )
+      );
     } catch (err) {
       console.error(err);
     } finally {
@@ -200,21 +200,29 @@ const PublicMap = () => {
       markerData?.coordinates[1]
     );
     setSingleMarkerOpen(true);
-    map.setCenter(
-      new google.maps.LatLng(
-        markerData?.coordinates[0],
-        markerData?.coordinates[1]
-      )
+    const isInCluster = markersRef.current.some(
+      ({ marker }) => marker === markere
     );
-    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
-      bouncingMarkerRef.current.setAnimation(null);
-    }
-    if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
-      markere.setAnimation(null);
+    if (isInCluster) {
+      let clusterBounds = new google.maps.LatLngBounds();
+      markersRef.current.forEach(({ marker }: any) => {
+        if (marker.getPosition() && marker === markere) {
+          clusterBounds.extend(marker.getPosition());
+        }
+      });
+      if (clusterBounds.getNorthEast() && clusterBounds.getSouthWest()) {
+        const center = clusterBounds.getCenter();
+        map.setCenter(center);
+      }
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
       bouncingMarkerRef.current = markere;
     }
+    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
+      bouncingMarkerRef.current.setAnimation(null);
+    }
+    markere.setAnimation(google.maps.Animation.BOUNCE);
+    bouncingMarkerRef.current = markere;
     if (drawingManagerRef.current) {
       drawingManagerRef.current.setOptions({ drawingControl: false });
     }
@@ -333,7 +341,6 @@ const PublicMap = () => {
       );
       if (markerEntry) {
         const { marker } = markerEntry;
-        console.log(marker);
         handleMarkerClick(markerDetails, marker);
       } else {
         console.error(`Marker with ID ${mapDetails?.id} not found.`);
@@ -351,6 +358,12 @@ const PublicMap = () => {
     if (map && googleMaps) {
       if (!params?.get("marker_id") || !searchParams?.marker_id) {
         boundToMapWithPolygon(polygonCoords, map);
+      } else {
+        navigateToMarker(
+          map,
+          params?.get("marker_id") || searchParams?.marker_id,
+          markers
+        );
       }
       renderAllMarkers(markers, map, googleMaps);
     }

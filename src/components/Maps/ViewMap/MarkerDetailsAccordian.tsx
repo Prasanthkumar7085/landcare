@@ -1,16 +1,16 @@
+import { navigateToMarker } from "@/lib/helpers/mapsHelpers";
+import { truncateText } from "@/lib/helpers/nameFormate";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Button,
-  IconButton,
   Skeleton,
   Tooltip,
   Typography,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Image from "next/image";
-import { truncateText } from "@/lib/helpers/nameFormate";
 import Link from "next/link";
 
 const MarkerDetailsAccordian = ({
@@ -20,7 +20,7 @@ const MarkerDetailsAccordian = ({
   markersImagesWithOrganizationType,
   markersRef,
   handleMarkerClick,
-  setShareDialogOpen,
+  map,
 }: any) => {
   return (
     <Accordion key={index}>
@@ -189,6 +189,7 @@ const MarkerDetailsAccordian = ({
               );
               if (markerEntry) {
                 const { marker } = markerEntry;
+                navigateToMarker(map, item?.id, [item]);
                 handleMarkerClick(item, marker);
               } else {
                 console.error(`Marker with ID  not found.`);
@@ -197,18 +198,6 @@ const MarkerDetailsAccordian = ({
           >
             {item ? "Navigate" : <Skeleton width="100%" />}
           </Button>
-          <IconButton
-            className="iconBtn"
-            onClick={() => {
-              setShareDialogOpen(true);
-            }}
-          >
-            {item ? (
-              <Image src="/map/share-white.svg" alt="" width={13} height={13} />
-            ) : (
-              <Skeleton variant="circular" width={13} height={13} />
-            )}
-          </IconButton>
         </div>
       </AccordionDetails>
     </Accordion>

@@ -8,8 +8,9 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import MapMarkersListDialog from "./MapMarkersLIstDialog";
+import { navigateToMarker } from "@/lib/helpers/mapsHelpers";
 
 const MapMarkersList = ({
   singleMarkers,
@@ -29,10 +30,11 @@ const MapMarkersList = ({
   setSelectedOrginazation,
   getData,
   searchParams,
+  drawingManagerRef,
 }: any) => {
   const { id } = useParams();
   const [open, setOpen] = React.useState(false);
-
+  const [mount, setMount] = useState<boolean>(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -55,10 +57,6 @@ const MapMarkersList = ({
   const handleSearchChange = (event: any) => {
     const newSearchString = event.target.value;
     setSearchString(newSearchString);
-    getData({
-      ...searchParams,
-      search_string: encodeURIComponent(newSearchString),
-    });
   };
 
   const handleSelectTypeChange = (newValue: any) => {
@@ -78,11 +76,25 @@ const MapMarkersList = ({
   };
 
   useEffect(() => {
+    if (mount) {
+      let debounce = setTimeout(() => {
+        getData({
+          search_string: encodeURIComponent(searchString),
+          page: 1,
+        });
+      }, 500);
+      return () => clearInterval(debounce);
+    } else {
+      setMount(true);
+      setSearchString((searchParams?.search_string as string) || "");
+    }
+  }, [searchString]);
+
+  useEffect(() => {
     if (searchParams?.organisation_type) {
       const selectType = getOrginazationTypes()?.find(
         (item: any) => item?.title == searchParams?.organisation_type
       );
-      console.log("selectType", selectType);
       setSelectedOrginazation(selectType);
     }
     if (searchParams?.search_string) {
@@ -138,11 +150,18 @@ const MapMarkersList = ({
                     );
                     if (markerEntry) {
                       const { marker } = markerEntry;
+                      navigateToMarker(
+                        map,
+                        searchParams?.marker_id,
+                        singleMarkers
+                      );
                       handleMarkerClick(markerDetails, marker);
                     } else {
                       console.error(`Marker with ID ${id} not found.`);
                     }
-
+                    if (drawingManagerRef.current) {
+                      drawingManagerRef.current.setDrawingMode(null);
+                    }
                     setSingleMarkerOpen(true);
                   }}
                 >
@@ -243,14 +262,17 @@ const MapMarkersList = ({
           </Typography>
         </div>
       )}
-      <MapMarkersListDialog
-        open={open}
-        handleClose={handleClose}
-        markersRef={markersRef}
-        handleMarkerClick={handleMarkerClick}
-        getSingleMapMarkers={getSingleMapMarkers}
-        mapDetails={mapDetails}
-      />
+      {open && (
+        <MapMarkersListDialog
+          open={open}
+          handleClose={handleClose}
+          markersRef={markersRef}
+          handleMarkerClick={handleMarkerClick}
+          getSingleMapMarkers={getSingleMapMarkers}
+          mapDetails={mapDetails}
+          map={map}
+        />
+      )}
     </div>
   );
 };

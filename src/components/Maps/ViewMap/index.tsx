@@ -6,6 +6,7 @@ import {
   getLocationAddress,
   getMarkersImagesBasedOnOrganizationType,
   getPolygonWithMarkers,
+  navigateToMarker,
   renderer,
 } from "@/lib/helpers/mapsHelpers";
 import {
@@ -206,21 +207,32 @@ const ViewGoogleMap = () => {
       markerData?.coordinates[1]
     );
     setSingleMarkerOpen(true);
-    map.setCenter(
-      new google.maps.LatLng(
-        markerData?.coordinates[0],
-        markerData?.coordinates[1]
-      )
+    const isInCluster = markersRef.current.some(
+      ({ marker }) => marker === markere
     );
-    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
-      bouncingMarkerRef.current.setAnimation(null);
-    }
-    if (markere.getAnimation() === google.maps.Animation.BOUNCE) {
-      markere.setAnimation(null);
+
+    if (isInCluster) {
+      let clusterBounds = new google.maps.LatLngBounds();
+      markersRef.current.forEach(({ marker }: any) => {
+        if (marker.getPosition() && marker === markere) {
+          clusterBounds.extend(marker.getPosition());
+        }
+      });
+
+      if (clusterBounds.getNorthEast() && clusterBounds.getSouthWest()) {
+        const center = clusterBounds.getCenter();
+        map.setCenter(center);
+      }
     } else {
       markere.setAnimation(google.maps.Animation.BOUNCE);
       bouncingMarkerRef.current = markere;
     }
+
+    if (bouncingMarkerRef.current && bouncingMarkerRef.current !== markere) {
+      bouncingMarkerRef.current.setAnimation(null);
+    }
+    markere.setAnimation(google.maps.Animation.BOUNCE);
+    bouncingMarkerRef.current = markere;
     if (drawingManagerRef.current) {
       drawingManagerRef.current.setOptions({ drawingControl: false });
     }
@@ -276,12 +288,16 @@ const ViewGoogleMap = () => {
       const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
-        await getSingleMapMarkers({
+        const markersPromise = getSingleMapMarkers({
           marker_id: params?.get("marker_id") || searchParams?.marker_id,
         });
-        await getSingleMapMarkersForOrginazations({
+        const organizationsPromise = getSingleMapMarkersForOrginazations({
           id: response?.data?.id,
         });
+        const results = await Promise.allSettled([
+          markersPromise,
+          organizationsPromise,
+        ]);
       }
     } catch (err) {
       console.error(err);
@@ -373,6 +389,12 @@ const ViewGoogleMap = () => {
     if (map && googleMaps) {
       if (!params?.get("marker_id") || !searchParams?.marker_id) {
         boundToMapWithPolygon(polygonCoords, map);
+      } else {
+        navigateToMarker(
+          map,
+          params?.get("marker_id") || searchParams?.marker_id,
+          markers
+        );
       }
       renderAllMarkers(markers, map, googleMaps);
     }
@@ -450,21 +472,24 @@ const ViewGoogleMap = () => {
             }
             allMarkers={allMarkers}
             searchParams={searchParams}
+            drawingManagerRef={drawingManagerRef}
           />
         )}
-        <MarkerPopup
-          setShowMarkerPopup={setShowMarkerPopup}
-          showMarkerPopup={showMarkerPopup}
-          placeDetails={placeDetails}
-          getSingleMapMarkers={getSingleMapDetails}
-          removalMarker={removalMarker}
-          popupFormData={markerData}
-          setPopupFormData={setMarkerData}
-          setSingleMarkerData={setSingleMarkerData}
-          getSingleMarker={getSingleMarker}
-          mapDetails={mapDetails}
-          allMarkers={allMarkers}
-        />
+        {showMarkerPopup && (
+          <MarkerPopup
+            setShowMarkerPopup={setShowMarkerPopup}
+            showMarkerPopup={showMarkerPopup}
+            placeDetails={placeDetails}
+            getSingleMapMarkers={getSingleMapDetails}
+            removalMarker={removalMarker}
+            popupFormData={markerData}
+            setPopupFormData={setMarkerData}
+            setSingleMarkerData={setSingleMarkerData}
+            getSingleMarker={getSingleMarker}
+            mapDetails={mapDetails}
+            allMarkers={allMarkers}
+          />
+        )}
       </div>
       <LoadingComponent
         loading={loading || singleMarkerLoading || filtersLoading}

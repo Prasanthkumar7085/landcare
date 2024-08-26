@@ -133,8 +133,6 @@ const ImportModal: React.FC<IImportModalProps> = ({
       const response = await getStaticMapAPI(body);
       if (response?.status == 200 || response?.status == 201) {
         return response?.data;
-      } else {
-        toast.error(response?.error_data.coordinates);
       }
     } catch (err) {
       console.error(err);
