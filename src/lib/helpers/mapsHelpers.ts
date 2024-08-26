@@ -281,7 +281,7 @@ export const navigateToMarker = (map: any, markerID: any, markers: any) => {
       markerDetails?.coordinates[1]
     )
   );
-  map.setZoom(15);
+  map.setZoom(16);
 };
 export const getPolygonWithMarkers = (points: any) => {
   points.sort((a: any, b: any) => a.lng - b.lng || a.lat - b.lat);
