@@ -29,7 +29,6 @@ const MarkerDetailsAccordian = ({
         aria-controls="panel1-content"
         id="panel1-header"
       >
-        <div className="headerDetails">
           {singleMarkerLoading ? (
             <Skeleton width="60%" className="markerTitle" />
           ) : (
@@ -37,19 +36,10 @@ const MarkerDetailsAccordian = ({
               {item?.title || "---"}
             </Typography>
           )}
-          <Typography className="markerLocation">
-            <Image src="/map/location-blue.svg" alt="" width={10} height={10} />
-            {singleMarkerLoading ? (
-              <Skeleton width="60%" />
-            ) : (
-              <span>{item?.town?.split(" ")[0] || "---"}</span>
-            )}
-          </Typography>
-        </div>
+        
       </AccordionSummary>
       <AccordionDetails>
-        <div className="eachMarkerDetail">
-          <Typography className="title">Description</Typography>
+       
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
@@ -65,50 +55,82 @@ const MarkerDetailsAccordian = ({
               </Typography>
             </Tooltip>
           )}
-        </div>
-        <div className="eachMarkerDetail">
-          <Typography className="title">Tags</Typography>
+       
+        <Typography className="markerLocation">
+          <Image
+            src="/map/view/location-view.svg"
+            alt=""
+            width={18}
+            height={18}
+          />
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
-            <Typography className="value">
-              {item?.tags?.join(", ") || "---"}
+            <span>{item?.town?.split(" ")[0] || "---"}</span>
+          )}
+        </Typography>
+
+
+          {singleMarkerLoading ? (
+            <Skeleton width="60%" />
+          ) : (
+            <Typography className=" tagValue">
+              <Image
+                src="/map/view/tag-view.svg"
+                alt=""
+                width={18}
+                height={18}
+              />
+
+              {item?.tags?.length > 0 ?
+                item?.tags.map((tag: any, index: number) => {
+                  return (
+                    <span className="tagText" key={index}>
+                      {tag}
+                    </span>
+                  )
+                })
+                : "---"}
+
             </Typography>
           )}
-        </div>
-        <div className="eachMarkerDetail">
-          <Typography className="title">Type</Typography>
+     
+       
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
             <Typography
               className="value"
               sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
+
                 textTransform: "capitalize",
               }}
             >
-              <img
-                width={15}
-                height={15}
+              <Image
+                width={18}
+                height={18}
                 style={{
                   display: item?.organisation_type ? "" : "none",
                 }}
                 src={
-                  item?.organisation_type
-                    ? markersImagesWithOrganizationType[item?.organisation_type]
-                    : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
+                  // item?.organisation_type
+                  //   ? markersImagesWithOrganizationType[
+                  //   item?.organisation_type
+                  //   ]
+                  //   :
+                  "/map/view/group-view.svg"
                 }
                 alt={item?.organisation_type}
               />
-              {item?.organisation_type || "---"}
+              <span>
+
+                {item?.organisation_type || "---"}
+              </span>
             </Typography>
           )}
-        </div>
-        <div className="eachMarkerDetail">
-          <Typography className="title">Website</Typography>
+      
+          
+      
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : item?.website ? (
@@ -117,65 +139,121 @@ const MarkerDetailsAccordian = ({
                 item?.website && item?.website?.length > 40 ? item?.website : ""
               }
             >
-              <Link href={item?.website} target="_blank" className="value">
-                {truncateText(item?.website, 40) || "---"}
+              <Link
+                href={item?.website}
+                target="_blank"
+                className="value"
+              >
+                <Image
+                  src="/map/view/website-view.svg"
+                  alt=""
+                  width={18}
+                  height={18}
+                />
+                <span>
+
+                  {truncateText(item?.website, 40) || "---"}
+                </span>
               </Link>
             </Tooltip>
           ) : (
             "---"
           )}
-        </div>
-        <div className="eachMarkerDetail">
-          <Typography className="title">Contact</Typography>
-          <Typography className="value">
-            {singleMarkerLoading ? (
-              <Skeleton width="60%" />
-            ) : (
-              item?.contact || "---"
-            )}
-          </Typography>
-        </div>
-        <div className="eachMarkerDetail">
-          <Typography className="title">Fax</Typography>
-          <Typography className="value">
-            {singleMarkerLoading ? (
-              <Skeleton width="60%" />
-            ) : (
-              item?.fax || "---"
-            )}
-          </Typography>
-        </div>
-        <div className="eachMarkerDetail">
-          <Typography className="title">Postcode</Typography>
+       
+        
+
+        
+
+        <Typography className="value" style={{ marginTop: "0.5rem" }}>
+          {singleMarkerLoading ? (
+            <Skeleton width="60%" />
+          ) : (
+            <span className="value">
+              <Image
+                src="/map/view/mobile-view.svg"
+                alt=""
+                width={18}
+                height={18}
+              />
+              <span>
+
+                {item?.contact || "---"}
+              </span>
+            </span>
+          )}
+        </Typography>
+
+        <Typography className="value">
+          {singleMarkerLoading ? (
+            <Skeleton width="60%" />
+          ) : (
+            <span className="value">
+              <Image
+                src="/map/view/fax-view.svg"
+                alt=""
+                width={18}
+                height={18}
+              />
+              <span>
+                {item?.fax || "---"}</span>
+            </span>
+
+          )}
+        </Typography>
+
+        
+
+       
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
             <Typography className="value">
-              {item?.postcode || "---"}{" "}
+              <Image
+                src="/map/view/postal-view.svg"
+                alt=""
+                width={18}
+                height={18}
+              />
+              <span>
+
+                {item?.postcode || "---"}{" "}
+              </span>
             </Typography>
           )}
-        </div>
-        <div className="headerDetails">
+      
+        
+       
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
             <Typography
-              className="footerText"
-              style={{ marginBottom: "0.3rem" }}
+              className="value"
             >
-              <Image src="/map/email.svg" alt="" width={12} height={12} />
+              <Image
+                src="/map/view/email-view.svg"
+                alt=""
+                width={18}
+                height={18}
+              />
               <span>{item?.email || "---"} </span>
             </Typography>
-          )}
+        )}
+        
+
           {singleMarkerLoading ? (
             <Skeleton width="30%" />
           ) : (
-            <Typography className="footerText">
-              <Image src="/map/cell-icon.svg" alt="" width={12} height={12} />
+            <Typography className="value">
+              <Image
+                src="/map/view/mobile-view.svg"
+                alt=""
+                width={18}
+                height={18}
+              />
               <span>{item?.phone || "---"} </span>
             </Typography>
           )}
-        </div>
+       
         <div className="btnGrp">
           <Button
             className="navigateBtn"
