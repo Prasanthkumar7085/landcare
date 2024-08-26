@@ -147,7 +147,7 @@ const Maps = () => {
     try {
       const response = await changeStatusOfMapAPI(mapId, body);
       toast.success(response?.message);
-      getAllMaps({});
+      await getAllMaps({});
       handleDeleteCose();
     } catch (err) {
       console.error(err);

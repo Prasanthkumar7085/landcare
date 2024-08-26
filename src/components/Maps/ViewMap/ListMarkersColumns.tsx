@@ -221,7 +221,7 @@ export const ListMarkersColumns = ({
               <Image src="/map/table/view.svg" alt="" width={15} height={15} />
             </IconButton>
           </Tooltip>
-          <Tooltip title="delete">
+          <Tooltip title="Delete">
             <IconButton
               className="iconBtn"
               onClick={() => {
