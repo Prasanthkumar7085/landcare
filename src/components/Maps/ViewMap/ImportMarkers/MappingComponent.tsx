@@ -89,72 +89,76 @@ const MappingScreen = ({
             </tr>
           </thead>
           <tbody>
-            {sheetHeaders.map((item: any, index: any) => (
-              <tr key={index}>
-                <td>{item}</td>
-                <td>
-                  <Autocomplete
-                    className="defaultAutoComplete"
-                    value={mappedValues[item] ? mappedValues[item] : null}
-                    disablePortal
-                    options={
-                      autocompleteSuggestions?.length
-                        ? autocompleteSuggestions
-                        : []
-                    }
-                    PaperComponent={({ children }: any) => (
-                      <Paper
+            {sheetHeaders?.length
+              ? sheetHeaders.map((item: any, index: any) => (
+                  <tr key={index}>
+                    <td>{item}</td>
+                    <td>
+                      <Autocomplete
+                        className="defaultAutoComplete"
+                        value={mappedValues[item] ? mappedValues[item] : null}
+                        disablePortal
+                        options={
+                          autocompleteSuggestions?.length
+                            ? autocompleteSuggestions
+                            : []
+                        }
+                        PaperComponent={({ children }: any) => (
+                          <Paper
+                            sx={{
+                              fontSize: "12px",
+                              fontFamily: "'Poppins', Sans-serif",
+                              fontWeight: "500",
+                            }}
+                          >
+                            {children}
+                          </Paper>
+                        )}
+                        getOptionLabel={(option: any) =>
+                          typeof option === "string"
+                            ? option
+                            : option?.["label"]
+                        }
+                        onChange={(_: any, newValue: any) =>
+                          handleInputChange(item, newValue)
+                        }
                         sx={{
-                          fontSize: "12px",
-                          fontFamily: "'Poppins', Sans-serif",
-                          fontWeight: "500",
+                          "& .MuiFormControl-root": {
+                            width: "100%",
+                            background: "#fff",
+                          },
+                          "& .MuiPopper-root": {
+                            zIndex: "9999999999 !important",
+                          },
                         }}
-                      >
-                        {children}
-                      </Paper>
-                    )}
-                    getOptionLabel={(option: any) =>
-                      typeof option === "string" ? option : option?.["label"]
-                    }
-                    onChange={(_: any, newValue: any) =>
-                      handleInputChange(item, newValue)
-                    }
-                    sx={{
-                      "& .MuiFormControl-root": {
-                        width: "100%",
-                        background: "#fff",
-                      },
-                      "& .MuiPopper-root": {
-                        zIndex: "9999999999 !important",
-                      },
-                    }}
-                    renderInput={(params: any) => (
-                      <TextField
-                        {...params}
-                        placeholder={"Select mapped item"}
-                        size="small"
+                        renderInput={(params: any) => (
+                          <TextField
+                            {...params}
+                            placeholder={"Select mapped item"}
+                            size="small"
+                          />
+                        )}
                       />
-                    )}
-                  />
-                </td>
-                <td>
-                  <Tooltip title="Remove">
-                    <IconButton
-                      aria-label="remove"
-                      color="error"
-                      onClick={() => handleRemove(item)}
-                    >
-                      <Image
-                        src="/markers/add/delete.svg"
-                        alt="edit"
-                        width={20}
-                        height={20}
-                      />
-                    </IconButton>
-                  </Tooltip>
-                </td>
-              </tr>
-            ))}
+                    </td>
+                    <td>
+                      <Tooltip title="Remove">
+                        <IconButton
+                          aria-label="remove"
+                          color="error"
+                          onClick={() => handleRemove(item)}
+                        >
+                          <Image
+                            src="/markers/add/delete.svg"
+                            alt="edit"
+                            width={20}
+                            height={20}
+                          />
+                        </IconButton>
+                      </Tooltip>
+                    </td>
+                  </tr>
+                ))
+              : "No Headers Found"}
           </tbody>
         </table>
       </div>

@@ -396,7 +396,7 @@ const Maps = () => {
               className="menuItem"
               onClick={() => {
                 window.open(
-                  `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`,
+                  `https://dev-landcare.vercel.app/view-map/${singleMapDetails?.id}`,
                   "_blank"
                 );
                 handleCloseUserMenu();
@@ -404,21 +404,6 @@ const Maps = () => {
             >
               Open In New Tab
             </MenuItem>
-            {singleMapDetails?.status == "publish" ? (
-              <MenuItem
-                className="menuItem"
-                onClick={() => {
-                  copyURL(
-                    `https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`
-                  );
-                  handleCloseUserMenu();
-                }}
-              >
-                Copy
-              </MenuItem>
-            ) : (
-              ""
-            )}
             <MenuItem
               className="menuItem"
               onClick={() => {

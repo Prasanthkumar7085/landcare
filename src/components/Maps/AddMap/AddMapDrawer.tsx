@@ -1,4 +1,5 @@
 import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
+import LoadingComponent from "@/components/Core/LoadingComponent";
 import { checkAllowedValidText } from "@/lib/helpers/inputCheckingFunctions";
 import { storeEditPolygonCoords } from "@/redux/Modules/mapsPolygons";
 import {
@@ -79,7 +80,7 @@ const AddMapDrawer = ({
         setAddMapDrawerOpen(false);
         setErrorMessages([]);
         setMapData({});
-        router.replace(`/add-markers/${response?.data?.id || id}`);
+        router.replace(`/view-map/${response?.data?.id || id}`);
       } else if (response?.status == 422) {
         setErrorMessages(response?.error_data);
       } else if (response?.status == 409) {
@@ -145,7 +146,7 @@ const AddMapDrawer = ({
             <TextField
               className="defaultTextFeild text"
               placeholder="Enter Map Title"
-              value={mapData?.title}
+              value={mapData?.title ? mapData?.title : ""}
               name="title"
               onChange={handleFieldValue}
             />
@@ -194,6 +195,7 @@ const AddMapDrawer = ({
           </div>
         </div>
       </Dialog>
+      <LoadingComponent loading={loading} />
     </div>
   );
 };

@@ -66,6 +66,7 @@ const PublicMap = () => {
   });
   const [filtersLoading, setFiltersLoading] = useState<boolean>(false);
   const bouncingMarkerRef = useRef<google.maps.Marker | null>(null);
+  const [previewError, setPreviewError] = useState<any>(false);
 
   const addMarkerEVent = (event: any, map: any, maps: any) => {
     const marker = new google.maps.Marker({
@@ -265,13 +266,16 @@ const PublicMap = () => {
 
       if (response?.status === 200 || response?.status === 201) {
         setMapDetails(response?.data);
-
-        const mapId = response?.data?.id;
-        const [markersForOrganizationsResult, markersResult] =
-          await Promise.allSettled([
-            getSingleMapMarkersForOrginazations({ id: mapId }),
-            getSingleMapMarkers({ id: mapId }),
-          ]);
+        if (response?.data?.status == "draft") {
+          setPreviewError(true);
+        } else {
+          const mapId = response?.data?.id;
+          const [markersForOrganizationsResult, markersResult] =
+            await Promise.allSettled([
+              getSingleMapMarkersForOrginazations({ id: mapId }),
+              getSingleMapMarkers({ id: mapId }),
+            ]);
+        }
       }
     } catch (err) {
       console.error("Error in getSingleMapDetails:", err);
@@ -377,70 +381,84 @@ const PublicMap = () => {
 
   return (
     <>
-      <div
-        id="markersPageWithMap"
-        className={styles.markersPageWeb}
-        style={{
-          display: loading == false ? "" : "none",
-        }}
-      >
-        <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
-          <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
-          <div
-            className={styles.filterGrp}
-            style={{
-              position: "absolute",
-              top: "20px",
-              left: "30px",
-              gap: "1.2rem ",
-            }}
-          >
-            <PublicMapFilters
-              searchString={searchString}
-              setSearchString={setSearchString}
+      {previewError == false ? (
+        <div
+          id="markersPageWithMap"
+          className={styles.markersPageWeb}
+          style={{
+            display: loading == false ? "" : "none",
+          }}
+        >
+          <div className={styles.googleMapBlock} id="markerGoogleMapBlock">
+            <GoogleMapComponent OtherMapOptions={OtherMapOptions} />
+            <div
+              className={styles.filterGrp}
+              style={{
+                position: "absolute",
+                top: "20px",
+                left: "30px",
+                gap: "1.2rem ",
+              }}
+            >
+              <PublicMapFilters
+                searchString={searchString}
+                setSearchString={setSearchString}
+                markersImagesWithOrganizationType={
+                  markersImagesWithOrganizationType
+                }
+                setSelectedOrginazation={setSelectedOrginazation}
+                selectedOrginazation={selectedOrginazation}
+                getSingleMapMarkers={getSingleMapMarkers}
+                setMarkers={setMarkers}
+                setSingleMarkers={setSingleMarkers}
+                markers={markers}
+                singleMarkers={singleMarkers}
+              />
+            </div>
+          </div>
+          {singleMarkeropen == true || params?.get("marker_id") ? (
+            <ViewPublicMarkerDrawer
+              onClose={setSingleMarkerOpen}
+              getSingleMapMarkers={getSingleMapMarkers}
+              setShowMarkerPopup={setShowMarkerPopup}
+              currentBouncingMarker={currentBouncingMarker}
+              markersRef={markersRef}
+              setMarkerData={setMarkerData}
+              markerData={markerData}
+              data={singleMarkerdata}
+              setData={setSingleMarkerData}
+              map={map}
+              polygonCoords={polygonCoords}
+              showMarkerPopup={showMarkerPopup}
+              drawingManagerRef={drawingManagerRef}
+              setSingleMarkerLoading={setSingleMarkerLoading}
+              singleMarkerLoading={singleMarkerLoading}
+              setMarkersOpen={setMarkersOpen}
+              handleMarkerClick={handleMarkerClick}
               markersImagesWithOrganizationType={
                 markersImagesWithOrganizationType
               }
-              setSelectedOrginazation={setSelectedOrginazation}
-              selectedOrginazation={selectedOrginazation}
-              getSingleMapMarkers={getSingleMapMarkers}
-              setMarkers={setMarkers}
-              setSingleMarkers={setSingleMarkers}
-              markers={markers}
-              singleMarkers={singleMarkers}
+              setPlaceDetails={setPlaceDetails}
+              getSingleMarker={getSingleMarker}
+              mapDetails={mapDetails}
             />
-          </div>
+          ) : (
+            ""
+          )}
         </div>
-        {singleMarkeropen == true || params?.get("marker_id") ? (
-          <ViewPublicMarkerDrawer
-            onClose={setSingleMarkerOpen}
-            getSingleMapMarkers={getSingleMapMarkers}
-            setShowMarkerPopup={setShowMarkerPopup}
-            currentBouncingMarker={currentBouncingMarker}
-            markersRef={markersRef}
-            setMarkerData={setMarkerData}
-            markerData={markerData}
-            data={singleMarkerdata}
-            setData={setSingleMarkerData}
-            map={map}
-            polygonCoords={polygonCoords}
-            showMarkerPopup={showMarkerPopup}
-            drawingManagerRef={drawingManagerRef}
-            setSingleMarkerLoading={setSingleMarkerLoading}
-            singleMarkerLoading={singleMarkerLoading}
-            setMarkersOpen={setMarkersOpen}
-            handleMarkerClick={handleMarkerClick}
-            markersImagesWithOrganizationType={
-              markersImagesWithOrganizationType
-            }
-            setPlaceDetails={setPlaceDetails}
-            getSingleMarker={getSingleMarker}
-            mapDetails={mapDetails}
-          />
-        ) : (
-          ""
-        )}
-      </div>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <h1>Page not found</h1>
+        </div>
+      )}
       <LoadingComponent
         loading={loading || singleMarkerLoading || filtersLoading}
       />
