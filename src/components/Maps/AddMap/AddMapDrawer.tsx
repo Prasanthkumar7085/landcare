@@ -39,11 +39,11 @@ const AddMapDrawer = ({
   const handleFieldValue = (event: any) => {
     const { name, value } = event.target;
     if (value && checkAllowedValidText(value)) {
-      let details = { ...mapDetails };
+      let details = { ...mapData };
       details[name] = value;
       setMapData(details);
     } else {
-      let details = { ...mapDetails };
+      let details = { ...mapData };
       delete details[name];
       setMapData(details);
     }
@@ -75,9 +75,8 @@ const AddMapDrawer = ({
       const response = await getmapDetailsAPI(body);
       if (response?.status == 200 || response?.status == 201) {
         toast.success(response?.message);
-        getSingleMapDetails({});
+        getSingleMapDetails({ id: response?.data?.id });
         setAddMapDrawerOpen(false);
-        dispatch(storeEditPolygonCoords([]));
         setErrorMessages([]);
         setMapData({});
         router.replace(`/add-markers/${response?.data?.id || id}`);
