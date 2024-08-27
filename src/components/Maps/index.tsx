@@ -226,7 +226,9 @@ const Maps = () => {
                         textTransform: "capitalize",
                       }}
                     >
-                      {item?.status ? item?.status?.toLowerCase() : "--"}
+                      {item?.status == "publish"
+                        ? "Published"
+                        : item?.status?.toLowerCase()}
                     </Typography>
                     <div className="iconsDiv">
                       {item?.status == "publish" ? (

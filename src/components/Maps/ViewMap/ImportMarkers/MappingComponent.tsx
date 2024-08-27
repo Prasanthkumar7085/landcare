@@ -95,7 +95,6 @@ const MappingScreen = ({
                     <td>{item}</td>
                     <td>
                       <Autocomplete
-                        className="defaultAutoComplete"
                         value={mappedValues[item] ? mappedValues[item] : null}
                         disablePortal
                         options={
@@ -103,6 +102,13 @@ const MappingScreen = ({
                             ? autocompleteSuggestions
                             : []
                         }
+                        slotProps={{
+                          popper: {
+                            sx: {
+                              zIndex: "200 !important",
+                            },
+                          },
+                        }}
                         PaperComponent={({ children }: any) => (
                           <Paper
                             sx={{
@@ -126,9 +132,6 @@ const MappingScreen = ({
                           "& .MuiFormControl-root": {
                             width: "100%",
                             background: "#fff",
-                          },
-                          "& .MuiPopper-root": {
-                            zIndex: "9999999999 !important",
                           },
                         }}
                         renderInput={(params: any) => (

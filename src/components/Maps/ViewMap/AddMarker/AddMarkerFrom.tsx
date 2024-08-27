@@ -273,6 +273,7 @@ const MarkerPopup = ({
                 className="defaultTextFeild multiline "
                 name="description"
                 rows={5}
+                multiline
                 placeholder="Enter description"
                 value={popupFormData?.description}
                 onChange={handleInputChange}

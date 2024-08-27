@@ -153,29 +153,6 @@ const ViewMarkerDrawer = ({
         {data?.map((item: any, index: any) => {
           return (
             <Box className="viewContent" key={index}>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  marginTop: "0px",
-                }}
-              >
-                <IconButton
-                  className="iconBtnMenu"
-                  onClick={(e) => {
-                    setSelectedMarker(item);
-                    handleClick(e);
-                  }}
-                >
-                  <img
-                    src="/map/menu-with-bg.svg"
-                    alt=""
-                    height={25}
-                    width={25}
-                  />
-                </IconButton>
-              </div>
               <div className="imgBlock">
                 {item?.images?.length > 0 ? (
                   <div
@@ -219,6 +196,20 @@ const ViewMarkerDrawer = ({
                     style={{ objectFit: "contain" }}
                   />
                 )}
+                <IconButton
+                  className="iconBtnMenu"
+                  onClick={(e) => {
+                    setSelectedMarker(item);
+                    handleClick(e);
+                  }}
+                >
+                  <img
+                    src="/map/menu-with-bg.svg"
+                    alt=""
+                    height={25}
+                    width={25}
+                  />
+                </IconButton>
               </div>
               {data?.length > 1 ? (
                 <MarkerDetailsAccordian

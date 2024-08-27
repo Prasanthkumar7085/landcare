@@ -19,7 +19,7 @@ const LoadingComponent = ({ loading }: { loading: Boolean }) => {
         width={150}
         height={150}
       />
-      Loading...
+      <p style={{ textAlign: "center" }}>Loading...</p>
     </Backdrop>
   );
 };

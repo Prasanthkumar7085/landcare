@@ -13,7 +13,7 @@ import Image from "next/image";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { Tab, Tabs, Tooltip } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 
 const ShareLinkDialog = ({
   open,
@@ -40,7 +40,7 @@ const ShareLinkDialog = ({
   };
 
   const openTwitter = () => {
-    const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+    const url = `https://x.com/intent/tweet?url=${encodeURIComponent(
       linkToShare
     )}`;
     window.open(url, "_blank");
@@ -60,17 +60,18 @@ const ShareLinkDialog = ({
   return (
     <Dialog open={open} className="shareLinkDialog">
       <div className="dialogHeader">
-
         <DialogTitle>{"Share"}</DialogTitle>
-        <IconButton onClick={() => {
-          setShareDialogOpen(false);
-        }}>
-          <CloseIcon sx={{fontSize:"1rem", color:"#000"}} />
+        <IconButton
+          onClick={() => {
+            setShareDialogOpen(false);
+          }}
+        >
+          <CloseIcon sx={{ fontSize: "1rem", color: "#000" }} />
         </IconButton>
       </div>
       <DialogContent>
         <Tabs value={tabValue} onChange={handleTabChange} centered>
-          <Tab label="Share" />
+          <Tab label="Link" />
           <Tab label="Copy Embedded URL" />
         </Tabs>
         {tabValue === 0 && (
@@ -78,7 +79,7 @@ const ShareLinkDialog = ({
             <div
               className="imageDetailsBlock"
               style={{
-                display: mapDetails?.title ? "flex" : "none",               
+                display: mapDetails?.title ? "flex" : "none",
               }}
             >
               <Image
@@ -92,27 +93,10 @@ const ShareLinkDialog = ({
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  flex:"1"
+                  flex: "1",
                 }}
               >
                 <p>{mapDetails?.title}</p>
-                <p>
-                  {" "}
-                  <Tooltip
-                    title={
-                      mapDetails?.description?.length >= 50
-                        ? mapDetails?.description
-                        : ""
-                    }
-                    placement="bottom"
-                  >
-                    {mapDetails?.description
-                      ? mapDetails?.description?.length >= 50
-                        ? `${mapDetails?.description.slice(0, 30)}....`
-                        : mapDetails?.description
-                      : "--"}
-                  </Tooltip>
-                </p>
               </div>
             </div>
             <div className="link">
@@ -127,7 +111,7 @@ const ShareLinkDialog = ({
                 onClick={() => copyURL(linkToShare)}
                 variant="text"
                 color="primary"
-               className="copyLinkBtn"
+                className="copyLinkBtn"
               >
                 Copy Link
               </Button>
@@ -138,55 +122,80 @@ const ShareLinkDialog = ({
                 aria-label="whatsapp"
                 onClick={openWhatsApp}
               >
-                <WhatsAppIcon />
+                <img src="/whatsapp.png" alt="" height={35} width={35} />
               </IconButton>
               <IconButton
                 className={"icon"}
                 aria-label="email"
                 onClick={openEmail}
               >
-                <EmailIcon />
+                <img src="/mail-icon.jpeg" alt="" height={25} width={25} />
               </IconButton>
+
               <IconButton
                 className={"icon"}
                 aria-label="twitter"
                 onClick={openTwitter}
               >
-                <TwitterIcon />
+                <img src="/twitter.png" alt="" height={25} width={25} />
               </IconButton>
               <IconButton
                 className={"icon"}
                 aria-label="facebook"
                 onClick={openFacebook}
               >
-                <FacebookIcon />
+                <img src="/facebook-icon.png" alt="" height={25} width={25} />
               </IconButton>
             </div>
           </div>
         )}
 
         {tabValue === 1 && (
-          <div className="link">
-            <TextField
-              value={linkToEmdeded}
-              size="small"
-              InputProps={{
-                readOnly: true,
+          <div className="shareLinkDialogContent">
+            <div
+              className="imageDetailsBlock"
+              style={{
+                display: mapDetails?.title ? "flex" : "none",
               }}
-              fullWidth
-            />
-            <Button
-              onClick={() => copyEmbededIframeUrl(linkToEmdeded)}
-              variant="text"
-              color="primary"
-              className="copyLinkBtn"
             >
-              Copy
-            </Button>
+              <Image
+                src={mapDetails?.image ? mapDetails?.image : "/no-image.png"}
+                alt="Seetharamalayam"
+                width={50}
+                height={50}
+                style={{ borderRadius: "8px" }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  flex: "1",
+                }}
+              >
+                <p>{mapDetails?.title}</p>
+              </div>
+            </div>
+            <div className="link">
+              <TextField
+                value={linkToEmdeded}
+                size="small"
+                InputProps={{
+                  readOnly: true,
+                }}
+                fullWidth
+              />
+              <Button
+                onClick={() => copyEmbededIframeUrl(linkToEmdeded)}
+                variant="text"
+                color="primary"
+                className="copyLinkBtn"
+              >
+                Copy
+              </Button>
+            </div>
           </div>
         )}
       </DialogContent>
-
     </Dialog>
   );
 };

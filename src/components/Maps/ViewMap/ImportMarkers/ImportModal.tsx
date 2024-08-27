@@ -324,7 +324,7 @@ const ImportModal: React.FC<IImportModalProps> = ({
               </div>
             ) : (
               <div className="btnGrp">
-                <Button onClick={onClose}>Close</Button>
+                <Button onClick={onClose}>{success ? "Done" : "Cancel"}</Button>
                 <Button
                   sx={{
                     display: success ? "none" : "block",
