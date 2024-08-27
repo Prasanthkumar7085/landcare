@@ -135,4 +135,14 @@ export class MapsDataServiceProvider {
 
         return await countQuery;
     }
+
+    async findMapBySlugNotArchived(slug: string) {
+        const mapData = await db.select()
+            .from(maps)
+            .where(and(
+                eq(maps.slug, slug),
+                ne(maps.status, 'archived')
+            ));
+        return mapData[0];
+    }
 }

@@ -19,6 +19,7 @@ import { MarkersDataServiceProvider } from "../services/markersDataServiceProvid
 import { makeSlug } from "../utils/app.utils";
 import axios from "axios";
 import { IMap } from "../interfaces/maps";
+import { Client } from "@googlemaps/google-maps-services-js";
 
 const mapsDataServiceProvider = new MapsDataServiceProvider();
 const markersDataServiceProvider = new MarkersDataServiceProvider();
@@ -44,13 +45,13 @@ export class MapsController {
       }
 
       const reponseData = await mapsDataServiceProvider.create(reqData);
-      return ResponseHelper.sendSuccessResponse(200,MAP_CREATED,reponseData[0]);
+      return ResponseHelper.sendSuccessResponse(200, MAP_CREATED, reponseData[0]);
     } catch (error: any) {
       console.error(error);
       if (error.validation_error) {
-        return ResponseHelper.sendErrorResponse(409,error.message,error.errors);
+        return ResponseHelper.sendErrorResponse(409, error.message, error.errors);
       }
-      return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
@@ -64,7 +65,7 @@ export class MapsController {
       return ResponseHelper.sendSuccessResponse(200, MAP_FETCHED, mapData);
     } catch (error: any) {
       console.error(error);
-     return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
@@ -78,7 +79,7 @@ export class MapsController {
         filters.status != "publish" &&
         filters.status != "draft"
       ) {
-        return ResponseHelper.sendErrorResponse(400,"Invalid status provided in query");
+        return ResponseHelper.sendErrorResponse(400, "Invalid status provided in query");
       }
 
       const [mapsData, mapsCount]: any = await Promise.all([
@@ -99,7 +100,7 @@ export class MapsController {
       return NextResponse.json(responseData);
     } catch (error: any) {
       console.error(error);
-     return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
@@ -113,12 +114,12 @@ export class MapsController {
         return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
       }
 
-      const existedMap: any = await mapsDataServiceProvider.findMapByTitleAndId(normalizedTitle,params.id);
+      const existedMap: any = await mapsDataServiceProvider.findMapByTitleAndId(normalizedTitle, params.id);
       if (existedMap) {
         throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
       }
 
-      const existedSlug = await mapsDataServiceProvider.findMapBySlugAndId(slug,params.id);
+      const existedSlug = await mapsDataServiceProvider.findMapBySlugAndId(slug, params.id);
       if (existedSlug) {
         if (existedSlug.status === "archived") {
           reqData.slug = reqData.slug + "-" + Date.now();
@@ -132,9 +133,9 @@ export class MapsController {
     } catch (error: any) {
       console.error(error);
       if (error.validation_error) {
-        return ResponseHelper.sendErrorResponse(409,error.message,error.errors);
+        return ResponseHelper.sendErrorResponse(409, error.message, error.errors);
       }
-     return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
@@ -151,7 +152,7 @@ export class MapsController {
       return ResponseHelper.sendSuccessResponse(200, MAP_DELETED);
     } catch (error: any) {
       console.error(error);
-     return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
@@ -172,7 +173,7 @@ export class MapsController {
       return ResponseHelper.sendSuccessResponse(200, MAP_STATUS_UPDATED);
     } catch (error: any) {
       console.error(error);
-     return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
@@ -195,16 +196,16 @@ export class MapsController {
         "base64"
       );
 
-      return ResponseHelper.sendSuccessResponse(200,"Map image fetched",`data:image/png;base64,${base64Image}`);
+      return ResponseHelper.sendSuccessResponse(200, "Map image fetched", `data:image/png;base64,${base64Image}`);
     } catch (error: any) {
       console.error(error);
-     return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
   async getMapBySlug(params: any) {
     try {
-      const mapData: any = await mapsDataServiceProvider.findMapBySlug(params.slug);
+      const mapData: any = await mapsDataServiceProvider.findMapBySlugNotArchived(params.slug);
       if (!mapData) {
         return ResponseHelper.sendErrorResponse(400, MAP_NOT_FOUND);
       }
@@ -212,17 +213,77 @@ export class MapsController {
       return ResponseHelper.sendSuccessResponse(200, MAP_FETCHED, mapData);
     } catch (error: any) {
       console.error(error);
-     return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
-  async getStats(query:any) {
+  async getStats(query: any) {
     try {
       const stats = await mapsDataServiceProvider.findStats(query);
       return ResponseHelper.sendSuccessResponse(200, STATS_FETCHED, stats);
     } catch (error: any) {
       console.error(error);
-     return ResponseHelper.sendErrorResponse(500,error.message || SOMETHING_WENT_WRONG,error);
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
+    }
+  }
+
+  async  getCoordinates(query: any) {
+    try {
+
+      if (!query || !query.location) {
+        return ResponseHelper.sendErrorResponse(400, "Location not provided",{});
+      }
+
+      const client = new Client({});
+      const response = await client.geocode({
+        params: {
+          address: query.location,
+          key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || '',
+        },
+      });
+
+      let coordinates;
+      if (response.data.status === "OK") {
+        coordinates = response.data.results[0].geometry.location;
+      } else {
+        return ResponseHelper.sendErrorResponse(400, "Failed to fetch coordinates",{});
+      }
+
+      return ResponseHelper.sendSuccessResponse(200, "Coordinates fetched", coordinates);
+
+    } catch (error: any) {
+      console.error(error);
+      return ResponseHelper.sendErrorResponse(500, error.message || 'Something went wrong', error);
+    }
+  }
+
+  async  getAddress(query: any) {
+    try {
+
+      if (!query || (!query.lat && !query.lng)) {
+        return ResponseHelper.sendErrorResponse(400, "Coordinates not provided", {});
+      }
+
+      const client = new Client({});
+      const response = await client.geocode({
+        params: {
+          address: `${query.lat},${query.lng}`,
+          key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || '',
+        },
+      });
+
+      let coordinates;
+      if (response.data.status === "OK") {
+        coordinates = response.data.results[0]
+      } else {
+        return ResponseHelper.sendErrorResponse(400, "Failed to fetch coordinates",{});
+      }
+
+      return ResponseHelper.sendSuccessResponse(200, "Address fetched from coordinates", coordinates);
+
+    } catch (error: any) {
+      console.error(error);
+      return ResponseHelper.sendErrorResponse(500, error.message || 'Something went wrong', error);
     }
   }
 }
