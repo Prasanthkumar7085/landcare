@@ -106,6 +106,8 @@ const ViewPublicMarkerDrawer = ({
       </header>
       <div className="markerViewContent">
         {data?.map((item: any, index: any) => {
+          const currentIndex = currentIndices[item.id] || 0;
+
           return (
             <Box className="viewContent" key={index}>
               <div className="imgBlock">
