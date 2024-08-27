@@ -270,7 +270,6 @@ const ImportModal: React.FC<IImportModalProps> = ({
                       <u>Click to upload</u> or drag and drop a CSV or XLSX file
                       here
                     </p>
-                    <p className="helperText">Max Size: 50MB</p>
                   </div>
                 </div>
               )}

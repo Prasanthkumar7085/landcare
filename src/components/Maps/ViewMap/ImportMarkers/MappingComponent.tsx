@@ -141,7 +141,7 @@ const MappingScreen = ({
                       />
                     </td>
                     <td>
-                      <Tooltip title="Delete">
+                      <Tooltip title="Delete" followCursor>
                         <IconButton
                           aria-label="remove"
                           color="error"

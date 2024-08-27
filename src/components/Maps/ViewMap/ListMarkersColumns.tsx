@@ -199,7 +199,7 @@ export const ListMarkersColumns = ({
       id: "actions",
       cell: (info: any) => (
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <Tooltip title="View">
+          <Tooltip title="View" followCursor>
             <IconButton
               className="iconBtn"
               onClick={() => {
@@ -221,7 +221,7 @@ export const ListMarkersColumns = ({
               <Image src="/map/table/view.svg" alt="" width={15} height={15} />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Delete">
+          <Tooltip title="Delete" followCursor>
             <IconButton
               className="iconBtn"
               onClick={() => {
