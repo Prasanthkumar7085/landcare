@@ -35,3 +35,11 @@ export const MARKERS_IMPORTED = "Markers imported successfully";
 export const MARKERS_DELETED = "Markers deleted successfully";
 
 export const STATS_FETCHED = "Stats fetched successfully";
+
+export const MAP_IMAGE_FETCHED = "Map image fetched successfully";
+export const LOCATION_NOT_PROVIDED = "Location not provided";
+export const FETCH_COORDINATES_FAILED = "Failed to fetch coordinates";
+export const COORDINATES_FETCHED = "Coordinates fetched successfully";
+export const COORDINATES_NOT_PROVIDED = "Coordinates not provided";
+export const FETCH_ADDRESS_FAILED = "Failed to fetch address";
+export const ADDRESS_FETCHED = "Address fetched successfully";

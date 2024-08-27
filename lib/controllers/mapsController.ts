@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
+  ADDRESS_FETCHED,
+  COORDINATES_FETCHED,
+  COORDINATES_NOT_PROVIDED,
+  FETCH_ADDRESS_FAILED,
+  FETCH_COORDINATES_FAILED,
+  LOCATION_NOT_PROVIDED,
   MAP_CREATED,
   MAP_DELETED,
   MAP_FETCHED,
+  MAP_IMAGE_FETCHED,
   MAP_NOT_FOUND,
   MAP_STATUS_UPDATED,
   MAP_TITLE_EXISTS,
@@ -196,7 +203,7 @@ export class MapsController {
         "base64"
       );
 
-      return ResponseHelper.sendSuccessResponse(200, "Map image fetched", `data:image/png;base64,${base64Image}`);
+      return ResponseHelper.sendSuccessResponse(200, MAP_IMAGE_FETCHED, `data:image/png;base64,${base64Image}`);
     } catch (error: any) {
       console.error(error);
       return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
@@ -231,7 +238,7 @@ export class MapsController {
     try {
 
       if (!query || !query.location) {
-        return ResponseHelper.sendErrorResponse(400, "Location not provided",{});
+        return ResponseHelper.sendErrorResponse(400, LOCATION_NOT_PROVIDED,{});
       }
 
       const client = new Client({});
@@ -246,14 +253,14 @@ export class MapsController {
       if (response.data.status === "OK") {
         coordinates = response.data.results[0].geometry.location;
       } else {
-        return ResponseHelper.sendErrorResponse(400, "Failed to fetch coordinates",{});
+        return ResponseHelper.sendErrorResponse(400, FETCH_COORDINATES_FAILED,{});
       }
 
-      return ResponseHelper.sendSuccessResponse(200, "Coordinates fetched", coordinates);
+      return ResponseHelper.sendSuccessResponse(200, COORDINATES_FETCHED, coordinates);
 
     } catch (error: any) {
       console.error(error);
-      return ResponseHelper.sendErrorResponse(500, error.message || 'Something went wrong', error);
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 
@@ -261,7 +268,7 @@ export class MapsController {
     try {
 
       if (!query || (!query.lat && !query.lng)) {
-        return ResponseHelper.sendErrorResponse(400, "Coordinates not provided", {});
+        return ResponseHelper.sendErrorResponse(400, COORDINATES_NOT_PROVIDED, {});
       }
 
       const client = new Client({});
@@ -276,14 +283,14 @@ export class MapsController {
       if (response.data.status === "OK") {
         coordinates = response.data.results[0]
       } else {
-        return ResponseHelper.sendErrorResponse(400, "Failed to fetch coordinates",{});
+        return ResponseHelper.sendErrorResponse(400, FETCH_ADDRESS_FAILED,{});
       }
 
-      return ResponseHelper.sendSuccessResponse(200, "Address fetched from coordinates", coordinates);
+      return ResponseHelper.sendSuccessResponse(200, ADDRESS_FETCHED, coordinates);
 
     } catch (error: any) {
       console.error(error);
-      return ResponseHelper.sendErrorResponse(500, error.message || 'Something went wrong', error);
+      return ResponseHelper.sendErrorResponse(500, error.message || SOMETHING_WENT_WRONG, error);
     }
   }
 }
