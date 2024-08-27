@@ -276,6 +276,8 @@ const PublicMap = () => {
               getSingleMapMarkers({ id: mapId }),
             ]);
         }
+      } else {
+        setPreviewError(true);
       }
     } catch (err) {
       console.error("Error in getSingleMapDetails:", err);
@@ -450,13 +452,14 @@ const PublicMap = () => {
         <div
           style={{
             display: "flex",
-            flexDirection: "row",
+            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
             height: "100vh",
           }}
         >
-          <h1>Page not found</h1>
+          <img src={"/404.svg"} alt="not found" width={400} height={400} />
+          <h6>Contact admin for this issue!</h6>
         </div>
       )}
       <LoadingComponent
