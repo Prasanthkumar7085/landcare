@@ -133,6 +133,8 @@ export class MapsController {
         } else {
           throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
         }
+      } else {
+        reqData.slug = slug;
       }
 
       await mapsDataServiceProvider.update(params.id, reqData);
