@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const TablePaginationComponent = ({
@@ -15,6 +15,7 @@ const TablePaginationComponent = ({
   captureRowPerItems,
   values,
 }: any) => {
+  const pathName = usePathname();
   const useParams = useSearchParams();
   const [pageNum, setPageNum] = useState<number | string>();
   const [noOfRows, setNoOfRows] = useState<number | string>(
@@ -91,7 +92,9 @@ const TablePaginationComponent = ({
             MenuProps={{
               PaperProps: {
                 sx: {
-                  top: "490px !important",
+                  top: pathName?.includes("view-map")
+                    ? "490px !important"
+                    : "550px !important",
                 },
               },
             }}
