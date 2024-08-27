@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MarkerDetailsAccordian from "./MarkerDetailsAccordian";
 import { prepareURLEncodedParams } from "@/lib/prepareUrlEncodedParams";
+import ImageComponent from "@/components/Core/ImageComponent";
 
 const ViewMarkerDrawer = ({
   onClose,
@@ -67,17 +68,31 @@ const ViewMarkerDrawer = ({
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [imgSrc, setImgSrc] = useState<string>("");
+  const [isError, setIsError] = useState(false);
+
+  const [currentIndices, setCurrentIndices] = useState<{
+    [key: string]: number;
+  }>({});
 
   const nextSlide = (marker: any) => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === marker?.images.length - 1 ? 0 : prevIndex + 1
-    );
+    setCurrentIndices((prevIndices) => ({
+      ...prevIndices,
+      [marker.id]:
+        (prevIndices[marker.id] || 0) === marker?.images.length - 1
+          ? 0
+          : (prevIndices[marker.id] || 0) + 1,
+    }));
   };
 
   const prevSlide = (marker: any) => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? marker?.images.length - 1 : prevIndex - 1
-    );
+    setCurrentIndices((prevIndices) => ({
+      ...prevIndices,
+      [marker.id]:
+        (prevIndices[marker.id] || 0) === 0
+          ? marker?.images.length - 1
+          : (prevIndices[marker.id] || 0) - 1,
+    }));
   };
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -118,6 +133,13 @@ const ViewMarkerDrawer = ({
       setLoading(false);
     }
   };
+  const handleImageError = () => {
+    setImgSrc("/No-Preview-1.jpg");
+    setIsError(true);
+  };
+  const handleLoad = () => {
+    setIsError(false);
+  };
 
   return (
     <div className="signleMarkerView">
@@ -151,6 +173,7 @@ const ViewMarkerDrawer = ({
       </header>
       <div className="markerViewContent">
         {data?.map((item: any, index: any) => {
+          const currentIndex = currentIndices[item.id] || 0;
           return (
             <Box className="viewContent" key={index}>
               <div className="imgBlock">
@@ -173,10 +196,11 @@ const ViewMarkerDrawer = ({
                     </button>
                     <img
                       className="mapImg"
-                      src={
-                        item?.images[currentIndex] ||
-                        "path/to/alternative-image.png"
-                      }
+                      src={item?.images[currentIndex]}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "/No-Preview-1.jpg";
+                      }}
                       alt={`images ${currentIndex + 1}`}
                     />
                     <button

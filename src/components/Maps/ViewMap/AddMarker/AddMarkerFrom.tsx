@@ -138,7 +138,7 @@ const MarkerPopup = ({
       body["email"] = popupFormData?.email;
     }
     if (params?.get("marker_id")) {
-      response = updateMarkerDeatilsAPI(id, body, params?.get("marker_id"));
+      response = updateMarkerDeatilsAPI(id, body, popupFormData?.id);
     } else {
       response = addMarkerDeatilsAPI(id, body);
     }
