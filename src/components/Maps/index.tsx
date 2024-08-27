@@ -276,10 +276,13 @@ const Maps = () => {
                   </Typography>
 
                   <Tooltip
+                    arrow
                     title={
-                      item?.description && item?.description?.length >= 200
-                        ? item?.description
-                        : ""
+                      <div>
+                        {item?.description && item?.description?.length >= 200
+                          ? item?.description
+                          : ""}
+                      </div>
                     }
                   >
                     <Typography className="cardDesc">
@@ -338,7 +341,7 @@ const Maps = () => {
                   height={300}
                   width={300}
                 />
-                <p>{"No maps added yet. Click 'Add New' to start."}</p>
+                <p>{"No maps added yet. Click 'Create New Map' to start."}</p>
               </>
             )}
           </div>

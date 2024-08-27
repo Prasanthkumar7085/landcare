@@ -216,135 +216,148 @@ const ImportModal: React.FC<IImportModalProps> = ({
             onClick={onClose}
           />
         </div>
-        <div
-          className="modalContainer"
-          style={{ gridTemplateColumns: checkMapping ? "2fr 1fr" : "1fr " }}
-        >
-          <div className="leftBlock">
-            <div className="instructions">
-              <Image src="/map/info-icon.svg" alt="" width={20} height={20} />
-              <div className="content">
-                <p>
-                  To import your markers, please ensure your CSV or XLSX file
-                  contains the following columns:
-                </p>
-                <ol>
-                  <li>
-                    [ Title, Description, Organisation Type, Postal Address,
-                    Images, Street Address, Town, Postcode, Phone number, Fax,
-                    Email, Website, Contact, Tags, Location]
-                  </li>
-                </ol>
-                <p>
-                  Ensure all fields are correctly filled for a successful
-                  import.
-                </p>
+        <div className="mainContent">
+          <div
+            className="modalContainer"
+            style={{ gridTemplateColumns: checkMapping ? "2fr 1fr" : "1fr " }}
+          >
+            <div className="leftBlock">
+              <div className="instructions">
+                <Image src="/map/info-icon.svg" alt="" width={20} height={20} />
+                <div className="content">
+                  <p>
+                    To import your markers, please ensure your CSV or XLSX file
+                    contains the following columns:
+                  </p>
+                  <ol>
+                    <li>
+                      [ Title, Description, Organisation Type, Postal Address,
+                      Images, Street Address, Town, Postcode, Phone number, Fax,
+                      Email, Website, Contact, Tags, Location]
+                    </li>
+                  </ol>
+                  <p>
+                    Ensure all fields are correctly filled for a successful
+                    import.
+                  </p>
 
-                <p
-                  style={{ color: "red", display: checkMapping ? "" : "none" }}
-                >
-                  Headers are not matched
-                </p>
-                <p
-                  style={{ color: "red", display: checkMapping ? "" : "none" }}
-                >
-                  Please map according to correct headers
-                </p>
+                  <p
+                    style={{
+                      color: "red",
+                      display: checkMapping ? "" : "none",
+                    }}
+                  >
+                    Headers are not matched
+                  </p>
+                  <p
+                    style={{
+                      color: "red",
+                      display: checkMapping ? "" : "none",
+                    }}
+                  >
+                    Please map according to correct headers
+                  </p>
+                </div>
+              </div>
+
+              <div {...getRootProps({ className: "dropzone " })}>
+                <input {...getInputProps()} onChange={handleFileChange} />
+                {isDragActive ? (
+                  <p>Drop the file here ...</p>
+                ) : (
+                  <div>
+                    <Image
+                      src="/map/file-upload-icon.svg"
+                      alt=""
+                      width={50}
+                      height={50}
+                    />
+                    <div>
+                      <p>
+                        <u>Click to upload</u> or drag and drop a CSV or XLSX
+                        file here
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div
+                className="fileUpload"
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {file && <p>Selected file: {file.name}</p>}
+                {file && (
+                  <Tooltip title="Delete">
+                    <IconButton
+                      aria-label="remove"
+                      color="error"
+                      onClick={() => {
+                        setCheckMapping(false);
+                        setFile(null);
+                        setValidationsData([]);
+                        setSheetHeaders({});
+                        setSheetValues([]);
+                        setSuccess(false);
+                      }}
+                    >
+                      <Image
+                        src="/markers/add/delete.svg"
+                        alt="edit"
+                        width={20}
+                        height={20}
+                      />
+                    </IconButton>
+                  </Tooltip>
+                )}
               </div>
             </div>
-
-            <div {...getRootProps({ className: "dropzone " })}>
-              <input {...getInputProps()} onChange={handleFileChange} />
-              {isDragActive ? (
-                <p>Drop the file here ...</p>
-              ) : (
+            <div className="rightBlock">
+              {checkMapping ? (
                 <div>
-                  <Image
-                    src="/map/file-upload-icon.svg"
-                    alt=""
-                    width={50}
-                    height={50}
+                  <MappingScreen
+                    sheetHeaders={sheetHeaders}
+                    setSheetHeaders={setSheetHeaders}
+                    jsonData={sheetValues}
+                    setValidationsData={setValidationsData}
+                    handleUpload={handleUpload}
+                    onClose={onClose}
+                    setCheckMapping={setCheckMapping}
                   />
-                  <div>
-                    <p>
-                      <u>Click to upload</u> or drag and drop a CSV or XLSX file
-                      here
-                    </p>
-                  </div>
+                </div>
+              ) : (
+                <div className="btnGrp">
+                  <Button
+                    onClick={onClose}
+                    sx={{ display: success ? "none" : "block" }}
+                  >
+                    {"Cancel"}
+                  </Button>
+                  <Button
+                    sx={{
+                      display: success ? "none" : "block",
+                      cursor: file && !success ? "" : "not-allowed",
+                    }}
+                    onClick={handleFileUpload}
+                    disabled={file && !success ? false : true}
+                  >
+                    Confirm Upload
+                  </Button>
                 </div>
               )}
             </div>
-            <div
-              className="fileUpload"
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              {file && <p>Selected file: {file.name}</p>}
-              {file && (
-                <Tooltip title="Delete">
-                  <IconButton
-                    aria-label="remove"
-                    color="error"
-                    onClick={() => {
-                      setCheckMapping(false);
-                      setFile(null);
-                      setValidationsData([]);
-                      setSheetHeaders({});
-                      setSheetValues([]);
-                      setSuccess(false);
-                    }}
-                  >
-                    <Image
-                      src="/markers/add/delete.svg"
-                      alt="edit"
-                      width={20}
-                      height={20}
-                    />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </div>
           </div>
-          <div className="rightBlock">
-            {checkMapping ? (
-              <div>
-                <MappingScreen
-                  sheetHeaders={sheetHeaders}
-                  setSheetHeaders={setSheetHeaders}
-                  jsonData={sheetValues}
-                  setValidationsData={setValidationsData}
-                  handleUpload={handleUpload}
-                  onClose={onClose}
-                  setCheckMapping={setCheckMapping}
-                />
-              </div>
-            ) : (
-              <div className="btnGrp">
-                <Button onClick={onClose}>{success ? "Done" : "Cancel"}</Button>
-                <Button
-                  sx={{
-                    display: success ? "none" : "block",
-                    cursor: file && !success ? "" : "not-allowed",
-                  }}
-                  onClick={handleFileUpload}
-                  disabled={file && !success ? false : true}
-                >
-                  Confirm Upload
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
 
-        {validationsData?.length > 0 && !checkMapping ? (
-          <ValidationsTable validationsData={validationsData} />
-        ) : (
-          ""
-        )}
+          {validationsData?.length > 0 && !checkMapping ? (
+            <ValidationsTable validationsData={validationsData} />
+          ) : (
+            ""
+          )}
+        </div>
         <LoadingComponent loading={loading} />
       </div>
     </div>

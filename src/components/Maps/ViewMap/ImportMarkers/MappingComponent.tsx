@@ -105,7 +105,7 @@ const MappingScreen = ({
                         slotProps={{
                           popper: {
                             sx: {
-                              zIndex: "200 !important",
+                              zIndex: 200,
                             },
                           },
                         }}

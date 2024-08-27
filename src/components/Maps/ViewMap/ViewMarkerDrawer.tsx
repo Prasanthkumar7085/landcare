@@ -173,8 +173,11 @@ const ViewMarkerDrawer = ({
                     </button>
                     <img
                       className="mapImg"
-                      src={item?.images[currentIndex]}
-                      alt={`images ${currentIndex}`}
+                      src={
+                        item?.images[currentIndex] ||
+                        "path/to/alternative-image.png"
+                      }
+                      alt={`images ${currentIndex + 1}`}
                     />
                     <button
                       onClick={() => nextSlide(item)}

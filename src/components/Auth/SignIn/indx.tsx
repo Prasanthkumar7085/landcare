@@ -84,9 +84,9 @@ const LoginPage = () => {
                 />
               </div>
               <p className="formTitle">Welcome back</p>
-              <label className="formSubTitle">
+              <p className="formSubTitle">
                 Enter email and password to access your account
-              </label>
+              </p>
               <div className="formsBlock">
                 <div className="InputFeild">
                   <label className="formLabel">Email</label>
