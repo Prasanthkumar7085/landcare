@@ -274,21 +274,22 @@ const Maps = () => {
                         : "--"}
                     </Tooltip>
                   </Typography>
-
-                  <Tooltip
-                    arrow
-                    title={
-                      <div>
-                        {item?.description && item?.description?.length >= 200
+                  {item?.description ? (
+                    <Tooltip
+                      arrow
+                      title={
+                        item?.description && item?.description?.length >= 200
                           ? item?.description
-                          : ""}
-                      </div>
-                    }
-                  >
-                    <Typography className="cardDesc">
-                      {truncateText(item?.description, 200) || "---"}
-                    </Typography>
-                  </Tooltip>
+                          : ""
+                      }
+                    >
+                      <Typography className="cardDesc">
+                        {truncateText(item?.description, 200) || "---"}
+                      </Typography>
+                    </Tooltip>
+                  ) : (
+                    "---"
+                  )}
                 </div>
 
                 <div className="cardFooter">
