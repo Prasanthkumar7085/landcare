@@ -47,17 +47,27 @@ const ViewPublicMarkerDrawer = ({
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [selectedMarker, setSelectedMarker] = useState<any>({});
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const [currentIndices, setCurrentIndices] = useState<{
+    [key: string]: number;
+  }>({});
   const nextSlide = (marker: any) => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === marker?.images.length - 1 ? 0 : prevIndex + 1
-    );
+    setCurrentIndices((prevIndices) => ({
+      ...prevIndices,
+      [marker.id]:
+        (prevIndices[marker.id] || 0) === marker?.images.length - 1
+          ? 0
+          : (prevIndices[marker.id] || 0) + 1,
+    }));
   };
 
   const prevSlide = (marker: any) => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? marker?.images.length - 1 : prevIndex - 1
-    );
+    setCurrentIndices((prevIndices) => ({
+      ...prevIndices,
+      [marker.id]:
+        (prevIndices[marker.id] || 0) === 0
+          ? marker?.images.length - 1
+          : (prevIndices[marker.id] || 0) - 1,
+    }));
   };
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -119,7 +129,11 @@ const ViewPublicMarkerDrawer = ({
                     <img
                       className="mapImg"
                       src={item?.images[currentIndex]}
-                      alt={`images ${currentIndex}`}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = "/No-Preview-1.jpg";
+                      }}
+                      alt={`images ${currentIndex + 1}`}
                     />
                     <button
                       onClick={() => nextSlide(item)}

@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import ImagesAddingComponent from "./ImagesAddingComponent";
 import TagsAddingComponent from "./TagsAddingComponent";
 import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
+import LoadingComponent from "@/components/Core/LoadingComponent";
 
 const MarkerPopup = ({
   setShowMarkerPopup,
@@ -389,6 +390,7 @@ const MarkerPopup = ({
           </div>
         </form>
       </div>
+      <LoadingComponent loading={loading} />
     </Dialog>
   );
 };
