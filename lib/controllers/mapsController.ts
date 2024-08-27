@@ -230,13 +230,8 @@ export class MapsController {
   async  getCoordinates(query: any) {
     try {
 
-      let location;
-      if (query.location) {
-        location = query.location;
-      }
-      
-      if(query.lat && query.lng) {
-        location = { lat: query.lat, lng: query.lng }
+      if (!query || !query.location) {
+        return ResponseHelper.sendErrorResponse(400, "Location not provided",{});
       }
 
       const client = new Client({});
@@ -255,6 +250,36 @@ export class MapsController {
       }
 
       return ResponseHelper.sendSuccessResponse(200, "Coordinates fetched", coordinates);
+
+    } catch (error: any) {
+      console.error(error);
+      return ResponseHelper.sendErrorResponse(500, error.message || 'Something went wrong', error);
+    }
+  }
+
+  async  getAddress(query: any) {
+    try {
+
+      if (!query || (!query.lat && !query.lng)) {
+        return ResponseHelper.sendErrorResponse(400, "Coordinates not provided", {});
+      }
+
+      const client = new Client({});
+      const response = await client.geocode({
+        params: {
+          address: `${query.lat},${query.lng}`,
+          key: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || '',
+        },
+      });
+
+      let coordinates;
+      if (response.data.status === "OK") {
+        coordinates = response.data.results[0]
+      } else {
+        return ResponseHelper.sendErrorResponse(400, "Failed to fetch coordinates",{});
+      }
+
+      return ResponseHelper.sendSuccessResponse(200, "Address fetched from coordinates", coordinates);
 
     } catch (error: any) {
       console.error(error);
