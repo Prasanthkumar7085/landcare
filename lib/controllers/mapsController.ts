@@ -129,7 +129,7 @@ export class MapsController {
       const existedSlug = await mapsDataServiceProvider.findMapBySlugAndId(slug, params.id);
       if (existedSlug) {
         if (existedSlug.status === "archived") {
-          reqData.slug = reqData.slug + "-" + Date.now();
+          reqData.slug = slug + "-" + Date.now();
         } else {
           throw new ResourceAlreadyExistsError("title", MAP_TITLE_EXISTS);
         }
