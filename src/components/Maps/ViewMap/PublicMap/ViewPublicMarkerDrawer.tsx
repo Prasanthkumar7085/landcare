@@ -21,6 +21,7 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import MarkerDetailsAccordian from "../MarkerDetailsAccordian";
 
+//view public marker
 const ViewPublicMarkerDrawer = ({
   onClose,
   getSingleMapMarkers,
