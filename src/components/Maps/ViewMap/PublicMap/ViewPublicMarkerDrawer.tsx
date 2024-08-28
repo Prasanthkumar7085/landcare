@@ -289,7 +289,7 @@ const ViewPublicMarkerDrawer = ({
                     ) : (
                       <span className="value">
                         <Image
-                          src="/map/view/mobile-view.svg"
+                          src="/map/view/group-view.svg"
                           alt=""
                           width={18}
                           height={18}
