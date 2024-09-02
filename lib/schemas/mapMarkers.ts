@@ -8,28 +8,28 @@ export const mapMarkers:any = pgTable("map_markers", {
     id: serial('id').primaryKey(),
     map_id: integer('map_id').references(() => maps.id),
 
-    title: varchar('title'),
+    name: varchar('name').notNull(),
     description: text('description'),
-    organisation_type: varchar('organisation_type'),
-    coordinates: jsonb('coordinates').$type<number[]>().default([]),
-    color_code: varchar('color_code'),
+    landcare_region: varchar('landcare_region'),
+    host: varchar('host'),
+    host_type: varchar('host_type'),
+    type: varchar('type').notNull(),
 
-    postal_address: varchar('postal_address'),
     street_address: varchar('street_address'),
     town: varchar('town'),
     postcode: varchar('postcode'),
+    coordinates: jsonb('coordinates').$type<number[]>().default([]),
 
-    phone: varchar('phone'),
+    phone_number: varchar('phone_number'),
     email: varchar('email'),
     website: varchar('website'),
     fax: varchar('fax'),
     contact: varchar('contact'),
 
     tags: jsonb('tags').$type<string[]>().default([]),
-    images: jsonb('images').$type<string[]>().default([]),
+    image: text('image'),
     social_links: jsonb('social_links').$type<string[]>().default([]),
 
-    added_by: varchar('added_by'),
     status: boolean('status').default(true),
     
     created_at: timestamp('created_at').notNull().defaultNow(),

@@ -42,16 +42,22 @@ class FilterHelper {
 
         if (filters && filters.search_string) {
             const searchString = `%${filters.search_string}%`;
-            conditions.push(and(
-                ilike(mapMarkers.title, `${searchString}`),
+            conditions.push(and(or(
+                ilike(mapMarkers.name, `${searchString}`),
+                ilike(mapMarkers.description, `${searchString}`),
+                ilike(mapMarkers.landcare_region, `${searchString}`),
+                ilike(mapMarkers.host, `${searchString}`),
+                ilike(mapMarkers.town, `${searchString}`),
+                ilike(mapMarkers.contact, `${searchString}`),
+            ),
                 eq(mapMarkers.map_id, mapId)
             ));
         }
 
-        if (filters && filters.organisation_type) {
+        if (filters && filters.type) {
             conditions.push(and(
                 eq(mapMarkers.map_id, mapId),
-                eq(mapMarkers.organisation_type, `${filters.organisation_type}`)
+                eq(mapMarkers.type, `${filters.type}`)
             ));
         }
 

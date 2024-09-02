@@ -11,11 +11,12 @@ export class MarkersDataServiceProvider {
         return await db.insert(mapMarkers).values(data).returning()
     }
 
-    async findByTitleAndMapId(title: string, mapId: number) {
+    async findByNameAndMapId(name: string,postcode: string, mapId: number) {
         const markerData = await db.select()
             .from(mapMarkers)
             .where(and(
-                eq(lower(mapMarkers.title), title.toLowerCase()),
+                eq(lower(mapMarkers.name), name.toLowerCase()),
+                eq(mapMarkers.postcode, postcode),
                 eq(mapMarkers.map_id, mapId)
             ));
         return markerData[0];
@@ -45,34 +46,16 @@ export class MarkersDataServiceProvider {
         if (filters.limited_datatypes) {
             queryData = db.select({
                 id: mapMarkers.id,
-                title: mapMarkers.title,
+                name: mapMarkers.name,
                 coordinates: mapMarkers.coordinates,
-                organisation_type: mapMarkers.organisation_type,
+                type: mapMarkers.type,
             })
                 .from(mapMarkers)
                 .where(eq(mapMarkers.map_id, mapId))
                 .limit(limit)
                 .offset(skip)
         } else {
-            queryData = db.select({
-                id: mapMarkers.id,
-                title: mapMarkers.title,
-                description: mapMarkers.description,
-                coordinates: mapMarkers.coordinates,
-                contact: mapMarkers.contact,
-                organisation_type: mapMarkers.organisation_type,
-                phone: mapMarkers.phone,
-                email: mapMarkers.email,
-                postal_address: mapMarkers.postal_address,
-                street_address: mapMarkers.street_address,
-                town: mapMarkers.town,
-                postcode: mapMarkers.postcode,
-                website: mapMarkers.website,
-                images: mapMarkers.images,
-                tags: mapMarkers.tags,
-                created_at: mapMarkers.created_at,
-                updated_at: mapMarkers.updated_at
-            })
+            queryData = db.select()
                 .from(mapMarkers)
                 .where(eq(mapMarkers.map_id, mapId))
                 .limit(limit)
@@ -96,26 +79,7 @@ export class MarkersDataServiceProvider {
 
     async findAllByMapIdWithCoordinates(mapId: number, lat: number, lng: number) {
 
-        return await db.select({
-            id: mapMarkers.id,
-            title: mapMarkers.title,
-            description: mapMarkers.description,
-            coordinates: mapMarkers.coordinates,
-            contact: mapMarkers.contact,
-            organisation_type: mapMarkers.organisation_type,
-            phone: mapMarkers.phone,
-            email: mapMarkers.email,
-            postal_address: mapMarkers.postal_address,
-            street_address: mapMarkers.street_address,
-            town: mapMarkers.town,
-            postcode: mapMarkers.postcode,
-            website: mapMarkers.website,
-            images: mapMarkers.images,
-            tags: mapMarkers.tags,
-            fax: mapMarkers.fax,
-            created_at: mapMarkers.created_at,
-            updated_at: mapMarkers.updated_at
-        })
+        return await db.select()
             .from(mapMarkers)
             .where(and(
                 eq(mapMarkers.map_id, mapId),
@@ -160,5 +124,17 @@ export class MarkersDataServiceProvider {
         return await db
             .delete(mapMarkers)
             .where(eq(mapMarkers.map_id, mapId))
+    }
+
+    async findByNameAndMapIdAndNotMarkerId(name: string,postcode: string, mapId: number, markerId: number) {
+        const markerData = await db.select()
+            .from(mapMarkers)
+            .where(and(
+                eq(lower(mapMarkers.name), name.toLowerCase()),
+                eq(mapMarkers.postcode, postcode),
+                eq(mapMarkers.map_id, mapId),
+                ne(mapMarkers.id, markerId)
+            ));
+        return markerData[0];
     }
 }
