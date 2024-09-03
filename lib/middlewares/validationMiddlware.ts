@@ -54,6 +54,9 @@ function getCustomErrorMessage(issue: any) {
 
     case "email":
       return `Invalid ${key}`;
+    
+    case "url":
+      return `Invalid ${key} URL`;
 
     default:
       break;

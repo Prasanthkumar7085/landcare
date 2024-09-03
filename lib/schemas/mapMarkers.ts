@@ -28,7 +28,10 @@ export const mapMarkers:any = pgTable("map_markers", {
 
     tags: jsonb('tags').$type<string[]>().default([]),
     image: text('image'),
-    social_links: jsonb('social_links').$type<string[]>().default([]),
+    facebook: text('facebook'),
+    twitter: text('twitter'),
+    instagram: text('instagram'),
+    youtube : text('youtube'),
 
     status: boolean('status').default(true),
     
