@@ -55,6 +55,9 @@ function getCustomErrorMessage(issue: any) {
     
     case "url":
       return `${key} is invalid`;
+    
+    case "raw_transform":
+      return issue.message;
 
     default:
       break;

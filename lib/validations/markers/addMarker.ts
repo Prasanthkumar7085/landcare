@@ -1,6 +1,7 @@
 import * as v from 'valibot';
 
-export const AddMarkerSchema = v.object({
+
+const baseSchema = v.object({
     name: v.pipe(v.string(), v.nonEmpty()),
     description: v.nullish(v.string()),
     landcare_region: v.nullish(v.string()),
@@ -27,5 +28,31 @@ export const AddMarkerSchema = v.object({
     youtube: v.nullish(v.pipe(v.string(), v.url())),
 
     status: v.nullish(v.boolean()),
-
 });
+
+
+export const AddMarkerSchema = v.pipe(
+    baseSchema,
+    v.rawTransform(({ dataset, addIssue, NEVER }) => {
+        const { coordinates, postcode, town } = dataset.value;
+
+        if (!coordinates?.length && !postcode && !town) {
+            addIssue({
+                message: 'At least one of coordinates, postcode, or town is required.',
+                path: [
+                    {
+                        type: 'object',
+                        origin: 'value',
+                        input: dataset.value,
+                        key: 'atleast_one_field', // TODO: fix this to rename
+                        value: dataset.value
+                    }
+                ],
+            });
+
+            return NEVER;
+        }
+        return { ...dataset.value };
+    })
+);
+
