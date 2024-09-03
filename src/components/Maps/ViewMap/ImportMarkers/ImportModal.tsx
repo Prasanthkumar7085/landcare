@@ -231,9 +231,10 @@ const ImportModal: React.FC<IImportModalProps> = ({
                   </p>
                   <ol>
                     <li>
-                      [ Title, Description, Organisation Type, Postal Address,
-                      Images, Street Address, Town, Postcode, Phone number, Fax,
-                      Email, Website, Contact, Tags, Location]
+                      [Name, Description,Type, Landcare Region,Host,Host
+                      Type,Image, Street Address, Town, Postcode, Phone Number,
+                      Email, Website, Contact, Tags, Coordinates,Facebook,
+                      Twitter, Instagram, Youtube]
                     </li>
                   </ol>
                   <p>

@@ -166,6 +166,10 @@ const MapMarkersList = ({
                     <div className="location">
                       <img
                         alt="avtar"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = "/No-Preview-1.jpg";
+                        }}
                         src={
                           markerDetails?.images?.length > 0
                             ? markerDetails?.images?.[0]
