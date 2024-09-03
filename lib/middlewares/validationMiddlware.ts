@@ -24,9 +24,7 @@ function getCustomErrorMessage(issue: any) {
   const key = formatKey(issue.path[0].key);
   switch (issue.type) {
     case "non_empty":
-      return `${key} is Required`;
-    case "email":
-      return `Invalid ${key}`;
+      return `${key} is required`;
 
     case "min_length":
       return `${key} must be atleast ${issue.requirement} characters`;
@@ -35,35 +33,35 @@ function getCustomErrorMessage(issue: any) {
       return `${key} should not exceed ${issue.requirement} characters.`;
 
     case "regex":
-      return `Invalid ${key}`;
+      return `${key} is invalid`;
 
     case "enum":
-      return `Invalid ${key}`;
+      return `${key} is invalid`;
 
     case "non_nullable":
-      return `${key} is Required`;
+      return `${key} is required`;
 
     case "array":
-      return `Invalid ${key}`;
+      return `${key} are invalid `;
 
     case "number":
-      return `Invalid ${key}`;
+      return `${key} is invalid`;
 
     case "string":
-      return `Invalid ${key}`;
+      return `${key} is invalid`;
 
     case "email":
-      return `Invalid ${key}`;
+      return `${key} is invalid`;
     
     case "url":
-      return `Invalid ${key} URL`;
+      return `${key} is invalid`;
 
     default:
       break;
   }
 
   if (issue.input === undefined) {
-    return `${key} is Required`;
+    return `${key} is required`;
   }
 }
 
