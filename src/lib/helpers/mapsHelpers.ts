@@ -197,9 +197,7 @@ const validationsForImportedData = ({
 }: {
   filteredDataObjects: DataObject[];
 }) => {
-  console.log(filteredDataObjects, "filteredDataObjects");
   const validDataObjects: DataObject[] = [];
-  console.log(validDataObjects, "validDataObjects");
   const errorObjects: any = [];
 
   filteredDataObjects.forEach((obj: DataObject) => {
@@ -242,7 +240,6 @@ const validationsForImportedData = ({
       validDataObjects.push({ ...obj, coordinates });
     }
   });
-  console.log(validDataObjects, "validDataObjects222");
   return { validData: validDataObjects, errors: errorObjects };
 };
 

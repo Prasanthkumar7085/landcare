@@ -32,9 +32,7 @@ const MarkerDetailsAccordian = ({
         {singleMarkerLoading ? (
           <Skeleton width="60%" className="markerTitle" />
         ) : (
-          <Typography className="markerTitle">
-            {item?.title || "---"}
-          </Typography>
+          <Typography className="markerTitle">{item?.name || "---"}</Typography>
         )}
       </AccordionSummary>
       <AccordionDetails>
@@ -91,16 +89,14 @@ const MarkerDetailsAccordian = ({
               width={18}
               height={18}
               style={{
-                display: item?.organisation_type ? "" : "none",
+                display: item?.type ? "" : "none",
               }}
               src={
-                item?.organisation_type
-                  ? markersImagesWithOrganizationType[item?.organisation_type]
-                  : ""
+                item?.type ? markersImagesWithOrganizationType[item?.type] : ""
               }
-              alt={item?.organisation_type}
+              alt={item?.type}
             />
-            <span>{item?.organisation_type || "---"}</span>
+            <span>{item?.type || "---"}</span>
           </Typography>
         )}
 
@@ -141,23 +137,6 @@ const MarkerDetailsAccordian = ({
             </span>
           )}
         </Typography>
-
-        <Typography className="value">
-          {singleMarkerLoading ? (
-            <Skeleton width="60%" />
-          ) : (
-            <span className="value">
-              <Image
-                src="/map/view/fax-view.svg"
-                alt=""
-                width={18}
-                height={18}
-              />
-              <span>{item?.fax || "---"}</span>
-            </span>
-          )}
-        </Typography>
-
         {singleMarkerLoading ? (
           <Skeleton width="60%" />
         ) : (
@@ -196,7 +175,7 @@ const MarkerDetailsAccordian = ({
               width={18}
               height={18}
             />
-            <span>{item?.phone || "---"} </span>
+            <span>{item?.phone_number || "---"} </span>
           </Typography>
         )}
 

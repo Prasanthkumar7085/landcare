@@ -143,10 +143,10 @@ const ViewGoogleMap = () => {
       const markere = new google.maps.Marker({
         position: latLng,
         map: map,
-        title: markerData.title,
+        title: markerData.name,
         icon: {
-          url: markersImagesWithOrganizationType[markerData?.organisation_type]
-            ? markersImagesWithOrganizationType[markerData?.organisation_type]
+          url: markersImagesWithOrganizationType[markerData?.type]
+            ? markersImagesWithOrganizationType[markerData?.type]
             : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png",
         },
         animation:
@@ -333,7 +333,7 @@ const ViewGoogleMap = () => {
         sort_by: sort_by,
         sort_type: sort_type,
         get_all: true,
-        organisation_type: type ? type : "",
+        type: type ? type : "",
       };
       let searchParamsDetails = {
         ...queryParams,

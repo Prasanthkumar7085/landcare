@@ -82,7 +82,7 @@ const MapMarkersListDialog = ({
         search_string: search_string ? search_string : "",
         page: page,
         limit: limit,
-        organisation_type: type ? type : "",
+        type: type ? type : "",
         sort_by: sort_by,
         sort_type: sort_type,
       };

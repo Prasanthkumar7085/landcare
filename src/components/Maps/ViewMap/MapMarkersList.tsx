@@ -93,7 +93,7 @@ const MapMarkersList = ({
   useEffect(() => {
     if (searchParams?.organisation_type) {
       const selectType = getOrginazationTypes()?.find(
-        (item: any) => item?.title == searchParams?.organisation_type
+        (item: any) => item?.title == searchParams?.type
       );
       setSelectedOrginazation(selectType);
     }
@@ -171,14 +171,14 @@ const MapMarkersList = ({
                           e.currentTarget.src = "/No-Preview-1.jpg";
                         }}
                         src={
-                          markerDetails?.images?.length > 0
-                            ? markerDetails?.images?.[0]
+                          markerDetails?.image
+                            ? markerDetails?.image
                             : "/no-images.jpg"
                         }
                         width={20}
                         height={20}
                       />
-                      <span>{markerDetails?.title || "---"}</span>
+                      <span>{markerDetails?.name || "---"}</span>
                     </div>
                     <div className="locationType">
                       <Image
@@ -216,15 +216,15 @@ const MapMarkersList = ({
                           width={15}
                           height={15}
                           src={
-                            markerDetails?.organisation_type
+                            markerDetails?.type
                               ? markersImagesWithOrganizationType[
-                                  markerDetails?.organisation_type
+                                  markerDetails?.type
                                 ]
                               : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
                           }
                           alt={markerDetails?.organisation_type}
                         />
-                        {markerDetails?.organisation_type || "---"}
+                        {markerDetails?.type || "---"}
                       </span>
                     </div>
                     <div className="createdDate">
@@ -234,7 +234,7 @@ const MapMarkersList = ({
                         width={13}
                         alt=""
                       />
-                      <span>{markerDetails?.phone || "---"}</span>
+                      <span>{markerDetails?.phone_number || "---"}</span>
                     </div>
                   </div>
                 </div>
