@@ -64,7 +64,7 @@ const ViewGoogleMap = () => {
   const [localMarkers, setLocalMarkers] = useState<any>([]);
   const [overlays, setOverlays] = useState<any[]>([]);
   const [singleMarkeropen, setSingleMarkerOpen] = useState(false);
-  const [markerData, setMarkerData] = useState<any>({ images: [], tags: [] });
+  const [markerData, setMarkerData] = useState<any>({ images: "", tags: [] });
   const [markerOption, setMarkerOption] = useState<any>();
   const [singleMarkerdata, setSingleMarkerData] = useState<any>([]);
   const [singleMarkerLoading, setSingleMarkerLoading] = useState(false);

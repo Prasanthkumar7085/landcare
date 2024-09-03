@@ -123,10 +123,13 @@ const MarkerDetailsAccordian = ({
             <span>{item?.website || "---"}</span>
           </Link>
         ) : (
-          "---"
+          ""
         )}
 
-        <Typography className="value" style={{ marginTop: "0.5rem" }}>
+        <Typography
+          className="value"
+          style={{ display: item?.contact ? "" : "none !important" }}
+        >
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
@@ -149,7 +152,7 @@ const MarkerDetailsAccordian = ({
         ) : (
           <Typography
             className="value"
-            sx={{ display: item?.postcode ? "" : "none" }}
+            sx={{ display: item?.postcode ? "" : "none !important" }}
           >
             <Image
               src="/map/view/postal-view.svg"
@@ -166,7 +169,7 @@ const MarkerDetailsAccordian = ({
         ) : (
           <Typography
             className="value"
-            sx={{ display: item?.email ? "" : "none" }}
+            sx={{ display: item?.email ? "" : "none !important" }}
           >
             <Image
               src="/map/view/email-view.svg"

@@ -220,7 +220,9 @@ const ViewPublicMarkerDrawer = ({
                   ) : (
                     <span
                       className="value"
-                      style={{ display: item?.website ? "" : "none" }}
+                      style={{
+                        display: item?.website ? "" : "none !important",
+                      }}
                     >
                       <Image
                         src="/map/view/website-view.svg"
@@ -242,7 +244,7 @@ const ViewPublicMarkerDrawer = ({
 
                   <Typography
                     className="value"
-                    style={{ display: item?.contact ? "" : "none" }}
+                    style={{ display: item?.contact ? "" : "none !important" }}
                   >
                     {singleMarkerLoading ? (
                       <Skeleton width="60%" />

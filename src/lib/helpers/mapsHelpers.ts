@@ -383,6 +383,7 @@ export const getLocationAddress = ({
             ? streetAddress
             : markerData?.street_address,
           town: town ? town : markerData?.town,
+          coordinates: [latitude, longitude],
         });
         setPlaceDetails({
           postal_address: postalAddress,

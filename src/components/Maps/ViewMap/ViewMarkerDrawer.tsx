@@ -213,7 +213,9 @@ const ViewMarkerDrawer = ({
                   ) : (
                     <Typography
                       className="value"
-                      sx={{ display: item?.description ? "" : "none" }}
+                      sx={{
+                        display: item?.description ? "" : "none !important",
+                      }}
                     >
                       {item?.description || "---"}
                     </Typography>
@@ -221,7 +223,7 @@ const ViewMarkerDrawer = ({
 
                   <Typography
                     className="markerLocation"
-                    sx={{ display: item?.town ? "" : "none" }}
+                    sx={{ display: item?.town ? "" : "none !important" }}
                   >
                     <Image
                       src="/map/view/location-view.svg"
@@ -272,7 +274,7 @@ const ViewMarkerDrawer = ({
                       className="value"
                       sx={{
                         textTransform: "capitalize",
-                        display: item?.type ? "" : "none",
+                        display: item?.type ? "" : "none !important",
                       }}
                     >
                       <img
@@ -297,7 +299,9 @@ const ViewMarkerDrawer = ({
                   ) : (
                     <span
                       className="value"
-                      style={{ display: item?.website ? "" : "none" }}
+                      style={{
+                        display: item?.website ? "" : "none !important",
+                      }}
                     >
                       <Image
                         src="/map/view/website-view.svg"
@@ -320,7 +324,7 @@ const ViewMarkerDrawer = ({
                   <Typography
                     className="value"
                     style={{
-                      display: item?.contact ? "" : "none",
+                      display: item?.contact ? "" : "none !important",
                     }}
                   >
                     {singleMarkerLoading ? (
@@ -343,7 +347,7 @@ const ViewMarkerDrawer = ({
                   ) : (
                     <Typography
                       className="value"
-                      sx={{ display: item?.postcode ? "" : "none" }}
+                      sx={{ display: item?.postcode ? "" : "none !important" }}
                     >
                       <Image
                         src="/map/view/postal-view.svg"
@@ -360,7 +364,7 @@ const ViewMarkerDrawer = ({
                   ) : (
                     <Typography
                       className="value"
-                      sx={{ display: item?.email ? "" : "none" }}
+                      sx={{ display: item?.email ? "" : "none !important" }}
                     >
                       <Image
                         src="/map/view/email-view.svg"
