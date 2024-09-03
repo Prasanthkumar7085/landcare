@@ -3,7 +3,6 @@ import {
   navigateToMarker,
 } from "@/lib/helpers/mapsHelpers";
 import { truncateText } from "@/lib/helpers/nameFormate";
-import { deleteMarkerAPI } from "@/services/maps";
 import { Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,14 +10,8 @@ import Skeleton from "@mui/material/Skeleton";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
-import React, { useState } from "react";
-import { toast } from "sonner";
+import { usePathname, useRouter } from "next/navigation";
+import React from "react";
 import MarkerDetailsAccordian from "../MarkerDetailsAccordian";
 
 //view public marker
@@ -46,31 +39,6 @@ const ViewPublicMarkerDrawer = ({
   const pathname = usePathname();
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [selectedMarker, setSelectedMarker] = useState<any>({});
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentIndices, setCurrentIndices] = useState<{
-    [key: string]: number;
-  }>({});
-  const nextSlide = (marker: any) => {
-    setCurrentIndices((prevIndices) => ({
-      ...prevIndices,
-      [marker.id]:
-        (prevIndices[marker.id] || 0) === marker?.images.length - 1
-          ? 0
-          : (prevIndices[marker.id] || 0) + 1,
-    }));
-  };
-
-  const prevSlide = (marker: any) => {
-    setCurrentIndices((prevIndices) => ({
-      ...prevIndices,
-      [marker.id]:
-        (prevIndices[marker.id] || 0) === 0
-          ? marker?.images.length - 1
-          : (prevIndices[marker.id] || 0) - 1,
-    }));
-  };
-
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -107,12 +75,10 @@ const ViewPublicMarkerDrawer = ({
       </header>
       <div className="markerViewContent">
         {data?.map((item: any, index: any) => {
-          const currentIndex = currentIndices[item.id] || 0;
-
           return (
             <Box className="viewContent" key={index}>
               <div className="imgBlock">
-                {item?.images?.length > 0 ? (
+                {item?.image ? (
                   <div
                     style={{
                       minWidth: "100%",
@@ -120,33 +86,15 @@ const ViewPublicMarkerDrawer = ({
                       height: "100%",
                     }}
                   >
-                    <button
-                      onClick={() => prevSlide(item)}
-                      className="navButton"
-                      style={{
-                        display: item?.images?.length == 1 ? "none" : "",
-                      }}
-                    >
-                      &#10094;
-                    </button>
                     <img
                       className="mapImg"
-                      src={item?.images[currentIndex]}
+                      src={item?.image}
                       onError={(e) => {
                         e.currentTarget.onerror = null;
                         e.currentTarget.src = "/No-Preview-1.jpg";
                       }}
-                      alt={`images ${currentIndex + 1}`}
+                      alt={`image`}
                     />
-                    <button
-                      onClick={() => nextSlide(item)}
-                      className="navButton"
-                      style={{
-                        display: item?.images?.length == 1 ? "none" : "",
-                      }}
-                    >
-                      &#10095;
-                    </button>
                   </div>
                 ) : (
                   <img
@@ -177,19 +125,27 @@ const ViewPublicMarkerDrawer = ({
                     <Skeleton width="60%" className="markerTitle" />
                   ) : (
                     <Typography className="markerTitle">
-                      {item?.title || "---"}
+                      {item?.name || "---"}
                     </Typography>
                   )}
 
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
                   ) : (
-                    <Typography className="value">
+                    <Typography
+                      className="value"
+                      sx={{
+                        display: item?.description ? "" : "none !important",
+                      }}
+                    >
                       {item?.description || "---"}
                     </Typography>
                   )}
 
-                  <Typography className="markerLocation">
+                  <Typography
+                    className="markerLocation"
+                    sx={{ display: item?.town ? "" : "none !important" }}
+                  >
                     <Image
                       src="/map/view/location-view.svg"
                       alt=""
@@ -206,7 +162,13 @@ const ViewPublicMarkerDrawer = ({
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
                   ) : (
-                    <Typography className=" tagValue">
+                    <Typography
+                      className=" tagValue"
+                      sx={{
+                        display:
+                          item?.tags?.length > 0 ? "" : "none !important",
+                      }}
+                    >
                       <Image
                         src="/map/view/tag-view.svg"
                         alt=""
@@ -233,57 +195,57 @@ const ViewPublicMarkerDrawer = ({
                       className="value"
                       sx={{
                         textTransform: "capitalize",
+                        display: item?.type ? "" : "none !important",
                       }}
                     >
                       <img
                         width={18}
                         height={18}
                         style={{
-                          display: item?.organisation_type ? "" : "none",
+                          display: item?.type ? "" : "none",
                         }}
                         src={
                           item?.organisation_type
-                            ? markersImagesWithOrganizationType[
-                                item?.organisation_type
-                              ]
+                            ? markersImagesWithOrganizationType[item?.type]
                             : ""
                         }
-                        alt={item?.organisation_type}
+                        alt={item?.type}
                       />
-                      <span>{item?.organisation_type || "---"}</span>
+                      <span>{item?.type || "---"}</span>
                     </Typography>
                   )}
 
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
                   ) : (
-                    <span className="value">
+                    <span
+                      className="value"
+                      style={{
+                        display: item?.website ? "" : "none !important",
+                      }}
+                    >
                       <Image
                         src="/map/view/website-view.svg"
                         alt=""
                         width={18}
                         height={18}
                       />
-                      <Tooltip
-                        title={
-                          item?.website && item?.website?.length > 40
-                            ? item?.website
-                            : ""
-                        }
+
+                      <Link
+                        href={item?.website ? item?.website : "#"}
+                        target="_blank"
+                        className="value"
+                        style={{ textDecoration: "none", marginBottom: "0" }}
                       >
-                        <Link
-                          href={item?.website ? item?.website : "#"}
-                          target="_blank"
-                          className="value"
-                          style={{ textDecoration: "none", marginBottom: "0" }}
-                        >
-                          {truncateText(item?.website, 40) || "--"}
-                        </Link>
-                      </Tooltip>
+                        {item?.website || "--"}
+                      </Link>
                     </span>
                   )}
 
-                  <Typography className="value" style={{ marginTop: "0.5rem" }}>
+                  <Typography
+                    className="value"
+                    style={{ display: item?.contact ? "" : "none !important" }}
+                  >
                     {singleMarkerLoading ? (
                       <Skeleton width="60%" />
                     ) : (
@@ -299,26 +261,13 @@ const ViewPublicMarkerDrawer = ({
                     )}
                   </Typography>
 
-                  <Typography className="value">
-                    {singleMarkerLoading ? (
-                      <Skeleton width="60%" />
-                    ) : (
-                      <span className="value">
-                        <Image
-                          src="/map/view/fax-view.svg"
-                          alt=""
-                          width={18}
-                          height={18}
-                        />
-                        <span>{item?.fax || "---"}</span>
-                      </span>
-                    )}
-                  </Typography>
-
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
                   ) : (
-                    <Typography className="value">
+                    <Typography
+                      className="value"
+                      sx={{ display: item?.postcode ? "" : "none !important" }}
+                    >
                       <Image
                         src="/map/view/postal-view.svg"
                         alt=""
@@ -332,7 +281,10 @@ const ViewPublicMarkerDrawer = ({
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
                   ) : (
-                    <Typography className="value">
+                    <Typography
+                      className="value"
+                      sx={{ display: item?.email ? "" : "none !important" }}
+                    >
                       <Image
                         src="/map/view/email-view.svg"
                         alt=""
@@ -346,14 +298,19 @@ const ViewPublicMarkerDrawer = ({
                   {singleMarkerLoading ? (
                     <Skeleton width="30%" />
                   ) : (
-                    <Typography className="value">
+                    <Typography
+                      className="value"
+                      sx={{
+                        display: item?.phone_number ? "" : "none !important",
+                      }}
+                    >
                       <Image
                         src="/map/view/mobile-view.svg"
                         alt=""
                         width={18}
                         height={18}
                       />
-                      <span>{item?.phone || "---"} </span>
+                      <span>{item?.phone_number || "---"} </span>
                     </Typography>
                   )}
 

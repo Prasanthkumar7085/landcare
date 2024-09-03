@@ -32,21 +32,25 @@ const MarkerDetailsAccordian = ({
         {singleMarkerLoading ? (
           <Skeleton width="60%" className="markerTitle" />
         ) : (
-          <Typography className="markerTitle">
-            {item?.title || "---"}
-          </Typography>
+          <Typography className="markerTitle">{item?.name || "---"}</Typography>
         )}
       </AccordionSummary>
       <AccordionDetails>
         {singleMarkerLoading ? (
           <Skeleton width="60%" />
         ) : (
-          <Typography className="value">
+          <Typography
+            className="value"
+            sx={{ display: item?.description ? "" : "none !important" }}
+          >
             {item?.description || "---"}
           </Typography>
         )}
 
-        <Typography className="markerLocation">
+        <Typography
+          className="markerLocation"
+          sx={{ display: item?.town ? "" : "none !important" }}
+        >
           <Image
             src="/map/view/location-view.svg"
             alt=""
@@ -63,7 +67,10 @@ const MarkerDetailsAccordian = ({
         {singleMarkerLoading ? (
           <Skeleton width="60%" />
         ) : (
-          <Typography className=" tagValue">
+          <Typography
+            className=" tagValue"
+            sx={{ display: item?.tags?.length > 0 ? "" : "none !important" }}
+          >
             <Image src="/map/view/tag-view.svg" alt="" width={18} height={18} />
 
             {item?.tags?.length > 0
@@ -85,52 +92,51 @@ const MarkerDetailsAccordian = ({
             className="value"
             sx={{
               textTransform: "capitalize",
+              display: item?.type ? "" : "none !important",
             }}
           >
             <img
               width={18}
               height={18}
               style={{
-                display: item?.organisation_type ? "" : "none",
+                display: item?.type ? "" : "none",
               }}
               src={
-                item?.organisation_type
-                  ? markersImagesWithOrganizationType[item?.organisation_type]
-                  : ""
+                item?.type ? markersImagesWithOrganizationType[item?.type] : ""
               }
-              alt={item?.organisation_type}
+              alt={item?.type}
             />
-            <span>{item?.organisation_type || "---"}</span>
+            <span>{item?.type || "---"}</span>
           </Typography>
         )}
 
         {singleMarkerLoading ? (
           <Skeleton width="60%" />
         ) : item?.website ? (
-          <Tooltip
-            title={
-              item?.website && item?.website?.length > 40 ? item?.website : ""
-            }
-          >
-            <Link href={item?.website} target="_blank" className="value">
-              <Image
-                src="/map/view/website-view.svg"
-                alt=""
-                width={18}
-                height={18}
-              />
-              <span>{truncateText(item?.website, 40) || "---"}</span>
-            </Link>
-          </Tooltip>
+          <Link href={item?.website} target="_blank" className="value">
+            <Image
+              src="/map/view/website-view.svg"
+              alt=""
+              width={18}
+              height={18}
+            />
+            <span>{item?.website || "---"}</span>
+          </Link>
         ) : (
-          "---"
+          ""
         )}
 
-        <Typography className="value" style={{ marginTop: "0.5rem" }}>
+        <Typography
+          className="value"
+          style={{ display: item?.contact ? "" : "none !important" }}
+        >
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
-            <span className="value">
+            <span
+              className="value"
+              style={{ display: item?.contact ? "" : "none" }}
+            >
               <Image
                 src="/map/view/group-view.svg"
                 alt=""
@@ -141,27 +147,13 @@ const MarkerDetailsAccordian = ({
             </span>
           )}
         </Typography>
-
-        <Typography className="value">
-          {singleMarkerLoading ? (
-            <Skeleton width="60%" />
-          ) : (
-            <span className="value">
-              <Image
-                src="/map/view/fax-view.svg"
-                alt=""
-                width={18}
-                height={18}
-              />
-              <span>{item?.fax || "---"}</span>
-            </span>
-          )}
-        </Typography>
-
         {singleMarkerLoading ? (
           <Skeleton width="60%" />
         ) : (
-          <Typography className="value">
+          <Typography
+            className="value"
+            sx={{ display: item?.postcode ? "" : "none !important" }}
+          >
             <Image
               src="/map/view/postal-view.svg"
               alt=""
@@ -175,7 +167,10 @@ const MarkerDetailsAccordian = ({
         {singleMarkerLoading ? (
           <Skeleton width="60%" />
         ) : (
-          <Typography className="value">
+          <Typography
+            className="value"
+            sx={{ display: item?.email ? "" : "none !important" }}
+          >
             <Image
               src="/map/view/email-view.svg"
               alt=""
@@ -189,14 +184,17 @@ const MarkerDetailsAccordian = ({
         {singleMarkerLoading ? (
           <Skeleton width="30%" />
         ) : (
-          <Typography className="value">
+          <Typography
+            className="value"
+            sx={{ display: item?.phone_number ? "" : "none !important" }}
+          >
             <Image
               src="/map/view/mobile-view.svg"
               alt=""
               width={18}
               height={18}
             />
-            <span>{item?.phone || "---"} </span>
+            <span>{item?.phone_number || "---"} </span>
           </Typography>
         )}
 

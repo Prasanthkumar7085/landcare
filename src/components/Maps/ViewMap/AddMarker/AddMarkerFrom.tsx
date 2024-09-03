@@ -105,22 +105,28 @@ const MarkerPopup = ({
       console.error(err);
     }
   };
+  console.log(popupFormData, "popupFormData");
 
   const getApiBasedOnParams = (id: any) => {
     let response;
     let body: any = {
       coordinates: placeDetails?.coordinates?.length
-        ? placeDetails?.coordinates
+        ? typeof placeDetails?.coordinates == "string"
+          ? placeDetails.coordinates.split(",")
+          : placeDetails?.coordinates
+        : typeof popupFormData.coordinates == "string"
+        ? popupFormData.coordinates?.split(",")
         : popupFormData.coordinates,
-      organisation_type: popupFormData?.organisation_type || "none",
+      type: popupFormData?.type || "none",
       map_id: popupFormData?.map_id,
-      title: popupFormData?.title || "",
-      phone: popupFormData?.phone || null,
+      name: popupFormData?.name || "",
+      phone_number: popupFormData?.phone_number || null,
       postcode: placeDetails?.postcode
         ? placeDetails?.postcode
         : popupFormData?.postcode || null,
-      images: popupFormData?.images,
+      image: popupFormData?.image,
       tags: popupFormData?.tags,
+      landcare_region: popupFormData?.landcare_region || null,
       town: placeDetails?.town
         ? placeDetails?.town
         : popupFormData?.town || null,
@@ -131,9 +137,12 @@ const MarkerPopup = ({
       website: popupFormData?.website || null,
       contact: popupFormData?.contact || null,
       fax: popupFormData?.fax || null,
-      postal_address: placeDetails?.postal_address
-        ? placeDetails?.postal_address
-        : popupFormData?.postal_address || null,
+      facebook: popupFormData?.facebook || null,
+      twitter: popupFormData?.twitter || null,
+      instagram: popupFormData?.instagram || null,
+      youtube: popupFormData?.youtube || null,
+      host: popupFormData?.host || null,
+      host_type: popupFormData?.host_type || null,
     };
     if (popupFormData?.email) {
       body["email"] = popupFormData?.email;
@@ -196,29 +205,27 @@ const MarkerPopup = ({
             <div className="eachGrp">
               <div className="eachFeildGrp">
                 <label>
-                  Title<span style={{ color: "red" }}>*</span>
+                  Name<span style={{ color: "red" }}>*</span>
                 </label>
                 <TextField
                   className="defaultTextFeild text "
-                  placeholder="Enter Title"
-                  value={popupFormData?.title}
-                  name="title"
+                  placeholder="Enter Name"
+                  value={popupFormData?.name}
+                  name="name"
                   onChange={handleInputChange}
                 />
-                <ErrorMessagesComponent errorMessage={errorMessages["title"]} />
+                <ErrorMessagesComponent errorMessage={errorMessages["name"]} />
               </div>
               <div className="eachFeildGrp">
                 <label>Type</label>
                 <TextField
                   className="defaultTextFeild text "
-                  name="organisation_type"
+                  name="type"
                   placeholder="Enter Type"
-                  value={popupFormData?.organisation_type}
+                  value={popupFormData?.type}
                   onChange={handleInputChange}
                 />
-                <ErrorMessagesComponent
-                  errorMessage={errorMessages["organisation_type"]}
-                />
+                <ErrorMessagesComponent errorMessage={errorMessages["type"]} />
               </div>
               <div className="eachFeildGrp">
                 <label>Contact</label>
@@ -234,16 +241,19 @@ const MarkerPopup = ({
                 />
               </div>
               <div className="eachFeildGrp">
-                <label>Phone</label>
+                <label>Phone Number</label>
                 <TextField
                   className="defaultTextFeild text "
-                  name="phone"
+                  name="phone_number"
                   placeholder="Enter Phone"
-                  value={popupFormData?.phone}
+                  value={popupFormData?.phone_number}
                   onChange={handleInputChange}
                 />
-                <ErrorMessagesComponent errorMessage={errorMessages["phone"]} />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["phone_number"]}
+                />
               </div>
+
               <div className="eachFeildGrp">
                 <label>Email</label>
                 <TextField
@@ -257,15 +267,17 @@ const MarkerPopup = ({
                 <ErrorMessagesComponent errorMessage={errorMessages["email"]} />
               </div>
               <div className="eachFeildGrp">
-                <label>Fax</label>
+                <label>Landcare Region</label>
                 <TextField
                   className="defaultTextFeild text "
-                  name="fax"
-                  placeholder="Enter Fax"
-                  value={popupFormData?.fax}
+                  name="landcare_region"
+                  placeholder="Enter Landcare Region"
+                  value={popupFormData?.landcare_region}
                   onChange={handleInputChange}
                 />
-                <ErrorMessagesComponent errorMessage={errorMessages["fax"]} />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["landcare_region"]}
+                />
               </div>
             </div>
             <div className="eachFeildGrp">
@@ -287,19 +299,6 @@ const MarkerPopup = ({
           <div className="locationInformation">
             <div className="subHeading">Location Information</div>
             <div className="eachGrp">
-              <div className="eachFeildGrp">
-                <label>Postal Address</label>
-                <TextField
-                  className="defaultTextFeild  "
-                  name="postal_address"
-                  placeholder="Enter Postal Address"
-                  value={popupFormData?.postal_address}
-                  onChange={handleInputChange}
-                />
-                <ErrorMessagesComponent
-                  errorMessage={errorMessages["postal_address"]}
-                />
-              </div>
               <div className="eachFeildGrp">
                 <label>Street Address</label>
                 <TextField
@@ -338,6 +337,25 @@ const MarkerPopup = ({
                 <ErrorMessagesComponent errorMessage={errorMessages["town"]} />
               </div>
               <div className="eachFeildGrp">
+                <label>Coordinates</label>
+                <TextField
+                  className="defaultTextFeild  text"
+                  name="coordinates"
+                  placeholder="Enter Coordinates"
+                  value={popupFormData?.coordinates}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["coordinates"]}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="locationInformation">
+            <div className="subHeading">Other Information</div>
+            <div className="eachGrp">
+              <div className="eachFeildGrp">
                 <label>Website</label>
                 <TextField
                   className="defaultTextFeild text "
@@ -350,30 +368,116 @@ const MarkerPopup = ({
                   errorMessage={errorMessages["website"]}
                 />
               </div>
+              <div className="eachFeildGrp">
+                <label>Image</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="image"
+                  placeholder="Enter Image link"
+                  value={popupFormData?.image}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent errorMessage={errorMessages["image"]} />
+              </div>
+
+              <div className="eachFeildGrp">
+                <label>Host</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="host"
+                  placeholder="Enter Host"
+                  value={popupFormData?.host}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent errorMessage={errorMessages["host"]} />
+              </div>
+              <div className="eachFeildGrp">
+                <label>Host Type</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="host_type"
+                  placeholder="Enter Host Type"
+                  value={popupFormData?.host_type}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["host_type"]}
+                />
+              </div>
+
+              <div className="tags">
+                <div className="subHeading">Tags</div>
+                <TagsAddingComponent
+                  setTagsInput={setTagsInput}
+                  setErrorMessages={setErrorMessages}
+                  popupFormData={popupFormData}
+                  tagsInput={tagsInput}
+                  setPopupFormData={setPopupFormData}
+                  errorMessages={errorMessages}
+                />
+              </div>
             </div>
           </div>
-          <div className="media">
-            <div className="subHeading">Images</div>
-            <ImagesAddingComponent
-              setImageInput={setImageInput}
-              setErrorMessages={setErrorMessages}
-              popupFormData={popupFormData}
-              imageInput={imageInput}
-              setPopupFormData={setPopupFormData}
-              errorMessages={errorMessages}
-            />
+
+          <div className="locationInformation">
+            <div className="subHeading">Social Links</div>
+            <div className="eachGrp">
+              <div className="eachFeildGrp">
+                <label>Facebook</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="facebook"
+                  placeholder="Enter facebook link"
+                  value={popupFormData?.facebook}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["facebook"]}
+                />
+              </div>
+              <div className="eachFeildGrp">
+                <label>X</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="twitter"
+                  placeholder="Enter X link"
+                  value={popupFormData?.twitter}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["twitter"]}
+                />
+              </div>
+
+              <div className="eachFeildGrp">
+                <label>Instagram</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="instagram"
+                  placeholder="Enter instagram link"
+                  value={popupFormData?.instagram}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["instagram"]}
+                />
+              </div>
+              <div className="eachFeildGrp">
+                <label>Youtube</label>
+                <TextField
+                  className="defaultTextFeild text "
+                  name="youtube"
+                  placeholder="Enter youtube link"
+                  value={popupFormData?.youtube}
+                  onChange={handleInputChange}
+                />
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["youtube"]}
+                />
+              </div>
+            </div>
           </div>
-          <div className="tags">
-            <div className="subHeading">Tags</div>
-            <TagsAddingComponent
-              setTagsInput={setTagsInput}
-              setErrorMessages={setErrorMessages}
-              popupFormData={popupFormData}
-              tagsInput={tagsInput}
-              setPopupFormData={setPopupFormData}
-              errorMessages={errorMessages}
-            />
-          </div>
+
           <div className="actionBtnGrp">
             <Button onClick={handleCancel} disabled={loading ? true : false}>
               Cancel

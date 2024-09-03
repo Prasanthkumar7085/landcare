@@ -48,10 +48,7 @@ export const processImportedData = (parsedData: any) => {
 };
 
 const parseField = (value: any, type: string) => {
-  if (!value)
-    return type == "coordinates" || type == "tags" || type == "images"
-      ? []
-      : "";
+  if (!value) return type == "coordinates" || type == "tags" ? [] : "";
 
   switch (type) {
     case "coordinates":
@@ -61,7 +58,6 @@ const parseField = (value: any, type: string) => {
     case "town":
       return value ? value + " " + "Australia" : "";
     case "tags":
-    case "images":
       return value ? value?.split(",").map((item: string) => item.trim()) : [];
     default:
       return value;
@@ -75,7 +71,7 @@ const parseRows = (rows: any[], headers: any[]) => {
       const mappedItem = subHeadersMappingConstants[headerName];
       const value = row[i];
       obj[mappedItem] =
-        mappedItem == "organisation_type"
+        mappedItem == "type"
           ? value
             ? value?.toString()
             : "none"
@@ -108,7 +104,7 @@ const updateDataWithCoordinates = (
   filteredDataObjects.forEach((obj: any) => {
     if (isValidCoordinates(obj.coordinates)) {
       const coords = obj.coordinates;
-      if (coords && obj?.title) {
+      if (coords && obj?.name) {
         updatedData.push({
           ...obj,
           coordinates: coords,
@@ -116,7 +112,7 @@ const updateDataWithCoordinates = (
       }
     } else if (obj.town && isValidCoordinates(obj.coordinates) == false) {
       const coords = locationToCoordinatesMap[obj.town] || null;
-      if (coords && obj?.title) {
+      if (coords && obj?.name) {
         updatedData.push({
           ...obj,
           coordinates: coords,
@@ -134,7 +130,7 @@ const updateDataWithCoordinates = (
 
 export const getImportedFilteredData = async ({ jsonData }: any) => {
   const headers: any =
-    jsonData[0]?.length > 15 ? jsonData[0].slice(0, 15) : jsonData[0];
+    jsonData[0]?.length > 20 ? jsonData[0].slice(0, 20) : jsonData[0];
   const rows: any = jsonData.slice(1);
 
   const dataObjects = parseRows(rows, headers);
@@ -185,7 +181,7 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
 };
 
 interface DataObject {
-  title?: string;
+  name?: string;
   coordinates?: any;
   town?: string;
 }
@@ -205,7 +201,7 @@ const validationsForImportedData = ({
   const errorObjects: any = [];
 
   filteredDataObjects.forEach((obj: DataObject) => {
-    const nameValue = obj.title?.trim();
+    const nameValue = obj.name?.trim();
     let coordinates = obj.coordinates;
     const townValue = obj.town?.trim();
 
@@ -221,12 +217,12 @@ const validationsForImportedData = ({
     ) {
       errorObjects.push({
         ...obj,
-        error: "Title and Location are required",
+        error: "Name and Coordinates are required",
       });
     } else if (nameValue === undefined || nameValue === "") {
       errorObjects.push({
         ...obj,
-        error: "Title is required",
+        error: "Name is required",
       });
     } else if (coordinates === undefined || !isValidCoordinates(coordinates)) {
       if (townValue === undefined || townValue === "") {
@@ -320,9 +316,7 @@ export const getPolygonWithMarkers = (points: any) => {
 };
 
 export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
-  let organizationTypes: any = markersData?.map(
-    (item: any) => item.organisation_type
-  );
+  let organizationTypes: any = markersData?.map((item: any) => item.type);
   const uniqueOrganizationTypes = organizationTypes?.filter(
     (value: any, index: any, self: any) =>
       value !== undefined &&
@@ -389,6 +383,7 @@ export const getLocationAddress = ({
             ? streetAddress
             : markerData?.street_address,
           town: town ? town : markerData?.town,
+          coordinates: [latitude, longitude],
         });
         setPlaceDetails({
           postal_address: postalAddress,

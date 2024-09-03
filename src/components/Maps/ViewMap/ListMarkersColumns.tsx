@@ -32,9 +32,9 @@ export const ListMarkersColumns = ({
       maxWidth: "60px",
     },
     {
-      accessorFn: (row: any) => row.title,
-      id: "title",
-      header: () => <span>Title</span>,
+      accessorFn: (row: any) => row.name,
+      id: "name",
+      header: () => <span>Name</span>,
       cell: (info: any) => {
         return <span>{info.getValue() ? info.getValue() : "--"}</span>;
       },
@@ -42,8 +42,8 @@ export const ListMarkersColumns = ({
       width: "150px",
     },
     {
-      accessorFn: (row: any) => row.organisation_type,
-      id: "organisation_type",
+      accessorFn: (row: any) => row.type,
+      id: "type",
       sortDescFirst: false,
       cell: (info: any) => {
         let markersImages = getMarkersImagesBasedOnOrganizationType(markers);
@@ -127,8 +127,8 @@ export const ListMarkersColumns = ({
       width: "150px",
     },
     {
-      accessorFn: (row: any) => row.phone,
-      id: "phone",
+      accessorFn: (row: any) => row.phone_number,
+      id: "phone_number",
       sortDescFirst: false,
       cell: (info: any) => (
         <span>{info.getValue() ? info.getValue() : "--"}</span>
