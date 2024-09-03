@@ -1,7 +1,7 @@
+import { and, asc, desc, eq, inArray, ne, sql } from "drizzle-orm";
 import { db } from "../database";
 import filterHelper from "../helpers/filterHelper";
 import { mapMarkers } from "../schemas/mapMarkers";
-import { ilike, eq, and, sql, desc, ne, inArray, asc } from "drizzle-orm";
 import { lower } from "../schemas/maps";
 
 
@@ -94,17 +94,6 @@ export class MarkersDataServiceProvider {
         countQuery = filterHelper.markers(countQuery, query, mapId);
         return await countQuery;
 
-    }
-
-    async findByTitleAndId(title: string, id: number, mapId: number) {
-        const markerData = await db.select()
-            .from(mapMarkers)
-            .where(and(
-                ilike(mapMarkers.title, `%${title}%`),
-                eq(mapMarkers.map_id, mapId),
-                ne(mapMarkers.id, id)
-            ));
-        return markerData[0];
     }
 
     async update(id: number, data: any) {
