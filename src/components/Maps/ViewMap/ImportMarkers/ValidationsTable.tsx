@@ -29,7 +29,7 @@ const ValidationsTable = ({ validationsData }: any) => {
           >
             <tr className="table-row">
               <th className="cell" style={{ minWidth: "150px" }}>
-                Title
+                Name
               </th>
               <th className="cell" style={{ minWidth: "200px" }}>
                 Type
@@ -38,13 +38,16 @@ const ValidationsTable = ({ validationsData }: any) => {
                 Website
               </th>
               <th className="cell" style={{ minWidth: "120px" }}>
-                Phone
+                Phone Number
               </th>
               <th className="cell" style={{ minWidth: "180px" }}>
                 Email
               </th>
               <th className="cell" style={{ minWidth: "100px" }}>
                 Town
+              </th>
+              <th className="cell" style={{ minWidth: "100px" }}>
+                Postcode
               </th>
               <th className="cell" style={{ minWidth: "180px" }}>
                 Coordinates
@@ -57,12 +60,13 @@ const ValidationsTable = ({ validationsData }: any) => {
           <tbody className="tbody">
             {validationsData?.[1].map((error: any, index: any) => (
               <tr className="table-row" key={index}>
-                <td className="cell">{error?.title || "N/A"}</td>
-                <td className="cell">{error?.organisation_type || "N/A"}</td>
+                <td className="cell">{error?.name || "N/A"}</td>
+                <td className="cell">{error?.type || "N/A"}</td>
                 <td className="cell">{error?.website || "N/A"}</td>
                 <td className="cell">{error?.phone || "N/A"}</td>
                 <td className="cell">{error?.email?.slice(0, 9) || "N/A"}</td>
                 <td className="cell">{error?.town || "N/A"}</td>
+                <td className="cell">{error?.postcode || "N/A"}</td>
                 <td className="cell">{`${error?.coordinates}` || "N/A"}</td>
                 <td className="cell" style={{ color: "red" }}>
                   {error.error}
