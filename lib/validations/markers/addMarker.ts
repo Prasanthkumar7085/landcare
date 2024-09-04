@@ -1,13 +1,12 @@
 import * as v from 'valibot';
 
-
 const baseSchema = v.object({
-    name: v.pipe(v.string(), v.nonEmpty()),
+    name: v.nullish(v.string()),
     description: v.nullish(v.string()),
     landcare_region: v.nullish(v.string()),
     host: v.nullish(v.string()),
     host_type: v.nullish(v.string()),
-    type: v.pipe(v.string(), v.nonEmpty()),
+    type: v.nullish(v.string()),
 
     street_address: v.nullish(v.string()),
     town: v.nullish(v.string()),
@@ -27,14 +26,43 @@ const baseSchema = v.object({
     instagram: v.nullish(v.pipe(v.string(), v.url())),
     youtube: v.nullish(v.pipe(v.string(), v.url())),
 
-    status: v.nullish(v.boolean()),
+    status: v.nullish(v.boolean())
 });
-
 
 export const AddMarkerSchema = v.pipe(
     baseSchema,
     v.rawTransform(({ dataset, addIssue, NEVER }) => {
-        const { coordinates, postcode, town } = dataset.value;
+        const { name, type, coordinates, postcode, town } = dataset.value;
+
+        if (!name) {
+            addIssue({
+                message: "Name is a required",
+                path: [
+                    {
+                        type: 'object',
+                        origin: 'value',
+                        input: dataset.value,
+                        key: 'name',
+                        value: dataset.value
+                    }
+                ],
+            });
+        }
+
+        if (!type) {
+            addIssue({
+                message: 'Type is a required',
+                path: [
+                    {
+                        type: 'object',
+                        origin: 'value',
+                        input: dataset.value,
+                        key: 'type',
+                        value: dataset.value
+                    }
+                ],
+            });
+        }
 
         if (!coordinates?.length && !postcode && !town) {
             addIssue({
@@ -44,15 +72,14 @@ export const AddMarkerSchema = v.pipe(
                         type: 'object',
                         origin: 'value',
                         input: dataset.value,
-                        key: 'atleast_one_field', // TODO: fix this to rename
+                        key: 'location_field',
                         value: dataset.value
                     }
                 ],
             });
-
+        
             return NEVER;
         }
         return { ...dataset.value };
     })
 );
-
