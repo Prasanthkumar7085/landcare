@@ -4,19 +4,19 @@ import {
   MARKER_CREATED,
   MARKER_DELETED,
   MARKER_FETCHED,
+  MARKER_NAME_EXISTS,
   MARKER_NOT_FOUND_WITH_MAP,
-  MARKER_TITLE_EXISTS,
   MARKER_UPDATED,
   MARKERS_DELETED,
   MARKERS_FETCHED,
   MARKERS_IMPORTED,
   SOMETHING_WENT_WRONG
 } from "../constants/appMessages";
+import { ResourceAlreadyExistsError } from "../helpers/exceptions";
 import paginationHelper from "../helpers/paginationHelper";
 import { ResponseHelper } from "../helpers/reponseHelper";
 import { MapsDataServiceProvider } from "../services/mapsDataServiceProvider";
 import { MarkersDataServiceProvider } from "../services/markersDataServiceProvider";
-import { ResourceAlreadyExistsError } from "../helpers/exceptions";
 
 const markersDataServiceProvider = new MarkersDataServiceProvider();
 const mapsDataServiceProvider = new MapsDataServiceProvider();
@@ -36,7 +36,7 @@ export class MarkersController {
 
       const existedMarker = await markersDataServiceProvider.findByNameAndMapId(reqData.name, postcode, params.id);
       if (existedMarker) {
-        throw new ResourceAlreadyExistsError('title', MARKER_TITLE_EXISTS);
+        throw new ResourceAlreadyExistsError('name', MARKER_NAME_EXISTS);
       }
 
       const reponseData = await markersDataServiceProvider.create(reqData);
@@ -150,7 +150,7 @@ export class MarkersController {
 
       const existedMarker = await markersDataServiceProvider.findByNameAndMapIdAndNotMarkerId(reqData.name, postcode, mapId, markerId);
       if (existedMarker) {
-        throw new ResourceAlreadyExistsError('name', MARKER_TITLE_EXISTS);
+        throw new ResourceAlreadyExistsError('name', MARKER_NAME_EXISTS);
       }
 
       const updatedData = await markersDataServiceProvider.update(markerId, reqData);
