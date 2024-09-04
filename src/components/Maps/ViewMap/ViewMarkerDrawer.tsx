@@ -159,7 +159,7 @@ const ViewMarkerDrawer = ({
                     />
                   </div>
                 ) : (
-                  <img
+                  <Image
                     className="mapImg"
                     src="/no-images.jpg"
                     alt="Fallback"
@@ -175,7 +175,7 @@ const ViewMarkerDrawer = ({
                     handleClick(e);
                   }}
                 >
-                  <img
+                  <Image
                     src="/map/menu-with-bg.svg"
                     alt=""
                     height={25}
@@ -196,7 +196,7 @@ const ViewMarkerDrawer = ({
                   map={map}
                 />
               ) : (
-                <>
+                <div className="contentBlock">
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" className="markerTitle" />
                   ) : (
@@ -242,7 +242,7 @@ const ViewMarkerDrawer = ({
                     <Skeleton width="60%" />
                   ) : (
                     <Typography
-                      className=" tagValue"
+                      className="tagValue"
                       sx={{
                         display:
                           item?.tags?.length > 0 ? "" : "none !important",
@@ -277,9 +277,10 @@ const ViewMarkerDrawer = ({
                         display: item?.type ? "" : "none !important",
                       }}
                     >
-                      <img
-                        width={18}
-                        height={18}
+                          <Image
+                            className="markerTypeImg"
+                        width={12}
+                        height={12}
                         style={{
                           display: item?.type ? "" : "none",
                         }}
@@ -322,7 +323,6 @@ const ViewMarkerDrawer = ({
                   )}
 
                   <Typography
-                    className="value"
                     style={{
                       display: item?.contact ? "" : "none !important",
                     }}
@@ -340,7 +340,75 @@ const ViewMarkerDrawer = ({
                         <span>{item?.contact || "---"}</span>
                       </span>
                     )}
-                  </Typography>
+                    </Typography>
+                    {singleMarkerLoading ? (
+                      <Skeleton width="60%" />
+                    ) : (
+                      <Typography
+                        className="value"
+                        sx={{
+                          textTransform: "capitalize",
+                          display: item?.host ? "" : "none !important",
+                        }}
+                      >
+                        <Image
+                          width={18}
+                          height={18}
+                          style={{
+                            display: item?.host ? "" : "none",
+                          }}
+                          src="/map/view/host-view.svg"
+                            alt={item?.host}
+                        />
+                          <span>{item?.host || "---"}</span>
+                      </Typography>
+                    )}
+                    {singleMarkerLoading ? (
+                      <Skeleton width="60%" />
+                    ) : (
+                      <Typography
+                        className="value"
+                        sx={{
+                          textTransform: "capitalize",
+                          display: item?.host_type ? "" : "none !important",
+                        }}
+                      >
+                        <Image
+                          width={18}
+                          height={18}
+                          style={{
+                            display: item?.host_type ? "" : "none",
+                          }}
+                          src="/map/view/host-view.svg"
+                            alt={item?.host_type}
+                        />
+                          <span>{item?.host_type || "---"}</span>
+                      </Typography>
+                    )}
+                    
+                    {singleMarkerLoading ? (
+                      <Skeleton width="60%" />
+                    ) : (
+                      <Typography
+                        className="value"
+                        sx={{
+                          textTransform: "capitalize",
+                          display: item?.landcare_region ? "" : "none !important",
+                        }}
+                      >
+                        <Image
+                          width={18}
+                          height={18}
+                          style={{
+                            display: item?.landcare_region ? "" : "none",
+                          }}
+                          src="/map/view/land-view.svg"
+                          alt={item?.landcare_region}
+                        />
+                          <span>{item?.landcare_region || "---"}</span>
+                      </Typography>
+                    )}
+
 
                   {singleMarkerLoading ? (
                     <Skeleton width="60%" />
@@ -395,51 +463,51 @@ const ViewMarkerDrawer = ({
                     </Typography>
                   )}
 
-                  <div className="share-icons">
+
+                  <div
+                    className="btnGrp"
+                    style={{ gridTemplateColumns: "1fr 1fr" }}
+                  >
+                    <div className="share-icons">
+                      <IconButton
+                        className={"icon"}
+                        aria-label="facebook"
+                        onClick={() => window.open(item?.facebook)}
+                        sx={{ display: item?.facebook ? "" : "none !important" }}
+                      >
+                        <Image
+                          src="/map/view/fb.svg"
+                          alt=""
+                          height={23}
+                          width={23}
+                        />
+                      </IconButton>
                     <IconButton
                       className={"icon"}
                       aria-label="whatsapp"
                       onClick={() => window.open(item?.instagram)}
                       sx={{ display: item?.instagram ? "" : "none !important" }}
                     >
-                      <img src="/instagram.jpg" alt="" height={35} width={35} />
+                      <Image src="/map/view/insta.svg" alt="" height={23} width={23} />
                     </IconButton>
-                    <IconButton
-                      className={"icon"}
-                      aria-label="email"
-                      onClick={() => window.open(item?.youtube)}
-                      sx={{ display: item?.youtube ? "" : "none !important" }}
-                    >
-                      <img src="/youtube.png" alt="" height={25} width={25} />
-                    </IconButton>
-
+                
                     <IconButton
                       className={"icon"}
                       aria-label="twitter"
                       sx={{ display: item?.twitter ? "" : "none !important" }}
                       onClick={() => window.open(item?.twitter)}
                     >
-                      <img src="/twitter.png" alt="" height={25} width={25} />
-                    </IconButton>
-                    <IconButton
-                      className={"icon"}
-                      aria-label="facebook"
-                      onClick={() => window.open(item?.facebook)}
-                      sx={{ display: item?.facebook ? "" : "none !important" }}
-                    >
-                      <img
-                        src="/facebook-icon.png"
-                        alt=""
-                        height={25}
-                        width={25}
-                      />
-                    </IconButton>
+                        <Image src="/map/view/twit.svg" alt="" height={23} width={23} />
+                      </IconButton>
+                      <IconButton
+                        className={"icon"}
+                        aria-label="email"
+                        onClick={() => window.open(item?.youtube)}
+                        sx={{ display: item?.youtube ? "" : "none !important" }}
+                      >
+                        <Image src="/map/view/youtube.svg" alt="" height={23} width={23} />
+                      </IconButton>                
                   </div>
-
-                  <div
-                    className="btnGrp"
-                    style={{ gridTemplateColumns: "1fr " }}
-                  >
                     <Button
                       className="navigateBtn"
                       variant="contained"
@@ -467,7 +535,7 @@ const ViewMarkerDrawer = ({
                       {item ? "Navigate" : <Skeleton width="100%" />}
                     </Button>
                   </div>
-                </>
+                </div>
               )}
             </Box>
           );
