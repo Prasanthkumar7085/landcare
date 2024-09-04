@@ -72,7 +72,7 @@ export const AddMarkerSchema = v.pipe(
                         type: 'object',
                         origin: 'value',
                         input: dataset.value,
-                        key: 'location_field',
+                        key: 'atleast_one_field',
                         value: dataset.value
                     }
                 ],
