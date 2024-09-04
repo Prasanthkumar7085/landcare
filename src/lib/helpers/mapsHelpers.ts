@@ -74,7 +74,7 @@ const parseRows = (rows: any[], headers: any[]) => {
         mappedItem == "type"
           ? value
             ? value?.toString()
-            : "none"
+            : ""
           : parseField(value?.toString(), mappedItem);
     });
     return obj;
@@ -123,6 +123,19 @@ const updateDataWithCoordinates = (
           error: locationErrorsMap[obj.town],
         });
       }
+    } else if (obj.postcode && isValidCoordinates(obj.coordinates) == false) {
+      const coords = locationToCoordinatesMap[obj.postcode] || null;
+      if (coords && obj?.name) {
+        updatedData.push({
+          ...obj,
+          coordinates: coords,
+        });
+      } else if (locationErrorsMap[obj.postcode]) {
+        coordinatesErrors.push({
+          ...obj,
+          error: locationErrorsMap[obj.postcode],
+        });
+      }
     }
   });
   return [updatedData, coordinatesErrors];
@@ -145,6 +158,8 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
   let data = [...errorsData.validData];
   let locationToCoordinatesMap: any = {};
   let townsToFetch: any = [];
+  let postcodesToFetch: string[] = [];
+
   data.forEach((obj: any) => {
     if (
       isValidCoordinates(obj.coordinates) == false &&
@@ -153,9 +168,20 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
     ) {
       townsToFetch.push(obj.town);
     }
+    if (
+      !isValidCoordinates(obj.coordinates) &&
+      obj.postcode &&
+      !obj.town &&
+      !postcodesToFetch.includes(obj.postcode)
+    ) {
+      postcodesToFetch.push(obj.postcode);
+    }
   });
 
   const townCoordinatesResults = await fetchTownCoordinates(townsToFetch);
+  const postcodeCoordinatesResults = await fetchTownCoordinates(
+    postcodesToFetch
+  );
 
   let locationErrorsMap: { [key: string]: string } = {};
 
@@ -165,7 +191,20 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
       if (!error) {
         locationToCoordinatesMap[town] = coords;
       } else {
-        locationErrorsMap[town] = "Failed to fetch coordinates";
+        locationErrorsMap[town] = "Failed to fetch coordinates for town";
+      }
+    } else {
+      console.error("Promise rejected:", result.reason);
+    }
+  });
+
+  postcodeCoordinatesResults.forEach((result: any) => {
+    if (result.status === "fulfilled") {
+      const { town, coords, error } = result.value;
+      if (!error) {
+        locationToCoordinatesMap[town] = coords;
+      } else {
+        locationErrorsMap[town] = "Failed to fetch coordinates for postcode";
       }
     } else {
       console.error("Promise rejected:", result.reason);
@@ -180,17 +219,19 @@ export const getImportedFilteredData = async ({ jsonData }: any) => {
   return [updatedData, [...errorsData.errors, ...coordinatesErrors]];
 };
 
-interface DataObject {
-  name?: string;
-  coordinates?: any;
-  town?: string;
-}
-
 const isValidCoordinates = (coords: any): boolean => {
   if (!Array.isArray(coords)) return false;
   if (coords.length === 0) return false;
   return coords.every((coord) => typeof coord === "number" && !isNaN(coord));
 };
+
+interface DataObject {
+  name?: string;
+  type?: string;
+  coordinates?: number | number[];
+  town?: string;
+  postcode?: string;
+}
 
 const validationsForImportedData = ({
   filteredDataObjects,
@@ -199,11 +240,13 @@ const validationsForImportedData = ({
 }) => {
   const validDataObjects: DataObject[] = [];
   const errorObjects: any = [];
-
-  filteredDataObjects.forEach((obj: DataObject) => {
-    const nameValue = obj.name?.trim();
+  console.log(filteredDataObjects, "filteredDataObjects");
+  filteredDataObjects.forEach((obj: any) => {
+    let nameValue = obj.name?.trim();
+    let typeValue = obj.type?.trim();
     let coordinates = obj.coordinates;
-    const townValue = obj.town?.trim();
+    let townValue = obj.town?.trim();
+    let postcodeValue = obj.postcode?.trim();
 
     if (coordinates) {
       coordinates = Array.isArray(coordinates)
@@ -211,24 +254,36 @@ const validationsForImportedData = ({
         : [Number(coordinates)];
     }
 
-    if (
-      (nameValue === undefined || nameValue === "") &&
-      (coordinates === undefined || !isValidCoordinates(coordinates))
-    ) {
-      errorObjects.push({
-        ...obj,
-        error: "Name and Coordinates are required",
-      });
-    } else if (nameValue === undefined || nameValue === "") {
+    if (!nameValue || nameValue === undefined || nameValue === "") {
       errorObjects.push({
         ...obj,
         error: "Name is required",
       });
-    } else if (coordinates === undefined || !isValidCoordinates(coordinates)) {
-      if (townValue === undefined || townValue === "") {
+    } else if (!typeValue || typeValue == undefined || typeValue === "") {
+      errorObjects.push({
+        ...obj,
+        error: "Type is required",
+      });
+    } else if (!coordinates && !townValue && !postcodeValue) {
+      errorObjects.push({
+        ...obj,
+        error: "At least one of Coordinates, Town, or Postcode is required",
+      });
+    } else if (
+      coordinates &&
+      !isValidCoordinates(coordinates) &&
+      !townValue &&
+      !postcodeValue
+    ) {
+      errorObjects.push({
+        ...obj,
+        error: "Valid Coordinates or Town or Postcode is required",
+      });
+    } else if (postcodeValue === undefined || postcodeValue === "") {
+      if (!isValidCoordinates(coordinates) && !townValue) {
         errorObjects.push({
           ...obj,
-          error: "Town or coordinates are required",
+          error: "Postcode or valid Coordinates or Town is required",
         });
       } else {
         validDataObjects.push({
@@ -240,6 +295,7 @@ const validationsForImportedData = ({
       validDataObjects.push({ ...obj, coordinates });
     }
   });
+
   return { validData: validDataObjects, errors: errorObjects };
 };
 

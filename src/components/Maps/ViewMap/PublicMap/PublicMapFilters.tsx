@@ -37,12 +37,12 @@ const PublicMapFilters = ({
 
     if (selectedOrganization?.title) {
       filteredMarkers = filteredMarkers.filter(
-        (item: any) => item?.organisation_type === selectedOrganization?.title
+        (item: any) => item?.type === selectedOrganization?.title
       );
     }
     if (newSearchString) {
       filteredMarkers = filteredMarkers.filter((item: any) =>
-        item.title.toLowerCase().includes(newSearchString)
+        item.name.toLowerCase().includes(newSearchString)
       );
     }
 
