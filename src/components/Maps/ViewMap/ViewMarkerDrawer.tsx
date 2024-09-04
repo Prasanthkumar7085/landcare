@@ -395,6 +395,47 @@ const ViewMarkerDrawer = ({
                     </Typography>
                   )}
 
+                  <div className="share-icons">
+                    <IconButton
+                      className={"icon"}
+                      aria-label="whatsapp"
+                      onClick={() => window.open(item?.instagram)}
+                      sx={{ display: item?.instagram ? "" : "none !important" }}
+                    >
+                      <img src="/instagram.jpg" alt="" height={35} width={35} />
+                    </IconButton>
+                    <IconButton
+                      className={"icon"}
+                      aria-label="email"
+                      onClick={() => window.open(item?.youtube)}
+                      sx={{ display: item?.youtube ? "" : "none !important" }}
+                    >
+                      <img src="/youtube.png" alt="" height={25} width={25} />
+                    </IconButton>
+
+                    <IconButton
+                      className={"icon"}
+                      aria-label="twitter"
+                      sx={{ display: item?.twitter ? "" : "none !important" }}
+                      onClick={() => window.open(item?.twitter)}
+                    >
+                      <img src="/twitter.png" alt="" height={25} width={25} />
+                    </IconButton>
+                    <IconButton
+                      className={"icon"}
+                      aria-label="facebook"
+                      onClick={() => window.open(item?.facebook)}
+                      sx={{ display: item?.facebook ? "" : "none !important" }}
+                    >
+                      <img
+                        src="/facebook-icon.png"
+                        alt=""
+                        height={25}
+                        width={25}
+                      />
+                    </IconButton>
+                  </div>
+
                   <div
                     className="btnGrp"
                     style={{ gridTemplateColumns: "1fr " }}
