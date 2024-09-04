@@ -20,6 +20,7 @@ import ImagesAddingComponent from "./ImagesAddingComponent";
 import TagsAddingComponent from "./TagsAddingComponent";
 import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
 import LoadingComponent from "@/components/Core/LoadingComponent";
+import Image from "next/image";
 
 const MarkerPopup = ({
   setShowMarkerPopup,
@@ -204,7 +205,7 @@ const MarkerPopup = ({
           <div className="formFeildContainer">
           <div className="leftBlock">
             <div className="basicInformation">
-              <h3 className="subHeading">Basic Information</h3>
+              <h3 className="subHeading"><Image src="/markers/add/basic-info.svg" alt="" width={13} height={13} /> Basic Information</h3>
               <div className="eachGrp">
                 <div className="eachFeildGrp">
                   <label>
@@ -249,7 +250,7 @@ const MarkerPopup = ({
               </div>
               </div>  
               <div className="basicInformation">
-                <h3 className="subHeading">Contact Informaion</h3>
+                <h3 className="subHeading"><Image src="/markers/add/contact-info.svg" alt="" width={14} height={14} /> Contact Informaion</h3>
                 <div className="eachGrp">
                   <div className="eachFeildGrp">
                     <label>Contact</label>
@@ -293,7 +294,7 @@ const MarkerPopup = ({
               </div>
 
               <div className="basicInformation">
-                <h3 className="subHeading">Host Information</h3>
+                <h3 className="subHeading"><Image src="/markers/add/host-info.svg" alt="" width={14} height={14} />Host Information</h3>
                 <div className="eachGrp">
                   <div className="eachFeildGrp">
                     <label>Host</label>
@@ -322,7 +323,7 @@ const MarkerPopup = ({
 </div>
               </div>
               <div className="basicInformation">
-                <h3 className="subHeading">Media and Visuals</h3>
+                <h3 className="subHeading"><Image src="/markers/add/media-info.svg" alt="" width={13} height={13} />Media and Visuals</h3>
                 <div className="eachFeildGrp">
                   <label>Image</label>
                   <TextField
@@ -335,7 +336,7 @@ const MarkerPopup = ({
                   <ErrorMessagesComponent errorMessage={errorMessages["image"]} />
                 </div>
                 <div className="tags">
-                  <div className="subHeading">Tags</div>
+                  <label >Tags</label>
                   <TagsAddingComponent
                     setTagsInput={setTagsInput}
                     setErrorMessages={setErrorMessages}
@@ -351,7 +352,7 @@ const MarkerPopup = ({
 
           <div className="rightBlock">
             <div className="locationInformation">
-                <div className="subHeading">Location Information</div>
+                <div className="subHeading"><Image src="/markers/add/location-info.svg" alt="" width={13} height={13} /> Location Information</div>
                 <div className="eachFeildGrp">
                   <label>Landcare Region</label>
                   <TextField
@@ -421,7 +422,7 @@ const MarkerPopup = ({
             </div>
 
             <div className="locationInformation">
-                <div className="subHeading">Online Presence</div>
+                <div className="subHeading"><Image src="/markers/add/online-info.svg" alt="" width={13} height={13} />Online Presence</div>
                 <div className="eachFeildGrp">
                   <label>Website</label>
                   <TextField
@@ -436,7 +437,7 @@ const MarkerPopup = ({
                   />
                 </div>
                 <div className="eachFeildGrp">
-                  <label>Facebook</label>
+                  <label>Facebook Link</label>
                   <TextField
                     className="defaultTextFeild text "
                     name="facebook"
@@ -449,7 +450,7 @@ const MarkerPopup = ({
                   />
                 </div>
                 <div className="eachFeildGrp">
-                  <label>Instagram</label>
+                  <label>Instagram Link</label>
                   <TextField
                     className="defaultTextFeild text "
                     name="instagram"
@@ -462,7 +463,7 @@ const MarkerPopup = ({
                   />
                 </div>
                 <div className="eachFeildGrp">
-                  <label>X</label>
+                  <label>X Link </label>
                   <TextField
                     className="defaultTextFeild text "
                     name="twitter"
@@ -475,7 +476,7 @@ const MarkerPopup = ({
                   />
                 </div>
                 <div className="eachFeildGrp">
-                  <label>Youtube</label>
+                  <label>Youtube Link</label>
                   <TextField
                     className="defaultTextFeild text "
                     name="youtube"
