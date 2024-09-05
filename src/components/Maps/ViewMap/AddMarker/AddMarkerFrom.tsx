@@ -1,4 +1,9 @@
 import ErrorMessagesComponent from "@/components/Core/ErrorMessagesComponent";
+import LoadingComponent from "@/components/Core/LoadingComponent";
+import {
+  getCoordinates,
+  getPolygonWithMarkers,
+} from "@/lib/helpers/mapsHelpers";
 import {
   addMarkerDeatilsAPI,
   getStaticMapAPI,
@@ -10,17 +15,13 @@ import {
   CircularProgress,
   Dialog,
   Divider,
-  IconButton,
   TextField,
 } from "@mui/material";
+import Image from "next/image";
 import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import ImagesAddingComponent from "./ImagesAddingComponent";
 import TagsAddingComponent from "./TagsAddingComponent";
-import { getPolygonWithMarkers } from "@/lib/helpers/mapsHelpers";
-import LoadingComponent from "@/components/Core/LoadingComponent";
-import Image from "next/image";
 
 const MarkerPopup = ({
   setShowMarkerPopup,
@@ -107,31 +108,94 @@ const MarkerPopup = ({
       console.error(err);
     }
   };
-  console.log(popupFormData, "popupFormData");
+  const getValidCoordinates = async (
+    popupFormData: any,
+    placeDetails: any,
+    town: string,
+    postcode: string
+  ): Promise<number[]> => {
+    const extractCoordinates = (): number[] | undefined => {
+      let coordinates: number[] | undefined;
+      if (popupFormData?.coordinates?.length) {
+        coordinates =
+          typeof popupFormData.coordinates === "string"
+            ? popupFormData.coordinates
+                .split(",")
+                .map((coord: any) => parseFloat(coord))
+            : popupFormData.coordinates.map((coord: any) => parseFloat(coord));
+      }
+      // else {
+      //   coordinates =
+      //     typeof placeDetails?.coordinates === "string"
+      //       ? placeDetails.coordinates
+      //           .split(",")
+      //           .map((coord: any) => parseFloat(coord))
+      //       : placeDetails?.coordinates?.map((coord: any) => parseFloat(coord));
+      // }
 
-  const getApiBasedOnParams = (id: any) => {
-    let response;
+      return coordinates && coordinates.every((coord) => !isNaN(coord))
+        ? coordinates
+        : undefined;
+    };
+
+    const coordinates = extractCoordinates();
+
+    if (coordinates) {
+      return coordinates;
+    } else {
+      try {
+        const townCoords: any = await getCoordinates(town);
+        return townCoords.length ? townCoords : await getCoordinates(postcode);
+      } catch (error) {
+        return (await getCoordinates(postcode)) as any;
+      }
+    }
+  };
+
+  const fetchCoordinates = async (
+    popupFormData: any,
+    placeDetails: any,
+    town: string,
+    postcode: string
+  ) => {
+    try {
+      const coordinates = await getValidCoordinates(
+        popupFormData,
+        placeDetails,
+        town,
+        postcode
+      );
+      return coordinates;
+    } catch (error) {
+      return "";
+    }
+  };
+  const getApiBasedOnParams = async (id: any) => {
+    let response: any;
+    let data = await fetchCoordinates(
+      popupFormData,
+      placeDetails,
+      popupFormData?.town ? popupFormData?.town : placeDetails?.town || null,
+      popupFormData?.postcode
+        ? popupFormData?.postcode
+        : placeDetails?.postcode || null
+    );
+    setPopupFormData({ ...popupFormData, ["coordinates"]: data });
     let body: any = {
-      coordinates: placeDetails?.coordinates?.length
-        ? typeof placeDetails?.coordinates == "string"
-          ? placeDetails.coordinates.split(",")
-          : placeDetails?.coordinates
-        : typeof popupFormData.coordinates == "string"
-        ? popupFormData.coordinates?.split(",")
-        : popupFormData.coordinates,
-      type: popupFormData?.type || "none",
+      coordinates: data,
+      type: popupFormData?.type || "",
       map_id: popupFormData?.map_id,
       name: popupFormData?.name || "",
       phone_number: popupFormData?.phone_number || null,
       postcode: placeDetails?.postcode
         ? placeDetails?.postcode
-        : popupFormData?.postcode || null,
+        : popupFormData?.postcode || "",
       image: popupFormData?.image,
       tags: popupFormData?.tags,
       landcare_region: popupFormData?.landcare_region || null,
-      town: placeDetails?.town
-        ? placeDetails?.town
-        : popupFormData?.town || null,
+      town: popupFormData?.town
+        ? popupFormData?.town
+        : placeDetails?.town || "",
       street_address: placeDetails?.street_address
         ? placeDetails?.street_address
         : popupFormData.street_address || null,
@@ -203,54 +267,73 @@ const MarkerPopup = ({
         </h3>
         <form>
           <div className="formFeildContainer">
-          <div className="leftBlock">
-            <div className="basicInformation">
-              <h3 className="subHeading"><Image src="/markers/add/basic-info.svg" alt="" width={13} height={13} /> Basic Information</h3>
-              <div className="eachGrp">
-                <div className="eachFeildGrp">
-                  <label>
-                    Name<span style={{ color: "red" }}>*</span>
-                  </label>
-                  <TextField
-                    className="defaultTextFeild text "
-                    placeholder="Enter Name"
-                    value={popupFormData?.name}
-                    name="name"
-                    onChange={handleInputChange}
-                  />
-                  <ErrorMessagesComponent errorMessage={errorMessages["name"]} />
-                </div>
-                <div className="eachFeildGrp">
-                  <label>Type</label>
-                  <TextField
-                    className="defaultTextFeild text "
-                    name="type"
-                    placeholder="Enter Type"
-                    value={popupFormData?.type}
-                    onChange={handleInputChange}
-                  />
-                  <ErrorMessagesComponent errorMessage={errorMessages["type"]} />
-                </div>
-            
-              </div>
-              <div className="eachFeildGrp">
-                <label>Description</label>
-                <TextField
-                  className="defaultTextFeild multiline "
-                  name="description"
-                  rows={3}
-                  multiline
-                  placeholder="Enter description"
-                  value={popupFormData?.description}
-                  onChange={handleInputChange}
-                />
-                <ErrorMessagesComponent
-                  errorMessage={errorMessages["description"]}
-                />
-              </div>
-              </div>  
+            <div className="leftBlock">
               <div className="basicInformation">
-                <h3 className="subHeading"><Image src="/markers/add/contact-info.svg" alt="" width={14} height={14} /> Contact Informaion</h3>
+                <h3 className="subHeading">
+                  <Image
+                    src="/markers/add/basic-info.svg"
+                    alt=""
+                    width={13}
+                    height={13}
+                  />{" "}
+                  Basic Information
+                </h3>
+                <div className="eachGrp">
+                  <div className="eachFeildGrp">
+                    <label>
+                      Name<span style={{ color: "red" }}>*</span>
+                    </label>
+                    <TextField
+                      className="defaultTextFeild text "
+                      placeholder="Enter Name"
+                      value={popupFormData?.name}
+                      name="name"
+                      onChange={handleInputChange}
+                    />
+                    <ErrorMessagesComponent
+                      errorMessage={errorMessages["name"]}
+                    />
+                  </div>
+                  <div className="eachFeildGrp">
+                    <label>Type</label>
+                    <TextField
+                      className="defaultTextFeild text "
+                      name="type"
+                      placeholder="Enter Type"
+                      value={popupFormData?.type}
+                      onChange={handleInputChange}
+                    />
+                    <ErrorMessagesComponent
+                      errorMessage={errorMessages["type"]}
+                    />
+                  </div>
+                </div>
+                <div className="eachFeildGrp">
+                  <label>Description</label>
+                  <TextField
+                    className="defaultTextFeild multiline "
+                    name="description"
+                    rows={3}
+                    multiline
+                    placeholder="Enter Description"
+                    value={popupFormData?.description}
+                    onChange={handleInputChange}
+                  />
+                  <ErrorMessagesComponent
+                    errorMessage={errorMessages["description"]}
+                  />
+                </div>
+              </div>
+              <div className="basicInformation">
+                <h3 className="subHeading">
+                  <Image
+                    src="/markers/add/contact-info.svg"
+                    alt=""
+                    width={14}
+                    height={14}
+                  />{" "}
+                  Contact Informaion
+                </h3>
                 <div className="eachGrp">
                   <div className="eachFeildGrp">
                     <label>Contact</label>
@@ -270,7 +353,7 @@ const MarkerPopup = ({
                     <TextField
                       className="defaultTextFeild text "
                       name="phone_number"
-                      placeholder="Enter Phone"
+                      placeholder="Enter Phone Number"
                       value={popupFormData?.phone_number}
                       onChange={handleInputChange}
                     />
@@ -284,17 +367,26 @@ const MarkerPopup = ({
                   <TextField
                     className="defaultTextFeild text "
                     name="email"
-                    type="email"
                     placeholder="Enter Email"
                     value={popupFormData?.email}
                     onChange={handleInputChange}
                   />
-                  <ErrorMessagesComponent errorMessage={errorMessages["email"]} />
+                  <ErrorMessagesComponent
+                    errorMessage={errorMessages["email"]}
+                  />
                 </div>
               </div>
 
               <div className="basicInformation">
-                <h3 className="subHeading"><Image src="/markers/add/host-info.svg" alt="" width={14} height={14} />Host Information</h3>
+                <h3 className="subHeading">
+                  <Image
+                    src="/markers/add/host-info.svg"
+                    alt=""
+                    width={14}
+                    height={14}
+                  />
+                  Host Information
+                </h3>
                 <div className="eachGrp">
                   <div className="eachFeildGrp">
                     <label>Host</label>
@@ -305,7 +397,9 @@ const MarkerPopup = ({
                       value={popupFormData?.host}
                       onChange={handleInputChange}
                     />
-                    <ErrorMessagesComponent errorMessage={errorMessages["host"]} />
+                    <ErrorMessagesComponent
+                      errorMessage={errorMessages["host"]}
+                    />
                   </div>
                   <div className="eachFeildGrp">
                     <label>Host Type</label>
@@ -320,10 +414,18 @@ const MarkerPopup = ({
                       errorMessage={errorMessages["host_type"]}
                     />
                   </div>
-</div>
+                </div>
               </div>
               <div className="basicInformation">
-                <h3 className="subHeading"><Image src="/markers/add/media-info.svg" alt="" width={13} height={13} />Media and Visuals</h3>
+                <h3 className="subHeading">
+                  <Image
+                    src="/markers/add/media-info.svg"
+                    alt=""
+                    width={13}
+                    height={13}
+                  />
+                  Media and Visuals
+                </h3>
                 <div className="eachFeildGrp">
                   <label>Image</label>
                   <TextField
@@ -333,10 +435,12 @@ const MarkerPopup = ({
                     value={popupFormData?.image}
                     onChange={handleInputChange}
                   />
-                  <ErrorMessagesComponent errorMessage={errorMessages["image"]} />
+                  <ErrorMessagesComponent
+                    errorMessage={errorMessages["image"]}
+                  />
                 </div>
                 <div className="tags">
-                  <label >Tags</label>
+                  <label>Tags</label>
                   <TagsAddingComponent
                     setTagsInput={setTagsInput}
                     setErrorMessages={setErrorMessages}
@@ -348,11 +452,19 @@ const MarkerPopup = ({
                 </div>
               </div>
             </div>
-            <Divider orientation="vertical" variant="middle"  />
+            <Divider orientation="vertical" variant="middle" />
 
-          <div className="rightBlock">
-            <div className="locationInformation">
-                <div className="subHeading"><Image src="/markers/add/location-info.svg" alt="" width={13} height={13} /> Location Information</div>
+            <div className="rightBlock">
+              <div className="locationInformation">
+                <div className="subHeading">
+                  <Image
+                    src="/markers/add/location-info.svg"
+                    alt=""
+                    width={13}
+                    height={13}
+                  />{" "}
+                  Location Information
+                </div>
                 <div className="eachFeildGrp">
                   <label>Landcare Region</label>
                   <TextField
@@ -365,7 +477,7 @@ const MarkerPopup = ({
                   <ErrorMessagesComponent
                     errorMessage={errorMessages["landcare_region"]}
                   />
-                </div> 
+                </div>
                 <div className="eachFeildGrp">
                   <label>Coordinates</label>
                   <TextField
@@ -376,7 +488,10 @@ const MarkerPopup = ({
                     onChange={handleInputChange}
                   />
                   <ErrorMessagesComponent
-                    errorMessage={errorMessages["coordinates"]}
+                    errorMessage={
+                      errorMessages["coordinates,0"] ||
+                      errorMessages["coordinates"]
+                    }
                   />
                 </div>
                 <div className="eachFeildGrp">
@@ -392,37 +507,49 @@ const MarkerPopup = ({
                     errorMessage={errorMessages["street_address"]}
                   />
                 </div>
-              <div className="eachGrp">
-                <div className="eachFeildGrp">
-                  <label>Postcode</label>
-                  <TextField
-                    className="defaultTextFeild text "
-                    name="postcode"
-                    placeholder="Enter Postcode"
-                    value={popupFormData?.postcode}
-                    onChange={handleInputChange}
-                  />
-                  <ErrorMessagesComponent
-                    errorMessage={errorMessages["postcode"]}
-                  />
+                <div className="eachGrp">
+                  <div className="eachFeildGrp">
+                    <label>Postcode</label>
+                    <TextField
+                      className="defaultTextFeild text "
+                      name="postcode"
+                      placeholder="Enter Postcode"
+                      value={popupFormData?.postcode}
+                      onChange={handleInputChange}
+                    />
+                    <ErrorMessagesComponent
+                      errorMessage={errorMessages["postcode"]}
+                    />
+                  </div>
+                  <div className="eachFeildGrp">
+                    <label>Town</label>
+                    <TextField
+                      className="defaultTextFeild text "
+                      name="town"
+                      placeholder="Enter Town"
+                      value={popupFormData?.town}
+                      onChange={handleInputChange}
+                    />
+                    <ErrorMessagesComponent
+                      errorMessage={errorMessages["town"]}
+                    />
+                  </div>
                 </div>
-                <div className="eachFeildGrp">
-                  <label>Town</label>
-                  <TextField
-                    className="defaultTextFeild text "
-                    name="town"
-                    placeholder="Enter Town"
-                    value={popupFormData?.town}
-                    onChange={handleInputChange}
-                  />
-                  <ErrorMessagesComponent errorMessage={errorMessages["town"]} />
-                </div>
-               
+                <ErrorMessagesComponent
+                  errorMessage={errorMessages["atleast_one_field"]}
+                />
               </div>
-            </div>
 
-            <div className="locationInformation">
-                <div className="subHeading"><Image src="/markers/add/online-info.svg" alt="" width={13} height={13} />Online Presence</div>
+              <div className="locationInformation">
+                <div className="subHeading">
+                  <Image
+                    src="/markers/add/online-info.svg"
+                    alt=""
+                    width={13}
+                    height={13}
+                  />
+                  Online Presence
+                </div>
                 <div className="eachFeildGrp">
                   <label>Website</label>
                   <TextField
@@ -441,7 +568,7 @@ const MarkerPopup = ({
                   <TextField
                     className="defaultTextFeild text "
                     name="facebook"
-                    placeholder="Enter facebook link"
+                    placeholder="Enter Facebook link"
                     value={popupFormData?.facebook}
                     onChange={handleInputChange}
                   />
@@ -454,7 +581,7 @@ const MarkerPopup = ({
                   <TextField
                     className="defaultTextFeild text "
                     name="instagram"
-                    placeholder="Enter instagram link"
+                    placeholder="Enter Instagram link"
                     value={popupFormData?.instagram}
                     onChange={handleInputChange}
                   />
@@ -480,7 +607,7 @@ const MarkerPopup = ({
                   <TextField
                     className="defaultTextFeild text "
                     name="youtube"
-                    placeholder="Enter youtube link"
+                    placeholder="Enter Youtube link"
                     value={popupFormData?.youtube}
                     onChange={handleInputChange}
                   />
@@ -488,8 +615,8 @@ const MarkerPopup = ({
                     errorMessage={errorMessages["youtube"]}
                   />
                 </div>
+              </div>
             </div>
-          </div>
           </div>
           <div className="actionBtnGrp">
             <Button onClick={handleCancel} disabled={loading ? true : false}>

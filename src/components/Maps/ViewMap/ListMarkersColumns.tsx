@@ -133,7 +133,7 @@ export const ListMarkersColumns = ({
       cell: (info: any) => (
         <span>{info.getValue() ? info.getValue() : "--"}</span>
       ),
-      header: () => <span>Phone</span>,
+      header: () => <span>Phone Number</span>,
       footer: (props: any) => props.column.id,
       width: "150px",
     },
@@ -170,7 +170,39 @@ export const ListMarkersColumns = ({
       footer: (props: any) => props.column.id,
       width: "150px",
     },
-
+    {
+      accessorFn: (row: any) => row.host,
+      id: "host",
+      sortDescFirst: false,
+      cell: (info: any) => (
+        <span>{info.getValue() ? `${info.getValue()}` : "--"}</span>
+      ),
+      header: () => <span>Host</span>,
+      footer: (props: any) => props.column.id,
+      width: "150px",
+    },
+    {
+      accessorFn: (row: any) => row.host_type,
+      id: "host_type",
+      sortDescFirst: false,
+      cell: (info: any) => (
+        <span>{info.getValue() ? `${info.getValue()}` : "--"}</span>
+      ),
+      header: () => <span>Host Type</span>,
+      footer: (props: any) => props.column.id,
+      width: "150px",
+    },
+    {
+      accessorFn: (row: any) => row.landcare_region,
+      id: "landcare_region",
+      sortDescFirst: false,
+      cell: (info: any) => (
+        <span>{info.getValue() ? `${info.getValue()}` : "--"}</span>
+      ),
+      header: () => <span>Landcare Region</span>,
+      footer: (props: any) => props.column.id,
+      width: "150px",
+    },
     {
       accessorFn: (row: any) => row.coordinates,
       id: "coordinates",

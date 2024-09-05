@@ -387,7 +387,8 @@ export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
     uniqueOrganizationTypes
       ?.filter((type: any) => type !== "")
       .reduce((acc: any, type: any, index: any) => {
-        acc[type] = markersImages[index];
+        const imageIndex = index % markersImages.length;
+        acc[type] = markersImages[imageIndex];
         return acc;
       }, {} as Record<string, string>);
 

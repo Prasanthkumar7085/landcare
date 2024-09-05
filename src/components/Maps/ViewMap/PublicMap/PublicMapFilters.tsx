@@ -42,7 +42,16 @@ const PublicMapFilters = ({
     }
     if (newSearchString) {
       filteredMarkers = filteredMarkers.filter((item: any) =>
-        item.name.toLowerCase().includes(newSearchString)
+        [
+          item?.name,
+          item?.town,
+          item?.host,
+          item?.description,
+          item?.contact,
+          item?.landcare_region,
+        ].some(
+          (field) => field && field.toLowerCase().includes(newSearchString)
+        )
       );
     }
 

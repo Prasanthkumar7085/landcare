@@ -313,7 +313,6 @@ const PublicMap = () => {
         sort_by: sort_by,
         sort_type: sort_type,
         type: type ? type : "",
-        limited_datatypes: true,
       };
       const response = await getSingleMapMarkersAPI(id, queryParams);
       const { data, ...rest } = response;

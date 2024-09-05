@@ -38,7 +38,6 @@ const MarkerDetailsAccordian = ({
       </AccordionSummary>
       <AccordionDetails>
         <div className="contentBlock">
-          
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
@@ -75,8 +74,7 @@ const MarkerDetailsAccordian = ({
             <Typography
               className="tagValue"
               sx={{
-                display:
-                  item?.tags?.length > 0 ? "" : "none !important",
+                display: item?.tags?.length > 0 ? "" : "none !important",
               }}
             >
               <Image
@@ -88,12 +86,12 @@ const MarkerDetailsAccordian = ({
 
               {item?.tags?.length > 0
                 ? item?.tags.map((tag: any, index: number) => {
-                  return (
-                    <span className="tagText" key={index}>
-                      {tag}
-                    </span>
-                  );
-                })
+                    return (
+                      <span className="tagText" key={index}>
+                        {tag}
+                      </span>
+                    );
+                  })
                 : "---"}
             </Typography>
           )}
@@ -108,7 +106,7 @@ const MarkerDetailsAccordian = ({
                 display: item?.type ? "" : "none !important",
               }}
             >
-              <Image
+              <img
                 className="markerTypeImg"
                 width={12}
                 height={12}
@@ -148,7 +146,7 @@ const MarkerDetailsAccordian = ({
                 className="value"
                 style={{ textDecoration: "none", marginBottom: "0" }}
               >
-                {item?.website || "--"}
+                {item?.website?.slice(0, 30) || "--"}
               </Link>
             </span>
           )}
@@ -240,7 +238,6 @@ const MarkerDetailsAccordian = ({
             </Typography>
           )}
 
-
           {singleMarkerLoading ? (
             <Skeleton width="60%" />
           ) : (
@@ -294,11 +291,7 @@ const MarkerDetailsAccordian = ({
             </Typography>
           )}
 
-
-          <div
-            className="btnGrp"
-            style={{ gridTemplateColumns: "1fr 1fr" }}
-          >
+          <div className="btnGrp" style={{ gridTemplateColumns: "1fr 1fr" }}>
             <div className="share-icons">
               <IconButton
                 className={"icon"}
@@ -306,12 +299,7 @@ const MarkerDetailsAccordian = ({
                 onClick={() => window.open(item?.facebook)}
                 sx={{ display: item?.facebook ? "" : "none !important" }}
               >
-                <Image
-                  src="/map/view/fb.svg"
-                  alt=""
-                  height={23}
-                  width={23}
-                />
+                <Image src="/map/view/fb.svg" alt="" height={23} width={23} />
               </IconButton>
               <IconButton
                 className={"icon"}
@@ -319,7 +307,12 @@ const MarkerDetailsAccordian = ({
                 onClick={() => window.open(item?.instagram)}
                 sx={{ display: item?.instagram ? "" : "none !important" }}
               >
-                <Image src="/map/view/insta.svg" alt="" height={23} width={23} />
+                <Image
+                  src="/map/view/insta.svg"
+                  alt=""
+                  height={23}
+                  width={23}
+                />
               </IconButton>
 
               <IconButton
@@ -336,19 +329,19 @@ const MarkerDetailsAccordian = ({
                 onClick={() => window.open(item?.youtube)}
                 sx={{ display: item?.youtube ? "" : "none !important" }}
               >
-                <Image src="/map/view/youtube.svg" alt="" height={23} width={23} />
+                <Image
+                  src="/map/view/youtube.svg"
+                  alt=""
+                  height={23}
+                  width={23}
+                />
               </IconButton>
             </div>
             <Button
               className="navigateBtn"
               variant="contained"
               endIcon={
-                <Image
-                  src="/map/navigate.svg"
-                  alt=""
-                  width={15}
-                  height={15}
-                />
+                <Image src="/map/navigate.svg" alt="" width={15} height={15} />
               }
               onClick={() => {
                 const markerEntry = markersRef.current.find(
