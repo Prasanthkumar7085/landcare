@@ -167,7 +167,7 @@ const MarkerPopup = ({
       );
       return coordinates;
     } catch (error) {
-      return "";
+      return [];
     }
   };
   const getApiBasedOnParams = async (id: any) => {
@@ -295,7 +295,9 @@ const MarkerPopup = ({
                     />
                   </div>
                   <div className="eachFeildGrp">
-                    <label>Type</label>
+                    <label>
+                      Type<span style={{ color: "red" }}>*</span>
+                    </label>
                     <TextField
                       className="defaultTextFeild text "
                       name="type"
@@ -535,9 +537,21 @@ const MarkerPopup = ({
                     />
                   </div>
                 </div>
-                <ErrorMessagesComponent
-                  errorMessage={errorMessages["atleast_one_field"]}
-                />
+                {errorMessages["atleast_one_field"] ? (
+                  <ErrorMessagesComponent
+                    errorMessage={errorMessages["atleast_one_field"]}
+                  />
+                ) : popupFormData?.coordinates?.length == 0 &&
+                  !popupFormData?.town &&
+                  !popupFormData?.postcode ? (
+                  <ErrorMessagesComponent
+                    errorMessage={
+                      "At least one of coordinates, postcode, or town is required."
+                    }
+                  />
+                ) : (
+                  ""
+                )}
               </div>
 
               <div className="locationInformation">

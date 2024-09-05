@@ -378,7 +378,7 @@ const Maps = () => {
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={singleMapDetails}
-        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug}`}
+        linkToShare={`https://dev-landcare.vercel.app/map/${singleMapDetails?.slug}`}
       />
 
       <Menu
@@ -447,7 +447,7 @@ const Maps = () => {
             <MenuItem
               className="menuItem"
               onClick={() => {
-                const linkToEmdeded = `<iframe src=https://dev-landcare.vercel.app/landcare-map/${singleMapDetails?.slug} width="600" height="450" style="border:0;"
+                const linkToEmdeded = `<iframe src=https://dev-landcare.vercel.app/map/${singleMapDetails?.slug} width="600" height="450" style="border:0;"
        loading="lazy"
        referrerpolicy="no-referrer-when-downgrade"
      ></iframe>`;

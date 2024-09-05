@@ -165,7 +165,7 @@ const ViewMarkerDrawer = ({
                     alt="Fallback"
                     height={100}
                     width={100}
-                    style={{ objectFit: "cover" }}
+                    style={{ objectFit: "contain" }}
                   />
                 )}
                 <IconButton
@@ -324,7 +324,7 @@ const ViewMarkerDrawer = ({
 
                   <Typography
                     style={{
-                      display: item?.contact ? "" : "none !important",
+                      display: item?.contact ? "" : "none",
                     }}
                   >
                     {singleMarkerLoading ? (
@@ -597,7 +597,7 @@ const ViewMarkerDrawer = ({
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={selectedMarker}
-        linkToShare={`https://dev-landcare.vercel.app/landcare-map/${
+        linkToShare={`https://dev-landcare.vercel.app/map/${
           mapDetails?.slug
         }?marker_id=${params?.get("marker_id")}`}
       />

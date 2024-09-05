@@ -1047,14 +1047,13 @@
     overflow-y: auto;
   }
   .viewContent {
-    border-radius:0 0 4px 4px;
+    border-radius: 0 0 4px 4px;
     background: #edf5e0;
     border: 1px solid #edf5e0;
     margin-top: 0.5rem;
     .MuiAccordionSummary-root {
       background: #edf5e0;
       min-height: inherit;
-    
     }
     .MuiAccordionDetails-root {
       padding: 0;
@@ -1066,7 +1065,7 @@
     .imgBlock {
       height: 180px;
       position: relative;
-      background: #edf5e0;
+      background: #dfecc9;
       .iconBtnMenu {
         position: absolute;
         right: 0;

@@ -248,7 +248,7 @@ const ViewPublicMarkerDrawer = ({
 
                   <Typography
                     style={{
-                      display: item?.contact ? "" : "none !important",
+                      display: item?.contact ? "" : "none",
                     }}
                   >
                     {singleMarkerLoading ? (
