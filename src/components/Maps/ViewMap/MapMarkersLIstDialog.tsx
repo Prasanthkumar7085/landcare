@@ -92,6 +92,7 @@ const MapMarkersListDialog = ({
       data = addSerial(data, +rest.page, +rest.limit);
       setMarkers(data);
       setPaginationDetails(rest);
+      await getAllMapMarkersForOrginazations();
     } catch (err) {
       console.error(err);
     } finally {
@@ -149,7 +150,6 @@ const MapMarkersListDialog = ({
         sort_by: "",
         sort_type: "",
       });
-      getAllMapMarkersForOrginazations();
     }
   }, [open]);
 

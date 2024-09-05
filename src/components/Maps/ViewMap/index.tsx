@@ -134,6 +134,7 @@ const ViewGoogleMap = () => {
     markersRef.current = [];
   };
   const renderAllMarkers = (markers1: any, map: any, maps: any) => {
+    console.log("fdsjfkdsfksdjiww9r32932");
     clearMarkers();
     markers1?.forEach((markerData: any, index: number) => {
       const latLng = new google.maps.LatLng(
@@ -192,6 +193,8 @@ const ViewGoogleMap = () => {
     });
     if (params.get("marker_id") || searchParams?.marker_id) {
       goTomarker(markers1);
+    } else {
+      boundToMapWithPolygon(polygonCoords, map);
     }
   };
 
@@ -394,7 +397,7 @@ const ViewGoogleMap = () => {
       }
       renderAllMarkers(markers, map, googleMaps);
     }
-  }, [map, googleMaps, markers]);
+  }, [map, googleMaps, markers, markersImagesWithOrganizationType]);
 
   useEffect(() => {
     setSearchParams(
