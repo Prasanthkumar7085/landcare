@@ -1,12 +1,12 @@
 import * as v from 'valibot';
 
 const baseSchema = v.object({
-    name: v.nullish(v.string()),
+    name: v.pipe(v.string(), v.nonEmpty()),
     description: v.nullish(v.string()),
     landcare_region: v.nullish(v.string()),
     host: v.nullish(v.string()),
     host_type: v.nullish(v.string()),
-    type: v.nullish(v.string()),
+    type: v.pipe(v.string(), v.nonEmpty()),
 
     street_address: v.nullish(v.string()),
     town: v.nullish(v.string()),
@@ -29,41 +29,11 @@ const baseSchema = v.object({
     status: v.nullish(v.boolean())
 });
 
+
 export const AddMarkerSchema = v.pipe(
     baseSchema,
     v.rawTransform(({ dataset, addIssue, NEVER }) => {
-        const { name, type, coordinates, postcode, town } = dataset.value;
-
-        if (!name) {
-            addIssue({
-                message: "Name is a required",
-                path: [
-                    {
-                        type: 'object',
-                        origin: 'value',
-                        input: dataset.value,
-                        key: 'name',
-                        value: dataset.value
-                    }
-                ],
-            });
-        }
-
-        if (!type) {
-            addIssue({
-                message: 'Type is a required',
-                path: [
-                    {
-                        type: 'object',
-                        origin: 'value',
-                        input: dataset.value,
-                        key: 'type',
-                        value: dataset.value
-                    }
-                ],
-            });
-        }
-
+        const {coordinates, postcode, town } = dataset.value;
         if (!coordinates?.length && !postcode && !town) {
             addIssue({
                 message: 'At least one of coordinates, postcode, or town is required.',
@@ -81,5 +51,5 @@ export const AddMarkerSchema = v.pipe(
             return NEVER;
         }
         return { ...dataset.value };
-    })
+    })  
 );
