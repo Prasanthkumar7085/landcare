@@ -158,7 +158,7 @@ const ViewPublicMarkerDrawer = ({
                     {singleMarkerLoading ? (
                       <Skeleton width="60%" />
                     ) : (
-                      <span>{item?.town?.split(" ")[0] || "---"}</span>
+                      <span>{item?.town || "---"}</span>
                     )}
                   </Typography>
 

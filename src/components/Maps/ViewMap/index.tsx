@@ -201,7 +201,11 @@ const ViewGoogleMap = () => {
     let queries = { ...searchParams };
     delete queries.marker_id;
     let queryString = prepareURLEncodedParams("", queries);
-    router.replace(`${pathName}${queryString}&marker_id=${markerData?.id}`);
+    if (queryString) {
+      router.replace(`${pathName}${queryString}&marker_id=${markerData?.id}`);
+    } else {
+      router.replace(`${pathName}?marker_id=${markerData?.id}`);
+    }
     setPlaceDetails({});
     getSingleMarker(
       markerData?.id,
