@@ -23,15 +23,17 @@ const TagsAddingComponent = ({
 
   const handleAddTags = () => {
     setErrorMessages({});
-    if (!tagsInput) {
+    const trimmedTagsInput = tagsInput.trim();
+
+    if (!trimmedTagsInput) {
       setErrorMessages({ tags: "Tags field cannot be empty." });
       return;
     }
 
-    if (!popupFormData.tags?.includes(tagsInput)) {
+    if (!popupFormData.tags?.includes(trimmedTagsInput)) {
       setPopupFormData({
         ...popupFormData,
-        tags: [...popupFormData?.tags, tagsInput],
+        tags: [...popupFormData?.tags, trimmedTagsInput],
       });
       setTagsInput("");
     } else {
@@ -58,13 +60,15 @@ const TagsAddingComponent = ({
   };
 
   const handleUpdateTag = () => {
-    if (!editInput) {
+    const trimmedEditInput = editInput.trim();
+
+    if (!trimmedEditInput) {
       setErrorMessages({ tags: "Tags field cannot be empty." });
       return;
     }
 
     const updatedTags = [...popupFormData.tags];
-    updatedTags[editIndex!] = editInput;
+    updatedTags[editIndex!] = trimmedEditInput;
 
     setPopupFormData({ ...popupFormData, tags: updatedTags });
     setEditIndex(null);
@@ -115,7 +119,7 @@ const TagsAddingComponent = ({
             {popupFormData.tags.map((tag: any, index: any) => (
               <li
                 key={index}
-                style={{ color: index == editIndex ? "red" : "" }}
+                style={{ color: index === editIndex ? "red" : "" }}
               >
                 <Tooltip title={tag && tag?.length > 15 ? tag : ""}>
                   <span>{truncateText(tag, 15)}</span>
@@ -123,7 +127,7 @@ const TagsAddingComponent = ({
                 <IconButton
                   onClick={() => handleEditTag(index)}
                   aria-label="edit"
-                  disabled={editIndex == index}
+                  disabled={editIndex === index}
                 >
                   <Image
                     src="/markers/add/edit.svg"
@@ -135,11 +139,11 @@ const TagsAddingComponent = ({
                 <IconButton
                   onClick={() => handleRemoveTags(index)}
                   aria-label="delete"
-                  disabled={editIndex == index}
+                  disabled={editIndex === index}
                 >
                   <Image
                     src="/markers/add/delete.svg"
-                    alt="edit"
+                    alt="delete"
                     width={15}
                     height={15}
                   />

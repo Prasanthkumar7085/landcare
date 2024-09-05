@@ -5,13 +5,11 @@ const ImageComponent = ({ item, currentIndex }: any) => {
   const [isError, setIsError] = useState(false);
 
   const handleImageError = (e: any) => {
-    console.log("Fdsakfsdifsd", e);
     setImgSrc("/No-Preview-1.jpg");
     setIsError(true);
   };
 
   const handleLoad = (e: any) => {
-    console.log(e);
     setIsError(false);
   };
 

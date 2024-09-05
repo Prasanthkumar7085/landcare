@@ -240,7 +240,6 @@ const validationsForImportedData = ({
 }) => {
   const validDataObjects: DataObject[] = [];
   const errorObjects: any = [];
-  console.log(filteredDataObjects, "filteredDataObjects");
   filteredDataObjects.forEach((obj: any) => {
     let nameValue = obj.name?.trim();
     let typeValue = obj.type?.trim();
@@ -372,7 +371,7 @@ export const getPolygonWithMarkers = (points: any) => {
 };
 
 export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
-  let organizationTypes: any = markersData?.map((item: any) => item.type);
+  let organizationTypes: any = markersData?.map((item: any) => item?.type);
   const uniqueOrganizationTypes = organizationTypes?.filter(
     (value: any, index: any, self: any) =>
       value !== undefined &&
@@ -387,8 +386,7 @@ export const getMarkersImagesBasedOnOrganizationType = (markersData: any) => {
     uniqueOrganizationTypes
       ?.filter((type: any) => type !== "")
       .reduce((acc: any, type: any, index: any) => {
-        const imageIndex = index % markersImages.length;
-        acc[type] = markersImages[imageIndex];
+        acc[type] = markersImages[index];
         return acc;
       }, {} as Record<string, string>);
 

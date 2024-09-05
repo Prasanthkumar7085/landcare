@@ -310,7 +310,7 @@ const MapMarkersListDialog = ({
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={singleMapDetails}
-        linkToShare={`https://dev-landcare.vercel.app/map/${mapDetails?.slug}?marker_id=${singleMapDetails?.id}`}
+        linkToShare={`https://v2-landcare.vercel.app/map/${mapDetails?.slug}?marker_id=${singleMapDetails?.id}`}
       />
       <LoadingComponent loading={showLoading} />
     </BootstrapDialog>

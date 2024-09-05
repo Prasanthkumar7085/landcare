@@ -22,7 +22,7 @@ export const copyEmbededIframeUrlForMarker = async (
   marker_id?: any
 ) => {
   const link = `<iframe
-       src=https://dev-landcare.vercel.app/map/${id}?marker_id=${marker_id}
+       src=https://v2-landcare.vercel.app/map/${id}?marker_id=${marker_id}
        width="600"
        height="450"
        style="border:0;"

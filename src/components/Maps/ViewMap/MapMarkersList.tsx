@@ -222,7 +222,7 @@ const MapMarkersList = ({
                                 ]
                               : "https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png"
                           }
-                          alt={markerDetails?.organisation_type}
+                          alt={markerDetails?.type}
                         />
                         {markerDetails?.type || "---"}
                       </span>

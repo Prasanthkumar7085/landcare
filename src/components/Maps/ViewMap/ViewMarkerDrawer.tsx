@@ -597,7 +597,7 @@ const ViewMarkerDrawer = ({
         open={shareLinkDialogOpen}
         setShareDialogOpen={setShareDialogOpen}
         mapDetails={selectedMarker}
-        linkToShare={`https://dev-landcare.vercel.app/map/${
+        linkToShare={`https://v2-landcare.vercel.app/map/${
           mapDetails?.slug
         }?marker_id=${params?.get("marker_id")}`}
       />

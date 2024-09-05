@@ -288,16 +288,12 @@ const ViewGoogleMap = () => {
       const response = await getSingleMapDetailsAPI(id);
       if (response?.status == 200 || response?.status == 201) {
         setMapDetails(response?.data);
-        const markersPromise = getSingleMapMarkers({
+        const markersPromise = await getSingleMapMarkers({
           marker_id: params?.get("marker_id") || searchParams?.marker_id,
         });
-        const organizationsPromise = getSingleMapMarkersForOrginazations({
+        const organizationsPromise = await getSingleMapMarkersForOrginazations({
           id: response?.data?.id,
         });
-        const results = await Promise.allSettled([
-          markersPromise,
-          organizationsPromise,
-        ]);
       }
     } catch (err) {
       console.error(err);
