@@ -11,7 +11,7 @@ const baseSchema = v.object({
     street_address: v.nullish(v.string()),
     town: v.nullish(v.string()),
     postcode: v.nullish(v.string()),
-    coordinates: v.nullish(v.array(v.number())),
+    coordinates: v.pipe(v.array(v.number()), v.nonEmpty()),
 
     phone_number: v.nullish(v.string()),
     email: v.nullish(v.pipe(v.string(), v.email())),
