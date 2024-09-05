@@ -144,6 +144,9 @@ const MarkerPopup = ({
       return coordinates;
     } else {
       try {
+        let townName = town?.includes("New South Wales")
+          ? town
+          : town + " " + "New South Wales";
         const townCoords: any = await getCoordinates(town);
         return townCoords.length ? townCoords : await getCoordinates(postcode);
       } catch (error) {
@@ -239,6 +242,8 @@ const MarkerPopup = ({
         }
         updateMapWithCordinates([...allMarkers, response?.data]);
       } else if (response?.status == 422) {
+        setErrorMessages(response?.error_data);
+      } else if (response?.status == 409) {
         setErrorMessages(response?.error_data);
       }
     } catch (err) {

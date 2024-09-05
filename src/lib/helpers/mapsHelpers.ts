@@ -56,7 +56,7 @@ const parseField = (value: any, type: string) => {
     case "postcode":
       return value.toString();
     case "town":
-      return value ? value + " " + "Australia" : "";
+      return value ? value + " " + "New South Wales" : "";
     case "tags":
       return value ? value?.split(",").map((item: string) => item.trim()) : [];
     default:

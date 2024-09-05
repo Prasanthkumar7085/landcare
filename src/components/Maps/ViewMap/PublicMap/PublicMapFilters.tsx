@@ -2,6 +2,7 @@ import AutoCompleteSearch from "@/components/Core/AutoCompleteSearch";
 import { capitalizeFirstLetter } from "@/lib/helpers/nameFormate";
 import { InputAdornment, TextField } from "@mui/material";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 const PublicMapFilters = ({
   searchString,
@@ -15,6 +16,7 @@ const PublicMapFilters = ({
   markers,
   singleMarkers,
 }: any) => {
+  const params: any = useSearchParams();
   const getOrginazationTypes = () => {
     let orginisationTypesOptions: any = Object?.keys(
       markersImagesWithOrganizationType
@@ -87,9 +89,10 @@ const PublicMapFilters = ({
         variant="outlined"
         size="small"
         type="search"
-        placeholder="Search on title"
+        placeholder="Search "
         value={searchString}
         sx={{
+          display: params?.get("marker_id") ? "none" : "",
           "& .MuiInputBase-root": {
             height: "38px",
             border: "1.4px solid #c8c7ce",
@@ -120,13 +123,15 @@ const PublicMapFilters = ({
           ),
         }}
       />
-      <AutoCompleteSearch
-        data={getOrginazationTypes() || []}
-        setSelectValue={setSelectedOrginazation}
-        selectedValue={selectedOrginazation}
-        placeholder="Select Type"
-        onChange={handleSelectTypeChange}
-      />
+      <div style={{ display: params?.get("marker_id") ? "none" : "" }}>
+        <AutoCompleteSearch
+          data={getOrginazationTypes() || []}
+          setSelectValue={setSelectedOrginazation}
+          selectedValue={selectedOrginazation}
+          placeholder="Select Type"
+          onChange={handleSelectTypeChange}
+        />
+      </div>
     </>
   );
 };
