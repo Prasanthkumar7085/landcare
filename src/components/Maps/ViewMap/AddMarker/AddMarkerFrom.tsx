@@ -147,7 +147,7 @@ const MarkerPopup = ({
         let townName = town?.includes("New South Wales")
           ? town
           : town + " " + "New South Wales";
-        const townCoords: any = await getCoordinates(town);
+        const townCoords: any = await getCoordinates(townName);
         return townCoords.length ? townCoords : await getCoordinates(postcode);
       } catch (error) {
         return (await getCoordinates(postcode)) as any;
@@ -170,7 +170,7 @@ const MarkerPopup = ({
       );
       return coordinates;
     } catch (error) {
-      return [];
+      return "";
     }
   };
   const getApiBasedOnParams = async (id: any) => {
