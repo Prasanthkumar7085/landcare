@@ -252,8 +252,15 @@ const validationsForImportedData = ({
         ? coordinates.map(Number)
         : [Number(coordinates)];
     }
-
-    if (!nameValue || nameValue === undefined || nameValue === "") {
+    if (
+      (!nameValue || nameValue === undefined || nameValue === "") &&
+      (!typeValue || typeValue == undefined || typeValue === "")
+    ) {
+      errorObjects.push({
+        ...obj,
+        error: "Name or Type is required",
+      });
+    } else if (!nameValue || nameValue === undefined || nameValue === "") {
       errorObjects.push({
         ...obj,
         error: "Name is required",
