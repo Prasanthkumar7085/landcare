@@ -30,9 +30,7 @@ const PublicMapFilters = ({
   };
 
   const handleFilterChange = (searchString?: string, newValue?: any) => {
-    const newSearchString = searchString
-      ? searchString.toLowerCase().trim()
-      : "";
+    const newSearchString = searchString ? searchString.toLowerCase() : "";
     const selectedOrganization = newValue?.title ? newValue : "";
 
     let filteredMarkers: any[] = [...singleMarkers];
@@ -68,7 +66,7 @@ const PublicMapFilters = ({
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchString = event.target.value.toLowerCase().trim();
+    const newSearchString = event.target.value.toLowerCase();
     setSearchString(newSearchString);
     handleFilterChange(newSearchString, selectedOrginazation);
   };
