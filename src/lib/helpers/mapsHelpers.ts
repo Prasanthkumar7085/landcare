@@ -254,11 +254,16 @@ const validationsForImportedData = ({
     }
     if (
       (!nameValue || nameValue === undefined || nameValue === "") &&
-      (!typeValue || typeValue == undefined || typeValue === "")
+      (!typeValue || typeValue == undefined || typeValue === "") &&
+      coordinates &&
+      !isValidCoordinates(coordinates) &&
+      !townValue &&
+      !postcodeValue
     ) {
       errorObjects.push({
         ...obj,
-        error: "Name or Type is required",
+        error:
+          "Name,Type, and at least one of Coordinates, Town, or Postcode are required",
       });
     } else if (!nameValue || nameValue === undefined || nameValue === "") {
       errorObjects.push({
